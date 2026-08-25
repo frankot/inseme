@@ -16,7 +16,7 @@ export function SectionRule({
   return (
     <div
       className={cn(
-        "flex items-baseline lg:mt-20 gap-[clamp(12px,1.6vw,20px)]",
+        "flex items-baseline mt-10 lg:mt-20 gap-[clamp(12px,1.6vw,20px)]",
         className,
       )}
     >

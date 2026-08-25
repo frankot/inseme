@@ -14,8 +14,22 @@ import { cn } from "@/lib/utils";
 
 const LOGO = "/placeholder/logo-insieme.png";
 
-/** Fraction of the viewport scrolled before the compact bar drops in. */
-const REVEAL_AT = 0.7;
+// The compact bar never appears over the hero, which carries its own
+// transparent header. Past that point behaviour splits by viewport:
+//   desktop — follows scroll direction: back on the way up, away on the way down
+//   phones  — simply stays visible; direction-hiding reads as flicker on a
+//             small screen and fights the browser's own collapsing URL bar
+
+/** How far down the page the bar becomes eligible to appear at all. */
+const ARM_AFTER = 0.7;
+/** Upward travel needed to bring it back — long enough to ignore jitter. */
+const UP_DISTANCE = 64;
+/** Downward travel before it leaves again. */
+const DOWN_DISTANCE = 24;
+/** Sub-pixel noise from touch drags and momentum is not a direction. */
+const MIN_DELTA = 2;
+/** Matches `--breakpoint-nav`, where the desktop nav replaces the burger. */
+const DESKTOP_QUERY = "(min-width: 961px)";
 
 type Tone = "dark" | "light";
 
@@ -32,14 +46,87 @@ export function SiteHeader({
   const [stickyOn, setStickyOn] = useState(false);
 
   useEffect(() => {
-    const onScroll = () =>
-      setStickyOn(window.scrollY > window.innerHeight * REVEAL_AT);
-    onScroll();
+    // Travel accumulated since the last direction change, so a few stray
+    // pixels — or a trackpad's momentum wobble — don't flip the bar.
+    let up = 0;
+    let down = 0;
+    let frame = 0;
+
+    /**
+     * Mobile browsers report positions past both ends while rubber-banding,
+     * and the spring back reads as a deliberate scroll the other way. Clamping
+     * to the real document range removes that phantom motion.
+     */
+    const position = () => {
+      const max = Math.max(
+        0,
+        document.documentElement.scrollHeight - window.innerHeight,
+      );
+      return Math.min(Math.max(0, window.scrollY), max);
+    };
+
+    let lastY = position();
+    const desktop = window.matchMedia(DESKTOP_QUERY);
+
+    const evaluate = () => {
+      frame = 0;
+      const y = position();
+      const delta = y - lastY;
+      lastY = y;
+
+      if (y < window.innerHeight * ARM_AFTER) {
+        up = down = 0;
+        setStickyOn(false);
+        return;
+      }
+
+      // Phones: past the hero the bar stays put, full stop.
+      if (!desktop.matches) {
+        up = down = 0;
+        setStickyOn(true);
+        return;
+      }
+
+      if (Math.abs(delta) < MIN_DELTA) return;
+
+      if (delta > 0) {
+        down += delta;
+        up = 0;
+        if (down > DOWN_DISTANCE) setStickyOn(false);
+      } else {
+        up -= delta;
+        down = 0;
+        if (up > UP_DISTANCE) setStickyOn(true);
+      }
+    };
+
+    // One read per frame: scroll fires far more often than that, and each
+    // extra sample is just noise on a touch drag.
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(evaluate);
+    };
+
+    /**
+     * A collapsing mobile URL bar resizes the viewport, which shifts scrollY
+     * on its own. Treated as scrolling it looks like a deliberate swipe up and
+     * pins the bar open, so re-baseline instead of reading it as motion.
+     */
+    const onResize = () => {
+      lastY = position();
+      up = down = 0;
+    };
+
+    evaluate();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onResize);
+    // Crossing the breakpoint swaps the rule, so settle on the new one at once
+    // rather than waiting for the next scroll.
+    desktop.addEventListener("change", evaluate);
     return () => {
+      if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("resize", onResize);
+      desktop.removeEventListener("change", evaluate);
     };
   }, []);
 
@@ -60,15 +147,21 @@ export function SiteHeader({
 
   return (
     <>
-      {/* Compact bar: slides down past the hero, retracts back at the top. */}
+      {/*
+        Compact bar: full-width, flush to the top, revealed by scrolling up and
+        dismissed by scrolling down (see the scroll effect above).
+      */}
       <header
+        inert={!stickyOn}
         className={cn(
-          "fixed inset-x-0 top-0  z-70 border-b border-line-strong",
-          "bg-cream/94 backdrop-blur-[14px] backdrop-saturate-150",
-          "transition-[transform,opacity] duration-[550ms] ease-[cubic-bezier(.16,1,.3,1)]",
+          "fixed inset-x-0 top-0 z-70 border-b border-line-strong",
+          "bg-cream/85 backdrop-blur-xl backdrop-saturate-150",
+          // Pure slide, no cross-fade: the bar travels, it does not dissolve.
+          // Entry decelerates into place, exit accelerates away.
+          "will-change-transform transition-transform motion-reduce:transition-none",
           stickyOn
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-full opacity-0 pointer-events-none",
+            ? "translate-y-0 duration-[520ms] ease-[cubic-bezier(.16,1,.3,1)]"
+            : "-translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]",
         )}
       >
         <Bar
@@ -77,18 +170,20 @@ export function SiteHeader({
           nav={nav}
           contact={contact}
           onBurger={() => setMenuOpen(true)}
-          logoWidth="w-[clamp(84px,6.6vw,98px)]"
+          logoWidth="w-[clamp(92px,7.7vw,112px)]"
+          tagline
         />
       </header>
 
-      {/* Full-screen mobile panel. */}
+      {/* Full-screen mobile panel — same slide language as the bar. */}
       <div
+        inert={!menuOpen}
         className={cn(
           "fixed inset-0 z-88 flex flex-col bg-cream",
-          "transition-[transform,opacity] duration-[550ms] ease-[cubic-bezier(.16,1,.3,1)]",
+          "will-change-transform transition-transform motion-reduce:transition-none",
           menuOpen
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-full opacity-0 pointer-events-none",
+            ? "translate-y-0 duration-[520ms] ease-[cubic-bezier(.16,1,.3,1)]"
+            : "-translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]",
         )}
       >
         <div
@@ -194,7 +289,12 @@ function Bar({
       >
         <Logo className={logoWidth} invert={dark} />
         {tagline && (
-          <span className="text-[9.5px] uppercase tracking-[0.26em] text-on-dark-2/70">
+          <span
+            className={cn(
+              "text-[9.5px] uppercase tracking-[0.26em]",
+              dark ? "text-on-dark-2/70" : "text-ink-200",
+            )}
+          >
             ośrodek terapii uzależnień
           </span>
         )}
@@ -218,18 +318,19 @@ function Bar({
         <a
           href={`tel:${contact.phoneHref}`}
           className={cn(
-            "inline-flex items-center gap-[9px] border font-heading text-nav leading-none tabular-nums transition-colors",
+            "group inline-flex items-center gap-[9px] border font-heading text-nav leading-none tabular-nums transition-colors",
             dark
               ? "border-bone/40 bg-bone/6 px-[21px] py-[11px] text-bone text-shadow-nav hover:border-bone hover:bg-bone hover:text-ink-900"
-              : "border-ink-900 bg-ink-900 px-[19px] py-2.5 text-bone hover:bg-transparent hover:text-ink-900",
+              : "border-ink-900 bg-ink-900 px-[21px] py-[11px] text-bone hover:bg-transparent hover:text-ink-900",
           )}
         >
-          {dark && (
-            <span
-              aria-hidden
-              className="block size-[5px] rounded-full bg-sage-300"
-            />
-          )}
+          <span
+            aria-hidden
+            className={cn(
+              "block size-[5px] rounded-full",
+              dark ? "bg-sage-300" : "bg-sage-300 group-hover:bg-sage-600",
+            )}
+          />
           <span>{contact.phone}</span>
         </a>
       </nav>

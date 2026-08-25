@@ -175,7 +175,7 @@
 
 :root {
   --nav-h: 88px;
-  --nav-h-sticky: 62px;
+  --nav-h-sticky: 76px;
 
   /* --- Insieme brand palette --- */
   --cream: oklch(0.9848 0.0054 95.1); /* #FBFAF6 */
@@ -282,7 +282,7 @@
 @media (max-width: 960px) {
   :root {
     --nav-h: 72px;
-    --nav-h-sticky: 58px;
+    --nav-h-sticky: 64px;
   }
 }
 
