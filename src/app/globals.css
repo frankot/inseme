@@ -5,11 +5,51 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Fonts. Both are loaded in `src/app/layout.tsx` via next/font. */
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-display);
+
+  /* --- Brand palette (see :root for the source hexes) --- */
+  --color-cream: var(--cream);
+  --color-bone: var(--bone);
+  --color-sand: var(--sand);
+  --color-mist: var(--mist);
+  --color-stone: var(--stone);
+
+  --color-ink-950: var(--ink-950);
+  --color-ink-900: var(--ink-900);
+  --color-ink-700: var(--ink-700);
+  --color-ink-600: var(--ink-600);
+  --color-ink-500: var(--ink-500);
+  --color-ink-400: var(--ink-400);
+  --color-ink-300: var(--ink-300);
+  --color-ink-200: var(--ink-200);
+
+  --color-sage-700: var(--sage-700);
+  --color-sage-600: var(--sage-600);
+  --color-sage-300: var(--sage-300);
+
+  --color-clay-600: var(--clay-600);
+  --color-clay-400: var(--clay-400);
+  --color-clay-300: var(--clay-300);
+
+  --color-on-dark: var(--on-dark);
+  --color-on-dark-2: var(--on-dark-2);
+  --color-on-dark-3: var(--on-dark-3);
+  --color-on-dark-lead: var(--on-dark-lead);
+  --color-on-dark-sage: var(--on-dark-sage);
+  --color-on-dark-sage-2: var(--on-dark-sage-2);
+  --color-on-dark-muted: var(--on-dark-muted);
+  --color-on-dark-faint: var(--on-dark-faint);
+
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-line-warm: var(--line-warm);
+
+  /* --- shadcn semantic tokens --- */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -46,75 +86,204 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /*
+   * Fluid type scale. Each step carries its own leading and tracking, so a
+   * single utility reproduces a headline from the design exactly.
+   */
+  --text-display-xl: clamp(38px, 6vw, 100px);
+  --text-display-xl--line-height: 1.02;
+  --text-display-xl--letter-spacing: -0.035em;
+
+  --text-display: clamp(29px, 4.2vw, 58px);
+  --text-display--line-height: 1.08;
+  --text-display--letter-spacing: -0.03em;
+
+  --text-display-sm: clamp(29px, 3.6vw, 50px);
+  --text-display-sm--line-height: 1.07;
+  --text-display-sm--letter-spacing: -0.03em;
+
+  --text-quote: clamp(25px, 3.4vw, 48px);
+  --text-quote--line-height: 1.14;
+  --text-quote--letter-spacing: -0.03em;
+
+  --text-heading: clamp(23px, 2.1vw, 29px);
+  --text-heading--line-height: 1.12;
+  --text-heading--letter-spacing: -0.025em;
+
+  --text-nav: clamp(16px, 1.22vw, 19px);
+  --text-nav--line-height: 1;
+  --text-nav--letter-spacing: -0.012em;
+
+  --text-mob-link: clamp(30px, 8vw, 46px);
+  --text-mob-link--line-height: 1.22;
+  --text-mob-link--letter-spacing: -0.025em;
+
+  --text-stat: clamp(30px, 3vw, 42px);
+  --text-stat--line-height: 1;
+  --text-stat--letter-spacing: -0.03em;
+
+  --text-lead: clamp(15.5px, 1.3vw, 18px);
+  --text-lead--line-height: 1.7;
+
+  --text-body-lg: clamp(16px, 1.4vw, 19px);
+  --text-body-lg--line-height: 1.72;
+
+  --text-eyebrow: 11.5px;
+  --text-eyebrow--line-height: 1;
+  --text-eyebrow--letter-spacing: 0.2em;
+
+  /* Fluid section rhythm, matching the design's clamp() padding. */
+  --spacing-gutter: clamp(20px, 3vw, 48px);
+  --spacing-section: clamp(48px, 6vw, 96px);
+  --spacing-section-lg: clamp(64px, 8vw, 128px);
+  --spacing-section-sm: clamp(32px, 4vw, 56px);
+  --spacing-card: clamp(24px, 2.4vw, 36px);
+  --spacing-gap: clamp(14px, 1.4vw, 20px);
+  /* Bar heights shrink at the nav breakpoint — see :root below. */
+  --spacing-nav: var(--nav-h);
+  --spacing-nav-sticky: var(--nav-h-sticky);
+
+  /* The design swaps to the mobile bar at 960px, between Tailwind's md and lg. */
+  --breakpoint-nav: 961px;
+
+  --text-shadow-nav: 0 1px 16px oklch(0.24 0.008 145 / 0.55);
+
+  --animate-slow-zoom: slow-zoom 26s ease-in-out infinite alternate;
+  --animate-cue: cue 2.6s ease-in-out infinite;
+
+  @keyframes slow-zoom {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.09);
+    }
+  }
+  @keyframes cue {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.55;
+    }
+    50% {
+      transform: translateY(7px);
+      opacity: 1;
+    }
+  }
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --nav-h: 88px;
+  --nav-h-sticky: 62px;
+
+  /* --- Insieme brand palette --- */
+  --cream: oklch(0.9848 0.0054 95.1); /* #FBFAF6 */
+  --bone: oklch(0.97 0.0082 91.48); /* #F7F5EF */
+  --sand: oklch(0.9467 0.0127 86.83); /* #F1EDE4 */
+  --mist: oklch(0.9451 0.0135 134.9); /* #E9EFE6 */
+  --stone: oklch(0.9429 0.0124 91.52); /* #EFECE3 */
+
+  --ink-950: oklch(0.27 0.0116 145.25); /* #232823 */
+  --ink-900: oklch(0.3151 0.0087 159.59); /* #2E3330 */
+  --ink-700: oklch(0.3906 0.0148 133.55); /* #42473F */
+  --ink-600: oklch(0.4379 0.015 137.82); /* #4E544C */
+  --ink-500: oklch(0.474 0.0147 137.82); /* #585E56 */
+  --ink-400: oklch(0.5406 0.0155 134.97); /* #6B7168 */
+  --ink-300: oklch(0.6564 0.0143 130.86); /* #8E938A */
+  --ink-200: oklch(0.6955 0.0154 128.71); /* #9A9F95 */
+
+  --sage-700: oklch(0.421 0.0415 138.64); /* #42533D */
+  --sage-600: oklch(0.5316 0.0463 138.52); /* #5F7359 */
+  --sage-300: oklch(0.7647 0.0745 136.48); /* #9DBE8F */
+
+  --clay-600: oklch(0.6575 0.0348 68.68); /* #A08E7B */
+  --clay-400: oklch(0.7414 0.0235 80.66); /* #B3AA9B */
+  --clay-300: oklch(0.7934 0.0235 87.17); /* #C2BBAB */
+
+  --on-dark: oklch(0.9613 0.0111 89.72); /* #F5F2EA */
+  --on-dark-2: oklch(0.9485 0.0109 95.17); /* #F0EEE6 */
+  --on-dark-3: oklch(0.9404 0.014 88.69); /* #EFEBE1 */
+  --on-dark-lead: oklch(0.9062 0.0144 128.64); /* #DDE2D8 */
+  --on-dark-sage: oklch(0.8454 0.0244 133.49); /* #C6D0C0 */
+  --on-dark-sage-2: oklch(0.7968 0.0218 134.12); /* #B7C0B2 */
+  --on-dark-muted: oklch(0.7511 0.0251 133.52); /* #A8B2A2 */
+  --on-dark-faint: oklch(0.6219 0.0287 136.39); /* #7F8B7A */
+
+  --line: oklch(0.9192 0.0141 88.69); /* #E8E4DA */
+  --line-strong: oklch(0.9043 0.017 88); /* #E4DFD3 */
+  --line-warm: oklch(0.8776 0.0258 86.88); /* #DED6C4 */
+
+  /* --- shadcn semantics, mapped onto the palette above --- */
+  --background: var(--cream);
+  --foreground: var(--ink-900);
+  --card: var(--bone);
+  --card-foreground: var(--ink-900);
+  --popover: var(--bone);
+  --popover-foreground: var(--ink-900);
+  --primary: var(--ink-900);
+  --primary-foreground: var(--bone);
+  --secondary: var(--sand);
+  --secondary-foreground: var(--ink-900);
+  --muted: var(--sand);
+  --muted-foreground: var(--ink-300);
+  --accent: var(--mist);
+  --accent-foreground: var(--ink-900);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --border: var(--line);
+  --input: var(--line);
+  --ring: var(--sage-600);
+  --chart-1: var(--sage-300);
+  --chart-2: var(--sage-600);
+  --chart-3: var(--clay-600);
+  --chart-4: var(--ink-400);
+  --chart-5: var(--ink-900);
+  /* The design is square-cornered throughout. */
+  --radius: 0rem;
+  --sidebar: var(--bone);
+  --sidebar-foreground: var(--ink-900);
+  --sidebar-primary: var(--ink-900);
+  --sidebar-primary-foreground: var(--bone);
+  --sidebar-accent: var(--sand);
+  --sidebar-accent-foreground: var(--ink-900);
+  --sidebar-border: var(--line);
+  --sidebar-ring: var(--sage-600);
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: var(--ink-950);
+  --foreground: var(--on-dark);
+  --card: var(--ink-900);
+  --card-foreground: var(--on-dark);
+  --popover: var(--ink-900);
+  --popover-foreground: var(--on-dark);
+  --primary: var(--on-dark);
+  --primary-foreground: var(--ink-900);
+  --secondary: var(--ink-700);
+  --secondary-foreground: var(--on-dark);
+  --muted: var(--ink-700);
+  --muted-foreground: var(--on-dark-muted);
+  --accent: var(--ink-700);
+  --accent-foreground: var(--on-dark);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --ring: var(--sage-300);
+  --sidebar: var(--ink-900);
+  --sidebar-foreground: var(--on-dark);
+  --sidebar-primary: var(--sage-300);
+  --sidebar-primary-foreground: var(--ink-900);
+  --sidebar-accent: var(--ink-700);
+  --sidebar-accent-foreground: var(--on-dark);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: var(--sage-300);
+}
+
+@media (max-width: 960px) {
+  :root {
+    --nav-h: 72px;
+    --nav-h-sticky: 58px;
+  }
 }
 
 @layer base {
@@ -126,5 +295,122 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/*
+ * Custom utilities — only things stock Tailwind can't express. Everything else
+ * stays as inline utility classes in the components.
+ */
+
+/** Nav item whose underline wipes in from the left on hover. */
+@utility nav-link {
+  position: relative;
+  padding-block: 0.375rem;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+/** Two stacked hairlines — the menu icon. */
+@utility burger-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 22px;
+
+  & > span {
+    height: 1px;
+    background: currentColor;
+    display: block;
+  }
+}
+
+/** The same two hairlines, crossed — the close icon. */
+@utility burger-x {
+  position: relative;
+  width: 22px;
+  height: 7px;
+
+  & > span {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+    display: block;
+  }
+  & > span:first-child {
+    transform: rotate(45deg);
+  }
+  & > span:last-child {
+    transform: rotate(-45deg);
+  }
+}
+
+/** Gradient scrim that keeps white hero type legible over photography. */
+@utility hero-scrim {
+  background:
+    radial-gradient(
+      120% 80% at 50% 0%,
+      oklch(0.24 0.008 145 / 0.45) 0%,
+      oklch(0.24 0.008 145 / 0) 55%
+    ),
+    linear-gradient(
+      178deg,
+      oklch(0.24 0.008 145 / 0.62) 0%,
+      oklch(0.24 0.008 145 / 0.3) 32%,
+      oklch(0.24 0.008 145 / 0.68) 68%,
+      oklch(0.24 0.008 145 / 0.9) 100%
+    );
+}
+
+/** Inline "read more" link whose arrow drifts on hover. */
+@utility link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  transition: gap 0.3s ease;
+
+  &:hover {
+    gap: 14px;
+  }
+}
+
+/** Entry animation driven by <Reveal>; inert until it opts in. */
+@utility reveal-hidden {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@utility reveal-shown {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-hidden {
+    opacity: 1;
+    transform: none;
+  }
+  .reveal-shown {
+    transition: none;
   }
 }
