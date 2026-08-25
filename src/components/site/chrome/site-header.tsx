@@ -158,8 +158,7 @@ export function SiteHeader({
       <header
         inert={!barShown}
         className={cn(
-          "fixed inset-x-0 top-0 z-70 border-b border-line-strong",
-          "bg-cream/85 backdrop-blur-xl backdrop-saturate-150",
+          "fixed inset-x-0 top-0 z-70 border-b border-line-strong bg-cream",
           // Pure slide, no cross-fade: the bar travels, it does not dissolve.
           // Entry decelerates into place, exit accelerates away.
           "will-change-transform transition-transform motion-reduce:transition-none",
@@ -332,18 +331,13 @@ function Bar({
       <button
         type="button"
         onClick={onBurger}
-        aria-label={menuOpen ? "Zamknij menu" : "Menu"}
         aria-expanded={menuOpen}
         className={cn(
           "flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase nav:hidden",
           dark ? "text-on-dark-2 text-shadow-nav" : "text-ink-900",
         )}
       >
-        {/* The button's aria-label already names it, so this is decorative. */}
-        <span className="label-swap" aria-hidden>
-          <span data-active={!menuOpen}>Menu</span>
-          <span data-active={menuOpen}>Zamknij</span>
-        </span>
+        <span>Menu</span>
         <span className="burger-icon" data-open={menuOpen} aria-hidden>
           <span />
           <span />

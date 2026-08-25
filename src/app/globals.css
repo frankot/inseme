@@ -134,7 +134,7 @@
   --text-eyebrow--letter-spacing: 0.2em;
 
   /* Fluid section rhythm, matching the design's clamp() padding. */
-  --spacing-gutter: clamp(20px, 3vw, 48px);
+  --spacing-gutter: clamp(20px, 7vw, 77px);
   --spacing-section: clamp(48px, 6vw, 96px);
   --spacing-section-lg: clamp(64px, 8vw, 128px);
   --spacing-section-sm: clamp(32px, 4vw, 56px);
@@ -368,38 +368,6 @@
 @media (prefers-reduced-motion: reduce) {
   .burger-icon > span {
     transition: none;
-  }
-}
-
-/**
- * Two labels stacked in one grid cell, so the box is as wide as the longer of
- * them and nothing reflows when they swap. The pair rolls upward on open and
- * back down on close.
- */
-@utility label-swap {
-  display: grid;
-
-  & > span {
-    grid-area: 1 / 1;
-    transition:
-      opacity 0.28s ease,
-      transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  & > span[data-active="false"] {
-    opacity: 0;
-  }
-  & > span:first-child[data-active="false"] {
-    transform: translateY(-6px);
-  }
-  & > span:last-child[data-active="false"] {
-    transform: translateY(6px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .label-swap > span {
-    transition: opacity 0.28s ease;
-    transform: none;
   }
 }
 
