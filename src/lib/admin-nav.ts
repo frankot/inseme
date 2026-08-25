@@ -22,12 +22,12 @@ export type AdminNavItem = {
 
 export const adminNav: AdminNavItem[] = [
   { href: "/admin", label: "Pulpit", icon: LayoutDashboard, available: true, phase: "B1" },
-  { href: "/admin/settings", label: "Ustawienia", icon: Settings, available: false, phase: "B2" },
-  { href: "/admin/pages", label: "Strony", icon: FileText, available: false, phase: "B2" },
-  { href: "/admin/team", label: "Zespół", icon: Users, available: false, phase: "B2" },
-  { href: "/admin/faq", label: "FAQ", icon: HelpCircle, available: false, phase: "B2" },
-  { href: "/admin/articles", label: "Artykuły", icon: Newspaper, available: false, phase: "B2" },
-  { href: "/admin/media", label: "Media", icon: Image, available: false, phase: "B2" },
+  { href: "/admin/settings", label: "Ustawienia", icon: Settings, available: true, phase: "B2" },
+  { href: "/admin/pages", label: "Strony", icon: FileText, available: true, phase: "B2" },
+  { href: "/admin/team", label: "Zespół", icon: Users, available: true, phase: "B2" },
+  { href: "/admin/faq", label: "FAQ", icon: HelpCircle, available: true, phase: "B2" },
+  { href: "/admin/articles", label: "Artykuły", icon: Newspaper, available: true, phase: "B2" },
+  { href: "/admin/media", label: "Media", icon: Image, available: true, phase: "B2" },
   { href: "/admin/tests", label: "Testy przesiewowe", icon: ListChecks, available: false, phase: "B3" },
   { href: "/admin/leads", label: "Leady", icon: Inbox, available: false, phase: "B4" },
   { href: "/admin/contact", label: "Wiadomości", icon: Inbox, available: false, phase: "B4" },

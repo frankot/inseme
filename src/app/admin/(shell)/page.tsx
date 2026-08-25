@@ -1,15 +1,56 @@
+import { count, desc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { auth } from "@/auth";
+import { StatusBadge } from "@/components/admin/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { db } from "@/db";
+import { articles, faqItems, media, pages, teamMembers } from "@/db/schema";
 import { adminNav } from "@/lib/admin-nav";
 
 export const metadata: Metadata = {
   title: "Pulpit — panel Insieme",
 };
 
+/** [total, published] for one content table. */
+async function countsFor(table: typeof pages | typeof articles | typeof teamMembers | typeof faqItems) {
+  const [[total], [published]] = await Promise.all([
+    db.select({ value: count() }).from(table),
+    db.select({ value: count() }).from(table).where(eq(table.status, "published")),
+  ]);
+  return { total: total.value, published: published.value };
+}
+
 export default async function AdminDashboardPage() {
   const session = await auth();
+
+  const [pageCounts, articleCounts, teamCounts, faqCounts, [mediaCount], recent] =
+    await Promise.all([
+      countsFor(pages),
+      countsFor(articles),
+      countsFor(teamMembers),
+      countsFor(faqItems),
+      db.select({ value: count() }).from(media),
+      db
+        .select({
+          id: pages.id,
+          title: pages.title,
+          status: pages.status,
+          updatedAt: pages.updatedAt,
+        })
+        .from(pages)
+        .orderBy(desc(pages.updatedAt))
+        .limit(5),
+    ]);
+
+  const tiles = [
+    { href: "/admin/pages", label: "Strony", ...pageCounts },
+    { href: "/admin/articles", label: "Artykuły", ...articleCounts },
+    { href: "/admin/team", label: "Zespół", ...teamCounts },
+    { href: "/admin/faq", label: "FAQ", ...faqCounts },
+  ];
+
   const upcoming = adminNav.filter((item) => !item.available);
 
   return (
@@ -21,17 +62,63 @@ export default async function AdminDashboardPage() {
         </p>
       </div>
 
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {tiles.map((tile) => (
+          <Link
+            key={tile.href}
+            href={tile.href}
+            className="rounded-lg border p-4 transition-colors hover:border-ring"
+          >
+            <p className="text-sm text-muted-foreground">{tile.label}</p>
+            <p className="mt-1 text-2xl font-semibold">{tile.total}</p>
+            <p className="text-xs text-muted-foreground">
+              {tile.published} opublikowanych, {tile.total - tile.published} szkiców
+            </p>
+          </Link>
+        ))}
+      </div>
+
       <Card>
         <CardHeader>
-          <CardTitle>Faza B1 — fundamenty</CardTitle>
+          <CardTitle>Ostatnio edytowane strony</CardTitle>
           <CardDescription>
-            Baza danych, logowanie i szkielet panelu są gotowe. Liczniki wiadomości, zgłoszeń
-            i zapisów pojawią się tutaj, gdy powstaną odpowiadające im typy treści.
+            W bibliotece mediów: {mediaCount.value}{" "}
+            {mediaCount.value === 1 ? "plik" : "plików"}.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <h2 className="text-sm font-medium">W kolejnych fazach</h2>
-          <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {recent.length === 0 ? (
+            <p className="text-sm text-muted-foreground">Nie utworzono jeszcze żadnej strony.</p>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {recent.map((row) => (
+                <li key={row.id} className="flex items-center justify-between gap-3 text-sm">
+                  <Link
+                    href={`/admin/pages/${row.id}`}
+                    className="truncate underline-offset-4 hover:underline"
+                  >
+                    {row.title}
+                  </Link>
+                  <span className="flex shrink-0 items-center gap-3">
+                    <span className="text-xs text-muted-foreground">
+                      {row.updatedAt.toLocaleDateString("pl-PL")}
+                    </span>
+                    <StatusBadge status={row.status} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>W kolejnych fazach</CardTitle>
+          <CardDescription>Moduły, które nie są jeszcze dostępne w panelu.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ul className="grid gap-2 sm:grid-cols-2">
             {upcoming.map((item) => (
               <li
                 key={item.href}

@@ -3,8 +3,9 @@
 Next.js app for the Insieme addiction-treatment centre: a custom CMS/admin panel plus the data layer
 the public site will consume. Plan of record: [`INSIEME_BACKEND_ADMIN_PLAN.md`](./INSIEME_BACKEND_ADMIN_PLAN.md).
 
-**Status: phase B1 (foundations) complete.** Database + Drizzle, Auth.js login, protected `/admin`
-shell. Content types land in B2.
+**Status: phases B1 (foundations) + B2 (core content types) complete.** Database + Drizzle, Auth.js
+login, protected `/admin` shell, and the CMS for Settings, Pages, Team, FAQ, Articles and Media.
+Screening tests (B3) and lead/contact forms (B4) are next.
 
 ## Stack
 
@@ -15,6 +16,8 @@ shell. Content types land in B2.
 | Auth | Auth.js v5, Credentials provider, bcrypt, JWT session |
 | UI | Tailwind v4 + shadcn/ui (`base-nova` style, Base UI primitives) |
 | Forms | react-hook-form + zod |
+| Rich text | Tiptap → HTML, sanitised server-side with `sanitize-html` |
+| Files | Cloudflare R2 (presigned uploads), images resized at the Cloudflare edge |
 | Hosting | Vercel |
 
 ## Local setup
@@ -75,6 +78,7 @@ shell. Content types land in B2.
 | `npm run db:push` | Push schema straight to the DB (dev branch only — skips migration files) |
 | `npm run db:studio` | Drizzle Studio |
 | `npm run admin:create` | Create/reset an admin account |
+| `npm run db:smoke` | Apply migrations to an in-process Postgres (PGlite) and assert schema behaviour |
 
 Migrations in `drizzle/` are committed. Always `db:generate` after touching `src/db/schema/*` and
 commit the generated SQL — `db:push` is for throwaway iteration on the dev branch only.
@@ -106,6 +110,33 @@ scripts/create-admin.ts
 drizzle/                generated migrations (committed)
 ```
 
+## Content model
+
+Every content type follows the same shape: a list view, an editor, and a **draft → publish** gate
+where saving never publishes — "Opublikuj" is always a separate, explicit action that stamps
+`publishedAt`. Articles refuse to publish until "Autor / osoba weryfikująca" is filled in, so
+medical/factual copy always names its reviewer.
+
+| Type | Table | Notes |
+|---|---|---|
+| Settings | `settings` | Singleton row (`id = "singleton"`), upserted. Config, so no draft/publish. |
+| Pages | `pages` | Standard pages *and* service pages, split by `pageType`. Ordered `sections` blocks. |
+| Team | `team_members` | `sortOrder` drives display order. |
+| FAQ | `faq_items` | `category` groups items; the `faq_embed` block pulls a category into a page. |
+| Articles | `articles` | Poradnik. Same block editor as pages, under `body`. |
+| Media | `media` | R2 object key + public URL + alt text and dimensions. |
+
+### Content blocks
+
+Pages and articles are built from a **fixed set** of block types (`src/lib/blocks.ts`), not a freeform
+page builder: `richtext`, `image_text`, `cta`, `step_list` (the "first contact path" element from the
+brief) and `faq_embed`. Blocks are stored as a JSON array validated by a zod discriminated union.
+Adding a type means touching three places: the union in `src/lib/blocks.ts`, the editor switch in
+`src/components/admin/block-editor.tsx`, and the future public renderer.
+
+Editor HTML is sanitised on write (`src/lib/sanitize.ts`) — an allow-list of tags and attributes, no
+scripts, no `javascript:` URLs — because the public site will inject it with `dangerouslySetInnerHTML`.
+
 ## Auth model
 
 Single flat admin role — every row in `admin_users` has full access. `proxy.ts` redirects anonymous
@@ -126,13 +157,34 @@ Console steps, done once:
    `DATABASE_URL`, or as a Vercel build step once the schema stabilises).
 4. Create the first production admin with `npm run admin:create` against the production `DATABASE_URL`.
 
-### Cloudflare R2 (needed from phase B2)
+### Cloudflare R2 (required for the media library)
+
+Without these variables the app still runs — the media page shows a "storage not configured" notice
+and uploading is disabled.
 
 1. Create bucket `insieme-media` (jurisdiction EU).
-2. Attach a custom domain (e.g. `media.insieme.pl`) and enable Cloudflare image resizing on it —
-   `next/image` will use a custom loader pointed at that domain instead of Vercel's optimizer.
-3. Create an R2 API token (Object Read & Write, scoped to the bucket) and put the credentials in
+2. Attach a custom domain (e.g. `media.insieme.pl`) and enable Cloudflare image resizing on it.
+   `next/image` uses the custom loader in `src/lib/image-loader.ts`, which rewrites requests to
+   `/cdn-cgi/image/width=…,quality=…,format=auto/<path>` on that domain, so Vercel's optimizer is
+   never involved.
+3. Create an R2 API token (Object Read & Write, scoped to the bucket) and fill in
    `R2_ACCOUNT_ID` / `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` / `R2_BUCKET` / `R2_PUBLIC_URL`.
+4. **Set bucket CORS** — the browser uploads straight to R2 with a presigned `PUT`, so the bucket must
+   allow it from the site origin:
+
+   ```json
+   [
+     {
+       "AllowedOrigins": ["https://insieme.pl", "http://localhost:3000"],
+       "AllowedMethods": ["PUT"],
+       "AllowedHeaders": ["content-type"],
+       "MaxAgeSeconds": 3600
+     }
+   ]
+   ```
+
+   Uploads accept JPEG/PNG/WebP/AVIF/SVG/PDF up to 15 MB; the limit and the object key are enforced
+   server-side, so the browser never picks its own storage path.
 
 ## Known notes
 
@@ -142,3 +194,8 @@ Console steps, done once:
 - The Drizzle client uses Neon's HTTP driver, which has no multi-statement transactions. If a later
   phase needs them, switch `src/db/index.ts` to `drizzle-orm/neon-serverless` + `Pool`.
 - `AGENTS.md` / `CLAUDE.md` at the repo root are generated and refreshed by `next dev`.
+- Server actions are public endpoints — the proxy only gates page routes — so every mutating action
+  starts with `requireAdmin()` (`src/lib/auth-guard.ts`). Keep that habit when adding actions.
+- `npm run db:smoke` needs no database: it boots Postgres in-process via PGlite (a devDependency),
+  applies the committed migrations and asserts defaults, constraints, the publish transition,
+  `ON DELETE SET NULL` on media references, the slug-clash query and HTML sanitisation.
