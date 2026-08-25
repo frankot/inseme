@@ -177,7 +177,9 @@
   --nav-h: 88px;
   --nav-h-sticky: 76px;
   /* Phones only: a fixed hero avoids the jump when the URL bar collapses. */
-  --hero-h: 775px;
+  --hero-h: 650px;
+  /* Desktop: full-viewport, but a very tall display shouldn't stretch it. */
+  --hero-max: 900px;
 
   /* --- Insieme brand palette --- */
   --cream: oklch(0.9848 0.0054 95.1); /* #FBFAF6 */
