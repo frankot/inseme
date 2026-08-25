@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600&family=Newsreader:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;font-family:'Karla',system-ui,sans-serif;color:#4A4F45;-webkit-font-smoothing:antialiased}a{color:#5E8C1E;text-decoration:none}a:hover{color:#41660f}input,select,textarea,button{font-family:inherit;font-size:inherit;color:inherit}@keyframes riseIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}</style></helmet>
+
+<div style="background:#fff;overflow-x:hidden">
+
+<sc-if value="{{ emergencyBar }}" hint-placeholder-val="{{ true }}">
+<div style="background:#2C3A2A;color:#D8DFCF;font-size:13px;letter-spacing:.01em;padding:9px 40px;display:flex;justify-content:center;gap:22px;flex-wrap:wrap">
+<span>Zagrożenie życia — 112</span>
+<span style="color:#6C7A62">·</span>
+<span>Telefon zaufania — 800 12 02 89</span>
+<span style="color:#6C7A62">·</span>
+<span>Nasz dyżur trwa całą dobę</span>
+</div>
+</sc-if>
+
+<header style="position:relative;z-index:20;background:#fff;border-bottom:1px solid #EAE4D8">
+<div style="max-width:1240px;margin:0 auto;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;gap:28px">
+<img src="../assets/logo-insieme.png" alt="Insieme" style="height:34px;width:auto;display:block" />
+<nav style="display:flex;align-items:center;gap:30px;font-size:15px;color:#4A4F45">
+<a href="#miejsce" style="color:#4A4F45">Ośrodek</a>
+<a href="#jak-zaczac" style="color:#4A4F45">Jak zacząć</a>
+<a href="#pytania" style="color:#4A4F45">Pytania</a>
+<a href="#kontakt" style="color:#4A4F45">Kontakt</a>
+<a href="tel:+48000000000" style="display:flex;align-items:center;gap:9px;padding:10px 18px;border:1px solid #C9D6B4;border-radius:999px;color:#4A6B1C;font-size:14.5px;font-weight:500;background:#F7FAF1" style-hover="background:#EDF3E0;border-color:#A9C182">
+<span style="font-size:15px">☏</span>+48 000 000 000
+</a>
+</nav>
+</div>
+</header>
+
+<section style="position:relative;min-height:660px;display:flex;align-items:flex-end;background:#2B3529">
+<img src="../assets/dom-staw.jpg" alt="Ośrodek Insieme w Magdalence, dom wśród sosen nad stawem" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 55%" />
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,36,26,.42) 0%,rgba(28,36,26,.14) 34%,rgba(24,32,22,.58) 78%,rgba(22,30,20,.82) 100%)"></div>
+<div style="position:relative;width:100%;max-width:1240px;margin:0 auto;padding:120px 40px 92px">
+<p style="margin:0 0 22px;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:#CBD9B6">Prywatny ośrodek leczenia uzależnień · Magdalenka</p>
+<h1 style="margin:0 0 22px;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:clamp(38px,4.6vw,62px);line-height:1.08;letter-spacing:-.015em;color:#fff;max-width:16em;text-wrap:pretty">Jesteś tu, bo coś ma się zmienić.</h1>
+<p style="margin:0;font-size:19px;line-height:1.62;color:#E7EBDF;max-width:34em;text-wrap:pretty">Detoks i terapia w domu wśród sosen, 20 minut od Warszawy. Bez rozgłosu, bez pośpiechu, bez oceniania. Możesz zacząć od jednej rozmowy — i na niej poprzestać, jeśli tyle dziś wystarczy.</p>
+</div>
+</section>
+
+<section style="position:relative;z-index:10;max-width:1240px;margin:-72px auto 0;padding:0 40px">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px">
+<div style="background:#fff;border:1px solid #E3DDD1;border-top:3px solid #7CB42B;border-radius:4px;padding:30px 32px 26px;box-shadow:0 14px 34px rgba(30,40,25,.10);display:flex;flex-direction:column;gap:12px" style-hover="box-shadow:0 18px 40px rgba(30,40,25,.14)">
+<h2 style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:26px;line-height:1.2;color:#23281F">To o mnie</h2>
+<p style="margin:0;font-size:16px;line-height:1.6;color:#5A6053;text-wrap:pretty">Chcę przestać, ale nie wiem, od czego zacząć i co się ze mną stanie po przyjeździe.</p>
+<a href="#jak-zaczac" onClick="{{ goSelf }}" style="margin-top:6px;padding-top:16px;border-top:1px solid #EFEAE0;font-size:16px;font-weight:500;color:#5E8C1E">Zobacz, co dzieje się po telefonie →</a>
+</div>
+<div style="background:#fff;border:1px solid #E3DDD1;border-top:3px solid #C9D6B4;border-radius:4px;padding:30px 32px 26px;box-shadow:0 14px 34px rgba(30,40,25,.10);display:flex;flex-direction:column;gap:12px" style-hover="box-shadow:0 18px 40px rgba(30,40,25,.14)">
+<h2 style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:26px;line-height:1.2;color:#23281F">Chodzi o kogoś bliskiego</h2>
+<p style="margin:0;font-size:16px;line-height:1.6;color:#5A6053;text-wrap:pretty">Boję się o kogoś i nie wiem, jak rozmawiać, żeby nie zamknąć drzwi na dobre.</p>
+<a href="#jak-zaczac" onClick="{{ goFamily }}" style="margin-top:6px;padding-top:16px;border-top:1px solid #EFEAE0;font-size:16px;font-weight:500;color:#5E8C1E">Jak rozmawiać, jak pomóc →</a>
+</div>
+</div>
+<p style="margin:26px 0 0;text-align:center;font-size:16px;color:#7C8074">albo po prostu zadzwoń — <a href="tel:+48000000000" style="font-weight:500">+48 000 000 000</a>, całą dobę, poufnie</p>
+</section>
+
+<section id="jak-zaczac" style="margin-top:96px;padding:78px 0 84px;background:#F6F2EA;border-top:1px solid #EDE6D9;border-bottom:1px solid #EDE6D9">
+<div style="max-width:1240px;margin:0 auto;padding:0 40px">
+<div style="display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap;margin-bottom:34px">
+<div>
+<p style="margin:0 0 14px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#8A7457">Pierwszy krok</p>
+<h2 style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:clamp(30px,3.4vw,42px);line-height:1.14;letter-spacing:-.01em;color:#23281F">Co się stanie, kiedy zadzwonisz</h2>
+</div>
+<div style="display:flex;gap:8px;background:#EDE7DB;padding:5px;border-radius:999px">
+<button onClick="{{ pickSelf }}" style="{{ tabSelfStyle }}">Dla siebie</button>
+<button onClick="{{ pickFamily }}" style="{{ tabFamilyStyle }}">Dla bliskiej osoby</button>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:1.35fr 1fr;gap:44px;align-items:start">
+<div style="display:flex;flex-direction:column">
+<sc-for list="{{ steps }}" as="step" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:auto 1fr;gap:22px;padding-bottom:30px">
+<div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+<div style="width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #D3DEC0;color:#5E8C1E;display:flex;align-items:center;justify-content:center;font-family:'Newsreader',Georgia,serif;font-size:18px">{{ step.n }}</div>
+<div style="flex:1;width:1px;background:#DED7C8;min-height:26px"></div>
+</div>
+<div style="padding-top:6px">
+<h3 style="margin:0 0 8px;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:22px;line-height:1.28;color:#23281F">{{ step.title }}</h3>
+<p style="margin:0;font-size:16.5px;line-height:1.68;color:#5A6053;max-width:36em;text-wrap:pretty">{{ step.body }}</p>
+</div>
+</div>
+</sc-for>
+<a href="tel:+48000000000" style="align-self:flex-start;margin-top:6px;display:inline-flex;align-items:center;gap:11px;padding:16px 30px;background:#5E8C1E;color:#fff;border-radius:999px;font-size:16.5px;font-weight:500" style-hover="background:#4C7418">☏ Zadzwoń teraz</a>
+</div>
+
+<figure style="margin:0;border-radius:4px;overflow:hidden;border:1px solid #E3DDD1;background:#fff">
+<sc-if value="{{ isFamily }}" hint-placeholder-val="{{ false }}">
+<img src="../assets/rozmowa.jpg" alt="Rozmowa indywidualna w ośrodku Insieme" style="width:100%;height:420px;object-fit:cover;display:block" />
+</sc-if>
+<sc-if value="{{ isSelf }}" hint-placeholder-val="{{ true }}">
+<img src="../assets/terapeutka.jpg" alt="Terapeutka w ośrodku Insieme" style="width:100%;height:420px;object-fit:cover;display:block" />
+</sc-if>
+<figcaption style="padding:18px 22px;font-size:14.5px;line-height:1.6;color:#7C8074;border-top:1px solid #EFEAE0">{{ sideCaption }}</figcaption>
+</figure>
+</div>
+</div>
+</section>
+
+<section id="miejsce" style="padding:84px 0 0">
+<div style="max-width:1240px;margin:0 auto;padding:0 40px">
+<div style="max-width:44em;margin-bottom:36px">
+<p style="margin:0 0 14px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#8A7457">Miejsce</p>
+<h2 style="margin:0 0 16px;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:clamp(30px,3.4vw,42px);line-height:1.14;letter-spacing:-.01em;color:#23281F">Dom w sosnowym lesie, nie oddział szpitalny</h2>
+<p style="margin:0;font-size:18px;line-height:1.65;color:#5A6053;text-wrap:pretty">Magdalenka to zielona okolica na południe od Warszawy. Mieszkamy w jednym domu: pokoje z widokiem na drzewa, wspólny salon, taras i ogród, w którym można po prostu posiedzieć w ciszy. Wszystkie zdjęcia poniżej są z naszego ośrodka.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:210px;gap:14px">
+<figure style="margin:0;grid-column:span 2;grid-row:span 2;position:relative;overflow:hidden;border-radius:4px">
+<img src="../assets/dom-taras.jpg" alt="Taras i porośnięta bluszczem elewacja domu" style="width:100%;height:100%;object-fit:cover;display:block" />
+<figcaption style="position:absolute;left:0;right:0;bottom:0;padding:44px 22px 18px;background:linear-gradient(180deg,rgba(20,28,18,0),rgba(20,28,18,.72));color:#F1F4EA;font-size:15px">Taras od strony ogrodu — tu pije się kawę między zajęciami</figcaption>
+</figure>
+<figure style="margin:0;grid-column:span 2;position:relative;overflow:hidden;border-radius:4px">
+<img src="../assets/pokoj.jpg" alt="Jasny pokój z widokiem na las" style="width:100%;height:100%;object-fit:cover;display:block" />
+<figcaption style="position:absolute;left:0;right:0;bottom:0;padding:36px 20px 16px;background:linear-gradient(180deg,rgba(20,28,18,0),rgba(20,28,18,.7));color:#F1F4EA;font-size:15px">Pokoje 2–3 osobowe, okna na sosny</figcaption>
+</figure>
+<figure style="margin:0;position:relative;overflow:hidden;border-radius:4px">
+<img src="../assets/salon-terapeutyczny.jpg" alt="Salon terapeutyczny z fotelami i widokiem na las" style="width:100%;height:100%;object-fit:cover;display:block" />
+<figcaption style="position:absolute;left:0;right:0;bottom:0;padding:32px 16px 14px;background:linear-gradient(180deg,rgba(20,28,18,0),rgba(20,28,18,.7));color:#F1F4EA;font-size:14px">Salon — zajęcia grupowe</figcaption>
+</figure>
+<figure style="margin:0;position:relative;overflow:hidden;border-radius:4px">
+<img src="../assets/rozmowa.jpg" alt="Rozmowa indywidualna z terapeutą" style="width:100%;height:100%;object-fit:cover;display:block" />
+<figcaption style="position:absolute;left:0;right:0;bottom:0;padding:32px 16px 14px;background:linear-gradient(180deg,rgba(20,28,18,0),rgba(20,28,18,.7));color:#F1F4EA;font-size:14px">Sesje indywidualne</figcaption>
+</figure>
+</div>
+<p style="margin:22px 0 0"><a href="#kontakt" style="font-size:16.5px;font-weight:500">Zapytaj o wolny termin →</a></p>
+</div>
+</section>
+
+<section style="margin-top:84px;padding:74px 0;background:#EDF1E4">
+<div style="max-width:1240px;margin:0 auto;padding:0 40px">
+<p style="margin:0 0 32px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#6E7A5F">Głosy pacjentów</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:44px">
+<blockquote style="margin:0;display:flex;flex-direction:column;gap:14px">
+<p style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:300;font-style:italic;font-size:26px;line-height:1.42;color:#2C3A2A;text-wrap:pretty">„Bałam się, że będzie jak w szpitalu. Nie było. Po dwóch dniach tata sam wyszedł na spacer i powiedział, że zostaje."</p>
+<footer style="font-size:14.5px;color:#6E7A5F">— córka pacjenta, pobyt w 2024 r.</footer>
+</blockquote>
+<blockquote style="margin:0;display:flex;flex-direction:column;gap:14px">
+<p style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:300;font-style:italic;font-size:26px;line-height:1.42;color:#2C3A2A;text-wrap:pretty">„Nikt mnie nie oceniał ani jednego dnia. To był pierwszy raz, kiedy powiedziałem wszystko na głos."</p>
+<footer style="font-size:14.5px;color:#6E7A5F">— pacjent, 35 lat</footer>
+</blockquote>
+</div>
+<p style="margin:34px 0 0;font-size:14px;color:#7C8074">Opinie publikujemy anonimowo i wyłącznie za pisemną zgodą autorów.</p>
+</div>
+</section>
+
+<section id="pytania" style="padding:84px 0 90px">
+<div style="max-width:1240px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start">
+
+<div>
+<p style="margin:0 0 14px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#8A7457">Pytania, które słyszymy najczęściej</p>
+<h2 style="margin:0 0 26px;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:clamp(28px,3.2vw,38px);line-height:1.16;letter-spacing:-.01em;color:#23281F">Zapytaj o to, co Cię blokuje</h2>
+<div style="border-top:1px solid #E3DDD1">
+<sc-for list="{{ faq }}" as="item" hint-placeholder-count="5">
+<div style="border-bottom:1px solid #E3DDD1">
+<button onClick="{{ item.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 2px;background:none;border:0;text-align:left;cursor:pointer;font-size:17.5px;color:#23281F" style-hover="color:#5E8C1E">
+<span>{{ item.q }}</span>
+<span style="flex:none;width:22px;height:22px;border-radius:50%;border:1px solid #CFD8BE;color:#5E8C1E;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1">{{ item.sign }}</span>
+</button>
+<sc-if value="{{ item.open }}" hint-placeholder-val="{{ false }}">
+<p style="margin:0;padding:0 44px 24px 2px;font-size:16.5px;line-height:1.68;color:#5A6053;text-wrap:pretty;animation:riseIn .22s ease both">{{ item.a }}</p>
+</sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div id="kontakt" style="background:#F6F2EA;border:1px solid #E3DDD1;border-radius:4px;padding:34px 34px 30px">
+<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:16px">
+<h2 style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:28px;line-height:1.2;color:#23281F">Wolisz, żebyśmy oddzwonili?</h2>
+<p style="margin:0;font-size:16px;line-height:1.62;color:#5A6053">Zostaw numer i godzinę, o której możemy dzwonić. Oddzwaniamy w ciągu 15 minut w godzinach dyżuru.</p>
+<label style="display:flex;flex-direction:column;gap:7px;font-size:14.5px;color:#5A6053">Jak mamy się do Ciebie zwracać?
+<input type="text" placeholder="np. Marek albo tylko M." style="padding:13px 14px;border:1px solid #D9D2C4;border-radius:3px;background:#fff;font-size:16px" style-focus="border-color:#7CB42B;outline:none" />
+</label>
+<label style="display:flex;flex-direction:column;gap:7px;font-size:14.5px;color:#5A6053">Numer telefonu
+<input type="tel" placeholder="+48" style="padding:13px 14px;border:1px solid #D9D2C4;border-radius:3px;background:#fff;font-size:16px" style-focus="border-color:#7CB42B;outline:none" />
+</label>
+<label style="display:flex;flex-direction:column;gap:7px;font-size:14.5px;color:#5A6053">Kiedy możemy zadzwonić?
+<select style="padding:13px 14px;border:1px solid #D9D2C4;border-radius:3px;background:#fff;font-size:16px" style-focus="border-color:#7CB42B;outline:none">
+<option>Jak najszybciej</option>
+<option>Dziś po 17:00</option>
+<option>Rano, przed 10:00</option>
+<option>Napiszę sam, nie dzwońcie</option>
+</select>
+</label>
+<div style="display:flex;gap:12px;padding:16px;background:#fff;border:1px solid #E7E1D4;border-radius:3px">
+<span style="flex:none;font-size:16px;color:#5E8C1E">🔒</span>
+<p style="margin:0;font-size:14px;line-height:1.6;color:#5A6053;text-wrap:pretty">Numer widzi wyłącznie terapeuta dyżurny. Nie trafia do żadnej bazy marketingowej, nie wysyłamy SMS-ów ani ofert. Jeśli poprosisz, dzwonimy z numeru zastrzeżonego.</p>
+</div>
+<button onClick="{{ send }}" style="padding:16px 30px;background:#5E8C1E;color:#fff;border:0;border-radius:999px;font-size:16.5px;font-weight:500;cursor:pointer" style-hover="background:#4C7418">Poproś o telefon</button>
+</div>
+</sc-if>
+<sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:14px;padding:26px 0;animation:riseIn .3s ease both">
+<div style="width:44px;height:44px;border-radius:50%;background:#E4EED2;color:#4C7418;display:flex;align-items:center;justify-content:center;font-size:20px">✓</div>
+<h2 style="margin:0;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:28px;line-height:1.2;color:#23281F">Mamy Twój numer. Oddzwonimy.</h2>
+<p style="margin:0;font-size:16.5px;line-height:1.65;color:#5A6053">Zadzwonimy z numeru zastrzeżonego, jeśli o to prosiłeś. Jeśli w tym czasie zmienisz zdanie — nic się nie stanie, wystarczy nie odebrać.</p>
+<p style="margin:0;font-size:14px;color:#7C8074">Nie chcesz czekać: <a href="tel:+48000000000" style="font-weight:500">+48 000 000 000</a></p>
+</div>
+</sc-if>
+</div>
+</div>
+</section>
+
+<section style="background:#F6F2EA;border-top:1px solid #EDE6D9;padding:74px 0">
+<div style="max-width:1240px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+<div>
+<p style="margin:0 0 14px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#8A7457">Jak do nas trafić</p>
+<h2 style="margin:0 0 20px;font-family:'Newsreader',Georgia,serif;font-weight:400;font-size:clamp(28px,3.2vw,38px);line-height:1.16;color:#23281F">Magdalenka, 20 minut od Warszawy</h2>
+<div style="display:flex;flex-direction:column;gap:14px;font-size:16.5px;line-height:1.6;color:#5A6053">
+<p style="margin:0"><strong style="font-weight:600;color:#23281F">Adres:</strong> ul. Świerkowa 13, 05-552 Magdalenka</p>
+<p style="margin:0"><strong style="font-weight:600;color:#23281F">Samochodem:</strong> od Puławskiej ok. 15 min, miejsce na parkingu przed domem</p>
+<p style="margin:0"><strong style="font-weight:600;color:#23281F">Bez samochodu:</strong> odbieramy z dworca lub lotniska — wystarczy powiedzieć przy rozmowie</p>
+</div>
+<p style="margin:24px 0 0"><a href="#kontakt" style="font-size:16.5px;font-weight:500">Umów przyjazd →</a></p>
+</div>
+<iframe src="https://www.google.com/maps?q=%C5%9Awierkowa%2013%2C%20Magdalenka&output=embed" title="Mapa — ul. Świerkowa 13, Magdalenka" width="100%" height="320" style="border:0;border-radius:4px;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+</section>
+
+<footer style="background:#2C3A2A;color:#C9D3BC;padding:62px 0 34px">
+<div style="max-width:1240px;margin:0 auto;padding:0 40px">
+<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid #45543F">
+<div>
+<img src="../assets/logo-insieme.png" alt="Insieme" style="height:30px;width:auto;display:block;margin-bottom:18px;filter:brightness(0) invert(1);opacity:.92" />
+<p style="margin:0;font-size:15.5px;line-height:1.7;max-width:26em;color:#B9C4AA">Prywatny ośrodek leczenia uzależnień. Detoks, terapia uzależnień i wsparcie dla rodzin. Magdalenka pod Warszawą.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:11px;font-size:15.5px">
+<p style="margin:0 0 5px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8FA07F">Kontakt</p>
+<a href="tel:+48000000000" style="color:#E4EAD9">+48 000 000 000 · całą dobę</a>
+<a href="mailto:kontakt@insieme.pl" style="color:#E4EAD9">kontakt@insieme.pl</a>
+<span style="color:#B9C4AA">05-552 Magdalenka</span>
+</div>
+<div style="display:flex;flex-direction:column;gap:11px;font-size:15.5px">
+<p style="margin:0 0 5px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#8FA07F">W nagłej sytuacji</p>
+<span style="color:#E4EAD9">112 — numer ratunkowy</span>
+<span style="color:#E4EAD9">800 12 02 89 — telefon zaufania</span>
+<span style="color:#B9C4AA">Jeśli dzieje się coś złego teraz, dzwoń pod 112.</span>
+</div>
+</div>
+<div style="padding-top:24px;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:13.5px;color:#8FA07F">
+<span>© 2026 Insieme. Wszystkie zdjęcia pochodzą z naszego ośrodka.</span>
+<span style="display:flex;gap:22px"><a href="#kontakt" style="color:#8FA07F">Polityka prywatności</a><a href="#kontakt" style="color:#8FA07F">RODO</a></span>
+</div>
+</div>
+</footer>
+
+<sc-if value="{{ showSticky }}" hint-placeholder-val="{{ false }}">
+<a href="tel:+48000000000" style="position:fixed;right:26px;bottom:26px;z-index:50;display:flex;align-items:center;gap:11px;padding:14px 22px;background:#fff;border:1px solid #D3DEC0;border-radius:999px;box-shadow:0 8px 26px rgba(30,40,25,.16);color:#3F5F16;font-size:15.5px;font-weight:500;animation:riseIn .3s ease both" style-hover="background:#F7FAF1;border-color:#A9C182">
+<span style="font-size:16px">☏</span>Zadzwoń · 24 h
+</a>
+</sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultPath&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Dla siebie&quot;,&quot;Dla bliskiej osoby&quot;],&quot;default&quot;:&quot;Dla siebie&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Zachowanie&quot;},&quot;stickyPhone&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Zachowanie&quot;},&quot;emergencyBar&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Zachowanie&quot;}}">
+const CONTENT = {
+  self: {
+    image: 'assets/terapeutka.jpg',
+    caption: 'Rozmowę odbiera terapeuta, który pracuje w ośrodku codziennie — nie call center.',
+    steps: [
+      { n: '1', title: 'Odbiera terapeuta, nie sprzedawca', body: 'Rozmawiasz z osobą, która pracuje tu codziennie. Nie musisz podawać nazwiska ani niczego udowadniać.' },
+      { n: '2', title: 'Pytamy tylko o to, co potrzebne', body: 'Od jak dawna, co i ile, czy były już próby leczenia, jak się dziś czujesz. Jeśli na coś nie chcesz odpowiadać, mówisz „pomijam".' },
+      { n: '3', title: 'Ustalamy termin — także na dziś', body: 'Jeśli mamy wolne miejsce, możesz przyjechać tego samego dnia. Jeśli nie mamy, mówimy to wprost i proponujemy najbliższy realny termin.' },
+      { n: '4', title: 'Przyjeżdżasz. Resztą zajmujemy się my', body: 'Odbierzemy Cię z dworca albo lotniska, jeśli potrzebujesz. Na miejscu czeka lekarz, pokój i ciepły posiłek.' }
+    ]
+  },
+  family: {
+    image: 'assets/rozmowa.jpg',
+    caption: 'Z rodzinami rozmawiamy tak samo poufnie jak z pacjentami — także wtedy, gdy bliski jeszcze nie wie.',
+    steps: [
+      { n: '1', title: 'Możesz zadzwonić bez wiedzy tej osoby', body: 'Rozmowa z rodziną jest równie ważna i równie poufna. Nikt nie zostanie o niczym poinformowany.' },
+      { n: '2', title: 'Mówimy, co pomaga, a co pogarsza sprawę', body: 'Bez gotowych formułek. Opowiadasz, jak jest u Was, my mówimy, co w takiej sytuacji zwykle działa.' },
+      { n: '3', title: 'Przygotowujemy plan na jedną rozmowę', body: 'Kiedy zapytać, jakich słów unikać i co zrobić, jeśli usłyszysz „nie mam problemu".' },
+      { n: '4', title: 'Zostajemy w kontakcie', body: 'Także wtedy, gdy bliska osoba nie jest jeszcze gotowa. Możesz zadzwonić ponownie za tydzień albo za pół roku.' }
+    ]
+  }
+};
+
+const FAQ = [
+  { q: 'Czy pobyt jest anonimowy?', a: 'Tak. Do przyjęcia wystarczy imię i numer telefonu. Dane do dokumentacji medycznej zbieramy na miejscu i nie udostępniamy ich nikomu — także rodzinie, jeśli tego nie chcesz.' },
+  { q: 'Ile trwa detoks, a ile terapia?', a: 'Detoks zwykle 7–10 dni, w zależności od substancji i stanu zdrowia. Terapia podstawowa to 28 dni, ale można ją skrócić lub wydłużyć. Nie namawiamy na dłuższy pobyt niż potrzebny.' },
+  { q: 'Czy mogę przyjechać jeszcze dziś?', a: 'Często tak. O wolnych miejscach mówimy przez telefon od razu, bez wypełniania wniosków. Jeśli nie mamy miejsca, powiemy wprost i wskażemy inne opcje.' },
+  { q: 'Co z pracą i rodziną?', a: 'Wystawiamy zwolnienie lekarskie. Kontakt z rodziną ustalasz sam — możesz dzwonić codziennie albo poprosić, żebyśmy nie potwierdzali nikomu, że tu jesteś.' },
+  { q: 'Co mogę zabrać ze sobą?', a: 'Ubrania, leki, które przyjmujesz, dokumenty. Telefon zostaje przy Tobie. Listę wysyłamy SMS-em po ustaleniu terminu.' },
+  { q: 'Ile to kosztuje?', a: 'Cenę pobytu podajemy przez telefon, zawsze jako pełną kwotę — bez dopłat pojawiających się później. Pytanie o pieniądze nie jest niezręczne, słyszymy je codziennie.' }
+];
+
+class Component extends DCLogic {
+  state = { path: null, open: {}, sent: false, scrolled: false };
+
+  componentDidMount() {
+    this._onScroll = () => {
+      const s = window.scrollY > 520;
+      if (s !== this.state.scrolled) this.setState({ scrolled: s });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+  }
+  componentWillUnmount() { window.removeEventListener('scroll', this._onScroll); }
+
+  tab(active) {
+    return 'padding:11px 22px;border:0;border-radius:999px;font-size:15.5px;font-weight:500;cursor:pointer;transition:background .18s,color .18s;' +
+      (active ? 'background:#2C3A2A;color:#fff' : 'background:transparent;color:#6B7161');
+  }
+
+  renderVals() {
+    const dflt = this.props.defaultPath === 'Dla bliskiej osoby' ? 'family' : 'self';
+    const path = this.state.path || dflt;
+    const c = CONTENT[path];
+    return {
+      emergencyBar: this.props.emergencyBar ?? true,
+      steps: c.steps,
+      isSelf: path === 'self',
+      isFamily: path === 'family',
+      sideCaption: c.caption,
+      tabSelfStyle: this.tab(path === 'self'),
+      tabFamilyStyle: this.tab(path === 'family'),
+      pickSelf: () => this.setState({ path: 'self' }),
+      pickFamily: () => this.setState({ path: 'family' }),
+      goSelf: () => this.setState({ path: 'self' }),
+      goFamily: () => this.setState({ path: 'family' }),
+      faq: FAQ.map((f, i) => ({
+        q: f.q, a: f.a,
+        open: !!this.state.open[i],
+        sign: this.state.open[i] ? '–' : '+',
+        toggle: () => this.setState(s => ({ open: Object.assign({}, s.open, { [i]: !s.open[i] }) }))
+      })),
+      sent: this.state.sent,
+      notSent: !this.state.sent,
+      send: () => this.setState({ sent: true }),
+      showSticky: (this.props.stickyPhone ?? true) && this.state.scrolled
+    };
+  }
+}
+
+</script>
+</body>
+</html>

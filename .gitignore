@@ -41,6 +41,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 /plans
-/design
+
 
 next-env.d.ts

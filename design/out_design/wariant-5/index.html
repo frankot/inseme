@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="../support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..600&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}
+:root{--display:'Bricolage Grotesque','Work Sans',system-ui,sans-serif;--nav-h:88px;--nav-h-sticky:62px}
+body{margin:0;background:#FBFAF6;font-family:'Work Sans',system-ui,sans-serif;font-weight:300;color:#585E56;-webkit-font-smoothing:antialiased}
+a{color:#5F7359;text-decoration:none}a:hover{color:#42533D}
+button{font-family:inherit;font-size:inherit;color:inherit}
+h1,h2,h3{font-family:var(--display);font-weight:400;font-optical-sizing:auto}
+@keyframes slowZoom{from{transform:scale(1)}to{transform:scale(1.09)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes cue{0%,100%{transform:translateY(0);opacity:.55}50%{transform:translateY(7px);opacity:1}}
+.hdr-inner{max-width:1440px;margin:0 auto;padding:0 clamp(20px,3vw,48px);display:flex;align-items:center;justify-content:space-between;gap:clamp(20px,3vw,48px)}
+.hdr-static{position:absolute;top:0;left:0;right:0;z-index:60}
+.hdr-static .hdr-inner{height:var(--nav-h)}
+.hdr-sticky{position:fixed;top:0;left:0;right:0;z-index:70;background:#FFFFFF;border-bottom:1px solid #E8E4DA;box-shadow:0 1px 26px rgba(46,51,48,.07);transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .3s ease}
+.hdr-sticky .hdr-inner{height:var(--nav-h-sticky)}
+.nav-desk{display:flex;align-items:center;gap:clamp(18px,2.4vw,40px)}
+.nav-link{position:relative;font-family:var(--display);font-weight:400;line-height:1;letter-spacing:-.01em;padding:6px 0;transition:color .28s ease}
+.nav-link::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left;transition:transform .34s cubic-bezier(.16,1,.3,1)}
+.nav-link:hover::after{transform:scaleX(1)}
+.nav-cta{display:inline-flex;align-items:center;font-family:var(--display);font-weight:400;line-height:1;letter-spacing:-.01em;transition:background .3s ease,color .3s ease,border-color .3s ease}
+.on-dark .nav-link{font-size:clamp(18px,1.45vw,23px);color:#F7F5EF;text-shadow:0 1px 16px rgba(20,24,21,.55)}
+.on-dark .nav-link:hover{color:#FFFFFF}
+.on-dark .nav-cta{font-size:clamp(18px,1.45vw,23px);padding:12px 24px;color:#F7F5EF;background:transparent;border:1px solid rgba(247,245,239,.55);text-shadow:0 1px 16px rgba(20,24,21,.45)}
+.on-dark .nav-cta:hover{background:#F7F5EF;color:#2E3330;border-color:#F7F5EF;text-shadow:none}
+.on-light .nav-link{font-size:clamp(16px,1.2vw,19px);color:#2E3330}
+.on-light .nav-cta{font-size:clamp(15px,1.1vw,18px);padding:10px 20px;color:#F7F5EF;background:#2E3330;border:1px solid #2E3330}
+.on-light .nav-cta:hover{background:transparent;color:#2E3330}
+.nav-burger{display:none;align-items:center;gap:11px;padding:11px 2px;background:none;border:0;cursor:pointer;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase}
+.on-dark .nav-burger{color:#F7F5EF;text-shadow:0 1px 16px rgba(20,24,21,.5)}
+.on-light .nav-burger{color:#2E3330}
+.burger-bars{display:flex;flex-direction:column;gap:5px;width:24px}
+.burger-bars span{height:1px;background:currentColor;display:block}
+.mob-link{font-family:var(--display);font-weight:400;font-size:clamp(30px,8vw,46px);line-height:1.22;letter-spacing:-.025em;color:#2E3330}
+.mob-link:hover{color:#5F7359}
+@media (max-width:960px){:root{--nav-h:72px;--nav-h-sticky:58px}.nav-desk{display:none}.nav-burger{display:flex}}
+</style></helmet>
+
+<div style="background:#FBFAF6;overflow-x:hidden">
+
+<header class="hdr-sticky on-light" style="transform:{{ stickyTransform }};opacity:{{ stickyOpacity }};pointer-events:{{ stickyEvents }}">
+<div class="hdr-inner">
+<a href="#gora" style="display:flex;align-items:center;flex:0 0 auto"><img src="../assets/logo-insieme.png" alt="Insieme" style="width:clamp(84px,7vw,100px);height:auto;display:block" /></a>
+<nav class="nav-desk">
+<a class="nav-link" href="#miejsce">Ośrodek</a>
+<a class="nav-link" href="#program">Program</a>
+<a class="nav-link" href="#dzien">Jeden dzień</a>
+<a class="nav-link" href="#kontakt">Kontakt</a>
+<a class="nav-cta" href="tel:+48669916005">669 916 005</a>
+</nav>
+<button class="nav-burger" onClick="{{ toggleMenu }}" aria-label="Menu" aria-expanded="{{ menuOpen }}">
+<span>Menu</span><span class="burger-bars"><span></span><span></span></span>
+</button>
+</div>
+</header>
+
+<div onClick="{{ closeMenu }}" style="position:fixed;inset:0;z-index:88;background:#FBFAF6;transition:transform .55s cubic-bezier(.16,1,.3,1),opacity .35s ease;transform:{{ panelTransform }};opacity:{{ panelOpacity }};pointer-events:{{ panelEvents }};display:flex;flex-direction:column">
+<div class="hdr-inner" style="height:var(--nav-h);flex:0 0 auto">
+<a href="#gora" onClick="{{ closeMenu }}" style="display:flex;align-items:center"><img src="../assets/logo-insieme.png" alt="Insieme" style="width:96px;height:auto;display:block" /></a>
+<button onClick="{{ closeMenu }}" aria-label="Zamknij" style="display:flex;align-items:center;gap:11px;padding:11px 2px;background:none;border:0;cursor:pointer;color:#8E938A;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase" style-hover="color:#2E3330"><span>Zamknij</span><span style="font-size:17px;line-height:1">✕</span></button>
+</div>
+<div style="flex:1 1 auto;overflow-y:auto;max-width:1440px;width:100%;margin:0 auto;padding:clamp(16px,4vw,32px) clamp(20px,3vw,48px) clamp(36px,7vw,56px);display:flex;flex-direction:column;justify-content:center;gap:4px">
+<a class="mob-link" href="#miejsce" onClick="{{ closeMenu }}">Ośrodek</a>
+<a class="mob-link" href="#program" onClick="{{ closeMenu }}">Program</a>
+<a class="mob-link" href="#dzien" onClick="{{ closeMenu }}">Jeden dzień</a>
+<a class="mob-link" href="#kontakt" onClick="{{ closeMenu }}">Kontakt</a>
+<a href="tel:+48669916005" onClick="{{ closeMenu }}" style="margin-top:26px;display:inline-flex;align-items:center;justify-content:center;padding:16px 26px;background:#2E3330;color:#F7F5EF;font-family:var(--display);font-weight:400;font-size:clamp(21px,5vw,26px);line-height:1;letter-spacing:-.01em" style-hover="background:#42473F;color:#F7F5EF">Zadzwoń: 669 916 005</a>
+<span style="margin-top:12px;font-size:13.5px;line-height:1.7;color:#9A9F95">dyżur całą dobę · ul. Świerkowa 13, Magdalenka</span>
+</div>
+</div>
+
+<section id="gora" style="position:relative;min-height:100svh;overflow:hidden;background:#2E3330">
+<div style="position:absolute;inset:0;animation:slowZoom 26s ease-in-out infinite alternate;transition:opacity .9s ease;opacity:{{ imgOpacity }}">
+<img src="../assets/dom-staw.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 56%;display:block;filter:saturate(.86) brightness(.96)" />
+</div>
+<video ref="{{ videoRef }}" autoPlay loop muted playsInline preload="metadata" poster="../assets/dom-staw.jpg" src="{{ videoSrc }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.86) brightness(.96);transition:opacity .9s ease;opacity:{{ videoOpacity }}"></video>
+<div style="position:absolute;inset:0;background:linear-gradient(178deg,rgba(24,28,25,.6) 0%,rgba(24,28,25,.3) 34%,rgba(24,28,25,.66) 68%,rgba(24,28,25,.86) 100%)"></div>
+
+<header class="hdr-static on-dark">
+<div class="hdr-inner">
+<a href="#gora" style="display:flex;align-items:center;flex:0 0 auto"><img src="../assets/logo-insieme.png" alt="Insieme" style="width:clamp(100px,9vw,126px);height:auto;display:block;filter:brightness(0) invert(1);opacity:.96" /></a>
+<nav class="nav-desk">
+<a class="nav-link" href="#miejsce">Ośrodek</a>
+<a class="nav-link" href="#program">Program</a>
+<a class="nav-link" href="#dzien">Jeden dzień</a>
+<a class="nav-link" href="#kontakt">Kontakt</a>
+<a class="nav-cta" href="tel:+48669916005">669 916 005</a>
+</nav>
+<button class="nav-burger" onClick="{{ toggleMenu }}" aria-label="Menu" aria-expanded="{{ menuOpen }}">
+<span>Menu</span><span class="burger-bars"><span></span><span></span></span>
+</button>
+</div>
+</header>
+
+<button onClick="{{ toggleBg }}" aria-label="Przełącz tło: zdjęcie / wideo" aria-pressed="{{ isVideoMode }}" title="Przełącz tło" style="position:absolute;left:clamp(16px,2.4vw,28px);bottom:clamp(16px,2.4vw,28px);z-index:2;width:9px;height:9px;padding:0;border-radius:50%;cursor:pointer;border:1px solid rgba(247,245,239,.6);transition:background .3s ease,box-shadow .3s ease;background:{{ bgDotFill }};box-shadow:{{ bgDotGlow }}"></button>
+<div style="position:relative;min-height:100svh;max-width:1440px;margin:0 auto;padding:calc(var(--nav-h) + clamp(28px,5vh,64px)) clamp(20px,3vw,48px) clamp(40px,5vw,72px);display:flex;flex-direction:column;justify-content:flex-end;gap:clamp(26px,3vw,44px)">
+<div style="animation:fadeUp .9s cubic-bezier(.16,1,.3,1) both">
+<p style="margin:0 0 clamp(18px,2vw,28px);max-width:34em;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#EFF2EA;text-shadow:0 1px 18px rgba(20,24,21,.75)">Magdalenka pod Warszawą · ośrodek leczenia uzależnień</p>
+<h1 style="margin:0;max-width:9em;font-family:var(--display);font-weight:400;font-size:clamp(38px,6vw,100px);line-height:1.02;letter-spacing:-.035em;color:#F7F5EF;text-wrap:balance">Możesz zadzwonić i niczego nie obiecywać.</h1>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:24px 40px;align-items:flex-end;justify-content:space-between;padding-top:clamp(20px,2.5vw,32px);border-top:1px solid rgba(247,245,239,.22);animation:fadeUp 1.1s cubic-bezier(.16,1,.3,1) both">
+<p style="margin:0;max-width:26em;font-size:clamp(15.5px,1.3vw,18px);line-height:1.7;color:#DDE2D8">Rozmowa nie zobowiązuje do przyjazdu. Odbiera terapeuta z ośrodka — nie ma tu call center ani konsultanta sprzedaży.</p>
+<a href="tel:+48669916005" style="display:inline-flex;align-items:center;gap:14px;padding:16px 30px;background:#F7F5EF;color:#2E3330;font-size:16px;letter-spacing:.01em" style-hover="background:#E3E8DE;color:#2E3330"><span>Zadzwoń: 669 916 005</span></a>
+</div>
+</div>
+<span style="position:absolute;left:50%;bottom:14px;font-size:15px;color:#F7F5EF;animation:cue 2.6s ease-in-out infinite">↓</span>
+</section>
+
+<section style="max-width:1440px;margin:0 auto;padding:clamp(72px,9vw,140px) clamp(20px,3vw,48px) clamp(40px,5vw,72px)">
+<p style="margin:0 0 clamp(26px,3vw,44px);max-width:15em;font-family:var(--display);font-weight:400;font-size:clamp(29px,4.2vw,58px);line-height:1.08;letter-spacing:-.03em;color:#2E3330;text-wrap:pretty">Jeden dom w sosnowym lesie, dwadzieścia minut od Warszawy.</p>
+<div style="display:flex;flex-wrap:wrap;gap:28px 64px;align-items:flex-start">
+<p style="margin:0;flex:1 1 22em;max-width:34em;font-size:clamp(16px,1.4vw,19px);line-height:1.72;color:#585E56;text-wrap:pretty">Mieszkamy razem: pokoje z widokiem na drzewa, wspólny salon z fotelami, taras i ogród. Bez korytarzy, bez dyżurki za szybą, bez zapachu szpitala. Dwanaście miejsc, jeden zespół, ta sama kadra przez cały pobyt.</p>
+<div style="flex:0 1 17em;min-width:200px;margin-left:auto;display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #E8E4DA"><span style="font-size:14.5px;color:#8E938A">Miejsc</span><span style="font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:-.02em;color:#2E3330">12</span></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #E8E4DA"><span style="font-size:14.5px;color:#8E938A">Od centrum</span><span style="font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:-.02em;color:#2E3330">20 min</span></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:1px solid #E8E4DA"><span style="font-size:14.5px;color:#8E938A">Dyżur</span><span style="font-family:var(--display);font-weight:400;font-size:21px;letter-spacing:-.02em;color:#2E3330">24/7</span></div>
+</div>
+</div>
+</section>
+
+<section id="program" style="max-width:1440px;margin:0 auto;padding:clamp(40px,5vw,72px) clamp(20px,3vw,48px);scroll-margin-top:calc(var(--nav-h-sticky) + 12px)">
+<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:baseline;justify-content:space-between;margin-bottom:clamp(24px,3vw,40px)">
+<p style="margin:0;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A08E7B">Program</p>
+<p style="margin:0;font-size:14.5px;color:#8E938A">Każdy pobyt ustalamy przez telefon, przed przyjazdem.</p>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:clamp(14px,1.4vw,20px)">
+<article style="background:#F1EDE4;padding:clamp(26px,2.4vw,36px);min-height:clamp(280px,26vw,340px);display:flex;flex-direction:column;justify-content:space-between;gap:28px;transition:background .3s ease" style-hover="background:#EBE6D9">
+<span style="font-size:12px;letter-spacing:.16em;color:#B3AA9B">01</span>
+<div>
+<h3 style="margin:0 0 12px;font-size:clamp(23px,2.1vw,29px);line-height:1.12;letter-spacing:-.025em;color:#2E3330">Detoks</h3>
+<p style="margin:0 0 18px;font-size:15.5px;line-height:1.68;color:#6B7168">7–10 dni pod opieką lekarza. Przyjmujemy zwykle tego samego dnia, w którym dzwonisz.</p>
+<a href="#kontakt" style="font-size:14.5px;color:#5F7359">Zapytaj o miejsce →</a>
+</div>
+</article>
+<article style="background:#F1EDE4;padding:clamp(26px,2.4vw,36px);min-height:clamp(280px,26vw,340px);display:flex;flex-direction:column;justify-content:space-between;gap:28px;transition:background .3s ease" style-hover="background:#EBE6D9">
+<span style="font-size:12px;letter-spacing:.16em;color:#B3AA9B">02</span>
+<div>
+<h3 style="margin:0 0 12px;font-size:clamp(23px,2.1vw,29px);line-height:1.12;letter-spacing:-.025em;color:#2E3330">Terapia 28 dni</h3>
+<p style="margin:0 0 18px;font-size:15.5px;line-height:1.68;color:#6B7168">Program podstawowy: grupa, rozmowy indywidualne, psychoedukacja. Można skrócić albo wydłużyć.</p>
+<a href="#dzien" style="font-size:14.5px;color:#5F7359">Zobacz plan dnia →</a>
+</div>
+</article>
+<article style="background:#2E3330;color:#EFEBE1;padding:clamp(26px,2.4vw,36px);min-height:clamp(280px,26vw,340px);display:flex;flex-direction:column;justify-content:space-between;gap:28px">
+<span style="font-size:12px;letter-spacing:.16em;color:#7F8B7A">03</span>
+<div>
+<h3 style="margin:0 0 12px;font-size:clamp(23px,2.1vw,29px);line-height:1.12;letter-spacing:-.025em;color:#F5F2EA">Dla rodziny</h3>
+<p style="margin:0 0 18px;font-size:15.5px;line-height:1.68;color:#B7C0B2">Możesz zadzwonić bez wiedzy bliskiej osoby. Powiemy, co zwykle pomaga, a co pogarsza sprawę.</p>
+<a href="tel:+48669916005" style="font-size:14.5px;color:#C6D0C0" style-hover="color:#F5F2EA">Porozmawiaj z terapeutą →</a>
+</div>
+</article>
+<article style="background:#F1EDE4;padding:clamp(26px,2.4vw,36px);min-height:clamp(280px,26vw,340px);display:flex;flex-direction:column;justify-content:space-between;gap:28px;transition:background .3s ease" style-hover="background:#EBE6D9">
+<span style="font-size:12px;letter-spacing:.16em;color:#B3AA9B">04</span>
+<div>
+<h3 style="margin:0 0 12px;font-size:clamp(23px,2.1vw,29px);line-height:1.12;letter-spacing:-.025em;color:#2E3330">Po pobycie</h3>
+<p style="margin:0 0 18px;font-size:15.5px;line-height:1.68;color:#6B7168">Grupa wsparcia raz w tygodniu i kontakt z terapeutą, także po wyjeździe z ośrodka.</p>
+<a href="#kontakt" style="font-size:14.5px;color:#5F7359">Napisz do nas →</a>
+</div>
+</article>
+</div>
+</section>
+
+<section id="miejsce" style="max-width:1440px;margin:0 auto;padding:clamp(40px,5vw,72px) clamp(20px,3vw,48px);scroll-margin-top:calc(var(--nav-h-sticky) + 12px)">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(14px,1.4vw,20px)">
+<figure style="margin:0;position:relative;grid-column:span 2;min-width:0">
+<img src="../assets/dom-taras.jpg" alt="Taras ośrodka od strony ogrodu" style="width:100%;aspect-ratio:16/9;object-fit:cover;object-position:50% 62%;display:block;background:#EFECE3;filter:saturate(.92)" />
+<figcaption style="margin-top:12px;font-family:var(--display);font-weight:300;font-size:16px;letter-spacing:-.015em;color:#8E938A">Taras od strony ogrodu. Śniadanie na zewnątrz od kwietnia do października.</figcaption>
+</figure>
+<figure style="margin:0;min-width:0">
+<img src="../assets/salon-terapeutyczny.jpg" alt="Salon z fotelami i widokiem na las" style="width:100%;aspect-ratio:4/5;object-fit:cover;object-position:62% 42%;display:block;background:#EFECE3;filter:brightness(1.07) saturate(.9)" />
+<figcaption style="margin-top:12px;font-family:var(--display);font-weight:300;font-size:16px;letter-spacing:-.015em;color:#8E938A">Salon — tu odbywają się grupy.</figcaption>
+</figure>
+</div>
+</section>
+
+<sc-if value="{{ showDayCards }}" hint-placeholder-val="{{ true }}">
+<section id="dzien" style="max-width:1440px;margin:0 auto;padding:clamp(56px,7vw,110px) clamp(20px,3vw,48px) clamp(40px,5vw,72px);scroll-margin-top:calc(var(--nav-h-sticky) + 12px)">
+<p style="margin:0 0 clamp(20px,2.4vw,32px);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#A08E7B">Jeden zwykły dzień</p>
+<h2 style="margin:0 0 clamp(28px,3.4vw,52px);max-width:13em;font-size:clamp(29px,4.2vw,58px);line-height:1.08;letter-spacing:-.03em;color:#2E3330;text-wrap:pretty">Nie wiesz, co Cię czeka. To najtrudniejsza część.</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:clamp(14px,1.4vw,20px)">
+<div style="background:#E9EFE6;padding:clamp(22px,2vw,30px);min-height:clamp(200px,18vw,240px);display:flex;flex-direction:column;justify-content:space-between;gap:22px">
+<span style="font-family:var(--display);font-weight:300;font-size:clamp(30px,3vw,42px);line-height:1;letter-spacing:-.03em;color:#5F7359">7:30</span>
+<p style="margin:0;font-size:15.5px;line-height:1.65;color:#4E544C">Pobudka bez budzenia całego domu. Kawa na tarasie albo jeszcze pół godziny w pokoju.</p>
+</div>
+<div style="background:#E9EFE6;padding:clamp(22px,2vw,30px);min-height:clamp(200px,18vw,240px);display:flex;flex-direction:column;justify-content:space-between;gap:22px">
+<span style="font-family:var(--display);font-weight:300;font-size:clamp(30px,3vw,42px);line-height:1;letter-spacing:-.03em;color:#5F7359">9:30</span>
+<p style="margin:0;font-size:15.5px;line-height:1.65;color:#4E544C">Grupa terapeutyczna. Pierwszego dnia możesz tylko słuchać — nikt tego nie komentuje.</p>
+</div>
+<div style="background:#E9EFE6;padding:clamp(22px,2vw,30px);min-height:clamp(200px,18vw,240px);display:flex;flex-direction:column;justify-content:space-between;gap:22px">
+<span style="font-family:var(--display);font-weight:300;font-size:clamp(30px,3vw,42px);line-height:1;letter-spacing:-.03em;color:#5F7359">11:30</span>
+<p style="margin:0;font-size:15.5px;line-height:1.65;color:#4E544C">Rozmowa indywidualna albo czas dla siebie. Las jest za furtką.</p>
+</div>
+<div style="background:#E9EFE6;padding:clamp(22px,2vw,30px);min-height:clamp(200px,18vw,240px);display:flex;flex-direction:column;justify-content:space-between;gap:22px">
+<span style="font-family:var(--display);font-weight:300;font-size:clamp(30px,3vw,42px);line-height:1;letter-spacing:-.03em;color:#5F7359">15:00</span>
+<p style="margin:0;font-size:15.5px;line-height:1.65;color:#4E544C">Zajęcia: psychoedukacja, praca z ciałem, warsztat albo film o nawrotach.</p>
+</div>
+<div style="background:#E9EFE6;padding:clamp(22px,2vw,30px);min-height:clamp(200px,18vw,240px);display:flex;flex-direction:column;justify-content:space-between;gap:22px">
+<span style="font-family:var(--display);font-weight:300;font-size:clamp(30px,3vw,42px);line-height:1;letter-spacing:-.03em;color:#5F7359">21:00</span>
+<p style="margin:0;font-size:15.5px;line-height:1.65;color:#4E544C">Krótkie podsumowanie dnia. Telefon zostaje przy Tobie — nikt go nie zabiera.</p>
+</div>
+</div>
+</section>
+</sc-if>
+
+<section style="max-width:1440px;margin:0 auto;padding:clamp(40px,5vw,72px) clamp(20px,3vw,48px)">
+<blockquote style="margin:0;padding:clamp(40px,5vw,88px) clamp(26px,4vw,72px);background:#F1EDE4;display:flex;flex-wrap:wrap;gap:32px 64px;align-items:flex-end">
+<p style="margin:0;flex:1 1 20em;max-width:22em;font-family:var(--display);font-weight:300;font-size:clamp(25px,3.4vw,48px);line-height:1.14;letter-spacing:-.03em;color:#2E3330;text-wrap:pretty">„Nikt mnie nie oceniał ani jednego dnia. To był pierwszy raz, kiedy powiedziałem wszystko na głos."</p>
+<footer style="flex:0 1 14em;font-size:14.5px;line-height:1.7;color:#8B8272">pacjent, 35 lat<br />opinia publikowana anonimowo, za pisemną zgodą</footer>
+</blockquote>
+</section>
+
+<section id="kontakt" style="max-width:1440px;margin:0 auto;padding:clamp(40px,5vw,72px) clamp(20px,3vw,48px) clamp(56px,7vw,96px);scroll-margin-top:calc(var(--nav-h-sticky) + 12px)">
+<div style="background:#2E3330;color:#EFEBE1;padding:clamp(36px,5vw,88px) clamp(26px,4vw,72px);display:flex;flex-wrap:wrap;gap:40px 72px;align-items:flex-end;justify-content:space-between">
+<div style="flex:1 1 20em;max-width:22em">
+<p style="margin:0 0 clamp(18px,2vw,26px);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#7F8B7A">Kontakt</p>
+<p style="margin:0 0 clamp(20px,2.4vw,30px);font-family:var(--display);font-weight:400;font-size:clamp(29px,4.2vw,58px);line-height:1.04;letter-spacing:-.035em;color:#F5F2EA;text-wrap:pretty">Zadzwoń dziś, przyjedź kiedy będziesz gotowy.</p>
+<p style="margin:0;font-size:15.5px;line-height:1.72;color:#A8B2A2">Do rozmowy nie potrzebujemy nazwiska. Nie wysyłamy po niej ofert i nie dzwonimy drugi raz bez Twojej zgody.</p>
+</div>
+<div style="flex:0 1 18em;display:flex;flex-direction:column;gap:12px">
+<a href="tel:+48669916005" style="font-family:var(--display);font-weight:400;font-size:clamp(32px,3.4vw,46px);line-height:1;letter-spacing:-.03em;color:#F5F2EA" style-hover="color:#B9C7B2">669 916 005</a>
+<a href="mailto:kontakt@osrodek-insieme.pl" style="font-size:15px;color:#A8B2A2" style-hover="color:#F5F2EA">kontakt@osrodek-insieme.pl</a>
+<span style="font-size:13.5px;line-height:1.7;color:#7F8B7A">ul. Świerkowa 13, 05-506 Magdalenka<br />dyżur całą dobę, także w weekendy</span>
+</div>
+</div>
+</section>
+
+<footer style="max-width:1440px;margin:0 auto;padding:0 clamp(20px,3vw,48px) clamp(40px,4vw,64px)">
+<div style="padding-top:28px;border-top:1px solid #E8E4DA;display:flex;flex-wrap:wrap;gap:24px 44px;justify-content:space-between;align-items:flex-start;font-size:13.5px;color:#9A9F95">
+<div style="display:flex;flex-wrap:wrap;gap:8px 26px;align-items:center">
+<span>Insieme · ośrodek leczenia uzależnień</span>
+<a href="#" style="color:#9A9F95" style-hover="color:#5F7359">Testy przesiewowe</a>
+<a href="#" style="color:#9A9F95" style-hover="color:#5F7359">Cennik i pobyt</a>
+<a href="#" style="color:#9A9F95" style-hover="color:#5F7359">O nas</a>
+</div>
+<span>Jeśli dzieje się coś złego teraz: 112 · telefon zaufania: 800 12 02 89</span>
+<a href="#" style="color:#9A9F95" style-hover="color:#5F7359">Polityka prywatności · RODO</a>
+</div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;videoSrc&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://assets.mixkit.co/videos/50847/50847-720.mp4&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Wideo&quot;},&quot;showDayCards&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sekcje&quot;},&quot;revealAt&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:70,&quot;min&quot;:20,&quot;max&quot;:120,&quot;step&quot;:5,&quot;unit&quot;:&quot;% ekranu&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Nawigacja&quot;}}">
+class Component extends DCLogic {
+  state = { menuOpen: false, stickyOn: false, videoReady: false, bgMode: 'image' };
+  videoRef = React.createRef();
+
+  componentDidMount() {
+    this.onScroll = () => {
+      const pct = (this.props.revealAt ?? 70) / 100;
+      const on = window.scrollY > window.innerHeight * pct;
+      if (on !== this.state.stickyOn) this.setState({ stickyOn: on });
+    };
+    this.onKey = e => { if (e.key === 'Escape' && this.state.menuOpen) this.setMenu(false); };
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    window.addEventListener('resize', this.onScroll);
+    window.addEventListener('keydown', this.onKey);
+    this.onScroll();
+    const v = this.videoRef.current;
+    if (v) {
+      v.muted = true; v.defaultMuted = true;
+      const ready = () => { if (!this.state.videoReady) this.setState({ videoReady: true }); };
+      v.addEventListener('playing', ready);
+      v.addEventListener('loadeddata', ready);
+      v.addEventListener('error', () => this.setState({ videoReady: false }));
+      const p = v.play(); if (p && p.catch) p.catch(() => {});
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll);
+    window.removeEventListener('resize', this.onScroll);
+    window.removeEventListener('keydown', this.onKey);
+    document.body.style.overflow = '';
+  }
+
+  setMenu(open) {
+    document.body.style.overflow = open ? 'hidden' : '';
+    this.setState({ menuOpen: open });
+  }
+
+  renderVals() {
+    const { menuOpen, stickyOn, bgMode, videoReady } = this.state;
+    const isVideoMode = bgMode === 'video';
+    return {
+      videoRef: this.videoRef,
+      videoSrc: this.props.videoSrc ?? 'https://assets.mixkit.co/videos/50847/50847-720.mp4',
+      imgOpacity: (!isVideoMode || !videoReady) ? 1 : 0,
+      videoOpacity: (isVideoMode && videoReady) ? 1 : 0,
+      isVideoMode: isVideoMode,
+      bgDotFill: isVideoMode ? '#F7F5EF' : 'transparent',
+      bgDotGlow: isVideoMode ? '0 0 0 4px rgba(247,245,239,.16)' : 'none',
+      toggleBg: () => this.setState({ bgMode: isVideoMode ? 'image' : 'video' }),
+      showDayCards: this.props.showDayCards ?? true,
+      stickyTransform: stickyOn ? 'translateY(0)' : 'translateY(-101%)',
+      stickyOpacity: stickyOn ? 1 : 0,
+      stickyEvents: stickyOn ? 'auto' : 'none',
+      menuOpen: menuOpen,
+      panelTransform: menuOpen ? 'translateY(0)' : 'translateY(-101%)',
+      panelOpacity: menuOpen ? 1 : 0,
+      panelEvents: menuOpen ? 'auto' : 'none',
+      toggleMenu: () => this.setMenu(!this.state.menuOpen),
+      closeMenu: () => this.setMenu(false)
+    };
+  }
+}
+</script>
+</body>
+</html>
