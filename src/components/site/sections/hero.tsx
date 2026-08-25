@@ -21,7 +21,7 @@ export function Hero({
   return (
     <section
       id="gora"
-      className="relative min-h-svh overflow-hidden bg-ink-950"
+      className="relative h-[var(--hero-h)] overflow-hidden bg-ink-950 nav:h-auto nav:min-h-svh"
     >
       <div className="absolute inset-0 animate-slow-zoom">
         <SiteImage
@@ -37,7 +37,7 @@ export function Hero({
 
       <SiteHeader contact={contact} />
 
-      <div className="relative mx-auto flex min-h-svh max-w-[1440px] flex-col justify-end gap-[clamp(26px,3vw,44px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[clamp(40px,5vw,72px)]">
+      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end nav:h-auto nav:min-h-svh gap-[clamp(26px,3vw,44px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[clamp(40px,5vw,72px)]">
         <div>
           <p className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 text-eyebrow uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
             <span

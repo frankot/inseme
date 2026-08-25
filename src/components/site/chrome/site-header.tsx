@@ -144,6 +144,10 @@ export function SiteHeader({
   }, [menuOpen]);
 
   const close = useCallback(() => setMenuOpen(false), []);
+  // Opening the menu always brings the solid compact bar in, even at the top of
+  // the page: the panel needs a real bar above it, not the transparent hero one.
+  const barShown = stickyOn || menuOpen;
+  const toggle = useCallback(() => setMenuOpen((open) => !open), []);
 
   return (
     <>
@@ -152,14 +156,14 @@ export function SiteHeader({
         dismissed by scrolling down (see the scroll effect above).
       */}
       <header
-        inert={!stickyOn}
+        inert={!barShown}
         className={cn(
           "fixed inset-x-0 top-0 z-70 border-b border-line-strong",
           "bg-cream/85 backdrop-blur-xl backdrop-saturate-150",
           // Pure slide, no cross-fade: the bar travels, it does not dissolve.
           // Entry decelerates into place, exit accelerates away.
           "will-change-transform transition-transform motion-reduce:transition-none",
-          stickyOn
+          barShown
             ? "translate-y-0 duration-[520ms] ease-[cubic-bezier(.16,1,.3,1)]"
             : "-translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]",
         )}
@@ -169,48 +173,28 @@ export function SiteHeader({
           height="h-nav-sticky"
           nav={nav}
           contact={contact}
-          onBurger={() => setMenuOpen(true)}
+          onBurger={toggle}
+          menuOpen={menuOpen}
           logoWidth="w-[clamp(92px,7.7vw,112px)]"
           tagline
         />
       </header>
 
-      {/* Full-screen mobile panel — same slide language as the bar. */}
+      {/*
+        Mobile panel: rises from the bottom and stops below the bar, so the
+        navbar — and its burger, now the close control — stays visible.
+      */}
       <div
         inert={!menuOpen}
         className={cn(
-          "fixed inset-0 z-88 flex flex-col bg-cream",
+          "fixed inset-x-0 bottom-0 z-60 flex flex-col border-t border-line bg-cream",
+          barShown ? "top-nav-sticky" : "top-nav",
           "will-change-transform transition-transform motion-reduce:transition-none",
           menuOpen
             ? "translate-y-0 duration-[520ms] ease-[cubic-bezier(.16,1,.3,1)]"
-            : "-translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]",
+            : "translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]",
         )}
       >
-        <div
-          className={cn(
-            "mx-auto flex w-full max-w-[1440px] shrink-0 items-center justify-between gap-gutter px-gutter",
-            // Matches whichever bar the burger was tapped in, so the close
-            // button lands under the user's finger.
-            stickyOn ? "h-nav-sticky" : "h-nav",
-          )}
-        >
-          <a href="#gora" onClick={close} className="flex items-center">
-            <Logo className="w-24" />
-          </a>
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Zamknij"
-            className="flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase text-ink-900"
-          >
-            <span>Zamknij</span>
-            <span className="burger-x" aria-hidden>
-              <span />
-              <span />
-            </span>
-          </button>
-        </div>
-
         <div className="mx-auto flex w-full max-w-[1440px] flex-auto flex-col justify-center gap-0.5 overflow-y-auto px-gutter pt-[clamp(16px,4vw,32px)] pb-[clamp(36px,7vw,56px)]">
           {mobileNav.map((item) => (
             <a
@@ -238,14 +222,22 @@ export function SiteHeader({
         </div>
       </div>
 
-      {/* Transparent bar that sits on the hero photo and scrolls away with it. */}
-      <header className="absolute inset-x-0 top-0 z-60">
+      {/* Transparent bar on the hero photo; yields to the compact bar when the
+          menu opens so only one header is ever on screen. */}
+      <header
+        inert={menuOpen}
+        className={cn(
+          "absolute inset-x-0 top-0 z-60 transition-opacity duration-300",
+          menuOpen && "pointer-events-none opacity-0",
+        )}
+      >
         <Bar
           tone="dark"
           height="h-nav"
           nav={nav}
           contact={contact}
-          onBurger={() => setMenuOpen(true)}
+          onBurger={toggle}
+          menuOpen={menuOpen}
           logoWidth="w-[clamp(100px,8.4vw,122px)]"
           tagline
         />
@@ -260,6 +252,7 @@ function Bar({
   nav,
   contact,
   onBurger,
+  menuOpen,
   logoWidth,
   tagline = false,
 }: {
@@ -268,6 +261,7 @@ function Bar({
   nav: NavItem[];
   contact: SiteContact;
   onBurger: () => void;
+  menuOpen: boolean;
   logoWidth: string;
   tagline?: boolean;
 }) {
@@ -338,14 +332,19 @@ function Bar({
       <button
         type="button"
         onClick={onBurger}
-        aria-label="Menu"
+        aria-label={menuOpen ? "Zamknij menu" : "Menu"}
+        aria-expanded={menuOpen}
         className={cn(
           "flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase nav:hidden",
           dark ? "text-on-dark-2 text-shadow-nav" : "text-ink-900",
         )}
       >
-        <span>Menu</span>
-        <span className="burger-bars" aria-hidden>
+        {/* The button's aria-label already names it, so this is decorative. */}
+        <span className="label-swap" aria-hidden>
+          <span data-active={!menuOpen}>Menu</span>
+          <span data-active={menuOpen}>Zamknij</span>
+        </span>
+        <span className="burger-icon" data-open={menuOpen} aria-hidden>
           <span />
           <span />
         </span>

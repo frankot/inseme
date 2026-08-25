@@ -176,6 +176,8 @@
 :root {
   --nav-h: 88px;
   --nav-h-sticky: 76px;
+  /* Phones only: a fixed hero avoids the jump when the URL bar collapses. */
+  --hero-h: 775px;
 
   /* --- Insieme brand palette --- */
   --cream: oklch(0.9848 0.0054 95.1); /* #FBFAF6 */
@@ -326,39 +328,76 @@
 }
 
 /** Two stacked hairlines — the menu icon. */
-@utility burger-bars {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  width: 22px;
-
-  & > span {
-    height: 1px;
-    background: currentColor;
-    display: block;
-  }
-}
-
-/** The same two hairlines, crossed — the close icon. */
-@utility burger-x {
+@utility burger-icon {
   position: relative;
   width: 22px;
   height: 7px;
 
   & > span {
     position: absolute;
-    top: 3px;
     left: 0;
     width: 22px;
     height: 1px;
     background: currentColor;
     display: block;
+    transition:
+      top 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
   }
   & > span:first-child {
-    transform: rotate(45deg);
+    top: 0;
   }
   & > span:last-child {
+    top: 6px;
+  }
+
+  /* Open: both hairlines meet in the middle and cross. */
+  &[data-open="true"] > span {
+    top: 3px;
+  }
+  &[data-open="true"] > span:first-child {
+    transform: rotate(45deg);
+  }
+  &[data-open="true"] > span:last-child {
     transform: rotate(-45deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .burger-icon > span {
+    transition: none;
+  }
+}
+
+/**
+ * Two labels stacked in one grid cell, so the box is as wide as the longer of
+ * them and nothing reflows when they swap. The pair rolls upward on open and
+ * back down on close.
+ */
+@utility label-swap {
+  display: grid;
+
+  & > span {
+    grid-area: 1 / 1;
+    transition:
+      opacity 0.28s ease,
+      transform 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  & > span[data-active="false"] {
+    opacity: 0;
+  }
+  & > span:first-child[data-active="false"] {
+    transform: translateY(-6px);
+  }
+  & > span:last-child[data-active="false"] {
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label-swap > span {
+    transition: opacity 0.28s ease;
+    transform: none;
   }
 }
 
