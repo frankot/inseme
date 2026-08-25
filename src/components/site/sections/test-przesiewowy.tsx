@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Container } from "@/components/site/ui/container";
@@ -31,6 +31,23 @@ export function TestPrzesiewowy({
   const [stage, setStage] = useState<Stage>("intro");
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
+
+  /**
+   * Steps differ a lot in length — the intro is three lines, a result with the
+   * e-mail form is nearly double. Watching the content box lets the card
+   * animate to each new height instead of snapping.
+   */
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number>();
+
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    if (typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => setHeight(el.offsetHeight));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const total = content.questions.length;
   const maxScore = total * Math.max(...content.options.map((o) => o.value));
@@ -95,109 +112,121 @@ export function TestPrzesiewowy({
               />
             </div>
 
-            <div className="p-[clamp(26px,2.6vw,40px)]">
-              {stage === "intro" && (
-                <div className="flex flex-col gap-6">
-                  <span className="text-eyebrow uppercase tracking-[0.2em] text-clay-400">
-                    {content.meta}
-                  </span>
-                  <p className="text-pretty font-heading text-[clamp(22px,2.1vw,29px)] leading-[1.18] tracking-[-0.028em] text-ink-900">
-                    {content.prompt}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setStage("question")}
-                    className="link-arrow self-start border border-ink-900 bg-ink-900 px-[26px] py-[15px] text-[15.5px] text-bone transition-colors hover:bg-transparent hover:text-ink-900"
-                  >
-                    <span>{content.startLabel}</span>
-                    <span aria-hidden>→</span>
-                  </button>
-                </div>
-              )}
-
-              {stage === "question" && (
-                <div className="flex flex-col gap-[clamp(20px,2.2vw,30px)]">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="text-eyebrow tabular-nums tracking-[0.2em] text-clay-400">
-                      {String(index + 1).padStart(2, "0")} /{" "}
-                      {String(total).padStart(2, "0")}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={reset}
-                      className="text-[12.5px] uppercase tracking-[0.1em] text-clay-400 transition-colors hover:text-sage-600"
-                    >
-                      Od nowa
-                    </button>
-                  </div>
-
-                  <p className="min-h-[3.6em] text-pretty font-heading text-[clamp(21px,2.05vw,28px)] leading-[1.2] tracking-[-0.028em] text-ink-900">
-                    {content.questions[index]}
-                  </p>
-
-                  <div className="flex flex-col gap-[9px]">
-                    {content.options.map((option) => (
+            <div
+              className="overflow-hidden transition-[height] duration-[420ms] ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none"
+              style={height === undefined ? undefined : { height }}
+            >
+              {/* Ref sits on the stable wrapper: the keyed child below remounts
+                  on every step, which would detach the observer. */}
+              <div ref={contentRef}>
+                <div
+                  key={stage === "question" ? `q${index}` : stage}
+                  className="animate-step-in p-[clamp(26px,2.6vw,40px)]"
+                >
+                  {stage === "intro" && (
+                    <div className="flex flex-col gap-6">
+                      <span className="text-eyebrow uppercase tracking-[0.2em] text-clay-400">
+                        {content.meta}
+                      </span>
+                      <p className="text-pretty font-heading text-[clamp(22px,2.1vw,29px)] leading-[1.18] tracking-[-0.028em] text-ink-900">
+                        {content.prompt}
+                      </p>
                       <button
-                        key={option.label}
                         type="button"
-                        onClick={() => answer(option.value)}
-                        className="group flex items-center justify-between gap-4 border border-line bg-cream px-[18px] py-[15px] text-left text-[15.5px] text-ink-600 transition-colors hover:border-sage-600 hover:bg-mist"
+                        onClick={() => setStage("question")}
+                        className="link-arrow self-start border border-ink-900 bg-ink-900 px-[26px] py-[15px] text-[15.5px] text-bone transition-colors hover:bg-transparent hover:text-ink-900"
                       >
-                        <span>{option.label}</span>
-                        <span
-                          aria-hidden
-                          className="text-[13px] text-clay-300 transition-colors group-hover:text-sage-600"
-                        >
-                          →
-                        </span>
+                        <span>{content.startLabel}</span>
+                        <span aria-hidden>→</span>
                       </button>
-                    ))}
-                  </div>
+                    </div>
+                  )}
+
+                  {stage === "question" && (
+                    <div className="flex flex-col gap-[clamp(20px,2.2vw,30px)]">
+                      <div className="flex items-baseline justify-between gap-4">
+                        <span className="text-eyebrow tabular-nums tracking-[0.2em] text-clay-400">
+                          {String(index + 1).padStart(2, "0")} /{" "}
+                          {String(total).padStart(2, "0")}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={reset}
+                          className="text-[12.5px] uppercase tracking-[0.1em] text-clay-400 transition-colors hover:text-sage-600"
+                        >
+                          Od nowa
+                        </button>
+                      </div>
+
+                      <p className="min-h-[3.6em] text-pretty font-heading text-[clamp(21px,2.05vw,28px)] leading-[1.2] tracking-[-0.028em] text-ink-900">
+                        {content.questions[index]}
+                      </p>
+
+                      <div className="flex flex-col gap-[9px]">
+                        {content.options.map((option) => (
+                          <button
+                            key={option.label}
+                            type="button"
+                            onClick={() => answer(option.value)}
+                            className="group flex items-center justify-between gap-4 border border-line bg-cream px-[18px] py-[15px] text-left text-[15.5px] text-ink-600 transition-colors hover:border-sage-600 hover:bg-mist"
+                          >
+                            <span>{option.label}</span>
+                            <span
+                              aria-hidden
+                              className="text-[13px] text-clay-300 transition-colors group-hover:text-sage-600"
+                            >
+                              →
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {stage === "result" && (
+                    <div className="flex flex-col gap-[clamp(18px,2vw,26px)]">
+                      <div className="flex items-baseline justify-between gap-4">
+                        <span className="text-eyebrow uppercase tracking-[0.2em] text-clay-400">
+                          {content.resultLabel}
+                        </span>
+                        <span className="font-heading text-[20px] font-light tracking-[-0.03em] tabular-nums text-clay-300">
+                          {score} / {maxScore}
+                        </span>
+                      </div>
+
+                      <p className="text-pretty font-heading text-[clamp(24px,2.4vw,34px)] leading-[1.12] tracking-[-0.03em] text-ink-900">
+                        {band.title}
+                      </p>
+                      <p className="text-pretty border-b border-line pb-[clamp(18px,2vw,24px)] text-[15.5px] leading-[1.72] text-ink-400">
+                        {band.body}
+                      </p>
+
+                      <ResultDelivery
+                        content={content}
+                        score={score}
+                        contact={contact}
+                      />
+
+                      <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-1">
+                        <a
+                          href={`tel:${contact.phoneHref}`}
+                          className="link-arrow text-[14.5px] text-sage-600 transition-colors hover:text-sage-700"
+                        >
+                          <span>{content.callLabel}</span>
+                          <span aria-hidden>→</span>
+                        </a>
+                        <button
+                          type="button"
+                          onClick={reset}
+                          className="text-[12.5px] uppercase tracking-[0.1em] text-clay-400 transition-colors hover:text-sage-600"
+                        >
+                          {content.restartLabel}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-
-              {stage === "result" && (
-                <div className="flex flex-col gap-[clamp(18px,2vw,26px)]">
-                  <div className="flex items-baseline justify-between gap-4">
-                    <span className="text-eyebrow uppercase tracking-[0.2em] text-clay-400">
-                      {content.resultLabel}
-                    </span>
-                    <span className="font-heading text-[20px] font-light tracking-[-0.03em] tabular-nums text-clay-300">
-                      {score} / {maxScore}
-                    </span>
-                  </div>
-
-                  <p className="text-pretty font-heading text-[clamp(24px,2.4vw,34px)] leading-[1.12] tracking-[-0.03em] text-ink-900">
-                    {band.title}
-                  </p>
-                  <p className="text-pretty border-b border-line pb-[clamp(18px,2vw,24px)] text-[15.5px] leading-[1.72] text-ink-400">
-                    {band.body}
-                  </p>
-
-                  <ResultDelivery
-                    content={content}
-                    score={score}
-                    contact={contact}
-                  />
-
-                  <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-1">
-                    <a
-                      href={`tel:${contact.phoneHref}`}
-                      className="link-arrow text-[14.5px] text-sage-600 transition-colors hover:text-sage-700"
-                    >
-                      <span>{content.callLabel}</span>
-                      <span aria-hidden>→</span>
-                    </a>
-                    <button
-                      type="button"
-                      onClick={reset}
-                      className="text-[12.5px] uppercase tracking-[0.1em] text-clay-400 transition-colors hover:text-sage-600"
-                    >
-                      {content.restartLabel}
-                    </button>
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
           </Reveal>
         </div>

@@ -151,6 +151,7 @@
 
   --animate-slow-zoom: slow-zoom 26s ease-in-out infinite alternate;
   --animate-cue: cue 2.6s ease-in-out infinite;
+  --animate-step-in: step-in 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @keyframes slow-zoom {
     from {
@@ -158,6 +159,16 @@
     }
     to {
       transform: scale(1.09);
+    }
+  }
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
     }
   }
   @keyframes cue {
@@ -177,7 +188,7 @@
   --nav-h: 88px;
   --nav-h-sticky: 76px;
   /* Phones only: a fixed hero avoids the jump when the URL bar collapses. */
-  --hero-h: 650px;
+  --hero-h: 600px;
   /* Desktop: full-viewport, but a very tall display shouldn't stretch it. */
   --hero-max: 900px;
 
@@ -368,6 +379,12 @@
 @media (prefers-reduced-motion: reduce) {
   .burger-icon > span {
     transition: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-step-in {
+    animation: none;
   }
 }
 
