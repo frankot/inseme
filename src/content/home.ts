@@ -97,14 +97,23 @@ export const osrodekDefaults: OsrodekContent = {
   figures: [
     {
       src: "/placeholder/dom-taras.jpg",
-      alt: "Taras ośrodka od strony ogrodu",
-      caption:
-        "Taras od strony ogrodu. Śniadanie na zewnątrz od kwietnia do października.",
+      alt: "Taras ośrodka i porośnięta bluszczem elewacja domu",
+      caption: "Taras od strony ogrodu — tu pije się kawę między zajęciami.",
+    },
+    {
+      src: "/placeholder/pokoj.jpg",
+      alt: "Jasny pokój z widokiem na las",
+      caption: "Pokoje dwu- i trzyosobowe, okna na sosny.",
     },
     {
       src: "/placeholder/salon-terapeutyczny.jpg",
-      alt: "Salon z fotelami i widokiem na las",
+      alt: "Salon terapeutyczny z fotelami i widokiem na las",
       caption: "Salon — tu odbywają się grupy.",
+    },
+    {
+      src: "/placeholder/rozmowa.jpg",
+      alt: "Rozmowa indywidualna z terapeutą",
+      caption: "Sesje indywidualne.",
     },
   ],
 };

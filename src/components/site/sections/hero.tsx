@@ -28,7 +28,7 @@ export function Hero({
           src={content.image.src}
           alt={content.image.alt}
           fill
-          priority
+          preload
           sizes="100vw"
           className="object-cover object-[50%_56%] saturate-[.84] brightness-[.94]"
         />
