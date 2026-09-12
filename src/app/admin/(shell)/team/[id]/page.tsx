@@ -31,7 +31,7 @@ export default async function EditTeamMemberPage({
     : null;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <>
       <PageHeader
         title={row.name}
         backHref="/admin/team"
@@ -58,6 +58,7 @@ export default async function EditTeamMemberPage({
         defaultPhoto={photo ? toMediaSummary(photo) : null}
         defaultValues={{
           name: row.name,
+          slug: row.slug,
           role: row.role ?? "",
           qualifications: row.qualifications ?? "",
           shortBio: row.shortBio ?? "",
@@ -66,6 +67,6 @@ export default async function EditTeamMemberPage({
           sortOrder: row.sortOrder,
         }}
       />
-    </div>
+    </>
   );
 }

@@ -5,30 +5,13 @@ import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
-import {
-  createUploadUrl,
-  deleteMedia,
-  registerMedia,
-  updateMediaAltText,
-} from "@/app/admin/(shell)/media/actions";
+import { deleteMedia, updateMediaAltText } from "@/app/admin/(shell)/media/actions";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { MediaSummary } from "@/lib/media-types";
-import { ALLOWED_UPLOAD_TYPES_CLIENT, MAX_UPLOAD_BYTES_CLIENT } from "@/lib/upload-limits";
-
-/** Images get their intrinsic size read in the browser so the DB has real dimensions. */
-async function readImageSize(file: File): Promise<{ width: number; height: number } | null> {
-  if (!file.type.startsWith("image/") || file.type === "image/svg+xml") return null;
-  try {
-    const bitmap = await createImageBitmap(file);
-    const size = { width: bitmap.width, height: bitmap.height };
-    bitmap.close();
-    return size;
-  } catch {
-    return null;
-  }
-}
+import { uploadMediaFile } from "@/lib/media-upload";
+import { ALLOWED_UPLOAD_TYPES_CLIENT } from "@/lib/upload-limits";
 
 export function MediaLibrary({
   initialItems,
@@ -42,51 +25,12 @@ export function MediaLibrary({
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function uploadFile(file: File) {
-    if (file.size > MAX_UPLOAD_BYTES_CLIENT) {
-      toast.error(`${file.name}: plik jest za duży (maks. 15 MB).`);
+    const result = await uploadMediaFile(file);
+    if (!result.ok) {
+      toast.error(result.error);
       return;
     }
-    const contentType = ALLOWED_UPLOAD_TYPES_CLIENT.find((type) => type === file.type);
-    if (!contentType) {
-      toast.error(`${file.name}: nieobsługiwany typ pliku.`);
-      return;
-    }
-
-    const prepared = await createUploadUrl({
-      fileName: file.name,
-      contentType,
-      size: file.size,
-    });
-    if (!prepared.ok) {
-      toast.error(prepared.error);
-      return;
-    }
-
-    const response = await fetch(prepared.data.uploadUrl, {
-      method: "PUT",
-      body: file,
-      headers: { "Content-Type": file.type },
-    });
-    if (!response.ok) {
-      toast.error(`${file.name}: przesyłanie nie powiodło się (${response.status}).`);
-      return;
-    }
-
-    const dimensions = await readImageSize(file);
-    const registered = await registerMedia({
-      key: prepared.data.key,
-      url: prepared.data.publicUrl,
-      mimeType: contentType,
-      size: file.size,
-      width: dimensions?.width ?? null,
-      height: dimensions?.height ?? null,
-    });
-    if (!registered.ok) {
-      toast.error(registered.error);
-      return;
-    }
-
-    setItems((current) => [registered.data, ...current]);
+    setItems((current) => [result.data, ...current]);
     toast.success(`Dodano ${file.name}.`);
   }
 

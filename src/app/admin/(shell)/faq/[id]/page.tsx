@@ -25,7 +25,7 @@ export default async function EditFaqItemPage({ params }: { params: Promise<{ id
   const categories = await getFaqCategories();
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <>
       <PageHeader
         title="Edycja pytania"
         backHref="/admin/faq"
@@ -57,6 +57,6 @@ export default async function EditFaqItemPage({ params }: { params: Promise<{ id
           sortOrder: row.sortOrder,
         }}
       />
-    </div>
+    </>
   );
 }

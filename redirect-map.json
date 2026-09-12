@@ -1,0 +1,10 @@
+{
+  "_comment": [
+    "One-time cutover redirects from the decommissioned old site (§9 of the backend plan).",
+    "Not a CMS content type: the old site is being switched off, so this list is finite.",
+    "Generate a starting point with `npm run redirects:generate -- <old-sitemap-url>`,",
+    "then map each entry by hand — an automated guess at the new URL is worse than none.",
+    "Every entry is a permanent (308) redirect. Add new ones here and redeploy."
+  ],
+  "redirects": []
+}

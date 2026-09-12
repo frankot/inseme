@@ -417,6 +417,111 @@
   }
 }
 
+/**
+ * Sanitised editor HTML (`sanitizeRichText`) injected with dangerouslySetInnerHTML.
+ * The tag list here mirrors `allowedTags` in src/lib/sanitize.ts — anything the
+ * editor can produce needs a rule, since none of it carries classes.
+ */
+@utility rich-text {
+  color: var(--ink-500);
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.72;
+
+  & > * + * {
+    margin-top: 1.15em;
+  }
+
+  & h2,
+  & h3,
+  & h4 {
+    font-family: var(--font-heading), var(--font-sans);
+    color: var(--ink-900);
+    letter-spacing: -0.025em;
+    line-height: 1.18;
+  }
+  & h2 {
+    font-size: clamp(21px, 1.9vw, 26px);
+  }
+  & h3 {
+    font-size: clamp(19px, 1.6vw, 22px);
+  }
+  & h4 {
+    font-size: clamp(17px, 1.35vw, 19px);
+  }
+  & h2 + *,
+  & h3 + *,
+  & h4 + * {
+    margin-top: 0.6em;
+  }
+  & * + h2,
+  & * + h3,
+  & * + h4 {
+    margin-top: 1.8em;
+  }
+
+  & strong {
+    color: var(--ink-900);
+    font-weight: 600;
+  }
+
+  & ul,
+  & ol {
+    padding-left: 1.15em;
+  }
+  & ul {
+    list-style: none;
+  }
+  & ol {
+    list-style: decimal;
+  }
+  & li + li {
+    margin-top: 0.5em;
+  }
+  /* Hairline bullets, to match the rules the rest of the page is built from. */
+  & ul > li {
+    position: relative;
+  }
+  & ul > li::before {
+    content: "";
+    position: absolute;
+    left: -1.15em;
+    top: 0.85em;
+    width: 11px;
+    height: 1px;
+    background: var(--clay-300);
+  }
+
+  & blockquote {
+    border-left: 1px solid var(--line-warm);
+    padding-left: clamp(16px, 1.6vw, 24px);
+    color: var(--ink-400);
+    font-style: italic;
+  }
+
+  & a {
+    color: var(--sage-600);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+  }
+  & a:hover {
+    color: var(--sage-700);
+  }
+
+  & hr {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin-block: 1.8em;
+  }
+
+  & code {
+    font-family: var(--font-mono), monospace;
+    font-size: 0.9em;
+    background: var(--sand);
+    padding: 0.15em 0.4em;
+  }
+}
+
 /** Entry animation driven by <Reveal>; inert until it opts in. */
 @utility reveal-hidden {
   opacity: 0;

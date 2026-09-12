@@ -8,3 +8,9 @@ export const contentStatus = pgEnum("content_status", ["draft", "published"]);
  * live in the same table behind a discriminator rather than a duplicate schema.
  */
 export const pageType = pgEnum("page_type", ["standard", "service"]);
+
+/** Contact inbox lifecycle — an admin marks a message handled once acted on. */
+export const contactStatus = pgEnum("contact_status", ["new", "handled"]);
+
+/** How the person asked to be reached back. */
+export const preferredContact = pgEnum("preferred_contact", ["phone", "email"]);

@@ -14,28 +14,32 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import type { ActionResult } from "@/lib/action-result";
 
-export function ConfirmDelete({
-  onConfirm,
-  title = "Usunąć bezpowrotnie?",
-  description = "Tej operacji nie można cofnąć.",
-  label = "Usuń",
-  iconOnly = false,
-  redirectTo,
-}: {
+type ConfirmProps = {
   onConfirm: () => Promise<ActionResult>;
   title?: string;
   description?: string;
   label?: string;
-  iconOnly?: boolean;
   redirectTo?: string;
-}) {
+};
+
+/**
+ * The confirmation on its own, with no trigger — for callers that already own
+ * the click that starts a delete, such as a row's actions dropdown.
+ */
+export function ConfirmDeleteDialog({
+  open,
+  onOpenChange,
+  onConfirm,
+  title = "Usunąć bezpowrotnie?",
+  description = "Tej operacji nie można cofnąć.",
+  label = "Usuń",
+  redirectTo,
+}: ConfirmProps & { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [isPending, startTransition] = useTransition();
-  const [open, setOpen] = useState(false);
   const router = useRouter();
 
   function handleConfirm() {
@@ -46,7 +50,7 @@ export function ConfirmDelete({
         return;
       }
       // AlertDialogAction is a plain button here — closing is ours to do.
-      setOpen(false);
+      onOpenChange(false);
       toast.success("Usunięto.");
       if (redirectTo) router.push(redirectTo);
       else router.refresh();
@@ -54,20 +58,7 @@ export function ConfirmDelete({
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger
-        render={
-          <Button
-            variant="ghost"
-            size={iconOnly ? "icon" : "sm"}
-            className="text-destructive hover:text-destructive"
-            aria-label={iconOnly ? label : undefined}
-          />
-        }
-      >
-        <Trash2 className="size-4" aria-hidden />
-        {iconOnly ? null : label}
-      </AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
@@ -81,5 +72,32 @@ export function ConfirmDelete({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  );
+}
+
+/** Delete button plus its confirmation, for places that need their own trigger. */
+export function ConfirmDelete({
+  label = "Usuń",
+  iconOnly = false,
+  ...props
+}: ConfirmProps & { iconOnly?: boolean }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <Button
+        type="button"
+        variant="ghost"
+        size={iconOnly ? "icon" : "sm"}
+        className="text-destructive hover:text-destructive"
+        aria-label={iconOnly ? label : undefined}
+        onClick={() => setOpen(true)}
+      >
+        <Trash2 className="size-4" aria-hidden />
+        {iconOnly ? null : label}
+      </Button>
+
+      <ConfirmDeleteDialog open={open} onOpenChange={setOpen} label={label} {...props} />
+    </>
   );
 }

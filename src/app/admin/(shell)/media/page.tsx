@@ -14,7 +14,7 @@ export default async function MediaPage() {
   const rows = await db.select().from(media).orderBy(desc(media.uploadedAt));
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <>
       <PageHeader
         title="Media"
         description="Zdjęcia i pliki używane na stronie. Opis alternatywny (alt) jest ważny dla dostępności i SEO."
@@ -23,6 +23,6 @@ export default async function MediaPage() {
         storageConfigured={getR2Config() !== null}
         initialItems={rows.map(toMediaSummary)}
       />
-    </div>
+    </>
   );
 }

@@ -9,6 +9,10 @@ import { PierwszyKontakt } from "@/components/site/sections/pierwszy-kontakt";
 import { Program } from "@/components/site/sections/program";
 import { TestPrzesiewowy } from "@/components/site/sections/test-przesiewowy";
 import { Testimonial } from "@/components/site/sections/testimonial";
+import { Zespol } from "@/components/site/sections/zespol";
+import { FEATURED_TEST_SLUG } from "@/content/screening";
+import { getScreeningTestBySlug } from "@/lib/queries/screening";
+import { getFeaturedTeam } from "@/lib/queries/team";
 
 export const metadata: Metadata = {
   title: "Insieme — ośrodek terapii uzależnień w Magdalence pod Warszawą",
@@ -18,19 +22,25 @@ export const metadata: Metadata = {
 
 /**
  * Sections take their copy as props and fall back to the defaults in
- * `src/content/home.ts`. When the CMS lands, fetch here and pass the rows
- * down — the components do not change.
+ * `src/content/home.ts`. Zespół is the first that reads real rows — the rest
+ * follow the same shape when their tables get wired up.
  */
-export default function HomePage() {
+export default async function HomePage() {
+  const [featuredTeam, featuredTest] = await Promise.all([
+    getFeaturedTeam(3),
+    getScreeningTestBySlug(FEATURED_TEST_SLUG),
+  ]);
+
   return (
     <>
       <Hero />
       <Osrodek />
+      <Zespol members={featuredTeam} />
       <PierwszyKontakt />
       <Program />
       <JedenDzien />
       <Testimonial />
-      <TestPrzesiewowy />
+      <TestPrzesiewowy test={featuredTest} />
       <Faq />
       <Kontakt />
     </>

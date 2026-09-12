@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import type { MediaSummary } from "@/lib/media-types";
+import { slugify } from "@/lib/slug";
 import { teamMemberSchema, type TeamMemberInput } from "@/lib/validations/content";
 
 export function TeamForm({
@@ -32,6 +33,7 @@ export function TeamForm({
     register,
     handleSubmit,
     control,
+    getValues,
     setValue,
     formState: { errors, isSubmitting },
   } = useForm<TeamMemberInput>({
@@ -59,7 +61,24 @@ export function TeamForm({
         <CardContent className="flex flex-col gap-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Imię i nazwisko" htmlFor="name" error={errors.name?.message}>
-              <Input id="name" {...register("name")} />
+              <Input
+                id="name"
+                {...register("name", {
+                  onBlur: (event) => {
+                    if (!getValues("slug")) {
+                      setValue("slug", slugify(event.target.value), { shouldValidate: true });
+                    }
+                  },
+                })}
+              />
+            </Field>
+            <Field
+              label="Adres (slug)"
+              htmlFor="slug"
+              hint="Strona osoby: /zespol/<slug>. Zmiana zrywa istniejące linki."
+              error={errors.slug?.message}
+            >
+              <Input id="slug" {...register("slug")} />
             </Field>
             <Field label="Rola" htmlFor="role" error={errors.role?.message}>
               <Input id="role" placeholder="np. terapeutka uzależnień" {...register("role")} />

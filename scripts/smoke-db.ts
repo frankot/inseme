@@ -111,8 +111,8 @@ async function main() {
 
   // Team / FAQ ordering ----------------------------------------------------
   await db.insert(schema.teamMembers).values([
-    { name: "Anna", sortOrder: 2 },
-    { name: "Bartosz", sortOrder: 1 },
+    { name: "Anna", slug: "anna", sortOrder: 2 },
+    { name: "Bartosz", slug: "bartosz", sortOrder: 1 },
   ]);
   const team = await db.query.teamMembers.findMany({
     orderBy: (members, { asc }) => [asc(members.sortOrder)],

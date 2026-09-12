@@ -16,7 +16,7 @@ export default async function SettingsPage() {
     : null;
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <>
       <PageHeader
         title="Ustawienia"
         description="Dane kontaktowe i teksty używane w całym serwisie."
@@ -41,6 +41,6 @@ export default async function SettingsPage() {
           defaultOgImageId: row?.defaultOgImageId ?? null,
         }}
       />
-    </div>
+    </>
   );
 }

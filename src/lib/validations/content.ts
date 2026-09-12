@@ -61,6 +61,7 @@ export const pageSchema = z.object({
 
 export const teamMemberSchema = z.object({
   name: z.string().trim().min(1, "Podaj imię i nazwisko.").max(120),
+  slug: slugField,
   role: optionalText,
   qualifications: optionalText,
   shortBio: optionalText,

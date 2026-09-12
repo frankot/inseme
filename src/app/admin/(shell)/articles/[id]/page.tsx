@@ -26,7 +26,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
   const coverImage = mediaRows.find((item) => item.id === row.coverImageId) ?? null;
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <>
       <PageHeader
         title={row.title}
         description={`/${row.slug}`}
@@ -64,6 +64,6 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
           metaDescription: row.metaDescription ?? "",
         }}
       />
-    </div>
+    </>
   );
 }

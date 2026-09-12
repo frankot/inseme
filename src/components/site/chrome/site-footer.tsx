@@ -36,7 +36,7 @@ export function SiteFooter({
         </div>
 
         <FooterColumn title={content.columnTitle}>
-          {content.links.slice(0, 4).map((link) => (
+          {content.links.slice(0, 5).map((link) => (
             <FooterLink key={link.label} href={link.href}>
               {link.label}
             </FooterLink>

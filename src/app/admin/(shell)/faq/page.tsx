@@ -2,8 +2,9 @@ import { asc } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { deleteFaqItem, publishFaqItem, unpublishFaqItem } from "@/app/admin/(shell)/faq/actions";
 import { PageHeader } from "@/components/admin/page-header";
-import { StatusBadge } from "@/components/admin/status-badge";
+import { RowActions } from "@/components/admin/row-actions";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -25,7 +26,7 @@ export default async function FaqListPage() {
     .orderBy(asc(faqItems.category), asc(faqItems.sortOrder));
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <>
       <PageHeader
         title="FAQ"
         description="Najczęstsze pytania. Kategorie pozwalają osadzić wybraną grupę pytań na dowolnej stronie."
@@ -43,7 +44,7 @@ export default async function FaqListPage() {
               <TableHead>Pytanie</TableHead>
               <TableHead className="w-40">Kategoria</TableHead>
               <TableHead className="w-24">Kolejność</TableHead>
-              <TableHead className="w-32">Status</TableHead>
+              <TableHead className="w-36">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -60,13 +61,21 @@ export default async function FaqListPage() {
                 <TableCell className="text-muted-foreground">{row.category ?? "—"}</TableCell>
                 <TableCell className="text-muted-foreground">{row.sortOrder}</TableCell>
                 <TableCell>
-                  <StatusBadge status={row.status} />
+                  <RowActions
+                    label={row.question}
+                    editHref={`/admin/faq/${row.id}`}
+                    status={row.status}
+                    onPublish={publishFaqItem.bind(null, row.id)}
+                    onUnpublish={unpublishFaqItem.bind(null, row.id)}
+                    onDelete={deleteFaqItem.bind(null, row.id)}
+                    deleteTitle="Usunąć pytanie?"
+                  />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       )}
-    </div>
+    </>
   );
 }

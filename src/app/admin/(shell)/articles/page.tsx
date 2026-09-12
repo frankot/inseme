@@ -2,8 +2,13 @@ import { desc } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import {
+  deleteArticle,
+  publishArticle,
+  unpublishArticle,
+} from "@/app/admin/(shell)/articles/actions";
 import { PageHeader } from "@/components/admin/page-header";
-import { StatusBadge } from "@/components/admin/status-badge";
+import { RowActions } from "@/components/admin/row-actions";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -22,7 +27,7 @@ export default async function ArticlesListPage() {
   const rows = await db.select().from(articles).orderBy(desc(articles.updatedAt));
 
   return (
-    <div className="mx-auto max-w-5xl">
+    <>
       <PageHeader
         title="Artykuły"
         description="Poradnik. Każdy artykuł wymaga wskazania osoby weryfikującej przed publikacją."
@@ -40,7 +45,7 @@ export default async function ArticlesListPage() {
               <TableHead>Tytuł</TableHead>
               <TableHead className="w-48">Weryfikacja</TableHead>
               <TableHead className="w-40">Aktualizacja</TableHead>
-              <TableHead className="w-32">Status</TableHead>
+              <TableHead className="w-36">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -62,13 +67,21 @@ export default async function ArticlesListPage() {
                   {row.updatedAt.toLocaleDateString("pl-PL")}
                 </TableCell>
                 <TableCell>
-                  <StatusBadge status={row.status} />
+                  <RowActions
+                    label={row.title}
+                    editHref={`/admin/articles/${row.id}`}
+                    status={row.status}
+                    onPublish={publishArticle.bind(null, row.id)}
+                    onUnpublish={unpublishArticle.bind(null, row.id)}
+                    onDelete={deleteArticle.bind(null, row.id)}
+                    deleteTitle="Usunąć artykuł?"
+                  />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       )}
-    </div>
+    </>
   );
 }

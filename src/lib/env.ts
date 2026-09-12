@@ -17,6 +17,27 @@ const envSchema = z.object({
   R2_SECRET_ACCESS_KEY: z.string().optional(),
   R2_BUCKET: z.string().optional(),
   R2_PUBLIC_URL: z.url().optional(),
+
+  // Phase B3 — e-mail delivery. Without these the screening result is still
+  // scored, stored and shown on screen; only the PDF e-mail is skipped.
+  RESEND_API_KEY: z.string().optional(),
+  RESEND_FROM: z.string().optional(),
+  /** Where contact-form notifications land. Falls back to `settings.email`. */
+  NOTIFY_EMAIL: z.union([z.literal(""), z.email()]).optional(),
+
+  // Phase B4 — spam throttling. Absent, submissions still work and are only
+  // guarded by the honeypot; see `src/lib/rate-limit.ts`.
+  UPSTASH_REDIS_REST_URL: z.union([z.literal(""), z.url()]).optional(),
+  UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
+
+  // Phase B5 — retention job. The cron route rejects any request without it,
+  // so a missing secret disables the endpoint rather than opening it.
+  CRON_SECRET: z.string().optional(),
+  /** How long personal data is kept before the job soft-deletes it. */
+  DATA_RETENTION_MONTHS: z.coerce.number().int().min(1).max(120).default(24),
+
+  /** Canonical origin, used for absolute links in e-mails and the PDF. */
+  NEXT_PUBLIC_SITE_URL: z.url().default("https://osrodek-insieme.pl"),
 });
 
 const parsed = envSchema.safeParse(process.env);

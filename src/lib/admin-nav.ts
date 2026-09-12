@@ -5,6 +5,7 @@ import {
   Image,
   Inbox,
   LayoutDashboard,
+  Mail,
   ListChecks,
   Newspaper,
   Settings,
@@ -28,7 +29,7 @@ export const adminNav: AdminNavItem[] = [
   { href: "/admin/faq", label: "FAQ", icon: HelpCircle, available: true, phase: "B2" },
   { href: "/admin/articles", label: "Artykuły", icon: Newspaper, available: true, phase: "B2" },
   { href: "/admin/media", label: "Media", icon: Image, available: true, phase: "B2" },
-  { href: "/admin/tests", label: "Testy przesiewowe", icon: ListChecks, available: false, phase: "B3" },
-  { href: "/admin/leads", label: "Leady", icon: Inbox, available: false, phase: "B4" },
-  { href: "/admin/contact", label: "Wiadomości", icon: Inbox, available: false, phase: "B4" },
+  { href: "/admin/tests", label: "Testy przesiewowe", icon: ListChecks, available: true, phase: "B3" },
+  { href: "/admin/leads", label: "Adresy", icon: Mail, available: true, phase: "B4" },
+  { href: "/admin/contact", label: "Wiadomości", icon: Inbox, available: true, phase: "B4" },
 ];

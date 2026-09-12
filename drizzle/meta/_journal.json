@@ -15,6 +15,20 @@
       "when": 1787037662785,
       "tag": "0001_nasty_sandman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789027015773,
+      "tag": "0002_magenta_dreaming_celestial",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789031190125,
+      "tag": "0003_safe_raza",
+      "breakpoints": true
     }
   ]
 }

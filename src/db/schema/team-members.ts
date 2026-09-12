@@ -6,6 +6,8 @@ import { media } from "./media";
 export const teamMembers = pgTable("team_members", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
+  /** Public URL segment: /zespol/<slug>. Editable, so a corrected name keeps the old link. */
+  slug: text("slug").notNull().unique(),
   role: text("role"),
   qualifications: text("qualifications"),
   shortBio: text("short_bio"),

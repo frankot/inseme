@@ -13,7 +13,7 @@ export default async function NewPagePage() {
   const mediaRows = await db.select().from(media).orderBy(desc(media.uploadedAt));
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <>
       <PageHeader
         title="Nowa strona"
         backHref="/admin/pages"
@@ -35,6 +35,6 @@ export default async function NewPagePage() {
           metaDescription: "",
         }}
       />
-    </div>
+    </>
   );
 }

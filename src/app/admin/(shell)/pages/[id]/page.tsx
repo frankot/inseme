@@ -22,7 +22,7 @@ export default async function EditPagePage({ params }: { params: Promise<{ id: s
   const ogImage = mediaRows.find((item) => item.id === row.ogImageId) ?? null;
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <>
       <PageHeader
         title={row.title}
         description={`/${row.slug}`}
@@ -61,6 +61,6 @@ export default async function EditPagePage({ params }: { params: Promise<{ id: s
           metaDescription: row.metaDescription ?? "",
         }}
       />
-    </div>
+    </>
   );
 }

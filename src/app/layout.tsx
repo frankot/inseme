@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Work_Sans } from "next/font/google";
+import { Jost, Work_Sans } from "next/font/google";
 import "./globals.css";
 
 /**
@@ -7,9 +7,8 @@ import "./globals.css";
  * ships only `wght` by default, and Bricolage's optical-size default is 14, so
  * without this the 100px hero headline would render with the small-text design.
  */
-const display = Bricolage_Grotesque({
+const display = Jost({
   subsets: ["latin", "latin-ext"],
-  axes: ["opsz"],
   display: "swap",
   variable: "--font-display",
 });

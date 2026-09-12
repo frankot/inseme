@@ -2,8 +2,13 @@ import { asc } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import {
+  deleteTeamMember,
+  publishTeamMember,
+  unpublishTeamMember,
+} from "@/app/admin/(shell)/team/actions";
 import { PageHeader } from "@/components/admin/page-header";
-import { StatusBadge } from "@/components/admin/status-badge";
+import { RowActions } from "@/components/admin/row-actions";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -25,10 +30,10 @@ export default async function TeamListPage() {
     .orderBy(asc(teamMembers.sortOrder), asc(teamMembers.name));
 
   return (
-    <div className="mx-auto max-w-4xl">
+    <>
       <PageHeader
         title="Zespół"
-        description="Terapeuci i personel ośrodka. Kolejność ustala pole „Kolejność”."
+        description="Terapeuci i personel ośrodka. Kolejność ustala pole „Kolejność” — pierwsze trzy osoby trafiają też na stronę główną."
         actions={
           <Button render={<Link href="/admin/team/new" />}>Dodaj osobę</Button>
         }
@@ -44,8 +49,9 @@ export default async function TeamListPage() {
             <TableRow>
               <TableHead>Imię i nazwisko</TableHead>
               <TableHead>Rola</TableHead>
+              <TableHead>Adres</TableHead>
               <TableHead className="w-24">Kolejność</TableHead>
-              <TableHead className="w-32">Status</TableHead>
+              <TableHead className="w-36">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -57,15 +63,38 @@ export default async function TeamListPage() {
                   </Link>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{row.role ?? "—"}</TableCell>
+                <TableCell className="text-muted-foreground">
+                  {row.status === "published" ? (
+                    <a
+                      href={`/zespol/${row.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline-offset-4 hover:underline"
+                    >
+                      /zespol/{row.slug}
+                    </a>
+                  ) : (
+                    <span>/zespol/{row.slug}</span>
+                  )}
+                </TableCell>
                 <TableCell className="text-muted-foreground">{row.sortOrder}</TableCell>
                 <TableCell>
-                  <StatusBadge status={row.status} />
+                  <RowActions
+                    label={row.name}
+                    editHref={`/admin/team/${row.id}`}
+                    status={row.status}
+                    publicHref={`/zespol/${row.slug}`}
+                    onPublish={publishTeamMember.bind(null, row.id)}
+                    onUnpublish={unpublishTeamMember.bind(null, row.id)}
+                    onDelete={deleteTeamMember.bind(null, row.id)}
+                    deleteTitle="Usunąć osobę?"
+                  />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       )}
-    </div>
+    </>
   );
 }

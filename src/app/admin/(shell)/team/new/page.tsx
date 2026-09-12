@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Nowa osoba — panel Insieme" };
 
 export default function NewTeamMemberPage() {
   return (
-    <div className="mx-auto max-w-3xl">
+    <>
       <PageHeader
         title="Nowa osoba"
         backHref="/admin/team"
@@ -18,6 +18,7 @@ export default function NewTeamMemberPage() {
         defaultPhoto={null}
         defaultValues={{
           name: "",
+          slug: "",
           role: "",
           qualifications: "",
           shortBio: "",
@@ -26,6 +27,6 @@ export default function NewTeamMemberPage() {
           sortOrder: 0,
         }}
       />
-    </div>
+    </>
   );
 }

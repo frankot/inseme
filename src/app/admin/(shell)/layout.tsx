@@ -21,10 +21,13 @@ export default async function AdminShellLayout({ children }: { children: ReactNo
       </header>
 
       <div className="flex flex-1">
-        <aside className="hidden w-64 shrink-0 border-r px-2 py-4 lg:block">
+        {/* Sticky under the 3.5rem header, so the nav stays put while a long list scrolls. */}
+        <aside className="sticky top-14 hidden h-[calc(100svh_-_3.5rem)] w-64 shrink-0 overflow-y-auto border-r px-2 py-4 lg:block">
           <NavLinks />
         </aside>
-        <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">{children}</main>
+        <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">
+          <div className="mx-auto w-full max-w-5xl">{children}</div>
+        </main>
       </div>
 
       <Toaster />

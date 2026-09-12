@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { db } from "@/db";
 import { articles, faqItems, media, pages, teamMembers } from "@/db/schema";
 import { adminNav } from "@/lib/admin-nav";
+import { getLeadStats, getNewContactCount } from "@/lib/queries/leads";
 
 export const metadata: Metadata = {
   title: "Pulpit — panel Insieme",
@@ -25,8 +26,16 @@ async function countsFor(table: typeof pages | typeof articles | typeof teamMemb
 export default async function AdminDashboardPage() {
   const session = await auth();
 
-  const [pageCounts, articleCounts, teamCounts, faqCounts, [mediaCount], recent] =
-    await Promise.all([
+  const [
+    pageCounts,
+    articleCounts,
+    teamCounts,
+    faqCounts,
+    [mediaCount],
+    recent,
+    newMessages,
+    leadStats,
+  ] = await Promise.all([
       countsFor(pages),
       countsFor(articles),
       countsFor(teamMembers),
@@ -42,6 +51,8 @@ export default async function AdminDashboardPage() {
         .from(pages)
         .orderBy(desc(pages.updatedAt))
         .limit(5),
+      getNewContactCount(),
+      getLeadStats(),
     ]);
 
   const tiles = [
@@ -54,12 +65,36 @@ export default async function AdminDashboardPage() {
   const upcoming = adminNav.filter((item) => !item.available);
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-6">
+    <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Pulpit</h1>
         <p className="mt-1 text-sm text-muted-foreground">
           Zalogowano jako {session?.user?.email}.
         </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Link
+          href="/admin/contact"
+          className="rounded-lg border p-4 transition-colors hover:border-ring data-[waiting=true]:border-ring"
+          data-waiting={newMessages > 0}
+        >
+          <p className="text-sm text-muted-foreground">Nowe wiadomości</p>
+          <p className="mt-1 text-2xl font-semibold">{newMessages}</p>
+          <p className="text-xs text-muted-foreground">
+            {newMessages === 0 ? "Skrzynka pusta." : "Czekają na odpowiedź."}
+          </p>
+        </Link>
+        <Link
+          href="/admin/leads"
+          className="rounded-lg border p-4 transition-colors hover:border-ring"
+        >
+          <p className="text-sm text-muted-foreground">Zebrane adresy</p>
+          <p className="mt-1 text-2xl font-semibold">{leadStats.unique}</p>
+          <p className="text-xs text-muted-foreground">
+            {leadStats.signups} z zapisu, {leadStats.tests} z testów
+          </p>
+        </Link>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -112,6 +147,7 @@ export default async function AdminDashboardPage() {
         </CardContent>
       </Card>
 
+      {upcoming.length > 0 && (
       <Card>
         <CardHeader>
           <CardTitle>W kolejnych fazach</CardTitle>
@@ -133,6 +169,7 @@ export default async function AdminDashboardPage() {
           </ul>
         </CardContent>
       </Card>
+      )}
     </div>
   );
 }

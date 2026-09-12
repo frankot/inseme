@@ -32,23 +32,29 @@ export const contactDefaults: SiteContact = {
 
 export type NavItem = { label: string; href: string };
 
+/**
+ * The desktop bar fits five items beside the logo and the phone button. Adding
+ * Zespół pushed "Pytania" out — it stays in the mobile panel and the footer,
+ * and the FAQ section is still reachable by scrolling.
+ */
 export const navDefaults: NavItem[] = [
-  { label: "Pierwszy kontakt", href: "#pierwszy-kontakt" },
-  { label: "Ośrodek", href: "#miejsce" },
-  { label: "Program", href: "#program" },
-  { label: "Test", href: "#test" },
-  { label: "Pytania", href: "#faq" },
+  { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
+  { label: "Ośrodek", href: "/#miejsce" },
+  { label: "Zespół", href: "/zespol" },
+  { label: "Program", href: "/#program" },
+  { label: "Testy", href: "/testy" },
 ];
 
 /** The mobile panel lists a couple of anchors the desktop bar has no room for. */
 export const mobileNavDefaults: NavItem[] = [
-  { label: "Pierwszy kontakt", href: "#pierwszy-kontakt" },
-  { label: "Ośrodek", href: "#miejsce" },
-  { label: "Program", href: "#program" },
-  { label: "Jeden dzień", href: "#dzien" },
-  { label: "Test przesiewowy", href: "#test" },
-  { label: "Pytania", href: "#faq" },
-  { label: "Kontakt", href: "#kontakt" },
+  { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
+  { label: "Ośrodek", href: "/#miejsce" },
+  { label: "Zespół", href: "/zespol" },
+  { label: "Program", href: "/#program" },
+  { label: "Jeden dzień", href: "/#dzien" },
+  { label: "Testy przesiewowe", href: "/testy" },
+  { label: "Pytania", href: "/#faq" },
+  { label: "Kontakt", href: "/kontakt" },
 ];
 
 /* -------------------------------------------------------------------- hero */
@@ -133,7 +139,7 @@ export type PierwszyKontaktContent = {
 };
 
 export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
-  index: "02",
+  index: "03",
   eyebrow: "Pierwszy kontakt",
   title: "Co się dzieje po tym, jak podniesiesz słuchawkę.",
   lead: "Cztery kroki. Pierwszy trwa kilka minut, ostatni zwykle zdarza się tego samego albo następnego dnia.",
@@ -184,7 +190,7 @@ export type ProgramContent = {
 };
 
 export const programDefaults: ProgramContent = {
-  index: "03",
+  index: "04",
   eyebrow: "Program",
   note: "Każdy pobyt ustalamy przez telefon, przed przyjazdem.",
   cards: [
@@ -194,7 +200,7 @@ export const programDefaults: ProgramContent = {
       title: "Detoks",
       body: "7–10 dni pod opieką lekarza. Przyjmujemy zwykle tego samego dnia, w którym dzwonisz.",
       linkLabel: "Zapytaj o miejsce",
-      href: "#kontakt",
+      href: "/#kontakt",
     },
     {
       index: "02",
@@ -202,7 +208,7 @@ export const programDefaults: ProgramContent = {
       title: "Terapia 28 dni",
       body: "Program podstawowy: grupa, rozmowy indywidualne, psychoedukacja. Można skrócić albo wydłużyć.",
       linkLabel: "Zobacz plan dnia",
-      href: "#dzien",
+      href: "/#dzien",
     },
     {
       index: "03",
@@ -219,7 +225,7 @@ export const programDefaults: ProgramContent = {
       title: "Po pobycie",
       body: "Grupa wsparcia raz w tygodniu i kontakt z terapeutą, także po wyjeździe z ośrodka.",
       linkLabel: "Napisz do nas",
-      href: "#kontakt",
+      href: "/#kontakt",
     },
   ],
 };
@@ -236,7 +242,7 @@ export type JedenDzienContent = {
 };
 
 export const jedenDzienDefaults: JedenDzienContent = {
-  index: "04",
+  index: "05",
   eyebrow: "Jeden zwykły dzień",
   title: "Nie wiesz, co Cię czeka. To najtrudniejsza część.",
   entries: [
@@ -302,7 +308,7 @@ export type TestContent = {
 };
 
 export const testDefaults: TestContent = {
-  index: "05",
+  index: "06",
   eyebrow: "Test przesiewowy",
   title: "Pięć pytań, które można zadać sobie bez świadków.",
   lead: "Odpowiedzi nie zapisujemy i nie wysyłamy nikomu. Wynik zobaczysz od razu na ekranie — a jeśli chcesz go zachować, wyślemy go w PDF na wskazany adres.",
@@ -368,7 +374,7 @@ export type FaqContent = {
 };
 
 export const faqDefaults: FaqContent = {
-  index: "06",
+  index: "07",
   eyebrow: "Pytania",
   title: "Pytania, które trudno zadać na głos.",
   note: "Odpowiadamy tak samo przez telefon. Jeśli czegoś tu brakuje — zapytaj, nie ma pytań niewygodnych.",
@@ -427,7 +433,7 @@ export type KontaktContent = {
 };
 
 export const kontaktDefaults: KontaktContent = {
-  index: "07",
+  index: "08",
   eyebrow: "Kontakt",
   title: "Zadzwoń dziś, przyjedź kiedy będziesz gotowy.",
   privacyNote:
@@ -471,11 +477,12 @@ export const footerDefaults: FooterContent = {
   tagline: "ośrodek terapii uzależnień",
   columnTitle: "Strona",
   links: [
-    { label: "Pierwszy kontakt", href: "#pierwszy-kontakt" },
-    { label: "Testy przesiewowe", href: "#test" },
-    { label: "Cennik i pobyt", href: "#kontakt" },
-    { label: "O nas", href: "#miejsce" },
-    { label: "Kontakt", href: "#kontakt" },
+    { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
+    { label: "Testy przesiewowe", href: "/testy" },
+    { label: "Zespół", href: "/zespol" },
+    { label: "Cennik i pobyt", href: "/#kontakt" },
+    { label: "O nas", href: "/#miejsce" },
+    { label: "Kontakt", href: "/kontakt" },
   ],
   privacyLabel: "Polityka prywatności · RODO",
   privacyHref: "#",

@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import { SiteImage } from "@/components/site/ui/site-image";
 import {
@@ -33,19 +34,33 @@ const DESKTOP_QUERY = "(min-width: 961px)";
 
 type Tone = "dark" | "light";
 
+/**
+ * `hero`  — the homepage: a transparent bar on the photograph plus the fixed
+ *           compact bar that the scroll logic above reveals and hides.
+ * `solid` — every subpage: there is no photograph to sit on and nothing to
+ *           scroll past, so the compact bar is simply sticky and always there.
+ *           The scroll listener is skipped entirely — its ARM_AFTER threshold
+ *           assumes a full-height hero below it.
+ */
+export type HeaderVariant = "hero" | "solid";
+
 export function SiteHeader({
   nav = navDefaults,
   mobileNav = mobileNavDefaults,
   contact = contactDefaults,
+  variant = "hero",
 }: {
   nav?: NavItem[];
   mobileNav?: NavItem[];
   contact?: SiteContact;
+  variant?: HeaderVariant;
 }) {
+  const solid = variant === "solid";
   const [menuOpen, setMenuOpen] = useState(false);
   const [stickyOn, setStickyOn] = useState(false);
 
   useEffect(() => {
+    if (solid) return;
     // Travel accumulated since the last direction change, so a few stray
     // pixels — or a trackpad's momentum wobble — don't flip the bar.
     let up = 0;
@@ -128,7 +143,7 @@ export function SiteHeader({
       window.removeEventListener("resize", onResize);
       desktop.removeEventListener("change", evaluate);
     };
-  }, []);
+  }, [solid]);
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -146,7 +161,7 @@ export function SiteHeader({
   const close = useCallback(() => setMenuOpen(false), []);
   // Opening the menu always brings the solid compact bar in, even at the top of
   // the page: the panel needs a real bar above it, not the transparent hero one.
-  const barShown = stickyOn || menuOpen;
+  const barShown = solid || stickyOn || menuOpen;
   const toggle = useCallback(() => setMenuOpen((open) => !open), []);
 
   return (
@@ -158,13 +173,18 @@ export function SiteHeader({
       <header
         inert={!barShown}
         className={cn(
-          "fixed inset-x-0 top-0 z-70 border-b border-line-strong bg-cream",
+          "inset-x-0 top-0 z-70 border-b border-line-strong bg-cream",
+          // Subpages have no hero to overlap, so the bar takes up its own space
+          // and stays put; on the homepage it floats over the photograph.
+          solid ? "sticky" : "fixed",
           // Pure slide, no cross-fade: the bar travels, it does not dissolve.
           // Entry decelerates into place, exit accelerates away.
-          "will-change-transform transition-transform motion-reduce:transition-none",
-          barShown
-            ? "translate-y-0 duration-[520ms] ease-[cubic-bezier(.16,1,.3,1)]"
-            : "-translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]",
+          !solid &&
+            "will-change-transform transition-transform motion-reduce:transition-none",
+          !solid &&
+            (barShown
+              ? "translate-y-0 duration-[520ms] ease-[cubic-bezier(.16,1,.3,1)]"
+              : "-translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]"),
         )}
       >
         <Bar
@@ -196,14 +216,14 @@ export function SiteHeader({
       >
         <div className="mx-auto flex w-full max-w-[1440px] flex-auto flex-col justify-center gap-0.5 overflow-y-auto px-gutter pt-[clamp(16px,4vw,32px)] pb-[clamp(36px,7vw,56px)]">
           {mobileNav.map((item) => (
-            <a
+            <NavAnchor
               key={item.href + item.label}
               href={item.href}
               onClick={close}
               className="font-heading text-mob-link text-ink-900 transition-colors hover:text-sage-600"
             >
               {item.label}
-            </a>
+            </NavAnchor>
           ))}
           <a
             href={`tel:${contact.phoneHref}`}
@@ -223,6 +243,7 @@ export function SiteHeader({
 
       {/* Transparent bar on the hero photo; yields to the compact bar when the
           menu opens so only one header is ever on screen. */}
+      {!solid && (
       <header
         inert={menuOpen}
         className={cn(
@@ -241,7 +262,38 @@ export function SiteHeader({
           tagline
         />
       </header>
+      )}
     </>
+  );
+}
+
+/**
+ * A nav destination. Anchors and `tel:` stay plain <a> — Link has nothing to
+ * prefetch and would swallow the fragment scroll; real routes get client-side
+ * navigation and prefetching.
+ */
+function NavAnchor({
+  href,
+  children,
+  className,
+  onClick,
+}: {
+  href: string;
+  children: ReactNode;
+  className?: string;
+  onClick?: () => void;
+}) {
+  if (href.startsWith("/") && !href.startsWith("/#")) {
+    return (
+      <Link href={href} onClick={onClick} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} onClick={onClick} className={className}>
+      {children}
+    </a>
   );
 }
 
@@ -273,8 +325,8 @@ function Bar({
         height,
       )}
     >
-      <a
-        href="#gora"
+      <Link
+        href="/"
         className={cn(
           "flex shrink-0",
           tagline ? "flex-col gap-[5px]" : "items-center",
@@ -291,11 +343,11 @@ function Bar({
             ośrodek terapii uzależnień
           </span>
         )}
-      </a>
+      </Link>
 
       <nav className="hidden items-center gap-[clamp(16px,1.9vw,32px)] nav:flex">
         {nav.map((item) => (
-          <a
+          <NavAnchor
             key={item.href + item.label}
             href={item.href}
             className={cn(
@@ -306,7 +358,7 @@ function Bar({
             )}
           >
             {item.label}
-          </a>
+          </NavAnchor>
         ))}
         <a
           href={`tel:${contact.phoneHref}`}

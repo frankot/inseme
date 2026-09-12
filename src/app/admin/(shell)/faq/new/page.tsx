@@ -10,13 +10,13 @@ export default async function NewFaqItemPage() {
   const categories = await getFaqCategories();
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <>
       <PageHeader title="Nowe pytanie" backHref="/admin/faq" />
       <FaqForm
         id={null}
         categories={categories}
         defaultValues={{ question: "", answer: "", category: "", sortOrder: 0 }}
       />
-    </div>
+    </>
   );
 }

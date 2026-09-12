@@ -126,7 +126,7 @@ export async function updateMediaAltText(
 
     await db
       .update(media)
-      .set({ altText: parsed.data.altText })
+      .set({ altText: parsed.data.altText || null })
       .where(eq(media.id, parsed.data.id));
 
     revalidatePath("/admin/media");

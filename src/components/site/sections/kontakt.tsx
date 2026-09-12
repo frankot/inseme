@@ -1,3 +1,4 @@
+import { ContactForm } from "@/components/site/ui/contact-form";
 import { Container } from "@/components/site/ui/container";
 import { Reveal } from "@/components/site/ui/reveal";
 import { SectionRule } from "@/components/site/ui/section-rule";
@@ -55,6 +56,30 @@ export function Kontakt({
               <br />
               {contact.hours}
             </span>
+
+            <p className="mt-2 border-t border-on-dark-3/16 pt-4 text-[13px] leading-[1.7] text-on-dark-faint">
+              Wolisz napisać? Formularz jest niżej — odpowiadamy tego samego dnia.
+            </p>
+          </div>
+        </Reveal>
+
+        {/*
+          The phone stays the primary route; the form is for people who will not
+          call. It sits directly under the dark panel rather than inside it, so
+          the panel's typography is untouched.
+        */}
+        <Reveal className="mt-gap border border-line bg-bone p-[clamp(24px,3vw,48px)]">
+          <div className="flex flex-wrap gap-x-[clamp(24px,4vw,72px)] gap-y-8">
+            <div className="max-w-[24em] flex-[1_1_18em]">
+              <h3 className="mb-3 text-pretty font-heading text-display-sm text-ink-900">
+                Napisz, jeśli nie chcesz dzwonić.
+              </h3>
+              <p className="text-[15.5px] leading-[1.72] text-ink-400">
+                Nie musisz podawać nazwiska ani opisywać wszystkiego. Wystarczy zdanie o tym,
+                co się dzieje, i sposób kontaktu.
+              </p>
+            </div>
+            <ContactForm contact={contact} className="min-w-0 flex-[1_1_22em]" />
           </div>
         </Reveal>
 

@@ -1,3 +1,5 @@
+import * as React from "react"
+
 import { Button as ButtonPrimitive } from "@base-ui/react/button"
 import { cva, type VariantProps } from "class-variance-authority"
 
@@ -44,11 +46,20 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  render,
+  nativeButton,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  // `render` swaps the underlying element (e.g. a Link), which drops native
+  // button semantics; Base UI needs to know so it can polyfill them.
+  const isNativeButton =
+    nativeButton ?? (!React.isValidElement(render) || render.type === "button")
+
   return (
     <ButtonPrimitive
       data-slot="button"
+      render={render}
+      nativeButton={isNativeButton}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
     />
