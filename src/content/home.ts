@@ -222,33 +222,93 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
 
 /* ----------------------------------------------------------------- ścieżki */
 
+export type PathPoint = { title: string; body: string };
+
 export type HeroPath = {
   id: ContactPathId;
   title: string;
   body: string;
+  /** Bottom line of the card, in each of its two states. */
+  chooseLabel: string;
+  selectedLabel: string;
+  /** Everything below the cards swaps with the choice. */
+  panelLead: string;
+  points: PathPoint[];
+  /** Down to section 03, which is already showing this path's steps. */
   ctaLabel: string;
+  secondaryLabel: string;
+  secondaryHref: string;
 };
 
 export type SciezkiContent = {
+  eyebrow: string;
+  title: string;
   paths: HeroPath[];
   note: string;
   phoneLabel: string;
 };
 
-/** The two cards that straddle the bottom edge of the hero. */
+/**
+ * The unnumbered section right under the hero: pick the path you are on, and
+ * read three short promises made to that group before anything else. It carries
+ * no numeral on purpose — it is the fork the numbered run hangs off, not a step
+ * in it — and the choice follows the visitor down to section 03.
+ */
 export const sciezkiDefaults: SciezkiContent = {
+  eyebrow: "Od czego zacząć",
+  title: "Zacznij od tego, kogo to dotyczy.",
   paths: [
     {
       id: "self",
       title: "To o mnie",
       body: "Chcę przestać, ale nie wiem, od czego zacząć ani co się stanie po przyjeździe.",
+      chooseLabel: "Wybierz tę ścieżkę",
+      selectedLabel: "Czytasz tę ścieżkę",
+      panelLead:
+        "Najtrudniejszy jest pierwszy telefon. Wszystko inne ustalamy już w jego trakcie.",
+      points: [
+        {
+          title: "Bez nazwiska",
+          body: "Do rozmowy nie potrzebujemy danych, diagnozy ani dokumentów.",
+        },
+        {
+          title: "Bez czekania",
+          body: "Przy detoksie zwykle przyjmujemy tego samego dnia, w którym dzwonisz.",
+        },
+        {
+          title: "Bez oferty",
+          body: "Cenę podajemy w pierwszej rozmowie i nie dzwonimy drugi raz bez Twojej zgody.",
+        },
+      ],
       ctaLabel: "Zobacz, co dzieje się po telefonie",
+      secondaryLabel: "Wypełnij test przesiewowy",
+      secondaryHref: "/testy",
     },
     {
       id: "family",
       title: "Chodzi o kogoś bliskiego",
       body: "Boję się o kogoś i nie wiem, jak rozmawiać, żeby nie zamknąć drzwi na dobre.",
+      chooseLabel: "Wybierz tę ścieżkę",
+      selectedLabel: "Czytasz tę ścieżkę",
+      panelLead:
+        "Najczęściej dzwoni ktoś, kto boi się, że jednym zdaniem pogorszy sprawę. Od tego zaczynamy.",
+      points: [
+        {
+          title: "Bez jego zgody",
+          body: "Możesz zadzwonić, zanim ta osoba w ogóle będzie chciała o tym słyszeć.",
+        },
+        {
+          title: "Bez kontaktu za plecami",
+          body: "Sami nie dzwonimy do niej ani nie piszemy — ani teraz, ani później.",
+        },
+        {
+          title: "Bez jednej rozmowy na zawsze",
+          body: "Możesz wrócić za tydzień albo za pół roku. Nie zaczynamy wtedy od zera.",
+        },
+      ],
       ctaLabel: "Jak rozmawiać, jak pomóc",
+      secondaryLabel: "Zobacz wsparcie dla rodziny",
+      secondaryHref: "/#program",
     },
   ],
   note: "albo po prostu zadzwoń —",

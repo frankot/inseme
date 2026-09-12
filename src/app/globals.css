@@ -189,10 +189,8 @@
   --nav-h-sticky: 76px;
   /* Phones only: a fixed hero avoids the jump when the URL bar collapses. */
   --hero-h: 600px;
-  /* Desktop: past the fold by the overhang below, capped on very tall displays. */
-  --hero-max: 1180px;
-  /* How far the two path cards hang back up into the hero. */
-  --hero-overhang: clamp(56px, 6.5vw, 104px);
+  /* Desktop: full-viewport, but a very tall display shouldn't stretch it. */
+  --hero-max: 900px;
 
   /* --- Insieme brand palette --- */
   --cream: oklch(0.9848 0.0054 95.1); /* #FBFAF6 */
