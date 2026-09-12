@@ -128,9 +128,18 @@ export const osrodekDefaults: OsrodekContent = {
 
 export type Step = { index: string; title: string; body: string };
 
-export type PierwszyKontaktContent = {
-  index: string;
-  eyebrow: string;
+/**
+ * Two ways into the same ośrodek: the person who drinks, and the person who is
+ * frightened for someone who does. They need different first sentences, so the
+ * hero cards and section 03 carry a full set of copy each rather than one text
+ * with a swapped pronoun.
+ */
+export type ContactPathId = "self" | "family";
+
+export type ContactPath = {
+  id: ContactPathId;
+  /** Label on the switch in section 03. */
+  tabLabel: string;
   title: string;
   lead: string;
   steps: Step[];
@@ -138,35 +147,112 @@ export type PierwszyKontaktContent = {
   ctaLabel: string;
 };
 
+export type PierwszyKontaktContent = {
+  index: string;
+  eyebrow: string;
+  paths: ContactPath[];
+};
+
 export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
   index: "03",
   eyebrow: "Pierwszy kontakt",
-  title: "Co się dzieje po tym, jak podniesiesz słuchawkę.",
-  lead: "Cztery kroki. Pierwszy trwa kilka minut, ostatni zwykle zdarza się tego samego albo następnego dnia.",
-  steps: [
+  paths: [
     {
-      index: "01",
-      title: "Telefon",
-      body: "Odbiera terapeuta z ośrodka. Nie musisz wiedzieć, co powiedzieć — możesz zacząć od zdania: „potrzebuję porozmawiać o terapii dla siebie” albo „dla bliskiej osoby”.",
+      id: "self",
+      tabLabel: "Dla siebie",
+      title: "Co się dzieje po tym, jak podniesiesz słuchawkę.",
+      lead: "Cztery kroki. Pierwszy trwa kilka minut, ostatni zwykle zdarza się tego samego albo następnego dnia.",
+      steps: [
+        {
+          index: "01",
+          title: "Telefon",
+          body: "Odbiera terapeuta z ośrodka. Nie musisz wiedzieć, co powiedzieć — możesz zacząć od zdania: „potrzebuję porozmawiać o terapii dla siebie”.",
+        },
+        {
+          index: "02",
+          title: "O co zapytamy",
+          body: "Od jak dawna to trwa, co działo się w ostatnich dniach, jakie leki przyjmujesz, czy było już leczenie. Nie potrzebujemy nazwiska, diagnozy ani dokumentów.",
+        },
+        {
+          index: "03",
+          title: "Co ustalamy w tej samej rozmowie",
+          body: "Czy potrzebny jest detoks, kiedy jest wolne miejsce, ile potrwa pobyt i ile będzie kosztował. Kwotę podajemy przed przyjazdem, nie po.",
+        },
+        {
+          index: "04",
+          title: "Przyjazd",
+          body: "Możesz przyjechać sam, z kimś bliskim albo poprosić o pomoc w transporcie. Co zabrać — powiemy przez telefon, lista jest krótka.",
+        },
+      ],
+      note: "Rozmowa nie zobowiązuje do przyjazdu.",
+      ctaLabel: "Zadzwoń teraz",
     },
     {
-      index: "02",
-      title: "O co zapytamy",
-      body: "Od jak dawna to trwa, co działo się w ostatnich dniach, jakie leki przyjmujesz, czy było już leczenie. Nie potrzebujemy nazwiska, diagnozy ani dokumentów.",
-    },
-    {
-      index: "03",
-      title: "Co ustalamy w tej samej rozmowie",
-      body: "Czy potrzebny jest detoks, kiedy jest wolne miejsce, ile potrwa pobyt i ile będzie kosztował. Kwotę podajemy przed przyjazdem, nie po.",
-    },
-    {
-      index: "04",
-      title: "Przyjazd",
-      body: "Możesz przyjechać sam, z kimś bliskim albo poprosić o pomoc w transporcie. Co zabrać — powiemy przez telefon, lista jest krótka.",
+      id: "family",
+      tabLabel: "Dla bliskiej osoby",
+      title: "Możesz zadzwonić, zanim ta osoba będzie gotowa.",
+      lead: "Rozmowa z rodziną jest tak samo poufna jak z pacjentem. Nie kontaktujemy się z nikim bez Twojej wiedzy — także z osobą, o której rozmawiamy.",
+      steps: [
+        {
+          index: "01",
+          title: "Telefon",
+          body: "Odbiera ten sam terapeuta, który rozmawia z pacjentami. Możesz zacząć od zdania: „dzwonię w sprawie kogoś bliskiego”. Nie musisz podawać ani swojego, ani jej nazwiska.",
+        },
+        {
+          index: "02",
+          title: "O co zapytamy",
+          body: "Od jak dawna to trwa, co dzieje się w domu w ostatnich tygodniach, czy było już leczenie, czy pojawia się przemoc albo zagrożenie zdrowia. Pytamy też, jak Ty to znosisz.",
+        },
+        {
+          index: "03",
+          title: "Co powiedzieć, a czego nie mówić",
+          body: "Kiedy zacząć rozmowę, jakich zdań unikać i co odpowiedzieć na „nie mam problemu”. To zwykle najtrudniejsza część i na nią poświęcamy najwięcej czasu.",
+        },
+        {
+          index: "04",
+          title: "Zostajemy w kontakcie",
+          body: "Także wtedy, gdy bliska osoba jeszcze nie chce leczenia. Możesz zadzwonić ponownie za tydzień albo za pół roku — nie zaczynamy wtedy od zera.",
+        },
+      ],
+      note: "Do rozmowy nie potrzebujesz zgody tej osoby.",
+      ctaLabel: "Zadzwoń teraz",
     },
   ],
-  note: "Rozmowa nie zobowiązuje do przyjazdu.",
-  ctaLabel: "Zadzwoń teraz",
+};
+
+/* ----------------------------------------------------------------- ścieżki */
+
+export type HeroPath = {
+  id: ContactPathId;
+  title: string;
+  body: string;
+  ctaLabel: string;
+};
+
+export type SciezkiContent = {
+  paths: HeroPath[];
+  note: string;
+  phoneLabel: string;
+};
+
+/** The two cards that straddle the bottom edge of the hero. */
+export const sciezkiDefaults: SciezkiContent = {
+  paths: [
+    {
+      id: "self",
+      title: "To o mnie",
+      body: "Chcę przestać, ale nie wiem, od czego zacząć ani co się stanie po przyjeździe.",
+      ctaLabel: "Zobacz, co dzieje się po telefonie",
+    },
+    {
+      id: "family",
+      title: "Chodzi o kogoś bliskiego",
+      body: "Boję się o kogoś i nie wiem, jak rozmawiać, żeby nie zamknąć drzwi na dobre.",
+      ctaLabel: "Jak rozmawiać, jak pomóc",
+    },
+  ],
+  note: "albo po prostu zadzwoń —",
+  phoneLabel: "dyżur całą dobę, poufnie",
 };
 
 /* ----------------------------------------------------------------- program */

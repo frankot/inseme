@@ -7,9 +7,11 @@ import { Kontakt } from "@/components/site/sections/kontakt";
 import { Osrodek } from "@/components/site/sections/osrodek";
 import { PierwszyKontakt } from "@/components/site/sections/pierwszy-kontakt";
 import { Program } from "@/components/site/sections/program";
+import { Sciezki } from "@/components/site/sections/sciezki";
 import { TestPrzesiewowy } from "@/components/site/sections/test-przesiewowy";
 import { Testimonial } from "@/components/site/sections/testimonial";
 import { Zespol } from "@/components/site/sections/zespol";
+import { ContactPathProvider } from "@/components/site/ui/contact-path";
 import { FEATURED_TEST_SLUG } from "@/content/screening";
 import { getScreeningTestBySlug } from "@/lib/queries/screening";
 import { getFeaturedTeam } from "@/lib/queries/team";
@@ -32,8 +34,9 @@ export default async function HomePage() {
   ]);
 
   return (
-    <>
+    <ContactPathProvider>
       <Hero />
+      <Sciezki />
       <Osrodek />
       <Zespol members={featuredTeam} />
       <PierwszyKontakt />
@@ -43,6 +46,6 @@ export default async function HomePage() {
       <TestPrzesiewowy test={featuredTest} />
       <Faq />
       <Kontakt />
-    </>
+    </ContactPathProvider>
   );
 }

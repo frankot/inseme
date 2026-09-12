@@ -21,7 +21,7 @@ export function Hero({
   return (
     <section
       id="gora"
-      className="relative h-[var(--hero-h)] overflow-hidden bg-ink-950 nav:h-auto nav:min-h-[min(100svh,var(--hero-max))]"
+      className="relative h-[var(--hero-h)] overflow-hidden bg-ink-950 nav:h-auto nav:min-h-[min(calc(100svh+var(--hero-overhang)),var(--hero-max))]"
     >
       <div className="absolute inset-0 animate-slow-zoom">
         <SiteImage
@@ -37,7 +37,7 @@ export function Hero({
 
       <SiteHeader contact={contact} />
 
-      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end nav:h-auto nav:min-h-[min(100svh,var(--hero-max))] gap-[clamp(26px,3vw,44px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[clamp(40px,5vw,72px)]">
+      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end nav:h-auto nav:min-h-[min(calc(100svh+var(--hero-overhang)),var(--hero-max))] gap-[clamp(26px,3vw,44px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[clamp(40px,5vw,72px)] nav:pb-[calc(var(--hero-overhang)+clamp(36px,4vw,64px))]">
         <div>
           <p className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 text-eyebrow uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
             <span
@@ -66,13 +66,6 @@ export function Hero({
           </a>
         </div>
       </div>
-
-      <span
-        aria-hidden
-        className="pointer-events-none absolute bottom-3.5 left-1/2 animate-cue text-sm text-bone"
-      >
-        ↓
-      </span>
     </section>
   );
 }
