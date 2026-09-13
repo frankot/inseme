@@ -17,18 +17,20 @@ export type NavLink = NavItem & {
 
 export const navLinks: NavLink[] = [
   { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt", inBar: true },
-  { label: "Ośrodek", href: "/#miejsce", inBar: true },
+  { label: "Ośrodek", href: "/osrodek", inBar: true },
+  { label: "Program", href: "/program", inBar: true },
+  { label: "Cennik", href: "/cennik", inBar: true },
   { label: "Zespół", href: "/zespol", inBar: true },
-  { label: "Program", href: "/#program", inBar: true },
-  { label: "Jeden dzień", href: "/#dzien" },
   {
     label: "Testy przesiewowe",
     href: "/testy",
     inBar: true,
     barLabel: "Testy",
   },
+  { label: "Jeden dzień", href: "/program#dzien" },
+  { label: "Opinie", href: "/#opinie" },
   { label: "Poradnik", href: "/artykuly" },
-  { label: "Pytania", href: "/#faq" },
+  { label: "Pytania", href: "/pytania" },
   { label: "Kontakt", href: "/kontakt" },
 ];
 

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import { SiteFooter } from "@/components/site/chrome/site-footer";
+import { StickyCallBar } from "@/components/site/chrome/sticky-call-bar";
 
 /**
  * Public site shell. The header is not here: it lives inside the hero so the
@@ -18,6 +19,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       */}
       <main className="flex-auto overflow-x-clip bg-cream">{children}</main>
       <SiteFooter />
+      <StickyCallBar />
     </>
   );
 }

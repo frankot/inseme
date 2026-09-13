@@ -64,6 +64,22 @@ export function Hero({
             Zadzwoń: {contact.phone}
           </Cta>
         </div>
+
+        {/*
+          Above the fold on purpose: the visitor deciding whether to dial is
+          weighing exactly these three things, and making them scroll for the
+          answers is what loses the call.
+        */}
+        {content.trust.length > 0 && (
+          <ul className="m-0 flex list-none flex-wrap gap-x-[clamp(18px,2.4vw,34px)] gap-y-2 p-0 text-meta text-on-dark-lead">
+            {content.trust.map((item) => (
+              <li key={item} className="flex items-center gap-2.5">
+                <span aria-hidden className="block size-[5px] bg-sage-300" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <span

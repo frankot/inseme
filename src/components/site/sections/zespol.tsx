@@ -21,6 +21,7 @@ export function Zespol({
 
   return (
     <Section
+      tone="tinted"
       id="zespol"
       index={content.index}
       label={content.eyebrow}

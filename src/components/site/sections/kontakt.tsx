@@ -19,7 +19,6 @@ export function Kontakt({
   return (
     <Section
       id="kontakt"
-      tone="tinted"
       index={content.index}
       label={content.eyebrow}
     >

@@ -30,6 +30,7 @@ export function TestPrzesiewowy({
 
   return (
     <Section
+      tone="dark"
       id="test"
       index={content.index}
       label={content.eyebrow}
@@ -38,17 +39,19 @@ export function TestPrzesiewowy({
     >
       <div className="grid items-start gap-x-16 gap-y-[clamp(26px,3vw,44px)] nav:[grid-template-columns:minmax(0,0.8fr)_minmax(0,1.2fr)]">
         <Reveal className="flex flex-col items-start gap-5">
-          <p className="flex max-w-[30em] gap-3 border-t border-line-strong pt-[18px] text-meta text-ink-200">
-            <span aria-hidden className="shrink-0 text-clay-300">
+          <p className="flex max-w-[30em] gap-3 border-t border-white/12 pt-[18px] text-meta text-on-dark-faint">
+            <span aria-hidden className="shrink-0 text-sage-300">
               !
             </span>
             <span>{disclaimer}</span>
           </p>
-          <Cta href="/testy">Wszystkie testy</Cta>
+          <Cta href="/testy" variant="quiet-on-dark">
+            Wszystkie testy
+          </Cta>
         </Reveal>
 
         <Reveal className="min-w-0">
-          <ScreeningTest test={test} contact={contact} labels={content} />
+          <ScreeningTest test={test} contact={contact} labels={content} dark />
         </Reveal>
       </div>
     </Section>

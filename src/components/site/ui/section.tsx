@@ -68,6 +68,7 @@ export function Section({
   title,
   lead,
   action,
+  leadMinLines,
   children,
   className,
 }: {
@@ -81,6 +82,14 @@ export function Section({
   lead?: ReactNode;
   /** Usually a quiet `Cta` — "Poznaj cały zespół →". */
   action?: ReactNode;
+  /**
+   * Reserve room for this many lines of lead, so a section whose copy swaps —
+   * the two paths in Pierwszy kontakt — does not shift everything below it when
+   * the shorter text loads. Counted in `em` against the lead's own size, which
+   * is a clamp, so the reservation tracks the viewport instead of being right
+   * at one width only.
+   */
+  leadMinLines?: number;
   children: ReactNode;
   className?: string;
 }) {
@@ -101,6 +110,7 @@ export function Section({
           title={title}
           lead={lead}
           action={action}
+          leadMinLines={leadMinLines}
         />
         {children}
       </Container>
@@ -115,6 +125,7 @@ function SectionHead({
   title,
   lead,
   action,
+  leadMinLines,
 }: {
   tone: SectionTone;
   index?: string;
@@ -122,6 +133,7 @@ function SectionHead({
   title?: ReactNode;
   lead?: ReactNode;
   action?: ReactNode;
+  leadMinLines?: number;
 }) {
   const hasBody = Boolean(title || lead || action);
 
@@ -161,7 +173,16 @@ function SectionHead({
           {(lead || action) && (
             <div className="flex flex-[0_1_26rem] flex-col items-start gap-4">
               {lead && (
-                <p className={cn("max-w-[34em] text-pretty text-lead", LEAD[tone])}>
+                <p
+                  // 1.7 is the lead step's line-height — see `--text-lead` in
+                  // globals.css. Keep the two in step.
+                  style={
+                    leadMinLines
+                      ? { minHeight: `${leadMinLines * 1.7}em` }
+                      : undefined
+                  }
+                  className={cn("max-w-[34em] text-pretty text-lead", LEAD[tone])}
+                >
                   {lead}
                 </p>
               )}

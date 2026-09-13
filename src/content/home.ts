@@ -42,6 +42,8 @@ export type HeroContent = {
   title: string;
   lead: string;
   ctaLabel: string;
+  /** Short reassurances under the hero CTA. Empty array renders nothing. */
+  trust: string[];
   image: { src: string; alt: string };
 };
 
@@ -50,6 +52,13 @@ export const heroDefaults: HeroContent = {
   title: "Możesz zadzwonić i niczego nie obiecywać.",
   lead: "Rozmowa nie zobowiązuje do przyjazdu. Odbiera terapeuta z ośrodka — nie ma tu call center ani konsultanta sprzedaży.",
   ctaLabel: "Zadzwoń: 669 916 005",
+  /*
+   * The three things a frightened person needs to know before deciding whether
+   * to dial, kept short enough to read in a glance. Add the rejestr podmiotów
+   * leczniczych entry here once the number is to hand — it is the strongest
+   * legitimacy signal available to a private ośrodek in Poland.
+   */
+  trust: ["Dyżur całą dobę, także w weekendy", "Rozmowa bez nazwiska", "Bez opłat za konsultację"],
   image: { src: "/placeholder/dom-staw.jpg", alt: "" },
 };
 
@@ -63,15 +72,19 @@ export type OsrodekContent = {
   eyebrow: string;
   title: string;
   body: string;
+  href: string;
+  linkLabel: string;
   stats: Stat[];
   figures: Figure[];
 };
 
 export const osrodekDefaults: OsrodekContent = {
-  index: "02",
+  index: "03",
   eyebrow: "Ośrodek",
   title: "Jeden dom w sosnowym lesie, dwadzieścia minut od Warszawy.",
   body: "Mieszkamy razem: pokoje z widokiem na drzewa, wspólny salon z fotelami, taras i ogród. Bez korytarzy, bez dyżurki za szybą, bez zapachu szpitala. Dwanaście miejsc, jeden zespół, ta sama kadra przez cały pobyt.",
+  href: "/osrodek",
+  linkLabel: "Zobacz ośrodek i dojazd",
   stats: [
     { label: "Miejsc", value: "12" },
     { label: "Od centrum", value: "20 min" },
@@ -105,32 +118,57 @@ export const osrodekDefaults: OsrodekContent = {
 /* -------------------------------------------------------- pierwszy kontakt */
 
 export type Step = { index: string; title: string; body: string };
+export type PathPoint = { title: string; body: string };
 
 /**
  * Two ways into the same ośrodek: the person who drinks, and the person who is
- * frightened for someone who does. They need different first sentences, so the
- * hero cards and section 03 carry a full set of copy each rather than one text
- * with a swapped pronoun.
+ * frightened for someone who does. They need different first sentences, so each
+ * path carries a full set of copy rather than one text with a swapped pronoun.
  */
 export type ContactPathId = "self" | "family";
 
+/**
+ * One path, end to end. This used to be split across two sections — a fork with
+ * its own cards and promises, and a separate run of steps with its own tab bar —
+ * which said the same thing twice and made the visitor choose before reading.
+ * They are one section now, so the copy is one object.
+ */
 export type ContactPath = {
   id: ContactPathId;
-  /** Label on the switch in section 03. */
+  /** Label on the quiet switch. */
   tabLabel: string;
+  /** The self-identification card: "To o mnie". */
+  cardTitle: string;
+  cardBody: string;
+  /** Bottom line of the card, in each of its two states. */
+  chooseLabel: string;
+  selectedLabel: string;
+  /** Heading and lead of the section, once this path is chosen. */
   title: string;
   lead: string;
+  /** The three promises, directly under the cards. */
+  points: PathPoint[];
   steps: Step[];
   note: string;
   ctaLabel: string;
+  secondaryLabel: string;
+  secondaryHref: string;
 };
 
 export type PierwszyKontaktContent = {
   index: string;
   eyebrow: string;
   paths: ContactPath[];
+  /** The "albo po prostu zadzwoń — 669 …" line closing the section. */
+  note: string;
+  phoneLabel: string;
 };
 
+/**
+ * Section 01. `self` is first and selected by default: most people who call are
+ * calling about themselves, so the page opens on their words and offers the
+ * family path beside them rather than making everyone pick first.
+ */
 export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
   index: "01",
   eyebrow: "Pierwszy kontakt",
@@ -138,8 +176,27 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
     {
       id: "self",
       tabLabel: "Dla siebie",
+      cardTitle: "To o mnie",
+      cardBody:
+        "Chcę przestać, ale nie wiem, od czego zacząć ani co się stanie po przyjeździe.",
+      chooseLabel: "Wybierz tę ścieżkę",
+      selectedLabel: "Czytasz tę ścieżkę",
       title: "Co się dzieje po tym, jak podniesiesz słuchawkę.",
-      lead: "Cztery kroki. Pierwszy trwa kilka minut, ostatni zwykle zdarza się tego samego albo następnego dnia.",
+      lead: "Najtrudniejszy jest pierwszy telefon — wszystko inne ustalamy już w jego trakcie. Cztery kroki: pierwszy trwa kilka minut, ostatni zwykle zdarza się tego samego albo następnego dnia.",
+      points: [
+        {
+          title: "Bez nazwiska",
+          body: "Do rozmowy nie potrzebujemy danych, diagnozy ani dokumentów.",
+        },
+        {
+          title: "Bez czekania",
+          body: "Przy detoksie zwykle przyjmujemy tego samego dnia, w którym dzwonisz.",
+        },
+        {
+          title: "Bez oferty",
+          body: "Cenę podajemy w pierwszej rozmowie i nie dzwonimy drugi raz bez Twojej zgody.",
+        },
+      ],
       steps: [
         {
           index: "01",
@@ -149,7 +206,7 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
         {
           index: "02",
           title: "O co zapytamy",
-          body: "Od jak dawna to trwa, co działo się w ostatnich dniach, jakie leki przyjmujesz, czy było już leczenie. Nie potrzebujemy nazwiska, diagnozy ani dokumentów.",
+          body: "Od jak dawna to trwa, co działo się w ostatnich dniach, jakie leki przyjmujesz, czy było już leczenie.",
         },
         {
           index: "03",
@@ -164,12 +221,33 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
       ],
       note: "Rozmowa nie zobowiązuje do przyjazdu.",
       ctaLabel: "Zadzwoń teraz",
+      secondaryLabel: "Najpierw wypełnij test",
+      secondaryHref: "#test",
     },
     {
       id: "family",
       tabLabel: "Dla bliskiej osoby",
+      cardTitle: "Chodzi o kogoś bliskiego",
+      cardBody:
+        "Boję się o kogoś i nie wiem, jak rozmawiać, żeby nie zamknąć drzwi na dobre.",
+      chooseLabel: "Wybierz tę ścieżkę",
+      selectedLabel: "Czytasz tę ścieżkę",
       title: "Możesz zadzwonić, zanim ta osoba będzie gotowa.",
-      lead: "Rozmowa z rodziną jest tak samo poufna jak z pacjentem. Nie kontaktujemy się z nikim bez Twojej wiedzy — także z osobą, o której rozmawiamy.",
+      lead: "Najczęściej dzwoni ktoś, kto boi się, że jednym zdaniem pogorszy sprawę — od tego zaczynamy. Rozmowa z rodziną jest tak samo poufna jak z pacjentem.",
+      points: [
+        {
+          title: "Bez jego zgody",
+          body: "Możesz zadzwonić, zanim ta osoba w ogóle będzie chciała o tym słyszeć.",
+        },
+        {
+          title: "Bez kontaktu za plecami",
+          body: "Sami nie dzwonimy do niej ani nie piszemy — ani teraz, ani później.",
+        },
+        {
+          title: "Bez jednej rozmowy na zawsze",
+          body: "Możesz wrócić za tydzień albo za pół roku. Nie zaczynamy wtedy od zera.",
+        },
+      ],
       steps: [
         {
           index: "01",
@@ -194,99 +272,8 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
       ],
       note: "Do rozmowy nie potrzebujesz zgody tej osoby.",
       ctaLabel: "Zadzwoń teraz",
-    },
-  ],
-};
-
-/* ----------------------------------------------------------------- ścieżki */
-
-export type PathPoint = { title: string; body: string };
-
-export type HeroPath = {
-  id: ContactPathId;
-  title: string;
-  body: string;
-  /** Bottom line of the card, in each of its two states. */
-  chooseLabel: string;
-  selectedLabel: string;
-  /** Everything below the cards swaps with the choice. */
-  panelLead: string;
-  points: PathPoint[];
-  /** Down to section 03, which is already showing this path's steps. */
-  ctaLabel: string;
-  secondaryLabel: string;
-  secondaryHref: string;
-};
-
-export type SciezkiContent = {
-  eyebrow: string;
-  title: string;
-  paths: HeroPath[];
-  note: string;
-  phoneLabel: string;
-};
-
-/**
- * The unnumbered section right under the hero: pick the path you are on, and
- * read three short promises made to that group before anything else. It carries
- * no numeral on purpose — it is the fork the numbered run hangs off, not a step
- * in it — and the choice follows the visitor down to section 03.
- */
-export const sciezkiDefaults: SciezkiContent = {
-  eyebrow: "Od czego zacząć",
-  title: "Zacznij od tego, kogo to dotyczy.",
-  paths: [
-    {
-      id: "self",
-      title: "To o mnie",
-      body: "Chcę przestać, ale nie wiem, od czego zacząć ani co się stanie po przyjeździe.",
-      chooseLabel: "Wybierz tę ścieżkę",
-      selectedLabel: "Czytasz tę ścieżkę",
-      panelLead:
-        "Najtrudniejszy jest pierwszy telefon. Wszystko inne ustalamy już w jego trakcie.",
-      points: [
-        {
-          title: "Bez nazwiska",
-          body: "Do rozmowy nie potrzebujemy danych, diagnozy ani dokumentów.",
-        },
-        {
-          title: "Bez czekania",
-          body: "Przy detoksie zwykle przyjmujemy tego samego dnia, w którym dzwonisz.",
-        },
-        {
-          title: "Bez oferty",
-          body: "Cenę podajemy w pierwszej rozmowie i nie dzwonimy drugi raz bez Twojej zgody.",
-        },
-      ],
-      ctaLabel: "Zobacz, co dzieje się po telefonie",
-      secondaryLabel: "Wypełnij test przesiewowy",
-      secondaryHref: "/testy",
-    },
-    {
-      id: "family",
-      title: "Chodzi o kogoś bliskiego",
-      body: "Boję się o kogoś i nie wiem, jak rozmawiać, żeby nie zamknąć drzwi na dobre.",
-      chooseLabel: "Wybierz tę ścieżkę",
-      selectedLabel: "Czytasz tę ścieżkę",
-      panelLead:
-        "Najczęściej dzwoni ktoś, kto boi się, że jednym zdaniem pogorszy sprawę. Od tego zaczynamy.",
-      points: [
-        {
-          title: "Bez jego zgody",
-          body: "Możesz zadzwonić, zanim ta osoba w ogóle będzie chciała o tym słyszeć.",
-        },
-        {
-          title: "Bez kontaktu za plecami",
-          body: "Sami nie dzwonimy do niej ani nie piszemy — ani teraz, ani później.",
-        },
-        {
-          title: "Bez jednej rozmowy na zawsze",
-          body: "Możesz wrócić za tydzień albo za pół roku. Nie zaczynamy wtedy od zera.",
-        },
-      ],
-      ctaLabel: "Jak rozmawiać, jak pomóc",
       secondaryLabel: "Zobacz wsparcie dla rodziny",
-      secondaryHref: "/#program",
+      secondaryHref: "/program#rodzina",
     },
   ],
   note: "albo po prostu zadzwoń —",
@@ -296,6 +283,8 @@ export const sciezkiDefaults: SciezkiContent = {
 /* ----------------------------------------------------------------- program */
 
 export type ProgramCard = {
+  /** Keys the card to its entry in `content/cennik.ts`. */
+  id: string;
   index: string;
   meta: string;
   title: string;
@@ -321,6 +310,7 @@ export const programDefaults: ProgramContent = {
   note: "Każdy pobyt ustalamy przez telefon, przed przyjazdem.",
   cards: [
     {
+      id: "detoks",
       index: "01",
       meta: "7–10 dni",
       title: "Detoks",
@@ -329,14 +319,16 @@ export const programDefaults: ProgramContent = {
       href: "/#kontakt",
     },
     {
+      id: "terapia",
       index: "02",
       meta: "28 dni",
       title: "Terapia 28 dni",
       body: "Program podstawowy: grupa, rozmowy indywidualne, psychoedukacja. Można skrócić albo wydłużyć.",
       linkLabel: "Zobacz plan dnia",
-      href: "/#dzien",
+      href: "/program#dzien",
     },
     {
+      id: "rodzina",
       index: "03",
       meta: "bez pacjenta",
       title: "Dla rodziny",
@@ -345,6 +337,7 @@ export const programDefaults: ProgramContent = {
       href: "tel:+48669916005",
     },
     {
+      id: "po-pobycie",
       index: "04",
       meta: "bezterminowo",
       title: "Po pobycie",
@@ -429,34 +422,26 @@ export const jedenDzienDefaults: JedenDzienContent = {
   ],
 };
 
-/* ------------------------------------------------------------- testimonial */
-
-export type TestimonialContent = { quote: string; author: string; note: string };
-
-export const testimonialDefaults: TestimonialContent = {
-  quote:
-    "„Nikt mnie nie oceniał ani jednego dnia. To był pierwszy raz, kiedy powiedziałem wszystko na głos.”",
-  author: "pacjent, 35 lat",
-  note: "opinia publikowana anonimowo, za pisemną zgodą",
-};
-
 /* -------------------------------------------------------- test przesiewowy */
 
-export type TestOption = { label: string; value: number };
-export type TestBand = { max: number; title: string; body: string };
-
+/**
+ * Chrome around the test player — button captions, the consent sentence, the
+ * labels on the result. The questionnaire itself is CMS content and comes from
+ * `getScreeningTestBySlug`; `title`, `lead` and `disclaimer` here are only the
+ * fallbacks for a test whose own fields are empty.
+ *
+ * This used to carry a full copy of the questions, options and score bands.
+ * They were a second, drifting source of truth against the database — and once
+ * the featured test became AUDIT they were simply wrong. Deleted.
+ */
 export type TestContent = {
   index: string;
   eyebrow: string;
   title: string;
   lead: string;
   disclaimer: string;
-  meta: string;
   prompt: string;
   startLabel: string;
-  questions: string[];
-  options: TestOption[];
-  bands: TestBand[];
   resultLabel: string;
   emailNote: string;
   emailPlaceholder: string;
@@ -468,46 +453,15 @@ export type TestContent = {
 };
 
 export const testDefaults: TestContent = {
-  index: "05",
+  index: "02",
   eyebrow: "Test przesiewowy",
-  title: "Pięć pytań, które można zadać sobie bez świadków.",
-  lead: "Odpowiedzi nie zapisujemy i nie wysyłamy nikomu. Wynik zobaczysz od razu na ekranie — a jeśli chcesz go zachować, wyślemy go w PDF na wskazany adres.",
+  title: "Dziesięć pytań, które można zadać sobie bez świadków.",
+  lead: "AUDIT — test przesiewowy Światowej Organizacji Zdrowia, w polskiej wersji opracowanej przez PARPA. Ten sam, którego używają poradnie. Odpowiedzi nie zapisujemy i nie wysyłamy nikomu.",
   disclaimer:
-    "Test ma charakter orientacyjny i nie jest diagnozą. Nie zastępuje rozmowy z terapeutą ani badania lekarskiego.",
-  meta: "Samoocena · 5 pytań · ok. 2 minuty",
+    "AUDIT jest testem przesiewowym i nie jest diagnozą. Wskazuje prawdopodobieństwo problemu, a nie jego pewność — nie zastępuje rozmowy z terapeutą ani badania lekarskiego.",
   prompt:
-    "Myśląc o ostatnich dwunastu miesiącach — jak często zdarzały się poniższe sytuacje?",
+    "Pytania dotyczą ostatnich dwunastu miesięcy. Jedna porcja standardowa to 10 g czystego alkoholu — ok. 250 ml piwa 5%, 100 ml wina 12% albo 30 ml wódki 40%.",
   startLabel: "Zacznij test",
-  questions: [
-    "Jak często zdarza się, że wypijasz lub bierzesz więcej, niż zamierzałeś?",
-    "Czy w ostatnim roku próbowałeś ograniczyć i nie udało się utrzymać tego dłużej niż kilka dni?",
-    "Czy zdarza Ci się sięgać po alkohol lub substancję z rana, żeby poczuć się normalnie?",
-    "Czy z tego powodu coś w Twoim życiu przestało działać — praca, relacje, zdrowie, pieniądze?",
-    "Czy ktoś bliski powiedział Ci, że się o Ciebie martwi?",
-  ],
-  options: [
-    { label: "Nigdy", value: 0 },
-    { label: "Rzadko", value: 1 },
-    { label: "Czasem", value: 2 },
-    { label: "Często", value: 3 },
-  ],
-  bands: [
-    {
-      max: 4,
-      title: "Na razie nic nie wskazuje na poważny problem.",
-      body: "Wynik jest niski. Jeśli mimo tego coś Cię niepokoi — samo pytanie „czy to już problem?” bywa ważniejsze niż punkty. Możesz zadzwonić i po prostu o tym pogadać.",
-    },
-    {
-      max: 9,
-      title: "Warto się temu przyjrzeć spokojnie.",
-      body: "Kilka odpowiedzi wskazuje na wzorzec, który zwykle się nie cofa sam. Nie znaczy to, że potrzebujesz ośrodka — znaczy, że warto z kimś przejść przez to na głos, zanim zrobi się trudniej.",
-    },
-    {
-      max: 15,
-      title: "Zalecamy kontakt ze specjalistą.",
-      body: "Odpowiedzi układają się w obraz, z którym zwykle nie da się poradzić sobie samemu. To nie ocena — to informacja. Rozmowa z terapeutą nie zobowiązuje do przyjazdu i nie kończy się ofertą.",
-    },
-  ],
   resultLabel: "Wynik orientacyjny",
   emailNote: "Wyślemy wynik w PDF — bez nazwiska, bez dalszych wiadomości.",
   emailPlaceholder: "twój@email.pl",
@@ -532,13 +486,17 @@ export type FaqContent = {
   eyebrow: string;
   title: string;
   note: string;
+  href: string;
+  linkLabel: string;
 };
 
 export const faqDefaults: FaqContent = {
-  index: "06",
+  index: "07",
   eyebrow: "Pytania",
   title: "Pytania, które trudno zadać na głos.",
   note: "Odpowiadamy tak samo przez telefon. Jeśli czegoś tu brakuje — zapytaj, nie ma pytań niewygodnych.",
+  href: "/pytania",
+  linkLabel: "Wszystkie pytania",
 };
 
 /* ----------------------------------------------------------------- kontakt */
@@ -602,11 +560,11 @@ export const footerDefaults: FooterContent = {
   columnTitle: "Strona",
   links: [
     { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
-    { label: "Testy przesiewowe", href: "/testy" },
+    { label: "Cennik", href: "/cennik" },
+    { label: "Program", href: "/program" },
+    { label: "Ośrodek", href: "/osrodek" },
     { label: "Zespół", href: "/zespol" },
-    { label: "Cennik i pobyt", href: "/#kontakt" },
-    { label: "O nas", href: "/#miejsce" },
-    { label: "Kontakt", href: "/kontakt" },
+    { label: "Pytania", href: "/pytania" },
   ],
   privacyLabel: "Polityka prywatności · RODO",
   privacyHref: "#",

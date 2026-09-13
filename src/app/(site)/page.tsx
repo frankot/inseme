@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 
-import { Artykuly } from "@/components/site/sections/artykuly";
 import { Faq } from "@/components/site/sections/faq";
 import { Hero } from "@/components/site/sections/hero";
 import { Kontakt } from "@/components/site/sections/kontakt";
+import { Opinie } from "@/components/site/sections/opinie";
 import { Osrodek } from "@/components/site/sections/osrodek";
 import { PierwszyKontakt } from "@/components/site/sections/pierwszy-kontakt";
 import { Program } from "@/components/site/sections/program";
-import { Sciezki } from "@/components/site/sections/sciezki";
 import { TestPrzesiewowy } from "@/components/site/sections/test-przesiewowy";
-import { Testimonial } from "@/components/site/sections/testimonial";
 import { Zespol } from "@/components/site/sections/zespol";
 import { ContactPathProvider } from "@/components/site/ui/contact-path";
 import { FEATURED_TEST_SLUG } from "@/content/screening";
-import { getLatestArticles } from "@/lib/queries/articles";
 import { getPublishedFaq } from "@/lib/queries/faq";
 import { getScreeningTestBySlug } from "@/lib/queries/screening";
 import { getFeaturedTeam } from "@/lib/queries/team";
+
+/** How many questions the homepage carries before handing off to /pytania. */
+const HOMEPAGE_FAQ_LIMIT = 5;
 
 /**
  * The page is prerendered and refreshed every five minutes, so a published
@@ -33,36 +33,41 @@ export const metadata: Metadata = {
 };
 
 /**
- * Sections take their copy as props and fall back to the defaults in
- * `src/content/home.ts`. Zespół is the first that reads real rows — the rest
- * follow the same shape when their tables get wired up.
+ * The homepage is a summary with a hierarchy, not the whole site.
+ *
+ * Its one job is the phone call, so the order runs: who you are and what
+ * happens if you ring (01), the test for anyone not ready to ring (02), then
+ * the proof a person weighs before dialling — the place, the people, the price,
+ * the reviews — and only then the questions and the form.
+ *
+ * Everything below a summary's worth of depth lives on its own page: the day
+ * plan and the therapy detail on /program, the gallery and logistics on
+ * /osrodek, the full price list on /cennik, the rest of the questions on
+ * /pytania. Each band here ends in the link to its page.
  */
 export default async function HomePage() {
-  const [featuredTeam, featuredTest, faqEntries, latestArticles] = await Promise.all([
+  const [featuredTeam, featuredTest, faqEntries] = await Promise.all([
     getFeaturedTeam(3),
     getScreeningTestBySlug(FEATURED_TEST_SLUG),
     getPublishedFaq(),
-    getLatestArticles(4),
   ]);
 
   return (
     <ContactPathProvider>
       <Hero />
-      {/*
-        Ścieżki forks the visitor, and Pierwszy kontakt is what the fork's
-        primary button points at — they share the chosen path, so they now sit
-        next to each other instead of with two sections wedged between them.
-        The numbered run starts at the fork's destination.
-      */}
-      <Sciezki />
       <PierwszyKontakt />
+      {/*
+        Second, not seventh. Most people who ring are ringing about themselves,
+        and for someone still asking "is this even a problem yet?" five questions
+        are a far smaller step than a phone call — so the test is the secondary
+        conversion path, and it belongs where that person is still reading.
+      */}
+      <TestPrzesiewowy test={featuredTest} />
       <Osrodek />
       <Zespol members={featuredTeam} />
       <Program />
-      <Testimonial />
-      <TestPrzesiewowy test={featuredTest} />
-      <Faq items={faqEntries} />
-      <Artykuly articles={latestArticles} />
+      <Opinie />
+      <Faq items={faqEntries} limit={HOMEPAGE_FAQ_LIMIT} />
       <Kontakt />
     </ContactPathProvider>
   );

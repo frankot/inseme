@@ -1,3 +1,4 @@
+import { Cta } from "@/components/site/ui/cta";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Section } from "@/components/site/ui/section";
 import { SiteImage } from "@/components/site/ui/site-image";
@@ -24,11 +25,11 @@ export function Osrodek({
   return (
     <Section
       id="miejsce"
-      tone="tinted"
       index={content.index}
       label={content.eyebrow}
       title={content.title}
       lead={content.body}
+      action={<Cta href={content.href}>{content.linkLabel}</Cta>}
     >
       {/*
         The four numbers used to be a narrow table crowded against the heading.

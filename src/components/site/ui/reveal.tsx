@@ -18,12 +18,15 @@ export function Reveal({
   className,
   delay = 0,
   as: Tag = "div",
+  id,
 }: {
   children: ReactNode;
   className?: string;
   /** Stagger, in ms, for siblings revealed together. */
   delay?: number;
   as?: "div" | "section" | "article" | "figure" | "li";
+  /** Anchor target, when the revealed block is a link destination. */
+  id?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const [armed, setArmed] = useState(false);
@@ -58,6 +61,7 @@ export function Reveal({
 
   return (
     <Tag
+      id={id}
       ref={ref as never}
       className={cn(
         armed && !shown && "reveal-hidden",
