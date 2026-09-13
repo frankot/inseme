@@ -17,9 +17,9 @@ import {
 /**
  * "Program i ceny" — what a stay is made of and what each part costs.
  *
- * A tariff list rather than a card grid: Zespół above and Opinie below are both
- * grids of cards, and prices only become comparable when they line up in a
- * column. See `ProgramList`.
+ * A tariff list rather than a card grid: Zespół and Opinie are both grids of
+ * cards, and prices only become comparable when they line up in a column. See
+ * `ProgramList`.
  *
  * The day plan lives on /program with the rest of the detail — on the homepage
  * a twelve-row timetable was the longest block on the page and the least read.
@@ -36,6 +36,7 @@ export function Program({
   return (
     <Section
       id="program"
+      tone="tinted"
       index={cennik.index}
       label={cennik.eyebrow}
       title={cennik.title}

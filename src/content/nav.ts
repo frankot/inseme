@@ -1,46 +1,64 @@
 /**
- * Every navigation destination on the public site, in one place.
- *
- * The desktop bar only has room for a handful of links beside the logo and the
- * phone button, so entries opt into it with `inBar`; the mobile panel lists all
- * of them, in this order.
+ * Public-site navigation. Labels, destinations and hierarchy live here so the
+ * desktop bar and mobile panel cannot drift apart.
  */
 
-export type NavItem = { label: string; href: string };
-
-export type NavLink = NavItem & {
-  /** Show this link in the desktop bar as well as the mobile panel. */
-  inBar?: boolean;
-  /** Shorter label for the bar, where horizontal room is tight. */
+export type NavItem = {
+  label: string;
+  href: string;
+  /** Shorter label for the desktop bar when horizontal room is tight. */
   barLabel?: string;
+  /** Keep secondary links in the mobile panel without crowding the desktop bar. */
+  mobileOnly?: boolean;
 };
 
-export const navLinks: NavLink[] = [
-  { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt", inBar: true },
-  { label: "Ośrodek", href: "/osrodek", inBar: true },
-  { label: "Program", href: "/program", inBar: true },
-  { label: "Cennik", href: "/cennik", inBar: true },
-  { label: "Zespół", href: "/zespol", inBar: true },
+export type NavGroup = {
+  label: string;
+  items: NavItem[];
+};
+
+export type NavEntry = NavItem | NavGroup;
+
+export function isNavGroup(entry: NavEntry): entry is NavGroup {
+  return "items" in entry;
+}
+
+/**
+ * Whether a nav destination is the page currently open. Hash-only links
+ * (`/#…`) target sections, not pages, so they are never "active".
+ */
+export function isPathActive(pathname: string, href: string): boolean {
+  if (!href.startsWith("/") || href.startsWith("/#")) return false;
+  const path = href.split("#")[0].split("?")[0];
+  if (path === "/") return pathname === "/";
+  return pathname === path || pathname.startsWith(path + "/");
+}
+
+export const navLinks: NavEntry[] = [
+  { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
   {
-    label: "Testy przesiewowe",
-    href: "/testy",
-    inBar: true,
-    barLabel: "Testy",
+    label: "O nas",
+    items: [
+      { label: "Ośrodek", href: "/osrodek" },
+      { label: "Program", href: "/program" },
+      // The gallery lives in its own section on the Ośrodek page.
+      { label: "Galeria", href: "/osrodek#galeria" },
+    ],
   },
-  { label: "Jeden dzień", href: "/program#dzien" },
-  { label: "Opinie", href: "/#opinie" },
-  { label: "Poradnik", href: "/artykuly" },
-  { label: "Pytania", href: "/pytania" },
+  { label: "Zespół", href: "/zespol" },
+  { label: "Cennik", href: "/cennik" },
+  { label: "Testy przesiewowe", href: "/testy", barLabel: "Testy" },
+  { label: "Artykuły", href: "/artykuly" },
   { label: "Kontakt", href: "/kontakt" },
+  { label: "Pytania", href: "/pytania", mobileOnly: true },
+  { label: "Jeden dzień", href: "/program#dzien", mobileOnly: true },
+  { label: "Opinie", href: "/#opinie", mobileOnly: true },
 ];
 
-/** What the desktop bar renders. */
-export const barLinks: NavItem[] = navLinks
-  .filter((link) => link.inBar)
-  .map(({ label, href, barLabel }) => ({ label: barLabel ?? label, href }));
+/** Entries shown in the desktop bar. */
+export const barLinks: NavEntry[] = navLinks.filter(
+  (entry) => isNavGroup(entry) || !entry.mobileOnly,
+);
 
-/** What the mobile panel renders: everything. */
-export const panelLinks: NavItem[] = navLinks.map(({ label, href }) => ({
-  label,
-  href,
-}));
+/** Entries shown in the mobile panel, in the same intentional order. */
+export const panelLinks = navLinks;

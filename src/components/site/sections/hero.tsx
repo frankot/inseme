@@ -38,7 +38,7 @@ export function Hero({
 
       <SiteHeader contact={contact} />
 
-      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end nav:h-auto nav:min-h-[min(100svh,var(--hero-max))] gap-[clamp(26px,3vw,44px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[clamp(40px,5vw,72px)]">
+      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end nav:h-auto nav:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[clamp(40px,5vw,72px)]">
         <div>
           <p className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 text-eyebrow uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
             <span
@@ -50,9 +50,17 @@ export function Hero({
           <h1 className="max-w-[9.4em] text-balance font-heading text-display-xl text-bone">
             {content.title}
           </h1>
+          {content.rpwdl && (
+            <p className="mt-[clamp(16px,2.2vw,26px)]  font-heading text-[clamp(12.5px,1vw,15px)] leading-snug text-on-dark-muted">
+              {content.rpwdl.label}:{" "}
+              <span className="tabular-nums  text-on-dark-sage-2">
+                {content.rpwdl.number}
+              </span>
+            </p>
+          )}
         </div>
 
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-t border-bone/20 pt-[clamp(20px,2.5vw,32px)]">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-t border-bone/20 pt-[clamp(20px,2.5vw,32px)] lg:pt-10">
           <p className="max-w-[27em] text-lead text-on-dark-lead">
             {content.lead}
           </p>

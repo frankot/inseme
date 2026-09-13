@@ -350,7 +350,8 @@
     transition: transform 0.34s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  &:hover::after {
+  &:hover::after,
+  &[data-active="true"]::after {
     transform: scaleX(1);
   }
 }

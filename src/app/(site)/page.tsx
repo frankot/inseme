@@ -37,7 +37,7 @@ export const metadata: Metadata = {
  *
  * Its one job is the phone call, so the order runs: who you are and what
  * happens if you ring (01), the test for anyone not ready to ring (02), then
- * the proof a person weighs before dialling — the place, the people, the price,
+ * the proof a person weighs before dialling — the place, the price, the people,
  * the reviews — and only then the questions and the form.
  *
  * Everything below a summary's worth of depth lives on its own page: the day
@@ -64,8 +64,8 @@ export default async function HomePage() {
       */}
       <TestPrzesiewowy test={featuredTest} />
       <Osrodek />
-      <Zespol members={featuredTeam} />
       <Program />
+      <Zespol members={featuredTeam} />
       <Opinie />
       <Faq items={faqEntries} limit={HOMEPAGE_FAQ_LIMIT} />
       <Kontakt />

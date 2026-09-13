@@ -84,7 +84,7 @@ function Portrait({
           alt={member.photo.altText ?? member.name}
           fill
           sizes={sizes}
-          className="object-cover object-top saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
+          className="object-cover object-top saturate-[.85] brightness-[.9] transition-all duration-[400ms] ease-out group-hover:scale-[1.035] group-hover:saturate-100 group-hover:brightness-100"
         />
       ) : (
         // No photograph yet: initials rather than an empty grey rectangle.

@@ -114,7 +114,7 @@ export type CennikContent = {
 
 /** The homepage teaser — the full table lives on /cennik. */
 export const cennikTeaserDefaults: CennikContent = {
-  index: "05",
+  index: "04",
   eyebrow: "Program i ceny",
   title: "Cztery rzeczy, z których składa się pobyt.",
   lead: "Nie każdy przechodzi przez wszystkie. Detoks bywa niepotrzebny, a rodzina czasem dzwoni jako pierwsza — kolejność ustalamy w pierwszej rozmowie.",

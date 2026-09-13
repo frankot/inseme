@@ -7,7 +7,7 @@ import type { TeamCardData } from "@/lib/queries/team";
 /**
  * Three featured people on the homepage. Unlike the other sections this one
  * takes real rows — see `getFeaturedTeam` — and removes itself when there are
- * none, so an unpopulated CMS leaves no gap between Ośrodek and Program rather
+ * none, so an unpopulated CMS leaves no gap between Program and Opinie rather
  * than an empty heading.
  */
 export function Zespol({
@@ -21,7 +21,6 @@ export function Zespol({
 
   return (
     <Section
-      tone="tinted"
       id="zespol"
       index={content.index}
       label={content.eyebrow}

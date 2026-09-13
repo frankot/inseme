@@ -43,7 +43,10 @@ export default function OsrodekPage() {
           ))}
         </Reveal>
 
-        <div className="mt-section-sm grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+        <div
+          id="galeria"
+          className="mt-section-sm grid scroll-mt-[calc(var(--nav-h-sticky)+12px)] gap-gap [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]"
+        >
           {osrodekDefaults.figures.map((figure, i) => (
             <Reveal
               key={figure.src}

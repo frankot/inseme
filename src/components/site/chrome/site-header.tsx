@@ -1,11 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import { SiteImage } from "@/components/site/ui/site-image";
 import { contactDefaults, type SiteContact } from "@/content/home";
-import { barLinks, panelLinks, type NavItem } from "@/content/nav";
+import {
+  barLinks,
+  isNavGroup,
+  isPathActive,
+  panelLinks,
+  type NavEntry,
+} from "@/content/nav";
 import { cn } from "@/lib/utils";
 
 const LOGO = "/placeholder/logo-insieme.png";
@@ -34,8 +41,8 @@ export function SiteHeader({
   contact = contactDefaults,
   variant = "hero",
 }: {
-  nav?: NavItem[];
-  mobileNav?: NavItem[];
+  nav?: NavEntry[];
+  mobileNav?: NavEntry[];
   contact?: SiteContact;
   variant?: HeaderVariant;
 }) {
@@ -124,16 +131,36 @@ export function SiteHeader({
         )}
       >
         <div className="mx-auto flex w-full max-w-[1440px] flex-auto flex-col justify-center gap-0.5 overflow-y-auto px-gutter pt-[clamp(16px,4vw,32px)] pb-[clamp(36px,7vw,56px)]">
-          {mobileNav.map((item) => (
-            <NavAnchor
-              key={item.href + item.label}
-              href={item.href}
-              onClick={close}
-              className="font-heading text-mob-link text-ink-900 transition-colors hover:text-sage-600"
-            >
-              {item.label}
-            </NavAnchor>
-          ))}
+          {mobileNav.map((entry) =>
+            isNavGroup(entry) ? (
+              <div key={entry.label} className="py-2">
+                <p className="mb-2 text-eyebrow uppercase tracking-[0.2em] text-clay-600">
+                  {entry.label}
+                </p>
+                <div className="flex flex-col gap-0.5 pl-4">
+                  {entry.items.map((item) => (
+                    <NavAnchor
+                      key={item.href + item.label}
+                      href={item.href}
+                      onClick={close}
+                      className="font-heading text-[clamp(24px,6.5vw,38px)] leading-[1.22] tracking-[-0.025em] text-ink-900 transition-colors hover:text-sage-600"
+                    >
+                      {item.label}
+                    </NavAnchor>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <NavAnchor
+                key={entry.href + entry.label}
+                href={entry.href}
+                onClick={close}
+                className="font-heading text-mob-link text-ink-900 transition-colors hover:text-sage-600"
+              >
+                {entry.label}
+              </NavAnchor>
+            ),
+          )}
           <a
             href={`tel:${contact.phoneHref}`}
             onClick={close}
@@ -186,23 +213,113 @@ function NavAnchor({
   children,
   className,
   onClick,
+  active = false,
 }: {
   href: string;
   children: ReactNode;
   className?: string;
   onClick?: () => void;
+  active?: boolean;
 }) {
+  const state = active ? "true" : undefined;
   if (href.startsWith("/") && !href.startsWith("/#")) {
     return (
-      <Link href={href} onClick={onClick} className={className}>
+      <Link
+        href={href}
+        onClick={onClick}
+        className={className}
+        data-active={state}
+      >
         {children}
       </Link>
     );
   }
   return (
-    <a href={href} onClick={onClick} className={className}>
+    <a href={href} onClick={onClick} className={className} data-active={state}>
       {children}
     </a>
+  );
+}
+
+function DesktopNavEntry({
+  entry,
+  dark,
+  compact,
+}: {
+  entry: NavEntry;
+  dark: boolean;
+  compact: boolean;
+}) {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  const linkClassName = cn(
+    "nav-link font-heading transition-colors",
+    compact ? "text-[clamp(15px,1.05vw,17px)]" : "text-nav",
+    dark
+      ? "text-on-dark-2 text-shadow-nav hover:text-white"
+      : "text-ink-900",
+  );
+
+  if (!isNavGroup(entry)) {
+    return (
+      <NavAnchor
+        href={entry.href}
+        className={linkClassName}
+        active={isPathActive(pathname, entry.href)}
+      >
+        {entry.barLabel ?? entry.label}
+      </NavAnchor>
+    );
+  }
+
+  // The parent stays underlined while its panel is open, and whenever the
+  // current page lives inside it (e.g. /osrodek under "O nas").
+  const groupActive = entry.items.some((item) =>
+    isPathActive(pathname, item.href),
+  );
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      onFocus={() => setOpen(true)}
+      onBlur={(e) => {
+        const next = e.relatedTarget as Node | null;
+        if (!next || !e.currentTarget.contains(next)) setOpen(false);
+      }}
+    >
+      <button
+        type="button"
+        aria-haspopup="menu"
+        aria-expanded={open}
+        data-active={open || groupActive ? "true" : undefined}
+        className={cn(linkClassName, "cursor-pointer")}
+      >
+        {entry.label}
+      </button>
+      {/* The pt-3 padding bridges the gap between trigger and panel so the
+          cursor never leaves the hover area on the way down. */}
+      <div
+        className={cn(
+          "absolute right-0 top-full z-10 pt-3 transition-opacity duration-200",
+          open ? "visible opacity-100" : "invisible opacity-0",
+        )}
+      >
+        <div className="min-w-[176px] border border-line bg-cream py-1 shadow-[0_12px_30px_oklch(0.27_0.0116_145.25/0.12)]">
+          {entry.items.map((item) => (
+            <NavAnchor
+              key={item.href + item.label}
+              href={item.href}
+              className="block px-4 py-3 font-heading text-[15px] text-ink-900 transition-colors hover:bg-mist hover:text-sage-700"
+            >
+              {item.label}
+            </NavAnchor>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -219,7 +336,7 @@ function Bar({
 }: {
   tone: Tone;
   height: string;
-  nav: NavItem[];
+  nav: NavEntry[];
   contact: SiteContact;
   onBurger: () => void;
   menuOpen: boolean;
@@ -266,20 +383,13 @@ function Bar({
             : "gap-[clamp(16px,1.9vw,32px)]",
         )}
       >
-        {nav.map((item) => (
-          <NavAnchor
-            key={item.href + item.label}
-            href={item.href}
-            className={cn(
-              "nav-link font-heading transition-colors",
-              compact ? "text-[clamp(15px,1.05vw,17px)]" : "text-nav",
-              dark
-                ? "text-on-dark-2 text-shadow-nav hover:text-white"
-                : "text-ink-900",
-            )}
-          >
-            {item.label}
-          </NavAnchor>
+        {nav.map((entry) => (
+          <DesktopNavEntry
+            key={entry.label}
+            entry={entry}
+            dark={dark}
+            compact={compact}
+          />
         ))}
         <a
           href={`tel:${contact.phoneHref}`}

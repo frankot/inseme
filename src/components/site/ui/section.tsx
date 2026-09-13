@@ -162,7 +162,7 @@ function SectionHead({
           {title && (
             <h2
               className={cn(
-                "max-w-[16em] flex-[1_1_22rem] text-pretty font-heading text-display-sm",
+                "max-w-[13em] flex-[1_1_22rem] text-pretty font-heading text-display-sm",
                 TITLE[tone],
               )}
             >

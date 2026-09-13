@@ -13,9 +13,9 @@ export type TeamTeaserContent = {
   href: string;
 };
 
-/** The three-person section on the homepage, between Ośrodek and Pierwszy kontakt. */
+/** The three-person section on the homepage, between Program and Opinie. */
 export const teamTeaserDefaults: TeamTeaserContent = {
-  index: "04",
+  index: "05",
   eyebrow: "Zespół",
   title: "Ci sami ludzie przez cały pobyt.",
   lead: "Nie ma tu rotacji kontraktowej i nikt nie poznaje Cię od nowa co tydzień. Terapeuta prowadzący zostaje z Tobą od pierwszej rozmowy do wyjazdu.",

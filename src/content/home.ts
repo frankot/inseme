@@ -44,6 +44,8 @@ export type HeroContent = {
   ctaLabel: string;
   /** Short reassurances under the hero CTA. Empty array renders nothing. */
   trust: string[];
+  /** Registry number rendered below the main title. */
+  rpwdl: { label: string; number: string };
   image: { src: string; alt: string };
 };
 
@@ -54,11 +56,14 @@ export const heroDefaults: HeroContent = {
   ctaLabel: "Zadzwoń: 669 916 005",
   /*
    * The three things a frightened person needs to know before deciding whether
-   * to dial, kept short enough to read in a glance. Add the rejestr podmiotów
-   * leczniczych entry here once the number is to hand — it is the strongest
-   * legitimacy signal available to a private ośrodek in Poland.
+   * to dial, kept short enough to read in a glance.
    */
   trust: ["Dyżur całą dobę, także w weekendy", "Rozmowa bez nazwiska", "Bez opłat za konsultację"],
+  /*
+   * Registry number right below the main title. Placeholder until the real
+   * RPWDL entry is to hand.
+   */
+  rpwdl: { label: "Numer w RPWDL", number: "00000000000000" },
   image: { src: "/placeholder/dom-staw.jpg", alt: "" },
 };
 
@@ -506,6 +511,8 @@ export type KontaktContent = {
   eyebrow: string;
   title: string;
   privacyNote: string;
+  formTitle: string;
+  formNote: string;
   travel: Stat[];
   travelNote: string;
   mapsLabel: string;
@@ -520,6 +527,9 @@ export const kontaktDefaults: KontaktContent = {
   title: "Zadzwoń dziś, przyjedź kiedy będziesz gotowy.",
   privacyNote:
     "Do rozmowy nie potrzebujemy nazwiska. Nie wysyłamy po niej ofert i nie dzwonimy drugi raz bez Twojej zgody.",
+  formTitle: "Napisz, jeśli nie chcesz dzwonić.",
+  formNote:
+    "Nie musisz podawać nazwiska ani opisywać wszystkiego. Wystarczy zdanie o tym, co się dzieje, i sposób kontaktu.",
   travel: [
     { label: "Z centrum Warszawy", value: "20 min" },
     { label: "Z lotniska Okęcie", value: "15 min" },
