@@ -10,7 +10,13 @@ import { SiteFooter } from "@/components/site/chrome/site-footer";
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <main className="flex-auto overflow-x-hidden bg-cream">{children}</main>
+      {/*
+        `clip`, not `hidden`: hiding one axis makes the other a scroll container,
+        which silently binds every `position: sticky` inside the page to <main>
+        instead of the viewport — so nothing ever sticks. `clip` trims the same
+        horizontal overflow without creating that scroll container.
+      */}
+      <main className="flex-auto overflow-x-clip bg-cream">{children}</main>
       <SiteFooter />
     </>
   );

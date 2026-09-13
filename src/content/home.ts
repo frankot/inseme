@@ -8,6 +8,8 @@
  * FAQ — mirror `settings` and `faq_items` so wiring them is a straight swap.
  */
 
+import type { NavItem } from "./nav";
+
 /* ------------------------------------------------------------------ shared */
 
 export type SiteContact = {
@@ -30,32 +32,8 @@ export const contactDefaults: SiteContact = {
   hours: "dyżur całą dobę, także w weekendy",
 };
 
-export type NavItem = { label: string; href: string };
-
-/**
- * The desktop bar fits five items beside the logo and the phone button. Adding
- * Zespół pushed "Pytania" out — it stays in the mobile panel and the footer,
- * and the FAQ section is still reachable by scrolling.
- */
-export const navDefaults: NavItem[] = [
-  { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
-  { label: "Ośrodek", href: "/#miejsce" },
-  { label: "Zespół", href: "/zespol" },
-  { label: "Program", href: "/#program" },
-  { label: "Testy", href: "/testy" },
-];
-
-/** The mobile panel lists a couple of anchors the desktop bar has no room for. */
-export const mobileNavDefaults: NavItem[] = [
-  { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
-  { label: "Ośrodek", href: "/#miejsce" },
-  { label: "Zespół", href: "/zespol" },
-  { label: "Program", href: "/#program" },
-  { label: "Jeden dzień", href: "/#dzien" },
-  { label: "Testy przesiewowe", href: "/testy" },
-  { label: "Pytania", href: "/#faq" },
-  { label: "Kontakt", href: "/kontakt" },
-];
+/** Nav links themselves live in `content/nav.ts`. */
+export type { NavItem };
 
 /* -------------------------------------------------------------------- hero */
 
@@ -378,39 +356,74 @@ export const programDefaults: ProgramContent = {
 
 /* ------------------------------------------------------------- jeden dzień */
 
-export type DayEntry = { time: string; body: string };
+export type DayEntry = {
+  time: string;
+  title: string;
+  /** Second line: what actually fills that block. Short rows go without. */
+  detail?: string;
+};
 
 export type JedenDzienContent = {
-  index: string;
+  /** Label over the day plan — a sub-heading inside 04, so no numeral. */
   eyebrow: string;
   title: string;
+  lead: string;
+  /** Sits over the right-hand column, opposite the word "Godzina". */
+  scheduleLabel: string;
+  /** Footnote under the intro — what the timetable does not cover. */
+  note: string;
+  /** Closes the intro column, beside the hours. No caption — the plan is the point. */
+  image: { src: string; alt: string };
   entries: DayEntry[];
 };
 
 export const jedenDzienDefaults: JedenDzienContent = {
-  index: "05",
   eyebrow: "Jeden zwykły dzień",
   title: "Nie wiesz, co Cię czeka. To najtrudniejsza część.",
+  lead: "Dzień ma stałe ramy: te same godziny dla wszystkich, od pobudki po ciszę nocną. Po dwóch, trzech dniach przestajesz o nich myśleć — i to zwykle pierwszy moment ulgi.",
+  scheduleLabel: "Plan dnia · pn–sb",
+  note: "W niedzielę dzień jest luźniejszy — bez bloków terapeutycznych.",
+  image: {
+    src: "/placeholder/dom-staw.jpg",
+    alt: "Dom ośrodka widziany zza stawu, w otoczeniu sosen",
+  },
   entries: [
+    { time: "6:45", title: "Pobudka" },
     {
-      time: "7:30",
-      body: "Pobudka bez budzenia całego domu. Kawa na tarasie albo jeszcze pół godziny w pokoju.",
+      time: "7:00",
+      title: "Aktywacja",
+      detail: "Wspólne ćwiczenia. Krótko i bez wyczynu.",
+    },
+    { time: "8:00", title: "Śniadanie" },
+    {
+      time: "9:00–12:00",
+      title: "Poranny blok terapeutyczny",
+      detail:
+        "Medytacja, omówienie funkcji, dzienniki emocji i głodu, prace terapeutyczne, informacje zwrotne.",
     },
     {
-      time: "9:30",
-      body: "Grupa terapeutyczna. Pierwszego dnia możesz tylko słuchać — nikt tego nie komentuje.",
+      time: "12:00–13:30",
+      title: "Przerwa",
+      detail: "Czas własny: spacer, drzemka, rozmowa.",
+    },
+    { time: "13:30", title: "Obiad" },
+    {
+      time: "15:00–18:00",
+      title: "Popołudniowy blok terapeutyczny",
+      detail:
+        "Psychoedukacja, ćwiczenia terapeutyczne, praca grupowa, informacje zwrotne.",
+    },
+    { time: "18:00–19:00", title: "Przerwa", detail: "Czas własny." },
+    { time: "19:00", title: "Kolacja" },
+    {
+      time: "wieczór",
+      title: "Czas własny",
+      detail: "Prace terapeutyczne, rekreacja, siłownia.",
     },
     {
-      time: "11:30",
-      body: "Rozmowa indywidualna albo czas dla siebie. Las jest za furtką.",
-    },
-    {
-      time: "15:00",
-      body: "Zajęcia: psychoedukacja, praca z ciałem, warsztat albo film o nawrotach.",
-    },
-    {
-      time: "21:00",
-      body: "Krótkie podsumowanie dnia. Telefon zostaje przy Tobie — nikt go nie zabiera.",
+      time: "19:30 / 20:30",
+      title: "Sauna",
+      detail: "Dwie tury do 22:00, zgodnie z harmonogramem, niekoedukacyjnie.",
     },
   ],
 };
@@ -454,7 +467,7 @@ export type TestContent = {
 };
 
 export const testDefaults: TestContent = {
-  index: "06",
+  index: "05",
   eyebrow: "Test przesiewowy",
   title: "Pięć pytań, które można zadać sobie bez świadków.",
   lead: "Odpowiedzi nie zapisujemy i nie wysyłamy nikomu. Wynik zobaczysz od razu na ekranie — a jeśli chcesz go zachować, wyślemy go w PDF na wskazany adres.",
@@ -508,59 +521,23 @@ export const testDefaults: TestContent = {
 
 /* --------------------------------------------------------------------- faq */
 
-/** Mirrors published rows of `faq_items`. */
-export type FaqItem = { question: string; answer: string };
-
+/**
+ * Section copy only — the questions themselves live in `faq_items` and are read
+ * by `getPublishedFaq()`. They used to sit here as defaults; they are editable
+ * content, and two copies of them would drift.
+ */
 export type FaqContent = {
   index: string;
   eyebrow: string;
   title: string;
   note: string;
-  items: FaqItem[];
 };
 
 export const faqDefaults: FaqContent = {
-  index: "07",
+  index: "06",
   eyebrow: "Pytania",
   title: "Pytania, które trudno zadać na głos.",
   note: "Odpowiadamy tak samo przez telefon. Jeśli czegoś tu brakuje — zapytaj, nie ma pytań niewygodnych.",
-  items: [
-    {
-      question: "Czy mogę zadzwonić w imieniu bliskiej osoby?",
-      answer:
-        "Tak i bardzo często tak się to zaczyna. Powiemy, co zwykle pomaga, a co pogarsza sprawę, i jak rozmawiać, żeby nie skończyło się kłótnią. Do tej osoby nie dzwonimy bez Twojej wiedzy.",
-    },
-    {
-      question: "Czy rozmowa do czegoś zobowiązuje?",
-      answer:
-        "Nie. Nie musisz podawać nazwiska, nie wysyłamy po niej ofert i nie dzwonimy drugi raz bez Twojej zgody.",
-    },
-    {
-      question: "Czy można przyjechać od razu?",
-      answer:
-        "Przy detoksie zwykle tak, często tego samego dnia. Mamy dwanaście miejsc, więc konkretny termin ustalamy w rozmowie — i mówimy wprost, jeśli miejsca nie ma.",
-    },
-    {
-      question: "Czy potrzebne jest skierowanie?",
-      answer:
-        "Nie. Pobyt jest prywatny, nie wymaga skierowania ani ubezpieczenia. Potrzebna jest lista przyjmowanych leków, jeśli jakieś przyjmujesz.",
-    },
-    {
-      question: "Czy mogę mieć telefon i czy są odwiedziny?",
-      answer:
-        "Telefon zostaje przy Tobie. Odwiedziny są możliwe, zwykle po pierwszym tygodniu — termin ustalasz z terapeutą prowadzącym.",
-    },
-    {
-      question: "Ile to kosztuje i od czego zależy cena?",
-      answer:
-        "Koszt zależy od długości pobytu, potrzeby detoksu, konsultacji psychiatrycznej i stanu zdrowia. Konkretną kwotę podajemy w pierwszej rozmowie, przed przyjazdem — nie po.",
-    },
-    {
-      question: "Czy pobyt jest poufny? Czy informacje trafią do rodziny?",
-      answer:
-        "Bez Twojej pisemnej zgody nie przekazujemy nikomu informacji o pobycie — także rodzinie. Zaświadczenia i dokumenty wydajemy wyłącznie Tobie.",
-    },
-  ],
 };
 
 /* ----------------------------------------------------------------- kontakt */

@@ -10,6 +10,17 @@ import { requireAdmin } from "@/lib/auth-guard";
 import { sanitizeBlocks } from "@/lib/sanitize-blocks";
 import { articleSchema, emptyToNull, type ArticleInput } from "@/lib/validations/content";
 
+/**
+ * The public surfaces an article appears on. They are prerendered with a five
+ * minute window (`export const revalidate` on each route), so this only makes
+ * an edit show up immediately instead of within those five minutes.
+ */
+function revalidatePublic(slug?: string) {
+  revalidatePath("/");
+  revalidatePath("/artykuly");
+  if (slug) revalidatePath(`/artykuly/${slug}`);
+}
+
 export async function saveArticle(
   id: string | null,
   input: ArticleInput,
@@ -47,11 +58,13 @@ export async function saveArticle(
       await db.update(articles).set(values).where(eq(articles.id, id));
       revalidatePath("/admin/articles");
       revalidatePath(`/admin/articles/${id}`);
+      revalidatePublic(parsed.data.slug);
       return { ok: true, data: { id } };
     }
 
     const [row] = await db.insert(articles).values(values).returning({ id: articles.id });
     revalidatePath("/admin/articles");
+    revalidatePublic(parsed.data.slug);
     return { ok: true, data: { id: row.id } };
   } catch (error) {
     return actionError(error, "Nie udało się zapisać artykułu.");
@@ -64,7 +77,7 @@ export async function publishArticle(id: string): Promise<ActionResult> {
     // Publishing is the review gate for medical/factual copy: refuse to release
     // an article that doesn't name who checked it.
     const row = await db.query.articles.findFirst({
-      columns: { authorReviewer: true },
+      columns: { authorReviewer: true, slug: true },
       where: eq(articles.id, id),
     });
     if (!row) return { ok: false, error: "Nie znaleziono artykułu." };
@@ -81,6 +94,7 @@ export async function publishArticle(id: string): Promise<ActionResult> {
       .where(eq(articles.id, id));
     revalidatePath("/admin/articles");
     revalidatePath(`/admin/articles/${id}`);
+    revalidatePublic(row.slug);
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się opublikować.");
@@ -90,12 +104,17 @@ export async function publishArticle(id: string): Promise<ActionResult> {
 export async function unpublishArticle(id: string): Promise<ActionResult> {
   try {
     await requireAdmin();
+    const row = await db.query.articles.findFirst({
+      columns: { slug: true },
+      where: eq(articles.id, id),
+    });
     await db
       .update(articles)
       .set({ status: "draft", updatedAt: new Date() })
       .where(eq(articles.id, id));
     revalidatePath("/admin/articles");
     revalidatePath(`/admin/articles/${id}`);
+    revalidatePublic(row?.slug);
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się cofnąć publikacji.");
@@ -105,8 +124,13 @@ export async function unpublishArticle(id: string): Promise<ActionResult> {
 export async function deleteArticle(id: string): Promise<ActionResult> {
   try {
     await requireAdmin();
+    const row = await db.query.articles.findFirst({
+      columns: { slug: true },
+      where: eq(articles.id, id),
+    });
     await db.delete(articles).where(eq(articles.id, id));
     revalidatePath("/admin/articles");
+    revalidatePublic(row?.slug);
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się usunąć artykułu.");

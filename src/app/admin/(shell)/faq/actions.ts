@@ -32,12 +32,14 @@ export async function saveFaqItem(
     if (id) {
       await db.update(faqItems).set(values).where(eq(faqItems.id, id));
       revalidatePath("/admin/faq");
+      revalidatePath("/");
       revalidatePath(`/admin/faq/${id}`);
       return { ok: true, data: { id } };
     }
 
     const [row] = await db.insert(faqItems).values(values).returning({ id: faqItems.id });
     revalidatePath("/admin/faq");
+    revalidatePath("/");
     return { ok: true, data: { id: row.id } };
   } catch (error) {
     return actionError(error, "Nie udało się zapisać pytania.");
@@ -52,6 +54,7 @@ export async function publishFaqItem(id: string): Promise<ActionResult> {
       .set({ status: "published", publishedAt: new Date(), updatedAt: new Date() })
       .where(eq(faqItems.id, id));
     revalidatePath("/admin/faq");
+    revalidatePath("/");
     revalidatePath(`/admin/faq/${id}`);
     return { ok: true };
   } catch (error) {
@@ -67,6 +70,7 @@ export async function unpublishFaqItem(id: string): Promise<ActionResult> {
       .set({ status: "draft", updatedAt: new Date() })
       .where(eq(faqItems.id, id));
     revalidatePath("/admin/faq");
+    revalidatePath("/");
     revalidatePath(`/admin/faq/${id}`);
     return { ok: true };
   } catch (error) {
@@ -79,6 +83,7 @@ export async function deleteFaqItem(id: string): Promise<ActionResult> {
     await requireAdmin();
     await db.delete(faqItems).where(eq(faqItems.id, id));
     revalidatePath("/admin/faq");
+    revalidatePath("/");
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się usunąć pytania.");

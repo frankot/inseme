@@ -4,49 +4,33 @@ import Link from "next/link";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 
 import { SiteImage } from "@/components/site/ui/site-image";
-import {
-  contactDefaults,
-  mobileNavDefaults,
-  navDefaults,
-  type NavItem,
-  type SiteContact,
-} from "@/content/home";
+import { contactDefaults, type SiteContact } from "@/content/home";
+import { barLinks, panelLinks, type NavItem } from "@/content/nav";
 import { cn } from "@/lib/utils";
 
 const LOGO = "/placeholder/logo-insieme.png";
 
-// The compact bar never appears over the hero, which carries its own
-// transparent header. Past that point behaviour splits by viewport:
-//   desktop — follows scroll direction: back on the way up, away on the way down
-//   phones  — simply stays visible; direction-hiding reads as flicker on a
-//             small screen and fights the browser's own collapsing URL bar
-
-/** How far down the page the bar becomes eligible to appear at all. */
-const ARM_AFTER = 0.7;
-/** Upward travel needed to bring it back — long enough to ignore jitter. */
-const UP_DISTANCE = 64;
-/** Downward travel before it leaves again. */
-const DOWN_DISTANCE = 24;
-/** Sub-pixel noise from touch drags and momentum is not a direction. */
-const MIN_DELTA = 2;
-/** Matches `--breakpoint-nav`, where the desktop nav replaces the burger. */
-const DESKTOP_QUERY = "(min-width: 961px)";
+/**
+ * How far down the page the compact bar slides in, as a fraction of the
+ * viewport. Below it the bar is gone — the hero carries its own transparent
+ * header — and above it the bar simply stays. One threshold, no direction
+ * tracking: the bar never moves while you are reading.
+ */
+const SHOW_AFTER = 0.7;
 
 type Tone = "dark" | "light";
 
 /**
  * `hero`  — the homepage: a transparent bar on the photograph plus the fixed
- *           compact bar that the scroll logic above reveals and hides.
+ *           compact bar that the threshold above reveals and hides.
  * `solid` — every subpage: there is no photograph to sit on and nothing to
  *           scroll past, so the compact bar is simply sticky and always there.
- *           The scroll listener is skipped entirely — its ARM_AFTER threshold
- *           assumes a full-height hero below it.
  */
 export type HeaderVariant = "hero" | "solid";
 
 export function SiteHeader({
-  nav = navDefaults,
-  mobileNav = mobileNavDefaults,
+  nav = barLinks,
+  mobileNav = panelLinks,
   contact = contactDefaults,
   variant = "hero",
 }: {
@@ -57,91 +41,19 @@ export function SiteHeader({
 }) {
   const solid = variant === "solid";
   const [menuOpen, setMenuOpen] = useState(false);
-  const [stickyOn, setStickyOn] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     if (solid) return;
-    // Travel accumulated since the last direction change, so a few stray
-    // pixels — or a trackpad's momentum wobble — don't flip the bar.
-    let up = 0;
-    let down = 0;
-    let frame = 0;
+    const onScroll = () =>
+      setScrolled(window.scrollY > window.innerHeight * SHOW_AFTER);
 
-    /**
-     * Mobile browsers report positions past both ends while rubber-banding,
-     * and the spring back reads as a deliberate scroll the other way. Clamping
-     * to the real document range removes that phantom motion.
-     */
-    const position = () => {
-      const max = Math.max(
-        0,
-        document.documentElement.scrollHeight - window.innerHeight,
-      );
-      return Math.min(Math.max(0, window.scrollY), max);
-    };
-
-    let lastY = position();
-    const desktop = window.matchMedia(DESKTOP_QUERY);
-
-    const evaluate = () => {
-      frame = 0;
-      const y = position();
-      const delta = y - lastY;
-      lastY = y;
-
-      if (y < window.innerHeight * ARM_AFTER) {
-        up = down = 0;
-        setStickyOn(false);
-        return;
-      }
-
-      // Phones: past the hero the bar stays put, full stop.
-      if (!desktop.matches) {
-        up = down = 0;
-        setStickyOn(true);
-        return;
-      }
-
-      if (Math.abs(delta) < MIN_DELTA) return;
-
-      if (delta > 0) {
-        down += delta;
-        up = 0;
-        if (down > DOWN_DISTANCE) setStickyOn(false);
-      } else {
-        up -= delta;
-        down = 0;
-        if (up > UP_DISTANCE) setStickyOn(true);
-      }
-    };
-
-    // One read per frame: scroll fires far more often than that, and each
-    // extra sample is just noise on a touch drag.
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(evaluate);
-    };
-
-    /**
-     * A collapsing mobile URL bar resizes the viewport, which shifts scrollY
-     * on its own. Treated as scrolling it looks like a deliberate swipe up and
-     * pins the bar open, so re-baseline instead of reading it as motion.
-     */
-    const onResize = () => {
-      lastY = position();
-      up = down = 0;
-    };
-
-    evaluate();
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    // Crossing the breakpoint swaps the rule, so settle on the new one at once
-    // rather than waiting for the next scroll.
-    desktop.addEventListener("change", evaluate);
+    window.addEventListener("resize", onScroll);
     return () => {
-      if (frame) cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onResize);
-      desktop.removeEventListener("change", evaluate);
+      window.removeEventListener("resize", onScroll);
     };
   }, [solid]);
 
@@ -161,15 +73,12 @@ export function SiteHeader({
   const close = useCallback(() => setMenuOpen(false), []);
   // Opening the menu always brings the solid compact bar in, even at the top of
   // the page: the panel needs a real bar above it, not the transparent hero one.
-  const barShown = solid || stickyOn || menuOpen;
+  const barShown = solid || scrolled || menuOpen;
   const toggle = useCallback(() => setMenuOpen((open) => !open), []);
 
   return (
     <>
-      {/*
-        Compact bar: full-width, flush to the top, revealed by scrolling up and
-        dismissed by scrolling down (see the scroll effect above).
-      */}
+      {/* Compact bar: full-width, flush to the top, slid in past the threshold. */}
       <header
         inert={!barShown}
         className={cn(
@@ -194,8 +103,8 @@ export function SiteHeader({
           contact={contact}
           onBurger={toggle}
           menuOpen={menuOpen}
-          logoWidth="w-[clamp(92px,7.7vw,112px)]"
-          tagline
+          logoWidth="w-[clamp(80px,6.2vw,94px)]"
+          compact
         />
       </header>
 
@@ -244,24 +153,24 @@ export function SiteHeader({
       {/* Transparent bar on the hero photo; yields to the compact bar when the
           menu opens so only one header is ever on screen. */}
       {!solid && (
-      <header
-        inert={menuOpen}
-        className={cn(
-          "absolute inset-x-0 top-0 z-60 transition-opacity duration-300",
-          menuOpen && "pointer-events-none opacity-0",
-        )}
-      >
-        <Bar
-          tone="dark"
-          height="h-nav"
-          nav={nav}
-          contact={contact}
-          onBurger={toggle}
-          menuOpen={menuOpen}
-          logoWidth="w-[clamp(100px,8.4vw,122px)]"
-          tagline
-        />
-      </header>
+        <header
+          inert={menuOpen}
+          className={cn(
+            "absolute inset-x-0 top-0 z-60 transition-opacity duration-300",
+            menuOpen && "pointer-events-none opacity-0",
+          )}
+        >
+          <Bar
+            tone="dark"
+            height="h-nav"
+            nav={nav}
+            contact={contact}
+            onBurger={toggle}
+            menuOpen={menuOpen}
+            logoWidth="w-[clamp(100px,8.4vw,122px)]"
+            tagline
+          />
+        </header>
       )}
     </>
   );
@@ -306,6 +215,7 @@ function Bar({
   menuOpen,
   logoWidth,
   tagline = false,
+  compact = false,
 }: {
   tone: Tone;
   height: string;
@@ -314,7 +224,10 @@ function Bar({
   onBurger: () => void;
   menuOpen: boolean;
   logoWidth: string;
+  /** The wordmark's "ośrodek terapii uzależnień" line — hero bar only. */
   tagline?: boolean;
+  /** Tighter type and spacing, for the short bar that slides in on scroll. */
+  compact?: boolean;
 }) {
   const dark = tone === "dark";
 
@@ -345,13 +258,21 @@ function Bar({
         )}
       </Link>
 
-      <nav className="hidden items-center gap-[clamp(16px,1.9vw,32px)] nav:flex">
+      <nav
+        className={cn(
+          "hidden items-center nav:flex",
+          compact
+            ? "gap-[clamp(14px,1.6vw,28px)]"
+            : "gap-[clamp(16px,1.9vw,32px)]",
+        )}
+      >
         {nav.map((item) => (
           <NavAnchor
             key={item.href + item.label}
             href={item.href}
             className={cn(
-              "nav-link font-heading text-nav transition-colors",
+              "nav-link font-heading transition-colors",
+              compact ? "text-[clamp(15px,1.05vw,17px)]" : "text-nav",
               dark
                 ? "text-on-dark-2 text-shadow-nav hover:text-white"
                 : "text-ink-900",
@@ -363,10 +284,13 @@ function Bar({
         <a
           href={`tel:${contact.phoneHref}`}
           className={cn(
-            "group inline-flex items-center gap-[9px] border font-heading text-nav leading-none tabular-nums transition-colors",
+            "group inline-flex items-center border font-heading leading-none tabular-nums transition-colors",
+            compact
+              ? "gap-2 px-[17px] py-[9px] text-[clamp(15px,1.05vw,17px)]"
+              : "gap-[9px] px-[21px] py-[11px] text-nav",
             dark
-              ? "border-bone/40 bg-bone/6 px-[21px] py-[11px] text-bone text-shadow-nav hover:border-bone hover:bg-bone hover:text-ink-900"
-              : "border-ink-900 bg-ink-900 px-[21px] py-[11px] text-bone hover:bg-transparent hover:text-ink-900",
+              ? "border-bone/40 bg-bone/6 text-bone text-shadow-nav hover:border-bone hover:bg-bone hover:text-ink-900"
+              : "border-ink-900 bg-ink-900 text-bone hover:bg-transparent hover:text-ink-900",
           )}
         >
           <span

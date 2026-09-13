@@ -16,6 +16,8 @@
     "db:smoke": "tsx scripts/smoke-db.ts",
     "seed:team": "tsx scripts/seed-team.ts",
     "seed:screening": "tsx scripts/seed-screening.ts",
+    "seed:faq": "tsx scripts/seed-faq.ts",
+    "seed:articles": "tsx scripts/seed-articles.ts",
     "redirects:generate": "tsx scripts/generate-redirect-map.ts"
   },
   "dependencies": {

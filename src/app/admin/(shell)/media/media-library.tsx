@@ -6,6 +6,7 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { deleteMedia, updateMediaAltText } from "@/app/admin/(shell)/media/actions";
+import { supportsEdgeResize } from "@/lib/image-host";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,6 +127,7 @@ function MediaCard({ item, onDeleted }: { item: MediaSummary; onDeleted: () => v
             alt={item.altText ?? ""}
             fill
             sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw"
+            unoptimized={!supportsEdgeResize(item.url)}
             className="object-cover"
           />
         ) : (

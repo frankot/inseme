@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 export function TeamCard({
   member,
   delay = 0,
-  /** The teaser drops the biography; the roster keeps it. */
+  /** Teaser card: drops the biography and squares off the portrait on desktop. */
   compact = false,
   sizes = "(max-width: 960px) 100vw, 33vw",
   className,
@@ -30,7 +30,7 @@ export function TeamCard({
         href={`/zespol/${member.slug}`}
         className="group flex h-full flex-col border border-line bg-bone transition-colors hover:border-line-warm"
       >
-        <Portrait member={member} sizes={sizes} />
+        <Portrait member={member} sizes={sizes} compact={compact} />
 
         <div className="flex flex-auto flex-col p-[clamp(18px,1.8vw,26px)]">
           {member.role && (
@@ -66,12 +66,22 @@ export function TeamCard({
 function Portrait({
   member,
   sizes,
+  compact,
 }: {
   member: TeamCardData;
   sizes: string;
+  compact: boolean;
 }) {
   return (
-    <div className="relative aspect-[4/5] overflow-hidden bg-stone">
+    <div
+      className={cn(
+        "relative overflow-hidden bg-stone",
+        // A teaser row of three or four 4:5 portraits runs very tall on a wide
+        // screen; square crops take about a fifth off without cropping faces.
+        // The roster keeps the full 4:5 — there the photograph is the content.
+        compact ? "aspect-[4/5] nav:aspect-square" : "aspect-[4/5]",
+      )}
+    >
       {member.photo ? (
         <SiteImage
           src={member.photo.url}

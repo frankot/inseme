@@ -1,3 +1,4 @@
+import { JedenDzien } from "@/components/site/sections/jeden-dzien";
 import { Container } from "@/components/site/ui/container";
 import { Reveal } from "@/components/site/ui/reveal";
 import { SectionRule } from "@/components/site/ui/section-rule";
@@ -8,6 +9,11 @@ import {
 } from "@/content/home";
 import { cn } from "@/lib/utils";
 
+/**
+ * Section 04 in two halves: what a stay is made of (the cards) and what one of
+ * its days looks like (the plan below). They used to be 04 and 05 — two
+ * numerals, two grids of similar tiles, one idea.
+ */
 export function Program({
   content = programDefaults,
 }: {
@@ -33,6 +39,8 @@ export function Program({
             <Card key={card.index} card={card} delay={i * 70} />
           ))}
         </div>
+
+        <JedenDzien />
       </Container>
     </section>
   );
