@@ -40,7 +40,13 @@ export function SubpageLayout({
           breadcrumb={breadcrumb}
         />
       )}
-      {children}
+      {/*
+        The footer is pulled up over whatever ends the page. On the homepage the
+        last band already carries that overhang in its padding; here the pages
+        end in ordinary containers, so the room is given back once, for all of
+        them, rather than on every page's last element.
+      */}
+      <div className="pb-slab">{children}</div>
     </>
   );
 }

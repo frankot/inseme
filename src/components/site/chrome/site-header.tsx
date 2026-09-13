@@ -89,7 +89,10 @@ export function SiteHeader({
       <header
         inert={!barShown}
         className={cn(
-          "inset-x-0 top-0 z-70 border-b border-line-strong bg-cream",
+          // Glass effect: a delicate frosted layer floating over the page, held
+          // in place with backdrop blur and a subtle border. No shape — just
+          // transparency and the blur that makes the seam read.
+          "inset-x-0 top-0 z-70 border-b border-line/30 bg-cream/80 backdrop-blur-md",
           // Subpages have no hero to overlap, so the bar takes up its own space
           // and stays put; on the homepage it floats over the photograph.
           solid ? "sticky" : "fixed",

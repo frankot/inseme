@@ -22,10 +22,33 @@ const FONT_SIZES = [
   "eyebrow",
 ];
 
+/**
+ * The named spacing steps (`--spacing-*` in globals.css). Same story as the
+ * type scale: tailwind-merge only knows Tailwind's numeric spacing, so it read
+ * `pb-section` as a class it had never heard of and left it sitting beside the
+ * `pb-[calc(…)]` it was meant to replace — with the winner decided by stylesheet
+ * order rather than by the override. Declaring the steps here puts every
+ * padding, margin and gap utility built on them in the right conflict group.
+ */
+const SPACING = [
+  "gutter",
+  "section",
+  "section-lg",
+  "section-sm",
+  "card",
+  "gap",
+  "slab",
+  "nav",
+  "nav-sticky",
+];
+
 const twMerge = extendTailwindMerge({
   extend: {
     classGroups: {
       "font-size": [{ text: FONT_SIZES }],
+    },
+    theme: {
+      spacing: SPACING,
     },
   },
 });

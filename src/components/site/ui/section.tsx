@@ -2,25 +2,10 @@ import type { ReactNode } from "react";
 
 import { Container } from "@/components/site/ui/container";
 import { Reveal } from "@/components/site/ui/reveal";
+import { Slab, type SectionTone } from "@/components/site/ui/slab";
 import { cn } from "@/lib/utils";
 
-/**
- * The ground a band sits on. The page alternates them so the scroll has a
- * rhythm instead of nine identical cream screens: `tinted` carries the card
- * grids, where a warm ground is what makes a bone card's edge visible, and
- * `dark` is reserved for the two moments that should stop the reader — the
- * hero and the quote.
- */
-export type SectionTone = "default" | "tinted" | "dark";
-
-const GROUND: Record<SectionTone, string> = {
-  // The hairline is the skeleton: on the page ground it is the only thing
-  // marking where one band ends, so it stays even when a tone change would
-  // already separate the two.
-  default: "border-t border-line bg-cream",
-  tinted: "bg-sand",
-  dark: "bg-ink-950",
-};
+export type { SectionTone };
 
 const EYEBROW_INDEX: Record<SectionTone, string> = {
   default: "text-clay-400",
@@ -47,18 +32,19 @@ const LEAD: Record<SectionTone, string> = {
 };
 
 /**
- * Every band on the page, top to bottom: ground, vertical rhythm, and the
- * masthead that opens it.
+ * Every band on the page, top to bottom: the masthead that opens it, inside the
+ * `Slab` that gives it its ground, its rhythm and its place in the stack.
  *
- * The masthead is one shape everywhere — `01 / OŚRODEK` under the section's
- * hairline, then the heading on the left with the lead and any link opposite
- * it. Sections used to each invent their own arrangement of numeral, rule,
- * heading and lead, which is most of why the page stopped looking like one
- * site. A section that carries its heading elsewhere (the sticky column in
- * FAQ, say) simply omits `title` and gets the eyebrow alone.
+ * The masthead is one shape everywhere — `01 / OŚRODEK`, then the heading on
+ * the left with the lead and any link opposite it. Sections used to each invent
+ * their own arrangement of numeral, rule, heading and lead, which is most of
+ * why the page stopped looking like one site. A section that carries its
+ * heading elsewhere (the sticky column in FAQ, say) simply omits `title` and
+ * gets the eyebrow alone.
  *
- * Padding lives here rather than on each section, so the gaps between bands
- * are all the same height.
+ * The same `index` does double duty: it prints in the eyebrow, and `Slab` reads
+ * its parity to decide whether this band is a raised sheet or the ground one is
+ * laid on.
  */
 export function Section({
   id,
@@ -94,14 +80,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <section
-      id={id}
-      className={cn(
-        "scroll-mt-[calc(var(--nav-h-sticky)+12px)] py-section",
-        GROUND[tone],
-        className,
-      )}
-    >
+    <Slab id={id} tone={tone} index={index} className={className}>
       <Container>
         <SectionHead
           tone={tone}
@@ -114,7 +93,7 @@ export function Section({
         />
         {children}
       </Container>
-    </section>
+    </Slab>
   );
 }
 

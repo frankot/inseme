@@ -63,7 +63,7 @@ export const heroDefaults: HeroContent = {
    * Registry number right below the main title. Placeholder until the real
    * RPWDL entry is to hand.
    */
-  rpwdl: { label: "Numer w RPWDL", number: "00000000000000" },
+  rpwdl: { label: "Numer w RPWDL", number: "000000234596" },
   image: { src: "/placeholder/dom-staw.jpg", alt: "" },
 };
 
