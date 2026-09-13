@@ -89,10 +89,10 @@ export function SiteHeader({
       <header
         inert={!barShown}
         className={cn(
-          // Glass effect: a delicate frosted layer floating over the page, held
-          // in place with backdrop blur and a subtle border. No shape — just
-          // transparency and the blur that makes the seam read.
-          "inset-x-0 top-0 z-70 border-b border-line/30 bg-cream/80 backdrop-blur-md",
+          // The same plain cream as section 01, and nothing else: no rule, no
+          // shape, no glass. The bar is a surface the page runs under, and the
+          // dropdown that hangs off it is cut from the same sheet.
+          "inset-x-0 top-0 z-70 bg-cream",
           // Subpages have no hero to overlap, so the bar takes up its own space
           // and stays put; on the homepage it floats over the photograph.
           solid ? "sticky" : "fixed",
@@ -125,7 +125,7 @@ export function SiteHeader({
       <div
         inert={!menuOpen}
         className={cn(
-          "fixed inset-x-0 bottom-0 z-60 flex flex-col border-t border-line bg-cream",
+          "fixed inset-x-0 bottom-0 z-60 flex flex-col bg-cream",
           barShown ? "top-nav-sticky" : "top-nav",
           "will-change-transform transition-transform motion-reduce:transition-none",
           menuOpen
@@ -284,7 +284,10 @@ function DesktopNavEntry({
 
   return (
     <div
-      className="relative"
+      // Full bar height, not just the button's: it is what makes `top-full`
+      // land on the bar's bottom edge, so the panel meets it with no seam —
+      // and it means the cursor never crosses dead ground on the way down.
+      className="relative flex items-center self-stretch"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
       onFocus={() => setOpen(true)}
@@ -298,24 +301,31 @@ function DesktopNavEntry({
         aria-haspopup="menu"
         aria-expanded={open}
         data-active={open || groupActive ? "true" : undefined}
-        className={cn(linkClassName, "cursor-pointer")}
+        className={cn(linkClassName, "flex cursor-pointer items-center gap-[5px]")}
       >
         {entry.label}
+        <Chevron open={open} />
       </button>
-      {/* The pt-3 padding bridges the gap between trigger and panel so the
-          cursor never leaves the hover area on the way down. */}
       <div
         className={cn(
-          "absolute right-0 top-full z-10 pt-3 transition-opacity duration-200",
+          "absolute right-0 top-full z-10 transition-opacity duration-200",
           open ? "visible opacity-100" : "invisible opacity-0",
         )}
       >
-        <div className="min-w-[176px] border border-line bg-cream py-1 shadow-[0_12px_30px_oklch(0.27_0.0116_145.25/0.12)]">
+        {/*
+          Nothing of its own: no rule, no shadow, the same cream as the bar. The
+          panel is not a surface over the header — it is the header, carried on
+          past its edge for as long as the group is open.
+        */}
+        <div className="min-w-[176px] bg-cream py-1">
           {entry.items.map((item) => (
             <NavAnchor
               key={item.href + item.label}
               href={item.href}
-              className="block px-4 py-3 font-heading text-[15px] text-ink-900 transition-colors hover:bg-mist hover:text-sage-700"
+              // Hover is a warm grey wash, not the sage the rest of the site
+              // uses for action: this is a menu being read, not a thing being
+              // chosen, and green here made every row look selected.
+              className="block px-4 py-3 font-heading text-[15px] text-ink-900 transition-colors hover:bg-sand"
             >
               {item.label}
             </NavAnchor>
@@ -323,6 +333,33 @@ function DesktopNavEntry({
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * The mark on a nav group: down at rest, flipped when its panel is open. Drawn
+ * rather than typed, so it keeps its weight against the heading face at every
+ * step of the fluid nav size.
+ */
+function Chevron({ open }: { open: boolean }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 10 6"
+      className={cn(
+        "w-[9px] shrink-0 transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none",
+        open && "rotate-180",
+      )}
+    >
+      <path
+        d="M1 1.4 5 4.6 9 1.4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 
@@ -362,7 +399,9 @@ function Bar({
     >
       <nav
         className={cn(
-          "hidden items-center nav:flex",
+          // `self-stretch` so a group's hover area — and the panel hanging off
+          // it — can reach the bar's bottom edge; the row itself stays centred.
+          "hidden items-center nav:flex nav:self-stretch",
           compact
             ? "gap-[clamp(14px,1.6vw,28px)]"
             : "gap-[clamp(14px,1.5vw,26px)]",
