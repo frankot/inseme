@@ -110,7 +110,7 @@ export function SiteHeader({
           contact={contact}
           onBurger={toggle}
           menuOpen={menuOpen}
-          logoWidth="w-[clamp(80px,6.2vw,94px)]"
+          logoWidth="w-[clamp(90px,7vw,106px)]"
           compact
         />
       </header>
@@ -255,7 +255,7 @@ function DesktopNavEntry({
 
   const linkClassName = cn(
     "nav-link font-heading transition-colors",
-    compact ? "text-[clamp(15px,1.05vw,17px)]" : "text-nav",
+    compact ? "text-[clamp(15px,1.05vw,17px)]" : "text-[clamp(14px,1.05vw,17px)]",
     dark
       ? "text-on-dark-2 text-shadow-nav hover:text-white"
       : "text-ink-900",
@@ -351,15 +351,35 @@ function Bar({
   return (
     <div
       className={cn(
-        "mx-auto flex w-full max-w-[1440px] items-center justify-between gap-gutter px-gutter",
+        // Three tracks so the logo sits dead-center regardless of how much
+        // the phone CTA or the nav links weigh on either side.
+        "mx-auto grid w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center gap-gutter px-gutter",
         height,
       )}
     >
+      <nav
+        className={cn(
+          "hidden items-center nav:flex",
+          compact
+            ? "gap-[clamp(14px,1.6vw,28px)]"
+            : "gap-[clamp(14px,1.5vw,26px)]",
+        )}
+      >
+        {nav.map((entry) => (
+          <DesktopNavEntry
+            key={entry.label}
+            entry={entry}
+            dark={dark}
+            compact={compact}
+          />
+        ))}
+      </nav>
+
       <Link
         href="/"
         className={cn(
-          "flex shrink-0",
-          tagline ? "flex-col gap-[5px]" : "items-center",
+          "col-start-2 flex shrink-0 justify-self-center",
+          tagline ? "flex-col items-center gap-[5px]" : "items-center",
         )}
       >
         <Logo className={logoWidth} invert={dark} />
@@ -375,61 +395,62 @@ function Bar({
         )}
       </Link>
 
-      <nav
-        className={cn(
-          "hidden items-center nav:flex",
-          compact
-            ? "gap-[clamp(14px,1.6vw,28px)]"
-            : "gap-[clamp(16px,1.9vw,32px)]",
-        )}
-      >
-        {nav.map((entry) => (
-          <DesktopNavEntry
-            key={entry.label}
-            entry={entry}
-            dark={dark}
-            compact={compact}
-          />
-        ))}
-        <a
-          href={`tel:${contact.phoneHref}`}
+      <div className="col-start-3 flex items-center justify-self-end gap-gutter">
+        <div className="hidden nav:flex">
+          <PhoneLink contact={contact} dark={dark} compact={compact} />
+        </div>
+
+        <button
+          type="button"
+          onClick={onBurger}
+          aria-expanded={menuOpen}
           className={cn(
-            "group inline-flex items-center border font-heading leading-none tabular-nums transition-colors",
-            compact
-              ? "gap-2 px-[17px] py-[9px] text-[clamp(15px,1.05vw,17px)]"
-              : "gap-[9px] px-[21px] py-[11px] text-nav",
-            dark
-              ? "border-bone/40 bg-bone/6 text-bone text-shadow-nav hover:border-bone hover:bg-bone hover:text-ink-900"
-              : "border-ink-900 bg-ink-900 text-bone hover:bg-transparent hover:text-ink-900",
+            "flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase nav:hidden",
+            dark ? "text-on-dark-2 text-shadow-nav" : "text-ink-900",
           )}
         >
-          <span
-            aria-hidden
-            className={cn(
-              "block size-[5px] rounded-full",
-              dark ? "bg-sage-300" : "bg-sage-300 group-hover:bg-sage-600",
-            )}
-          />
-          <span>{contact.phone}</span>
-        </a>
-      </nav>
-
-      <button
-        type="button"
-        onClick={onBurger}
-        aria-expanded={menuOpen}
-        className={cn(
-          "flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase nav:hidden",
-          dark ? "text-on-dark-2 text-shadow-nav" : "text-ink-900",
-        )}
-      >
-        <span>Menu</span>
-        <span className="burger-icon" data-open={menuOpen} aria-hidden>
-          <span />
-          <span />
-        </span>
-      </button>
+          <span>Menu</span>
+          <span className="burger-icon" data-open={menuOpen} aria-hidden>
+            <span />
+            <span />
+          </span>
+        </button>
+      </div>
     </div>
+  );
+}
+
+function PhoneLink({
+  contact,
+  dark,
+  compact,
+}: {
+  contact: SiteContact;
+  dark: boolean;
+  compact: boolean;
+}) {
+  return (
+    <a
+      href={`tel:${contact.phoneHref}`}
+      className={cn(
+        "group inline-flex items-center border font-heading leading-none tabular-nums transition-colors",
+        compact
+          ? "gap-2 px-[14px] py-[7px] text-[clamp(13px,0.95vw,15px)]"
+          : "gap-[9px] px-[21px] py-[11px] text-nav",
+        dark
+          ? "border-bone/40 bg-bone/6 text-bone text-shadow-nav hover:border-bone hover:bg-bone hover:text-ink-900"
+          : "border-ink-900/25 bg-ink-900/5 text-ink-900 hover:border-ink-900 hover:bg-ink-900 hover:text-bone",
+      )}
+    >
+      <span
+        aria-hidden
+        className={cn(
+          "block size-[5px] rounded-full",
+          dark ? "bg-sage-300" : "bg-sage-300 group-hover:bg-sage-600",
+        )}
+      />
+      <span>{contact.phone}</span>
+    </a>
   );
 }
 

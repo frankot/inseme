@@ -43,9 +43,9 @@ export const navLinks: NavEntry[] = [
       { label: "Program", href: "/program" },
       // The gallery lives in its own section on the Ośrodek page.
       { label: "Galeria", href: "/osrodek#galeria" },
+      { label: "Zespół", href: "/zespol" },
     ],
   },
-  { label: "Zespół", href: "/zespol" },
   { label: "Cennik", href: "/cennik" },
   { label: "Testy przesiewowe", href: "/testy", barLabel: "Testy" },
   { label: "Artykuły", href: "/artykuly" },

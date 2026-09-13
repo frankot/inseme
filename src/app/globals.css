@@ -200,8 +200,8 @@
 }
 
 :root {
-  --nav-h: 88px;
-  --nav-h-sticky: 60px;
+  --nav-h: 80px;
+  --nav-h-sticky: 56px;
   /* Phones only: a fixed hero avoids the jump when the URL bar collapses. */
   --hero-h: 600px;
   /* Desktop: full-viewport, but a very tall display shouldn't stretch it. */
