@@ -63,7 +63,7 @@ export const programPrices: ProgramPrice[] = [
     id: "rodzina",
     name: "Konsultacja dla rodziny",
     unit: "bez pacjenta",
-    priceFrom: "0 zł",
+    priceFrom: "bezpłatnie",
     priceUnit: "pierwsza rozmowa",
     note: "Pierwsza rozmowa telefoniczna jest bezpłatna i nie zobowiązuje do niczego.",
     includes: [
@@ -77,7 +77,7 @@ export const programPrices: ProgramPrice[] = [
     id: "po-pobycie",
     name: "Po pobycie",
     unit: "bezterminowo",
-    priceFrom: "0 zł",
+    priceFrom: "bezpłatnie",
     priceUnit: "dla naszych pacjentów",
     note: "Grupa wsparcia i kontakt z terapeutą po wyjeździe są wliczone w pobyt.",
     includes: [

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { JedenDzien } from "@/components/site/sections/jeden-dzien";
 import { Container } from "@/components/site/ui/container";
-import { ProgramCard } from "@/components/site/ui/program-card";
+import { ProgramList } from "@/components/site/ui/program-list";
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
 import { cennikTeaserDefaults } from "@/content/cennik";
 import { programDefaults } from "@/content/home";
@@ -27,17 +27,10 @@ export default function ProgramPage() {
       breadcrumb={[{ label: "Strona główna", href: "/" }, { label: "Program" }]}
     >
       <Container className="pb-section-lg">
-        <div className="grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(248px,1fr))]">
-          {programDefaults.cards.map((card, i) => (
-            <div key={card.id} id={card.id} className="scroll-mt-[calc(var(--nav-h-sticky)+12px)]">
-              <ProgramCard
-                card={card}
-                delay={i * 70}
-                noPriceLabel={cennikTeaserDefaults.noPriceLabel}
-              />
-            </div>
-          ))}
-        </div>
+        <ProgramList
+          cards={programDefaults.cards}
+          noPriceLabel={cennikTeaserDefaults.noPriceLabel}
+        />
 
         <p className="mt-[clamp(18px,2vw,26px)] text-meta text-ink-300">
           {programDefaults.note}

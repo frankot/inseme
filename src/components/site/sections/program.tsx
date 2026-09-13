@@ -1,25 +1,37 @@
 import { Cta } from "@/components/site/ui/cta";
-import { ProgramCard } from "@/components/site/ui/program-card";
+import { ProgramList } from "@/components/site/ui/program-list";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Section } from "@/components/site/ui/section";
-import { PRICES_ARE_REAL, cennikTeaserDefaults, type CennikContent } from "@/content/cennik";
-import { programDefaults, type ProgramContent } from "@/content/home";
+import {
+  PRICES_ARE_REAL,
+  cennikTeaserDefaults,
+  type CennikContent,
+} from "@/content/cennik";
+import {
+  contactDefaults,
+  programDefaults,
+  type ProgramContent,
+  type SiteContact,
+} from "@/content/home";
 
 /**
- * "Program i ceny" — what a stay is made of and what each part costs, in one
- * band. They used to be a programme section with no prices anywhere on the site
- * and a footer link to a cennik that did not exist; someone comparing ośrodki
- * was doing both jobs at once and the page helped with neither.
+ * "Program i ceny" — what a stay is made of and what each part costs.
  *
- * The day plan moved to /program with the rest of the detail — on the homepage
- * a twelve-row timetable was the longest thing on the page and the least read.
+ * A tariff list rather than a card grid: Zespół above and Opinie below are both
+ * grids of cards, and prices only become comparable when they line up in a
+ * column. See `ProgramList`.
+ *
+ * The day plan lives on /program with the rest of the detail — on the homepage
+ * a twelve-row timetable was the longest block on the page and the least read.
  */
 export function Program({
   content = programDefaults,
   cennik = cennikTeaserDefaults,
+  contact = contactDefaults,
 }: {
   content?: ProgramContent;
   cennik?: CennikContent;
+  contact?: SiteContact;
 }) {
   return (
     <Section
@@ -30,26 +42,20 @@ export function Program({
       lead={cennik.lead}
       action={<Cta href={cennik.href}>{cennik.linkLabel}</Cta>}
     >
-      <div className="grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(248px,1fr))]">
-        {content.cards.map((card, i) => (
-          <ProgramCard
-            key={card.id}
-            card={card}
-            delay={i * 70}
-            noPriceLabel={cennik.noPriceLabel}
-          />
-        ))}
-      </div>
+      <ProgramList cards={content.cards} noPriceLabel={cennik.noPriceLabel} />
 
       {/*
-        Until the real price list lands the cards all read "wycena w rozmowie",
+        Until the real price list lands every row reads "wycena w rozmowie",
         which on its own looks evasive — this says why, and says the call costs
-        nothing. It removes itself once the numbers are published.
+        nothing. It swaps for the standing note once the numbers are published.
       */}
-      <Reveal className="mt-[clamp(20px,2.2vw,30px)] flex flex-wrap items-baseline gap-x-8 gap-y-2">
-        <p className="max-w-[44em] text-meta text-ink-300">
+      <Reveal className="mt-[clamp(16px,1.8vw,24px)] flex flex-wrap items-center justify-between gap-x-10 gap-y-5">
+        <p className="max-w-[42em] text-meta text-ink-300">
           {PRICES_ARE_REAL ? cennik.note : cennik.noPriceLead}
         </p>
+        <Cta href={`tel:${contact.phoneHref}`} variant="solid" className="tabular-nums">
+          Zapytaj o cenę: {contact.phone}
+        </Cta>
       </Reveal>
     </Section>
   );
