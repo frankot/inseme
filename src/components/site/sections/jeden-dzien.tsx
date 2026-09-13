@@ -31,14 +31,14 @@ export function JedenDzien({
           <p className="max-w-[30em] text-pretty text-body-lg text-ink-500">
             {content.lead}
           </p>
-          <p className="mt-7 max-w-[30em] border-t border-line pt-4 text-[14.5px] leading-[1.6] text-ink-300">
+          <p className="mt-7 max-w-[30em] border-t border-line-warm pt-4 text-meta text-ink-300">
             {content.note}
           </p>
         </>
       }
     >
       <div>
-        <div className="flex items-baseline justify-between gap-4 border-b border-line-strong pb-[11px] text-eyebrow uppercase tracking-[0.18em] text-clay-400">
+        <div className="flex items-baseline justify-between gap-4 border-b border-line-warm pb-[11px] text-eyebrow uppercase tracking-[0.18em] text-clay-400">
           <span>Godzina</span>
           <span>{content.scheduleLabel}</span>
         </div>
@@ -49,7 +49,7 @@ export function JedenDzien({
               as="li"
               key={entry.time + entry.title}
               delay={Math.min(i, 6) * 45}
-              className="flex gap-[clamp(14px,2.2vw,36px)] border-b border-line py-[clamp(13px,1.35vw,19px)]"
+              className="flex gap-[clamp(14px,2.2vw,36px)] border-b border-line-strong py-[clamp(13px,1.35vw,19px)]"
             >
               <span className="w-[clamp(76px,8.6vw,124px)] shrink-0 pt-px font-heading text-[clamp(14px,1vw,15.5px)] leading-[1.5] tabular-nums text-sage-600">
                 {entry.time}
@@ -59,7 +59,7 @@ export function JedenDzien({
                   {entry.title}
                 </h3>
                 {entry.detail && (
-                  <p className="mt-1.5 max-w-[42em] text-[14.5px] leading-[1.6] text-ink-400">
+                  <p className="mt-1.5 max-w-[42em] text-meta text-ink-400">
                     {entry.detail}
                   </p>
                 )}

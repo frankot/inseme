@@ -1,6 +1,5 @@
-import { Container } from "@/components/site/ui/container";
 import { Reveal } from "@/components/site/ui/reveal";
-import { SectionRule } from "@/components/site/ui/section-rule";
+import { Section } from "@/components/site/ui/section";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { osrodekDefaults, type OsrodekContent } from "@/content/home";
 
@@ -23,52 +22,44 @@ export function Osrodek({
   content?: OsrodekContent;
 }) {
   return (
-    <section id="miejsce" className="scroll-mt-[calc(var(--nav-h-sticky)+12px)]">
-      <Container className="pt-section-lg pb-section-sm">
-        <SectionRule
-          index={content.index}
-          label={content.eyebrow}
-          className="mb-[clamp(28px,3.2vw,48px)]"
-        />
+    <Section
+      id="miejsce"
+      tone="tinted"
+      index={content.index}
+      label={content.eyebrow}
+      title={content.title}
+      lead={content.body}
+    >
+      {/*
+        The four numbers used to be a narrow table crowded against the heading.
+        Given the full width they read as a band of facts, and they carry the
+        eye from the heading down into the photographs.
+      */}
+      <Reveal className="grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-7 md:grid-cols-4">
+        {content.stats.map((stat) => (
+          <div key={stat.label} className="border-t border-line-warm pt-[14px]">
+            <span className="block text-eyebrow uppercase tracking-[0.2em] text-clay-600">
+              {stat.label}
+            </span>
+            <span className="mt-2.5 block font-heading text-[clamp(26px,2.4vw,34px)] leading-none tracking-[-0.03em] tabular-nums text-ink-900">
+              {stat.value}
+            </span>
+          </div>
+        ))}
+      </Reveal>
 
-        <div className="flex flex-wrap items-start gap-x-16 gap-y-7">
-          <Reveal className="flex-[1_1_22em]">
-            <h2 className="mb-7 max-w-[15em] text-pretty font-heading text-display text-ink-900">
-              {content.title}
-            </h2>
-            <p className="max-w-[34em] text-pretty text-body-lg text-ink-500">
-              {content.body}
-            </p>
-          </Reveal>
-
-          <Reveal className="ml-auto flex flex-[0_1_17em] flex-col gap-4 [min-width:200px]">
-            {content.stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="flex items-baseline justify-between gap-4 border-b border-line pb-3"
-              >
-                <span className="text-[14.5px] text-ink-300">{stat.label}</span>
-                <span className="font-heading text-[21px] tracking-[-0.02em] tabular-nums text-ink-900">
-                  {stat.value}
-                </span>
-              </div>
-            ))}
-          </Reveal>
-        </div>
-
-        <div className="mt-[clamp(28px,3.2vw,48px)] grid grid-cols-2 auto-rows-[clamp(140px,15.5vw,220px)] gap-gap nav:grid-cols-4">
-          {content.figures.slice(0, TILES.length).map((figure, i) => (
-            <Figure
-              key={figure.src}
-              figure={figure}
-              delay={i * 70}
-              className={TILES[i].span}
-              sizes={TILES[i].sizes}
-            />
-          ))}
-        </div>
-      </Container>
-    </section>
+      <div className="mt-[clamp(28px,3.2vw,48px)] grid grid-cols-2 auto-rows-[clamp(140px,15.5vw,220px)] gap-gap nav:grid-cols-4">
+        {content.figures.slice(0, TILES.length).map((figure, i) => (
+          <Figure
+            key={figure.src}
+            figure={figure}
+            delay={i * 70}
+            className={TILES[i].span}
+            sizes={TILES[i].sizes}
+          />
+        ))}
+      </div>
+    </Section>
   );
 }
 

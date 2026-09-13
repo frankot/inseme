@@ -74,7 +74,7 @@ export function ScreeningTest({
   }
 
   return (
-    <div className="border border-line bg-white">
+    <div className="border border-line-strong bg-white">
       <div className="h-0.5 bg-on-dark-3">
         <div
           className="h-0.5 bg-sage-600 transition-[width] duration-500 ease-[cubic-bezier(.16,1,.3,1)]"
@@ -104,7 +104,7 @@ export function ScreeningTest({
                 <button
                   type="button"
                   onClick={() => setStage("question")}
-                  className="link-arrow self-start border border-ink-900 bg-ink-900 px-[26px] py-[15px] text-[15.5px] text-bone transition-colors hover:bg-transparent hover:text-ink-900"
+                  className="link-arrow self-start bg-ink-900 px-[clamp(22px,2.2vw,30px)] py-[15px] text-body text-bone transition-colors hover:bg-ink-700"
                 >
                   <span>{labels.startLabel}</span>
                   <span aria-hidden>→</span>
@@ -137,7 +137,7 @@ export function ScreeningTest({
                       key={option.id}
                       type="button"
                       onClick={() => answer(option.points)}
-                      className="group flex items-center justify-between gap-4 border border-line bg-cream px-[18px] py-[15px] text-left text-[15.5px] text-ink-600 transition-colors hover:border-sage-600 hover:bg-mist"
+                      className="group flex items-center justify-between gap-4 border border-line-strong bg-cream px-[18px] py-[15px] text-left text-body text-ink-600 transition-colors hover:border-sage-600 hover:bg-mist"
                     >
                       <span>{option.label}</span>
                       <span
@@ -166,7 +166,7 @@ export function ScreeningTest({
                 <p className="text-pretty font-heading text-[clamp(24px,2.4vw,34px)] leading-[1.12] tracking-[-0.03em] text-ink-900">
                   {band.resultTitle}
                 </p>
-                <p className="text-pretty border-b border-line pb-[clamp(18px,2vw,24px)] text-[15.5px] leading-[1.72] text-ink-400">
+                <p className="text-pretty border-b border-line pb-[clamp(18px,2vw,24px)] text-body text-ink-400">
                   {band.resultBody}
                 </p>
 
@@ -180,7 +180,7 @@ export function ScreeningTest({
                 <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pt-1">
                   <a
                     href={`tel:${contact.phoneHref}`}
-                    className="link-arrow text-[14.5px] text-sage-600 transition-colors hover:text-sage-700"
+                    className="link-arrow text-body text-sage-600 transition-colors hover:text-sage-700"
                   >
                     <span>{labels.callLabel}</span>
                     <span aria-hidden>→</span>
@@ -222,7 +222,7 @@ function ResultDelivery({
 
   if (sent) {
     return (
-      <p className="bg-mist px-4 py-3.5 text-[14.5px] leading-[1.7] text-ink-600">
+      <p className="bg-mist px-4 py-3.5 text-body text-ink-600">
         {labels.sentMessage.replace("669 916 005", contact.phone)}
       </p>
     );
@@ -241,7 +241,7 @@ function ResultDelivery({
       })}
       className="flex flex-col gap-3"
     >
-      <span className="text-[13.5px] leading-[1.65] text-ink-300">{labels.emailNote}</span>
+      <span className="text-meta text-ink-300">{labels.emailNote}</span>
 
       {/* Honeypot: off-screen, not hidden — some bots skip display:none fields. */}
       <input
@@ -262,19 +262,19 @@ function ResultDelivery({
           aria-invalid={!!form.formState.errors.email}
           placeholder={labels.emailPlaceholder}
           {...form.register("email")}
-          className="min-w-0 flex-auto border border-line bg-cream px-3.5 py-3 text-[15px] text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600"
+          className="min-w-0 flex-auto border border-line-strong bg-cream px-3.5 py-3 text-body text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600"
         />
         <button
           type="submit"
           disabled={form.formState.isSubmitting}
-          className="link-arrow border border-ink-900 bg-ink-900 px-5 py-3 text-[15px] text-bone transition-colors hover:bg-transparent hover:text-ink-900 disabled:opacity-60"
+          className="link-arrow bg-ink-900 px-5 py-3 text-body text-bone transition-colors hover:bg-ink-700 disabled:opacity-60"
         >
           <span>{form.formState.isSubmitting ? "Wysyłanie…" : labels.sendLabel}</span>
           <span aria-hidden>→</span>
         </button>
       </div>
 
-      <label className="flex cursor-pointer items-start gap-2.5 text-[13px] leading-[1.6] text-ink-300">
+      <label className="flex cursor-pointer items-start gap-2.5 text-meta text-ink-300">
         <input
           type="checkbox"
           {...form.register("consent")}
@@ -284,7 +284,7 @@ function ResultDelivery({
       </label>
 
       {(form.formState.errors.email || form.formState.errors.consent) && (
-        <p role="alert" className="text-[13px] text-destructive">
+        <p role="alert" className="text-meta text-destructive">
           {form.formState.errors.email?.message ?? form.formState.errors.consent?.message}
         </p>
       )}

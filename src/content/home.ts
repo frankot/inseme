@@ -68,7 +68,7 @@ export type OsrodekContent = {
 };
 
 export const osrodekDefaults: OsrodekContent = {
-  index: "01",
+  index: "02",
   eyebrow: "Ośrodek",
   title: "Jeden dom w sosnowym lesie, dwadzieścia minut od Warszawy.",
   body: "Mieszkamy razem: pokoje z widokiem na drzewa, wspólny salon z fotelami, taras i ogród. Bez korytarzy, bez dyżurki za szybą, bez zapachu szpitala. Dwanaście miejsc, jeden zespół, ta sama kadra przez cały pobyt.",
@@ -132,7 +132,7 @@ export type PierwszyKontaktContent = {
 };
 
 export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
-  index: "03",
+  index: "01",
   eyebrow: "Pierwszy kontakt",
   paths: [
     {
@@ -302,13 +302,13 @@ export type ProgramCard = {
   body: string;
   linkLabel: string;
   href: string;
-  /** The third card is inverted in the design. */
-  inverted?: boolean;
 };
 
 export type ProgramContent = {
   index: string;
   eyebrow: string;
+  title: string;
+  lead: string;
   note: string;
   cards: ProgramCard[];
 };
@@ -316,6 +316,8 @@ export type ProgramContent = {
 export const programDefaults: ProgramContent = {
   index: "04",
   eyebrow: "Program",
+  title: "Cztery rzeczy, z których składa się pobyt.",
+  lead: "Nie każdy przechodzi przez wszystkie. Detoks bywa niepotrzebny, a rodzina czasem dzwoni jako pierwsza — kolejność ustalamy w pierwszej rozmowie.",
   note: "Każdy pobyt ustalamy przez telefon, przed przyjazdem.",
   cards: [
     {
@@ -341,7 +343,6 @@ export const programDefaults: ProgramContent = {
       body: "Możesz zadzwonić bez wiedzy bliskiej osoby. Powiemy, co zwykle pomaga, a co pogarsza sprawę.",
       linkLabel: "Porozmawiaj z terapeutą",
       href: "tel:+48669916005",
-      inverted: true,
     },
     {
       index: "04",

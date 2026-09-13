@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Cta } from "@/components/site/ui/cta";
 import { Reveal } from "@/components/site/ui/reveal";
 import { SiteImage } from "@/components/site/ui/site-image";
 import type { TeamCardData } from "@/lib/queries/team";
@@ -28,7 +29,7 @@ export function TeamCard({
     <Reveal as="article" delay={delay} className={cn("min-w-0", className)}>
       <Link
         href={`/zespol/${member.slug}`}
-        className="group flex h-full flex-col border border-line bg-bone transition-colors hover:border-line-warm"
+        className="card-surface group flex h-full flex-col"
       >
         <Portrait member={member} sizes={sizes} compact={compact} />
 
@@ -42,21 +43,16 @@ export function TeamCard({
           <h3 className="font-heading text-heading text-ink-900">{member.name}</h3>
 
           {member.qualifications && (
-            <p className="mt-2 text-[13.5px] leading-[1.6] text-ink-300">
-              {member.qualifications}
-            </p>
+            <p className="mt-2 text-meta text-ink-300">{member.qualifications}</p>
           )}
 
           {!compact && member.shortBio && (
-            <p className="mt-3.5 text-[15px] leading-[1.68] text-ink-400">
-              {member.shortBio}
-            </p>
+            <p className="mt-3.5 text-body text-ink-400">{member.shortBio}</p>
           )}
 
-          <span className="link-arrow mt-auto pt-5 text-[14.5px] text-sage-600 transition-colors group-hover:text-sage-700">
-            <span>Poznaj</span>
-            <span aria-hidden>→</span>
-          </span>
+          <Cta as="span" className="mt-auto pt-5">
+            Poznaj
+          </Cta>
         </div>
       </Link>
     </Reveal>
@@ -94,7 +90,7 @@ function Portrait({
         // No photograph yet: initials rather than an empty grey rectangle.
         <span
           aria-hidden
-          className="absolute inset-0 flex items-center justify-center font-heading text-[clamp(38px,4.5vw,60px)] font-light tracking-[-0.03em] text-clay-300"
+          className="absolute inset-0 flex items-center justify-center bg-mist font-heading text-[clamp(22px,2vw,28px)] font-light tracking-[0.08em] text-clay-400"
         >
           {initials(member.name)}
         </span>

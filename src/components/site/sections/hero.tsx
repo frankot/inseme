@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/site/chrome/site-header";
+import { Cta } from "@/components/site/ui/cta";
 import { SiteImage } from "@/components/site/ui/site-image";
 import {
   contactDefaults,
@@ -55,15 +56,13 @@ export function Hero({
           <p className="max-w-[27em] text-lead text-on-dark-lead">
             {content.lead}
           </p>
-          <a
+          <Cta
             href={`tel:${contact.phoneHref}`}
-            className="link-arrow bg-bone px-[30px] py-[17px] text-base tabular-nums text-ink-900 transition-colors hover:bg-mist"
+            variant="light"
+            className="tabular-nums"
           >
-            <span>Zadzwoń: {contact.phone}</span>
-            <span aria-hidden className="text-[15px]">
-              →
-            </span>
-          </a>
+            Zadzwoń: {contact.phone}
+          </Cta>
         </div>
       </div>
 

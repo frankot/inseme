@@ -11,7 +11,7 @@ import { contactFormSchema, type ContactFormInput } from "@/lib/validations/cont
 import { cn } from "@/lib/utils";
 
 const FIELD =
-  "w-full border border-line bg-cream px-3.5 py-3 text-[15px] text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600";
+  "w-full border border-line-strong bg-cream px-3.5 py-3 text-body text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600";
 
 /**
  * Deliberately short. Someone reaching for this form is often reaching for it
@@ -48,7 +48,7 @@ export function ContactForm({
     return (
       <div
         className={cn(
-          "px-4 py-4 text-[15px] leading-[1.7]",
+          "px-4 py-4 text-body",
           dark ? "bg-on-dark/10 text-on-dark-lead" : "bg-mist text-ink-600",
           className,
         )}
@@ -129,7 +129,7 @@ export function ContactForm({
       <fieldset className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <legend
           className={cn(
-            "mb-1.5 text-[13px]",
+            "mb-1.5 text-meta",
             dark ? "text-on-dark-muted" : "text-ink-300",
           )}
         >
@@ -139,7 +139,7 @@ export function ContactForm({
           <label
             key={method}
             className={cn(
-              "flex cursor-pointer items-center gap-2 text-[14.5px]",
+              "flex cursor-pointer items-center gap-2 text-body",
               dark ? "text-on-dark-lead" : "text-ink-600",
             )}
           >
@@ -156,7 +156,7 @@ export function ContactForm({
 
       <label
         className={cn(
-          "flex cursor-pointer items-start gap-2.5 text-[13px] leading-[1.6]",
+          "flex cursor-pointer items-start gap-2.5 text-meta",
           dark ? "text-on-dark-muted" : "text-ink-300",
         )}
       >
@@ -175,10 +175,10 @@ export function ContactForm({
         type="submit"
         disabled={form.formState.isSubmitting}
         className={cn(
-          "link-arrow self-start px-[26px] py-[15px] text-[15px] transition-colors disabled:opacity-60",
+          "link-arrow self-start px-[clamp(22px,2.2vw,30px)] py-[15px] text-body transition-colors disabled:opacity-60",
           dark
             ? "bg-bone text-ink-900 hover:bg-mist"
-            : "border border-ink-900 bg-ink-900 text-bone hover:bg-transparent hover:text-ink-900",
+            : "bg-ink-900 text-bone hover:bg-ink-700",
         )}
       >
         <span>{form.formState.isSubmitting ? "Wysyłanie…" : "Wyślij wiadomość"}</span>
@@ -186,7 +186,7 @@ export function ContactForm({
       </button>
 
       {(errors.message || errors.phone || errors.email || errors.consent) && (
-        <p role="alert" className="text-[13px] text-destructive">
+        <p role="alert" className="text-meta text-destructive">
           {errors.message?.message ??
             errors.phone?.message ??
             errors.email?.message ??

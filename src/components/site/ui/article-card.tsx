@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Cta } from "@/components/site/ui/cta";
 import { Reveal } from "@/components/site/ui/reveal";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { formatArticleDate } from "@/content/artykuly";
@@ -28,7 +29,7 @@ export function ArticleCard({
     <Reveal as="article" delay={delay} className={cn("min-w-0", className)}>
       <Link
         href={`/artykuly/${article.slug}`}
-        className="group flex h-full flex-col border border-line bg-bone transition-colors hover:border-line-warm"
+        className="card-surface group flex h-full flex-col"
       >
         <div className="relative aspect-[3/2] overflow-hidden bg-stone">
           {article.cover ? (
@@ -41,7 +42,7 @@ export function ArticleCard({
             />
           ) : (
             // No cover yet: a hairline field rather than an empty grey rectangle.
-            <span aria-hidden className="absolute inset-0 border-b border-line bg-mist" />
+            <span aria-hidden className="absolute inset-0 border-b border-line-strong bg-mist" />
           )}
         </div>
 
@@ -57,13 +58,12 @@ export function ArticleCard({
           </h3>
 
           {article.excerpt && (
-            <p className="mt-3 text-[14.5px] leading-[1.65] text-ink-400">{article.excerpt}</p>
+            <p className="mt-3 text-meta text-ink-400">{article.excerpt}</p>
           )}
 
-          <span className="link-arrow mt-auto pt-5 text-[14.5px] text-sage-600 transition-colors group-hover:text-sage-700">
-            <span>Czytaj</span>
-            <span aria-hidden>→</span>
-          </span>
+          <Cta as="span" className="mt-auto pt-5">
+            Czytaj
+          </Cta>
         </div>
       </Link>
     </Reveal>

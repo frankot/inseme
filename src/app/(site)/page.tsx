@@ -48,10 +48,16 @@ export default async function HomePage() {
   return (
     <ContactPathProvider>
       <Hero />
+      {/*
+        Ścieżki forks the visitor, and Pierwszy kontakt is what the fork's
+        primary button points at — they share the chosen path, so they now sit
+        next to each other instead of with two sections wedged between them.
+        The numbered run starts at the fork's destination.
+      */}
       <Sciezki />
+      <PierwszyKontakt />
       <Osrodek />
       <Zespol members={featuredTeam} />
-      <PierwszyKontakt />
       <Program />
       <Testimonial />
       <TestPrzesiewowy test={featuredTest} />

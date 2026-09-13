@@ -2,25 +2,41 @@ import { Container } from "@/components/site/ui/container";
 import { Reveal } from "@/components/site/ui/reveal";
 import { testimonialDefaults, type TestimonialContent } from "@/content/home";
 
+/**
+ * The one moment on the page that is somebody else's voice, so it gets the page
+ * to itself: a full-bleed dark band between the programme and the test, the
+ * only break in the light run apart from the hero.
+ *
+ * It carries no numeral and no section head on purpose — it is a breath between
+ * two numbered bands, not a step in them.
+ */
 export function Testimonial({
   content = testimonialDefaults,
 }: {
   content?: TestimonialContent;
 }) {
   return (
-    <section>
-      <Container className="py-section-sm">
+    <section className="bg-ink-950 py-[clamp(64px,8vw,128px)]">
+      <Container>
         <Reveal>
-          <blockquote className="flex flex-wrap items-end gap-x-16 gap-y-8 border border-line bg-sand px-[clamp(26px,4vw,72px)] py-[clamp(40px,5vw,88px)]">
-            <p className="max-w-[22em] flex-[1_1_20em] text-pretty font-heading text-quote font-light text-ink-900">
-              {content.quote}
-            </p>
-            <footer className="flex-[0_1_14em] border-t border-line-warm pt-2 text-sm leading-[1.7] text-clay-600">
-              {content.author}
-              <br />
+          <figure className="m-0">
+            <span
+              aria-hidden
+              className="mb-[clamp(26px,3vw,40px)] block h-px w-[clamp(48px,6vw,88px)] bg-on-dark-faint/50"
+            />
+            <blockquote className="m-0">
+              <p className="max-w-[17em] text-pretty font-heading text-quote font-light text-on-dark">
+                {content.quote}
+              </p>
+            </blockquote>
+            <figcaption className="mt-[clamp(24px,2.8vw,38px)] text-meta text-on-dark-faint">
+              <span className="text-on-dark-muted">{content.author}</span>
+              <span aria-hidden className="mx-2.5 opacity-50">
+                ·
+              </span>
               {content.note}
-            </footer>
-          </blockquote>
+            </figcaption>
+          </figure>
         </Reveal>
       </Container>
     </section>

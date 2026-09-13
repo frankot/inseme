@@ -15,7 +15,7 @@ export type TeamTeaserContent = {
 
 /** The three-person section on the homepage, between Ośrodek and Pierwszy kontakt. */
 export const teamTeaserDefaults: TeamTeaserContent = {
-  index: "02",
+  index: "03",
   eyebrow: "Zespół",
   title: "Ci sami ludzie przez cały pobyt.",
   lead: "Nie ma tu rotacji kontraktowej i nikt nie poznaje Cię od nowa co tydzień. Terapeuta prowadzący zostaje z Tobą od pierwszej rozmowy do wyjazdu.",
