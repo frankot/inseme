@@ -63,28 +63,32 @@ export function PierwszyKontakt({
       title={active.title}
       lead={active.lead}
       // Both paths' leads run to five lines at the desktop column width; without
-      // the reservation the shorter one drags the cards and steps up the page
-      // the moment the visitor switches path.
+      // the reservation the shorter one drags the steps up the page the moment
+      // the visitor switches path.
       leadMinLines={5}
+      // The fork comes first, before the numeral and the heading: the masthead
+      // is written in the second person and cannot say anything until it knows
+      // who it is addressing.
+      above={
+        <div
+          ref={tabsRef}
+          role="tablist"
+          aria-label="Dla kogo szukasz pomocy"
+          onKeyDown={onKeyDown}
+          className="mb-[clamp(34px,3.8vw,60px)] grid gap-gap nav:[grid-template-columns:minmax(0,1.25fr)_minmax(0,1fr)]"
+        >
+          {content.paths.map((card, i) => (
+            <Reveal key={card.id} delay={i * 80} className="min-w-0">
+              <PathCard
+                card={card}
+                selected={card.id === active.id}
+                onSelect={() => setPath(card.id)}
+              />
+            </Reveal>
+          ))}
+        </div>
+      }
     >
-      <div
-        ref={tabsRef}
-        role="tablist"
-        aria-label="Dla kogo szukasz pomocy"
-        onKeyDown={onKeyDown}
-        className="grid gap-gap nav:[grid-template-columns:minmax(0,1.25fr)_minmax(0,1fr)]"
-      >
-        {content.paths.map((card, i) => (
-          <Reveal key={card.id} delay={i * 80} className="min-w-0">
-            <PathCard
-              card={card}
-              selected={card.id === active.id}
-              onSelect={() => setPath(card.id)}
-            />
-          </Reveal>
-        ))}
-      </div>
-
       <div
         key={active.id}
         id={`panel-${active.id}`}
@@ -107,13 +111,15 @@ export function PierwszyKontakt({
           ))}
         </ul>
 
-        <ol className="m-0 mt-[clamp(28px,3.2vw,44px)] list-none border-t border-line-strong p-0">
+        {/* Rules between the steps only: the run needs no lid and no floor — the
+            band's own padding already says where it starts and stops. */}
+        <ol className="m-0 mt-[clamp(28px,3.2vw,44px)] list-none p-0">
           {active.steps.map((step, i) => (
             <Reveal
               as="li"
               key={step.index}
               delay={i * 60}
-              className="grid grid-cols-[minmax(0,4.5em)_minmax(0,1fr)] gap-x-[clamp(20px,3vw,56px)] gap-y-5 border-b border-line-strong py-[clamp(24px,2.6vw,38px)] md:grid-cols-[minmax(0,4.5em)_minmax(0,1fr)_minmax(0,1.35fr)]"
+              className="grid grid-cols-[minmax(0,4.5em)_minmax(0,1fr)] gap-x-[clamp(20px,3vw,56px)] gap-y-5 border-b border-line-strong py-[clamp(24px,2.6vw,38px)] last:border-b-0 md:grid-cols-[minmax(0,4.5em)_minmax(0,1fr)_minmax(0,1.35fr)]"
             >
               <span className="font-heading text-[clamp(26px,2.6vw,38px)] font-light leading-[.9] tracking-[-0.04em] tabular-nums text-clay-300">
                 {step.index}
@@ -136,17 +142,6 @@ export function PierwszyKontakt({
           <span className="text-meta text-ink-300">{active.note}</span>
         </Reveal>
       </div>
-
-      <p className="mt-[clamp(18px,2vw,28px)] text-center text-meta text-ink-300">
-        {content.note}{" "}
-        <a
-          href={`tel:${contact.phoneHref}`}
-          className="tabular-nums text-ink-600 underline decoration-line-warm underline-offset-4 transition-colors hover:text-sage-600"
-        >
-          {contact.phone}
-        </a>
-        , {content.phoneLabel}
-      </p>
     </Section>
   );
 }

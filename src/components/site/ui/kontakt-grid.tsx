@@ -62,7 +62,9 @@ export function KontaktGrid({
           </p>
         </div>
 
-        <div className="relative aspect-[16/10] overflow-hidden border border-line bg-stone">
+        {/* The band's own corner radius, and `overflow-hidden` to hold the
+            embed to it — an iframe will not round itself. */}
+        <div className="relative aspect-[16/10] overflow-hidden  border border-line bg-stone">
           <iframe
             title={map.title}
             loading="lazy"

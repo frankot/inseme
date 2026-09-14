@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { MobileNav } from "@/components/admin/mobile-nav";
 import { NavLinks } from "@/components/admin/nav-links";
 import { UserMenu } from "@/components/admin/user-menu";
+import { SiteImage } from "@/components/site/ui/site-image";
 import { Toaster } from "@/components/ui/sonner";
 
 export default async function AdminShellLayout({ children }: { children: ReactNode }) {
@@ -14,7 +15,14 @@ export default async function AdminShellLayout({ children }: { children: ReactNo
     <div className="flex min-h-svh flex-col">
       <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background px-4">
         <MobileNav />
-        <span className="text-sm font-semibold tracking-tight">Insieme — panel</span>
+        <SiteImage
+          src="/placeholder/logo-insieme.png"
+          alt="Insieme"
+          width={244}
+          height={72}
+          priority
+          className="h-6 w-auto"
+        />
         <div className="ml-auto">
           <UserMenu name={session?.user?.name} email={session?.user?.email} />
         </div>

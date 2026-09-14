@@ -55,6 +55,7 @@ export function Section({
   lead,
   action,
   leadMinLines,
+  above,
   children,
   className,
 }: {
@@ -76,12 +77,20 @@ export function Section({
    * at one width only.
    */
   leadMinLines?: number;
+  /**
+   * Rendered above the masthead, inside the container. For the one section that
+   * has to ask something before its own heading can say anything useful:
+   * Pierwszy kontakt opens on the choice of who you are, and the numeral, the
+   * title and the lead all answer it.
+   */
+  above?: ReactNode;
   children: ReactNode;
   className?: string;
 }) {
   return (
     <Slab id={id} tone={tone} index={index} className={className}>
       <Container>
+        {above}
         <SectionHead
           tone={tone}
           index={index}

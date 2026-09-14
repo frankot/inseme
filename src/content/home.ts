@@ -164,9 +164,6 @@ export type PierwszyKontaktContent = {
   index: string;
   eyebrow: string;
   paths: ContactPath[];
-  /** The "albo po prostu zadzwoń — 669 …" line closing the section. */
-  note: string;
-  phoneLabel: string;
 };
 
 /**
@@ -281,8 +278,6 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
       secondaryHref: "/program#rodzina",
     },
   ],
-  note: "albo po prostu zadzwoń —",
-  phoneLabel: "dyżur całą dobę, poufnie",
 };
 
 /* ----------------------------------------------------------------- program */

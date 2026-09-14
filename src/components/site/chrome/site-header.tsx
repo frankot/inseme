@@ -308,24 +308,28 @@ function DesktopNavEntry({
       </button>
       <div
         className={cn(
-          "absolute right-0 top-full z-10 transition-opacity duration-200",
+          "absolute left-0 top-full z-10 transition-opacity duration-200",
           open ? "visible opacity-100" : "invisible opacity-0",
         )}
       >
         {/*
           Nothing of its own: no rule, no shadow, the same cream as the bar. The
           panel is not a surface over the header — it is the header, carried on
-          past its edge for as long as the group is open.
+          past its edge for as long as the group is open, down to the rows
+          behaving like the links above them.
+
+          `items-start` is what makes that true: it shrinks each row to its own
+          label, so `nav-link`'s rule wipes across the words rather than across
+          the width of the panel. The inset that used to sit on each row moved
+          out here for the same reason.
         */}
-        <div className="min-w-[176px] bg-cream py-1">
+        <div className="flex min-w-[148px] flex-col items-start gap-2 bg-cream px-4 py-3">
           {entry.items.map((item) => (
             <NavAnchor
               key={item.href + item.label}
               href={item.href}
-              // Hover is a warm grey wash, not the sage the rest of the site
-              // uses for action: this is a menu being read, not a thing being
-              // chosen, and green here made every row look selected.
-              className="block px-4 py-3 font-heading text-[15px] text-ink-900 transition-colors hover:bg-sand"
+              active={isPathActive(pathname, item.href)}
+              className="nav-link font-heading text-[15px] text-ink-900"
             >
               {item.label}
             </NavAnchor>
