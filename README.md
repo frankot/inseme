@@ -125,6 +125,24 @@ medical/factual copy always names its reviewer.
 | FAQ | `faq_items` | `category` groups items; the `faq_embed` block pulls a category into a page. |
 | Articles | `articles` | Poradnik. Same block editor as pages, under `body`. |
 | Media | `media` | R2 object key + public URL + alt text and dimensions. |
+| Galeria | `gallery_photos` | Photos for `/galeria`. Own table, not `media` — see below. `sortOrder` drives order. |
+
+### Gallery photos
+
+`/galeria` has its own table rather than reusing `media`, because a gallery photo is *two* R2
+objects — a 640px grid thumbnail and a 1600px lightbox image, both WebP — and because nothing else
+in the CMS points at one. Keeping them in `media` would put two rows per photo in the library that
+`MediaPicker` exists to let an editor search for covers in.
+
+Both variants are produced **in the browser before upload** (`src/lib/gallery-image.ts`): one
+decode, a progressive halving down to each target size, then a WebP encode. The original is never
+uploaded. On the four sample photos that is 5.7 MB of JPEG in, 1.55 MB of WebP out.
+
+This is not an optimisation, it is the only resize in the pipeline. The bucket is served from the
+`pub-….r2.dev` domain, where Cloudflare's `/cdn-cgi/image/` transformations do not exist
+(`supportsEdgeResize()` returns false and every gallery `<img>` is served as-is), so whatever is
+uploaded is exactly what a visitor downloads. Point `R2_PUBLIC_URL` at a custom domain and edge
+resizing becomes available site-wide, but the gallery does not depend on it.
 
 ### Content blocks
 

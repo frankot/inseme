@@ -87,6 +87,38 @@ export const articleSchema = z.object({
   ...metaFields,
 });
 
+/**
+ * A photo is described, not titled — the caption is what a visitor reads under
+ * the tile, and `altText` is the separate screen-reader line. Both optional:
+ * `galleryAlt()` falls back one to the other, then to a generic label.
+ */
+export const galleryPhotoSchema = z.object({
+  altText: z.string().trim().max(300, "Maksymalnie 300 znaków.").optional(),
+  description: z.string().trim().max(600, "Maksymalnie 600 znaków.").optional(),
+  sortOrder: z.number().int().min(0).max(9999),
+});
+
+/** One uploaded WebP variant, as the browser reports it back. */
+export const galleryVariantSchema = z.object({
+  key: z.string().min(1).max(255),
+  url: z.url(),
+  width: z.number().int().positive().max(20000),
+  height: z.number().int().positive().max(20000),
+  size: z.number().int().positive(),
+});
+
+export const galleryPhotoCreateSchema = z.object({
+  full: galleryVariantSchema,
+  thumb: galleryVariantSchema,
+  altText: z.string().trim().max(300).optional(),
+  description: z.string().trim().max(600).optional(),
+});
+
+/** The whole visible order, committed after a drag or a nudge. */
+export const galleryReorderSchema = z.object({
+  ids: z.array(z.uuid()).min(1).max(2000),
+});
+
 export const mediaAltTextSchema = z.object({
   id: z.uuid(),
   altText: z.string().trim().max(300).optional(),
@@ -97,3 +129,5 @@ export type PageInput = z.infer<typeof pageSchema>;
 export type TeamMemberInput = z.infer<typeof teamMemberSchema>;
 export type FaqItemInput = z.infer<typeof faqItemSchema>;
 export type ArticleInput = z.infer<typeof articleSchema>;
+export type GalleryPhotoInput = z.infer<typeof galleryPhotoSchema>;
+export type GalleryPhotoCreateInput = z.infer<typeof galleryPhotoCreateSchema>;

@@ -75,6 +75,21 @@ export function buildObjectKey(mimeType: string, originalName: string): string {
   return `media/${new Date().getFullYear()}/${crypto.randomUUID()}-${base}.${extension}`;
 }
 
+/**
+ * Gallery photos are browser-made WebP derivatives, never the file the editor
+ * picked, so the key carries the variant instead of the original extension.
+ * Both variants of one photo share a `photoId` prefix, which makes the pair
+ * obvious in the bucket listing and keeps an orphan easy to spot.
+ */
+export function buildGalleryKey(photoId: string, variant: "full" | "thumb"): string {
+  return `gallery/${new Date().getFullYear()}/${photoId}-${variant}.webp`;
+}
+
+/** Guards a client-supplied key: an admin still must not write outside the prefix. */
+export function isGalleryKey(key: string): boolean {
+  return /^gallery\/\d{4}\/[0-9a-f-]{36}-(full|thumb)\.webp$/.test(key);
+}
+
 export function publicUrlFor(config: R2Config, key: string): string {
   return `${config.publicUrl}/${key}`;
 }

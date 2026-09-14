@@ -3,10 +3,12 @@ import type { Metadata } from "next";
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
 import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
+import { GalleryGrid } from "@/components/site/ui/gallery-grid";
 import { Reveal } from "@/components/site/ui/reveal";
-import { SiteImage } from "@/components/site/ui/site-image";
+import { galeriaTeaserDefaults as galeria } from "@/content/galeria";
 import { contactDefaults, kontaktDefaults, osrodekDefaults } from "@/content/home";
 import { osrodekPageDefaults as copy } from "@/content/osrodek";
+import { getGalleryTeaser } from "@/lib/queries/gallery";
 
 export const metadata: Metadata = {
   title: copy.metaTitle,
@@ -14,11 +16,15 @@ export const metadata: Metadata = {
 };
 
 /**
- * The place, at length: every photograph rather than the homepage's four, the
- * journey, and the packing list. The homepage band keeps the mosaic and links
- * here.
+ * The place, at length: the journey and the packing list, opening on a handful
+ * of photographs. The full set lives at /galeria — this band shows the first
+ * few in the editor's order and hands off, so there is one place to manage
+ * photos and one page that holds all of them.
  */
-export default function OsrodekPage() {
+export const revalidate = 300;
+
+export default async function OsrodekPage() {
+  const photos = await getGalleryTeaser(galeria.limit);
   return (
     <SubpageLayout
       eyebrow={copy.eyebrow}
@@ -43,30 +49,26 @@ export default function OsrodekPage() {
           ))}
         </Reveal>
 
-        <div
+        <section
           id="galeria"
-          className="mt-section-sm grid scroll-mt-[calc(var(--nav-h-sticky)+12px)] gap-gap [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]"
+          className="mt-section-sm scroll-mt-[calc(var(--nav-h-sticky)+12px)]"
         >
-          {osrodekDefaults.figures.map((figure, i) => (
-            <Reveal
-              key={figure.src}
-              as="figure"
-              delay={(i % 3) * 70}
-              className="group relative m-0 aspect-[4/3] min-w-0 overflow-hidden bg-stone"
-            >
-              <SiteImage
-                src={figure.src}
-                alt={figure.alt}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 33vw"
-                className="object-cover saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
-              />
-              <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/75 via-ink-950/35 to-transparent px-[clamp(12px,1.4vw,22px)] pb-[clamp(12px,1.1vw,18px)] pt-[clamp(28px,3.4vw,48px)] text-[clamp(13px,0.95vw,15px)] leading-[1.45] text-bone">
-                {figure.caption}
-              </figcaption>
-            </Reveal>
-          ))}
-        </div>
+          <Reveal className="mb-[clamp(20px,2.4vw,32px)] flex flex-wrap items-end justify-between gap-4 border-t border-line-strong pt-[clamp(16px,1.8vw,26px)]">
+            <div>
+              <h2 className="font-heading text-display-sm text-ink-900">{galeria.title}</h2>
+              <p className="mt-2 max-w-[32em] text-pretty text-lead text-ink-500">{galeria.lead}</p>
+            </div>
+            <Cta href={galeria.href}>{galeria.linkLabel}</Cta>
+          </Reveal>
+
+          {photos.length > 0 ? (
+            <GalleryGrid photos={photos} />
+          ) : (
+            /* Nothing published yet: the section still reads as deliberate
+               rather than collapsing to a bare heading. */
+            <p className="max-w-[34em] text-body-lg text-ink-300">{galeria.emptyNote}</p>
+          )}
+        </section>
 
         <div className="mt-section-sm grid items-start gap-x-16 gap-y-[clamp(30px,3.4vw,48px)] nav:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]">
           <Reveal>

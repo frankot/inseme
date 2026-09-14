@@ -2,6 +2,7 @@ export * from "./admin-users";
 export * from "./articles";
 export * from "./enums";
 export * from "./faq-items";
+export * from "./gallery-photos";
 export * from "./leads";
 export * from "./media";
 export * from "./pages";

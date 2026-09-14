@@ -8,7 +8,7 @@
 import assert from "node:assert/strict";
 
 import { PGlite } from "@electric-sql/pglite";
-import { and, eq, ne } from "drizzle-orm";
+import { and, asc, desc, eq, ne, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/pglite";
 import { migrate } from "drizzle-orm/pglite/migrator";
 
@@ -153,6 +153,75 @@ async function main() {
   assert.equal(article.authorReviewer, null, "articles can be drafted without a reviewer");
   assert.equal(article.status, "draft");
   console.log("✓ article draft without reviewer (publish is blocked in the action)");
+
+  // Gallery ordering, uniqueness and the reorder statement -----------------
+  const photo = (n: number, sortOrder = 0) => ({
+    fullKey: `gallery/2026/${n}-full.webp`,
+    fullUrl: `https://cdn.test/gallery/2026/${n}-full.webp`,
+    fullWidth: 2000,
+    fullHeight: 1333,
+    fullSize: 260_000,
+    thumbKey: `gallery/2026/${n}-thumb.webp`,
+    thumbUrl: `https://cdn.test/gallery/2026/${n}-thumb.webp`,
+    thumbWidth: 640,
+    thumbHeight: 427,
+    thumbSize: 48_000,
+    sortOrder,
+    description: `Zdjęcie ${n}`,
+  });
+
+  const shots = await db
+    .insert(schema.galleryPhotos)
+    .values([photo(1, 2), photo(2, 0), photo(3, 1)])
+    .returning();
+  assert.equal(shots[0].status, "draft", "gallery photos start as drafts");
+
+  const ordered = await db
+    .select({ key: schema.galleryPhotos.fullKey })
+    .from(schema.galleryPhotos)
+    .orderBy(asc(schema.galleryPhotos.sortOrder), desc(schema.galleryPhotos.createdAt));
+  assert.deepEqual(
+    ordered.map((row) => row.key.split("/")[2]),
+    ["2-full.webp", "3-full.webp", "1-full.webp"],
+    "sortOrder drives gallery order",
+  );
+
+  // Re-uploading the same object must not silently create a second row.
+  await assert.rejects(
+    db.insert(schema.galleryPhotos).values(photo(1)),
+    "a duplicate R2 key is rejected",
+  );
+
+  // The single-statement reorder the admin grid commits after a drag.
+  const reversed = [...ordered].reverse().map((row) => row.key);
+  const ids = await Promise.all(
+    reversed.map(async (key) => {
+      const row = await db.query.galleryPhotos.findFirst({
+        columns: { id: true },
+        where: eq(schema.galleryPhotos.fullKey, key),
+      });
+      return row!.id;
+    }),
+  );
+  await db.execute(sql`
+    update ${schema.galleryPhotos}
+    set sort_order = ordering.position, updated_at = now()
+    from (values ${sql.join(
+      ids.map((id, index) => sql`(${id}::uuid, ${index}::int)`),
+      sql`, `,
+    )}) as ordering(id, position)
+    where ${schema.galleryPhotos.id} = ordering.id
+  `);
+  const afterReorder = await db
+    .select({ key: schema.galleryPhotos.fullKey })
+    .from(schema.galleryPhotos)
+    .orderBy(asc(schema.galleryPhotos.sortOrder), desc(schema.galleryPhotos.createdAt));
+  assert.deepEqual(
+    afterReorder.map((row) => row.key),
+    reversed,
+    "the bulk reorder writes every position",
+  );
+  console.log("✓ gallery ordering, unique keys, bulk reorder");
 
   // Rich-text sanitisation -------------------------------------------------
   const dirty = '<p onclick="steal()">Tekst <script>alert(1)</script><a href="javascript:x">link</a></p>';

@@ -51,6 +51,36 @@ zatwierdził treść medyczną.
 Do każdego zdjęcia dopisz **tekst alternatywny** — jedno zdanie o tym, co widać.
 Czytają go osoby niewidome i wyszukiwarki.
 
+## Galeria
+
+Zdjęcia ośrodka pokazywane na stronie **/galeria**. To osobna zakładka niż Media —
+Media to biblioteka plików używanych w treściach (okładki, zdjęcia zespołu),
+Galeria to jedna, uporządkowana ścianka zdjęć.
+
+**Galeria → Dodaj zdjęcia.** Możesz zaznaczyć wiele plików naraz albo przeciągnąć
+je na pole. Zdjęcia prosto z telefonu czy aparatu są w porządku — każde zostanie
+jeszcze w przeglądarce zmniejszone i zapisane jako WebP, zanim cokolwiek poleci
+do magazynu. Oryginał nie jest wysyłany, więc nie trzeba niczego przygotowywać
+wcześniej. Jedno zdjęcie to około dwie–trzy sekundy; przy dwudziestu zdjęciach
+zostaw kartę otwartą do końca.
+
+Do każdego zdjęcia możesz dopisać dwie rzeczy:
+
+- **Opis pod zdjęciem** — widoczne zdanie, pokazywane na kafelku i pod powiększeniem.
+  Nieobowiązkowe; zdjęcie bez opisu wygląda dobrze.
+- **Opis alternatywny (alt)** — dla osób niewidomych i wyszukiwarek. Jeśli go nie
+  wpiszesz, użyty zostanie opis pod zdjęciem.
+
+**Kolejność** ustawiasz przeciągając kafelki. Możesz też przesuwać zdjęcie o jedno
+miejsce strzałkami — działają z klawiatury. Pierwsze sześć **opublikowanych** zdjęć
+pokazuje się dodatkowo w sekcji Galeria na stronie *Ośrodek*.
+
+Nowe zdjęcia czekają jako **wersje robocze** i nie widać ich na stronie, dopóki ich
+nie opublikujesz — pojedynczo przyciskiem **Opublikuj**, albo wszystkich naraz
+przyciskiem **Opublikuj wszystkie robocze** nad siatką.
+
+Usunięcie zdjęcia kasuje oba pliki z magazynu i jest nieodwracalne.
+
 ---
 
 ## Testy przesiewowe
