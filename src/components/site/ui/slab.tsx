@@ -34,11 +34,16 @@ const GROUND: Record<SectionTone, string> = {
  * keeps the plain section rhythm; a covered band loses `slab` off each end to
  * the sheets above and below, and adds it back so its copy still sits a full
  * section's gap from the edge a reader can actually see.
+ *
+ * Subpages run the same alternation without the numerals — a page that is all
+ * one subject has nothing to count — so they say `raised` outright. The prop
+ * only overrides the parity; on the homepage the `index` still decides.
  */
 export function Slab({
   id,
   tone = "default",
   index,
+  raised,
   children,
   className,
 }: {
@@ -46,16 +51,18 @@ export function Slab({
   tone?: SectionTone;
   /** The numeral, e.g. "01" — odd ones are the raised sheets. */
   index?: string;
+  /** Overrides the parity, for the bands that carry no numeral. */
+  raised?: boolean;
   children: ReactNode;
   className?: string;
 }) {
-  const raised = index !== undefined && Number(index) % 2 === 1;
+  const isRaised = raised ?? (index !== undefined && Number(index) % 2 === 1);
 
   return (
     <section
       id={id}
       className={cn(
-        raised
+        isRaised
           ? "relative z-10 rounded-slab -mt-slab -mb-slab py-section scroll-mt-[calc(var(--nav-h-sticky)+12px)]"
           : [
               "pt-[calc(var(--spacing-section)+var(--spacing-slab))]",

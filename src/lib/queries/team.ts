@@ -58,8 +58,10 @@ export async function getPublishedTeam(): Promise<TeamCardData[]> {
  * The homepage teaser. "Featured" is simply the top of the manual ordering —
  * editors already control it with the Kolejność field, so there is no second
  * flag to keep in sync.
+ *
+ * Four by default, which is the width of the teaser row — see `Zespol`.
  */
-export async function getFeaturedTeam(limit = 3): Promise<TeamCardData[]> {
+export async function getFeaturedTeam(limit = 4): Promise<TeamCardData[]> {
   const rows = await db.query.teamMembers.findMany({
     where: publishedOnly,
     orderBy: [...byOrder],

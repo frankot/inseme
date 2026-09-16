@@ -5,10 +5,13 @@ import { teamTeaserDefaults, type TeamTeaserContent } from "@/content/team";
 import type { TeamCardData } from "@/lib/queries/team";
 
 /**
- * Three featured people on the homepage. Unlike the other sections this one
- * takes real rows — see `getFeaturedTeam` — and removes itself when there are
- * none, so an unpopulated CMS leaves no gap between Program and Opinie rather
- * than an empty heading.
+ * Four featured people on the homepage — a full row against the four stat
+ * figures and four photographs the bands above it carry, and the same card
+ * /zespol prints, so the row is a sample of that page rather than a smaller
+ * variant of it. Unlike the other sections this one takes real rows — see
+ * `getFeaturedTeam` — and removes itself when there are none, so an
+ * unpopulated CMS leaves no gap between Program and Opinie rather than an
+ * empty heading.
  */
 export function Zespol({
   members,
@@ -30,7 +33,15 @@ export function Zespol({
     >
       <div className="grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(248px,1fr))]">
         {members.map((member, i) => (
-          <TeamCard key={member.id} member={member} delay={i * 70} compact />
+          <TeamCard
+            key={member.id}
+            member={member}
+            delay={i * 70}
+            // The same card /zespol prints, at the same size: the teaser used
+            // to square off the portrait and drop the biography, which made
+            // the homepage row visibly shorter than the roster it links to.
+            sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 25vw"
+          />
         ))}
       </div>
     </Section>

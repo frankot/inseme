@@ -47,7 +47,7 @@ export const metadata: Metadata = {
  */
 export default async function HomePage() {
   const [featuredTeam, featuredTest, faqEntries] = await Promise.all([
-    getFeaturedTeam(3),
+    getFeaturedTeam(4),
     getScreeningTestBySlug(FEATURED_TEST_SLUG),
     getPublishedFaq(),
   ]);

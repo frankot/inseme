@@ -44,12 +44,14 @@ const LEAD: Record<SectionTone, string> = {
  *
  * The same `index` does double duty: it prints in the eyebrow, and `Slab` reads
  * its parity to decide whether this band is a raised sheet or the ground one is
- * laid on.
+ * laid on. Subpages have no numerals to count with, so they pass `raised`
+ * instead and keep the same alternation by hand.
  */
 export function Section({
   id,
   tone = "default",
   index,
+  raised,
   label,
   title,
   lead,
@@ -63,6 +65,8 @@ export function Section({
   tone?: SectionTone;
   /** The numeral, e.g. "01". Omit on the unnumbered fork. */
   index?: string;
+  /** Whether this band is a raised sheet, for the bands with no numeral. */
+  raised?: boolean;
   /** The uppercase name of the section. */
   label: string;
   title?: ReactNode;
@@ -88,7 +92,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <Slab id={id} tone={tone} index={index} className={className}>
+    <Slab id={id} tone={tone} index={index} raised={raised} className={className}>
       <Container>
         {above}
         <SectionHead
