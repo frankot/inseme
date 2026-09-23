@@ -90,7 +90,7 @@ export default async function OsrodekPage() {
               picture are the same object. Below the nav breakpoint there is no
               room to overlap anything, so the panel simply closes the figure.
             */}
-            <Reveal className="relative z-10 bg-ink-950 px-[clamp(22px,3vw,44px)] py-[clamp(24px,2.6vw,36px)] nav:-mt-[clamp(48px,5vw,84px)] nav:mr-[clamp(60px,13vw,240px)]">
+            <Reveal className="relative shadow lg:-translate-x-2 z-10 rounded-slab bg-ink-950 px-[clamp(22px,3vw,44px)] py-[clamp(24px,2.6vw,36px)] nav:-mt-[clamp(48px,5vw,84px)] nav:mr-[clamp(60px,13vw,240px)]">
               <dl className="m-0 grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-7 md:grid-cols-4">
                 {osrodekDefaults.stats.map((stat) => (
                   <div key={stat.label} className="border-t border-white/15 pt-[14px]">
@@ -195,7 +195,7 @@ export default async function OsrodekPage() {
         lead={galeria.lead}
         action={<Cta href={galeria.href}>{galeria.linkLabel}</Cta>}
       >
-        {photos.length > 0 ? <GalleryGrid photos={photos} /> : <StockFigures />}
+        {photos.length > 0 ? <GalleryGrid photos={photos} featured /> : <StockFigures />}
       </Section>
 
       {/* The warm ground is what gives a bone card its edge — see `Slab`. */}

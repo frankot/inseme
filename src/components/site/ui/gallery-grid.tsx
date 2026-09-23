@@ -17,12 +17,19 @@ import { cn } from "@/lib/utils";
  *
  * Every tile is a real `<button>`: the lightbox is opened by script, and a div
  * with an onClick would be invisible to a keyboard and to a screen reader.
+ *
+ * `featured` keeps the same five-across density on desktop but lets the first
+ * photo take a 2×2 block — for the teaser's seven, one lead and six small tiles
+ * in exactly two rows. Below `nav` the lead runs the full width of a two-column
+ * grid instead, as a wide strip rather than a tall square.
  */
 export function GalleryGrid({
   photos,
+  featured = false,
   className,
 }: {
   photos: GalleryPhotoView[];
+  featured?: boolean;
   className?: string;
 }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -70,41 +77,68 @@ export function GalleryGrid({
     <>
       <ul
         className={cn(
-          "m-0 grid list-none gap-gap p-0 [grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]",
+          "m-0 grid list-none gap-gap p-0",
+          // `sm:max-nav:` rather than `sm:` — `nav` is a px breakpoint and `sm`
+          // a rem one, which Tailwind cannot order, so a bare `sm:` rule lands
+          // after `nav:` in the CSS and wins on desktop too.
+          featured
+            ? "grid-cols-1 sm:max-nav:grid-cols-2 nav:grid-cols-5"
+            : "[grid-template-columns:repeat(auto-fill,minmax(240px,1fr))]",
           className,
         )}
       >
-        {photos.map((photo, index) => (
-          <Reveal key={photo.id} as="li" delay={(index % 4) * 60} className="min-w-0">
-            <button
-              type="button"
-              id={`gallery-tile-${photo.id}`}
-              onClick={() => show(index, "push")}
-              className="group relative block w-full cursor-zoom-in overflow-hidden bg-stone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-600"
+        {photos.map((photo, index) => {
+          const lead = featured && index === 0;
+          // The thumbnail is 640px on its long edge — soft at double size, so
+          // the lead tile takes the full variant the lightbox opens on anyway.
+          const image = lead ? photo.full : photo.thumb;
+
+          return (
+            <Reveal
+              key={photo.id}
+              as="li"
+              delay={(index % 4) * 60}
+              className={cn("min-w-0", lead && "sm:col-span-2 nav:row-span-2")}
             >
-              <span className="relative block aspect-[4/3] overflow-hidden">
-                {/* Deliberately not next/image: the bucket is on r2.dev, where
+              <button
+                type="button"
+                id={`gallery-tile-${photo.id}`}
+                onClick={() => show(index, "push")}
+                className={cn(
+                  "group relative block w-full cursor-zoom-in overflow-hidden bg-stone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-600",
+                  lead && "nav:h-full",
+                )}
+              >
+                <span
+                  className={cn(
+                    "relative block aspect-[4/3] overflow-hidden",
+                    // Two rows plus the gap between them, not a 4:3 of its own.
+                    lead && "sm:max-nav:aspect-[16/7] nav:aspect-auto nav:h-full",
+                  )}
+                >
+                  {/* Deliberately not next/image: the bucket is on r2.dev, where
                     Cloudflare's edge resizing is unavailable, so the thumbnail
                     was already encoded at its display size at upload time. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={photo.thumb.url}
-                  alt={photo.alt}
-                  width={photo.thumb.width}
-                  height={photo.thumb.height}
-                  loading={index < 4 ? "eager" : "lazy"}
-                  decoding="async"
-                  className="size-full object-cover saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
-                />
-              </span>
-              {photo.description ? (
-                <span className="pointer-events-none absolute inset-x-0 bottom-0 block bg-gradient-to-t from-ink-950/75 via-ink-950/35 to-transparent px-[clamp(12px,1.4vw,22px)] pb-[clamp(12px,1.1vw,18px)] pt-[clamp(28px,3.4vw,48px)] text-left text-[clamp(13px,0.95vw,15px)] leading-[1.45] text-bone">
-                  {photo.description}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={image.url}
+                    alt={photo.alt}
+                    width={image.width}
+                    height={image.height}
+                    loading={index < 4 ? "eager" : "lazy"}
+                    decoding="async"
+                    className="size-full object-cover saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
+                  />
                 </span>
-              ) : null}
-            </button>
-          </Reveal>
-        ))}
+                {photo.description ? (
+                  <span className="pointer-events-none absolute inset-x-0 bottom-0 block bg-gradient-to-t from-ink-950/75 via-ink-950/35 to-transparent px-[clamp(12px,1.4vw,22px)] pb-[clamp(12px,1.1vw,18px)] pt-[clamp(28px,3.4vw,48px)] text-left text-[clamp(13px,0.95vw,15px)] leading-[1.45] text-bone">
+                    {photo.description}
+                  </span>
+                ) : null}
+              </button>
+            </Reveal>
+          );
+        })}
       </ul>
 
       {openIndex !== null ? (

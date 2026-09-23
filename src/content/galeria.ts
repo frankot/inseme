@@ -65,7 +65,10 @@ export const galeriaTeaserDefaults = {
   lead: "Pokoje, salon, ogród i las za płotem.",
   linkLabel: "Zobacz całą galerię",
   href: "/galeria",
-  /** How many photos the teaser shows before handing off to /galeria. */
-  limit: 6,
+  /**
+   * How many photos the teaser shows before handing off to /galeria. Seven
+   * fills the featured grid's two rows exactly: a 2×2 lead and six beside it.
+   */
+  limit: 7,
   emptyNote: "Zdjęcia ośrodka pojawią się tutaj wkrótce.",
 };
