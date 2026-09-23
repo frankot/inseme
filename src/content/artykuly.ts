@@ -62,6 +62,11 @@ export type ArticlesPageContent = {
   reviewerLabel: string;
   relatedTitle: string;
   backLabel: string;
+  /** Beside the body: the outline, then the call card. */
+  outlineLabel: string;
+  readingTime: (minutes: number) => string;
+  callTitle: string;
+  callText: string;
 };
 
 export const artykulyPageDefaults: ArticlesPageContent = {
@@ -77,6 +82,10 @@ export const artykulyPageDefaults: ArticlesPageContent = {
   reviewerLabel: "Treść sprawdził(a)",
   relatedTitle: "Przeczytaj również",
   backLabel: "Wszystkie artykuły",
+  outlineLabel: "W tym tekście",
+  readingTime: (minutes) => `${minutes} min czytania`,
+  callTitle: "Wolisz porozmawiać?",
+  callText: "Zadzwoń — odbieramy całą dobę. Rozmowa nie zobowiązuje do przyjazdu.",
 };
 
 /** One date format for every article surface. */

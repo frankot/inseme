@@ -72,6 +72,28 @@ export function getArticlePreview(blocks: Block[]): ArticlePreview {
   return { opening, points };
 }
 
+/** Minutes to read, at ~200 words a minute — about right for Polish prose. */
+export function getReadingMinutes(blocks: Block[]): number {
+  const text = blocks
+    .map((block) => {
+      switch (block.type) {
+        case "richtext":
+          return toText(block.html);
+        case "image_text":
+          return `${block.heading} ${toText(block.html)}`;
+        case "step_list":
+          return block.steps.map((step) => `${step.title} ${step.description}`).join(" ");
+        case "cta":
+          return `${block.heading} ${block.text}`;
+        case "faq_embed":
+          return block.heading;
+      }
+    })
+    .join(" ");
+  const words = text.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.round(words / 200));
+}
+
 function toText(html: string): string {
   return html
     .replace(/<[^>]+>/g, "")
