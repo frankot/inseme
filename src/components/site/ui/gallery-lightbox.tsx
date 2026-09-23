@@ -9,14 +9,12 @@ import type { GalleryPhotoView } from "@/lib/gallery-types";
  * The full-size viewer.
  *
  * Built by hand rather than on the shadcn `Dialog`, because this is not a
- * dialog-shaped thing: it is edge-to-edge, it swallows the arrow keys, it has
- * to swipe, and the photo underneath has to stay visible while a neighbour
- * decodes. What it borrows from a dialog it implements properly — a focus
+ * dialog-shaped thing: it is edge-to-edge, it swallows the arrow keys and it has
+ * to swipe. What it borrows from a dialog it implements properly — a focus
  * trap, `aria-modal`, Escape, and focus returned to the tile that opened it.
  *
- * The thumbnail is painted underneath the full image and only hidden once the
- * full one has decoded, so arrowing through the gallery never flashes an empty
- * frame — the grid already has every thumbnail in cache.
+ * The photo sits straight on the dark, blurred backdrop — no blurred copy
+ * behind it — and fades in once the full image has decoded.
  */
 export function GalleryLightbox({
   photos,
@@ -177,17 +175,6 @@ export function GalleryLightbox({
           className="relative flex max-h-full max-w-full items-center justify-center"
           style={{ aspectRatio: `${photo.full.width} / ${photo.full.height}` }}
         >
-          {/* The already-cached thumbnail holds the frame while the full decodes. */}
-          {/* eslint-disable-next-line @next/next/no-img-element -- same reason
-              as below: the thumbnail is already encoded at its display size. */}
-          <img
-            src={photo.thumb.url}
-            alt=""
-            aria-hidden
-            // `scale-105` spills past the photo and over the arrow buttons;
-            // it is decorative, so it must never take a click.
-            className="pointer-events-none absolute inset-0 size-full scale-105 object-contain blur-xl"
-          />
           {/* eslint-disable-next-line @next/next/no-img-element -- r2.dev has no
               edge resizing, so next/image would only add a wrapper: the file is
               already the exact size it is served at. */}

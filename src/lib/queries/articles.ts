@@ -73,13 +73,7 @@ export async function getLatestArticles(limit = 4): Promise<ArticleCardData[]> {
   return rows.map(toCard);
 }
 
-/** One article, or null when the slug is unknown or the row is still a draft. */
-export async function getArticleBySlug(slug: string): Promise<ArticleDetail | null> {
-  const row = await db.query.articles.findFirst({
-    where: and(publishedOnly, eq(articles.slug, slug)),
-    with: { coverImage: true },
-  });
-  if (!row) return null;
+function toDetail(row: Row): ArticleDetail {
   return {
     ...toCard(row),
     body: row.body,
@@ -87,6 +81,25 @@ export async function getArticleBySlug(slug: string): Promise<ArticleDetail | nu
     metaTitle: row.metaTitle,
     metaDescription: row.metaDescription,
   };
+}
+
+/** One article, or null when the slug is unknown or the row is still a draft. */
+export async function getArticleBySlug(slug: string): Promise<ArticleDetail | null> {
+  const row = await db.query.articles.findFirst({
+    where: and(publishedOnly, eq(articles.slug, slug)),
+    with: { coverImage: true },
+  });
+  return row ? toDetail(row) : null;
+}
+
+/** The newest article with its body, for the homepage's read-in. */
+export async function getLatestArticle(): Promise<ArticleDetail | null> {
+  const row = await db.query.articles.findFirst({
+    where: publishedOnly,
+    orderBy: [...newestFirst],
+    with: { coverImage: true },
+  });
+  return row ? toDetail(row) : null;
 }
 
 /** Slugs alone, for `generateStaticParams`. */

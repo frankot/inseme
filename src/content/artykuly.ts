@@ -23,6 +23,31 @@ export const articlesTeaserDefaults: ArticlesTeaserContent = {
   href: "/artykuly",
 };
 
+export type LatestArticleContent = {
+  index: string;
+  eyebrow: string;
+  /** Over the outline beside the opening paragraphs. */
+  outlineLabel: string;
+  reviewerLabel: string;
+  readLabel: string;
+  allLabel: string;
+  allHref: string;
+};
+
+/**
+ * The homepage's 04 when it reads into the newest article instead of listing
+ * prices — the title, lead and body all come from the article itself.
+ */
+export const latestArticleDefaults: LatestArticleContent = {
+  index: "04",
+  eyebrow: "Z poradnika",
+  outlineLabel: "W tym tekście",
+  reviewerLabel: "Sprawdził(a)",
+  readLabel: "Czytaj dalej",
+  allLabel: "Wszystkie artykuły",
+  allHref: "/artykuly",
+};
+
 export type ArticlesPageContent = {
   eyebrow: string;
   title: string;

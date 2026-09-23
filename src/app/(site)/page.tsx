@@ -6,11 +6,13 @@ import { Kontakt } from "@/components/site/sections/kontakt";
 import { Opinie } from "@/components/site/sections/opinie";
 import { Osrodek } from "@/components/site/sections/osrodek";
 import { PierwszyKontakt } from "@/components/site/sections/pierwszy-kontakt";
+import { Poradnik } from "@/components/site/sections/poradnik";
 import { Program } from "@/components/site/sections/program";
 import { TestPrzesiewowy } from "@/components/site/sections/test-przesiewowy";
 import { Zespol } from "@/components/site/sections/zespol";
 import { ContactPathProvider } from "@/components/site/ui/contact-path";
 import { FEATURED_TEST_SLUG } from "@/content/screening";
+import { getLatestArticle } from "@/lib/queries/articles";
 import { getPublishedFaq } from "@/lib/queries/faq";
 import { getScreeningTestBySlug } from "@/lib/queries/screening";
 import { getFeaturedTeam } from "@/lib/queries/team";
@@ -46,10 +48,11 @@ export const metadata: Metadata = {
  * /pytania. Each band here ends in the link to its page.
  */
 export default async function HomePage() {
-  const [featuredTeam, featuredTest, faqEntries] = await Promise.all([
+  const [featuredTeam, featuredTest, faqEntries, latestArticle] = await Promise.all([
     getFeaturedTeam(4),
     getScreeningTestBySlug(FEATURED_TEST_SLUG),
     getPublishedFaq(),
+    getLatestArticle(),
   ]);
 
   return (
@@ -64,7 +67,12 @@ export default async function HomePage() {
       */}
       <TestPrzesiewowy test={featuredTest} />
       <Osrodek />
-      <Program />
+      {/*
+        04 reads into the newest article — the one band on the page that is
+        text to read rather than cards to scan. Prices move to /cennik; with
+        nothing published yet the price list keeps the slot.
+      */}
+      {latestArticle ? <Poradnik article={latestArticle} /> : <Program />}
       <Zespol members={featuredTeam} />
       <Opinie />
       <Faq items={faqEntries} limit={HOMEPAGE_FAQ_LIMIT} />
