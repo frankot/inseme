@@ -25,7 +25,7 @@ export function SiteFooter({
      * ends on a raised sheet (Przyjazd on /osrodek) paints over the curve.
      */
     <footer className="relative z-20 -mt-slab rounded-t-slab bg-ink-950">
-      <Container className="grid gap-9 gap-x-[clamp(24px,3vw,64px)] pt-[clamp(40px,4.5vw,64px)] pb-[clamp(32px,3.5vw,48px)] sm:grid-cols-2 lg:grid-cols-4">
+      <Container className="grid gap-9 gap-x-[clamp(24px,3vw,64px)] pt-[clamp(40px,4.5vw,64px)] pb-[clamp(32px,3.5vw,48px)] sm:grid-cols-2 desk:grid-cols-4">
         <div>
           <SiteImage
             src="/placeholder/logo-insieme.png"

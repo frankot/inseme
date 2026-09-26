@@ -41,7 +41,7 @@ export function Poradnik({
       lead={article.excerpt ?? undefined}
       action={<Cta href={content.allHref}>{content.allLabel}</Cta>}
     >
-      <div className="grid items-start gap-x-[clamp(32px,5.5vw,104px)] gap-y-[clamp(36px,4vw,56px)] nav:[grid-template-columns:minmax(0,1.3fr)_minmax(0,0.7fr)]">
+      <div className="grid items-start gap-x-[clamp(32px,5.5vw,104px)] gap-y-[clamp(36px,4vw,56px)] tab:[grid-template-columns:minmax(0,1.3fr)_minmax(0,0.7fr)]">
         <Reveal className="min-w-0">
           {(date || article.authorReviewer) && (
             <p className="flex flex-wrap gap-x-3 gap-y-1 border-t border-line-strong pt-[14px] text-meta text-ink-300">
@@ -81,7 +81,7 @@ export function Poradnik({
                   src={article.cover.url}
                   alt={article.cover.altText ?? ""}
                   fill
-                  sizes="(max-width: 960px) 100vw, 32vw"
+                  sizes="(max-width: 767px) 100vw, 32vw"
                   className="object-cover saturate-[.92]"
                 />
               </figure>

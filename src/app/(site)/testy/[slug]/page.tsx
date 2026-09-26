@@ -50,12 +50,12 @@ export default async function TestPage(props: PageProps<"/testy/[slug]">) {
       ]}
     >
       <Container className="pb-section-lg">
-        <div className="grid items-start gap-[clamp(24px,3vw,64px)] [grid-template-columns:repeat(auto-fit,minmax(320px,1fr))]">
+        <div className="grid items-start gap-[clamp(24px,3vw,64px)] tab:grid-cols-2">
           <Reveal>
             <ScreeningTest test={test} contact={contact} />
           </Reveal>
 
-          <Reveal delay={70} className="nav:order-first">
+          <Reveal delay={70} className="tab:order-first">
             <p className="flex max-w-[30em] gap-3 border-t border-line-strong pt-[18px] text-[13.5px] leading-[1.65] text-ink-200">
               <span aria-hidden className="shrink-0 text-clay-300">
                 !

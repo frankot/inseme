@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { contactDefaults, type SiteContact } from "@/content/home";
 import { cn } from "@/lib/utils";
 
-/** Matches the `nav` breakpoint: above it the bar in the header carries the number. */
+/** Hidden from `tab` up, where the header bar carries the number. */
 const BAR_H = 64;
 
 /**
@@ -14,7 +14,7 @@ const BAR_H = 64;
  * Most of this site's traffic is mobile and the call is the conversion — a
  * number that scrolls away is a number that does not get dialled. It appears
  * only once the hero's own button has scrolled off, so the two never compete,
- * and it hides above the `nav` breakpoint where the header bar already carries
+ * and it hides from the `tab` breakpoint up, where the header bar already carries
  * the number.
  *
  * The mobile menu panel sits at z-60 and covers the viewport to the bar's top,
@@ -38,12 +38,12 @@ export function StickyCallBar({
   return (
     <>
       {/* Keeps the footer's last line clear of the bar. */}
-      <div aria-hidden style={{ height: BAR_H }} className="nav:hidden" />
+      <div aria-hidden style={{ height: BAR_H }} className="tab:hidden" />
 
       <div
         inert={!shown}
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-cream nav:hidden",
+          "fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-cream tab:hidden",
           "will-change-transform transition-transform motion-reduce:transition-none",
           shown
             ? "translate-y-0 duration-[420ms] ease-[cubic-bezier(.16,1,.3,1)]"

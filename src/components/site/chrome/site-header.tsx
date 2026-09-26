@@ -257,7 +257,7 @@ function DesktopNavEntry({
   const [open, setOpen] = useState(false);
 
   const linkClassName = cn(
-    "nav-link font-heading transition-colors",
+    "nav-link whitespace-nowrap font-heading transition-colors",
     compact ? "text-[clamp(15px,1.05vw,17px)]" : "text-[clamp(14px,1.05vw,17px)]",
     dark
       ? "text-on-dark-2 text-shadow-nav hover:text-white"
@@ -396,16 +396,23 @@ function Bar({
     <div
       className={cn(
         // Three tracks so the logo sits dead-center regardless of how much
-        // the phone CTA or the nav links weigh on either side.
-        "mx-auto grid w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center gap-gutter px-gutter",
+        // the phone CTA or the nav links weigh on either side. The gap is
+        // tighter than the gutter: the side tracks need every pixel the links
+        // can get before `bar` hands them back to the burger.
+        "mx-auto grid w-full max-w-[1440px] grid-cols-[1fr_auto_1fr] items-center gap-[clamp(16px,3vw,48px)] px-gutter",
         height,
       )}
     >
+      {/* Tablet: the links are in the burger, so the phone takes their track. */}
+      <div className="hidden justify-self-start tab:flex bar:hidden">
+        <PhoneLink contact={contact} dark={dark} compact={compact} />
+      </div>
+
       <nav
         className={cn(
           // `self-stretch` so a group's hover area — and the panel hanging off
           // it — can reach the bar's bottom edge; the row itself stays centred.
-          "hidden items-center nav:flex nav:self-stretch",
+          "hidden items-center bar:flex bar:self-stretch",
           compact
             ? "gap-[clamp(14px,1.6vw,28px)]"
             : "gap-[clamp(14px,1.5vw,26px)]",
@@ -442,7 +449,7 @@ function Bar({
       </Link>
 
       <div className="col-start-3 flex items-center justify-self-end gap-gutter">
-        <div className="hidden nav:flex">
+        <div className="hidden bar:flex">
           <PhoneLink contact={contact} dark={dark} compact={compact} />
         </div>
 
@@ -451,7 +458,7 @@ function Bar({
           onClick={onBurger}
           aria-expanded={menuOpen}
           className={cn(
-            "flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase nav:hidden",
+            "flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase bar:hidden",
             dark ? "text-on-dark-2 text-shadow-nav" : "text-ink-900",
           )}
         >
@@ -479,7 +486,7 @@ function PhoneLink({
     <a
       href={`tel:${contact.phoneHref}`}
       className={cn(
-        "group inline-flex items-center border font-heading leading-none tabular-nums transition-colors",
+        "group inline-flex items-center whitespace-nowrap border font-heading leading-none tabular-nums transition-colors",
         compact
           ? "gap-2 px-[14px] py-[7px] text-[clamp(13px,0.95vw,15px)]"
           : "gap-[9px] px-[21px] py-[11px] text-nav",

@@ -165,12 +165,28 @@
    * on, and not a `Section` — has to clear the same overhang.
    */
   --spacing-slab: clamp(24px, 3.2vw, 48px);
-  /* Bar heights shrink at the nav breakpoint — see :root below. */
+  /* Bar heights shrink below the `bar` breakpoint — see :root below. */
   --spacing-nav: var(--nav-h);
   --spacing-nav-sticky: var(--nav-h-sticky);
 
-  /* The design swaps to the mobile bar at 960px, between Tailwind's md and lg. */
-  --breakpoint-nav: 961px;
+  /*
+   * Three tiers: phone (below `tab`), tablet (`tab` to `desk`) and desktop
+   * (`desk` up). The header keeps the burger longer than the layout does —
+   * the six links only fit beside the centred logo from `bar` up, and below
+   * it they wrapped onto two lines.
+   *
+   * All in px, stock ones included: Tailwind cannot order a px breakpoint
+   * against a rem one, so mixing `sm:` with `desk:` used to let the smaller
+   * one win on desktop.
+   */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+  --breakpoint-tab: 768px;
+  --breakpoint-desk: 1024px;
+  --breakpoint-bar: 1280px;
 
   --text-shadow-nav: 0 1px 16px oklch(0.24 0.008 145 / 0.55);
 
@@ -320,7 +336,8 @@
   --sidebar-ring: var(--sage-300);
 }
 
-@media (max-width: 960px) {
+/* Burger bar — matches the `bar` breakpoint. */
+@media (max-width: 1279.98px) {
   :root {
     --nav-h: 72px;
     --nav-h-sticky: 54px;

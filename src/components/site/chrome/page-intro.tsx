@@ -47,7 +47,7 @@ export function PageIntro({
           )}
         </div>
 
-        <div className="mt-[clamp(18px,2vw,28px)] flex flex-wrap items-start justify-between gap-x-[clamp(32px,5vw,80px)] gap-y-6">
+        <div className="mt-[clamp(18px,2vw,28px)] flex flex-wrap items-start justify-between gap-x-[clamp(32px,5vw,80px)] gap-y-6 tab:flex-nowrap">
           <h1 className="max-w-[14em] flex-[1_1_22rem] text-pretty font-heading text-display text-ink-900">
             {title}
           </h1>

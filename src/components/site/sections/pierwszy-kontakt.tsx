@@ -75,7 +75,7 @@ export function PierwszyKontakt({
           role="tablist"
           aria-label="Dla kogo szukasz pomocy"
           onKeyDown={onKeyDown}
-          className="mb-[clamp(34px,3.8vw,60px)] grid gap-gap nav:[grid-template-columns:minmax(0,1.25fr)_minmax(0,1fr)]"
+          className="mb-[clamp(34px,3.8vw,60px)] grid gap-gap tab:[grid-template-columns:minmax(0,1.25fr)_minmax(0,1fr)]"
         >
           {content.paths.map((card, i) => (
             <Reveal key={card.id} delay={i * 80} className="min-w-0">
@@ -97,7 +97,7 @@ export function PierwszyKontakt({
         className="animate-step-in"
       >
         {/* The three promises: the trust hit, before the process detail. */}
-        <ul className="m-0 mt-[clamp(28px,3.2vw,44px)] grid list-none gap-x-[clamp(24px,3vw,56px)] gap-y-0 p-0 md:grid-cols-3">
+        <ul className="m-0 mt-[clamp(28px,3.2vw,44px)] grid list-none gap-x-[clamp(24px,3vw,56px)] gap-y-0 p-0 tab:grid-cols-3">
           {active.points.map((point) => (
             <li
               key={point.title}
@@ -119,7 +119,7 @@ export function PierwszyKontakt({
               as="li"
               key={step.index}
               delay={i * 60}
-              className="grid grid-cols-[minmax(0,4.5em)_minmax(0,1fr)] gap-x-[clamp(20px,3vw,56px)] gap-y-5 border-b border-line-strong py-[clamp(24px,2.6vw,38px)] last:border-b-0 md:grid-cols-[minmax(0,4.5em)_minmax(0,1fr)_minmax(0,1.35fr)]"
+              className="grid grid-cols-[minmax(0,4.5em)_minmax(0,1fr)] gap-x-[clamp(20px,3vw,56px)] gap-y-5 border-b border-line-strong py-[clamp(24px,2.6vw,38px)] last:border-b-0 tab:grid-cols-[minmax(0,4.5em)_minmax(0,1fr)_minmax(0,1.35fr)]"
             >
               <span className="font-heading text-[clamp(26px,2.6vw,38px)] font-light leading-[.9] tracking-[-0.04em] tabular-nums text-clay-300">
                 {step.index}
@@ -127,7 +127,7 @@ export function PierwszyKontakt({
               <h3 className="text-[clamp(20px,1.8vw,26px)] leading-[1.2] tracking-[-0.026em] text-ink-900">
                 {step.title}
               </h3>
-              <p className="col-start-2 text-pretty text-body text-ink-400 md:col-start-3">
+              <p className="col-start-2 text-pretty text-body text-ink-400 tab:col-start-3">
                 {step.body}
               </p>
             </Reveal>

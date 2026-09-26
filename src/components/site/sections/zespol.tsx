@@ -40,7 +40,7 @@ export function Zespol({
             // The same card /zespol prints, at the same size: the teaser used
             // to square off the portrait and drop the biography, which made
             // the homepage row visibly shorter than the roster it links to.
-            sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 25vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1023px) 50vw, 25vw"
           />
         ))}
       </div>

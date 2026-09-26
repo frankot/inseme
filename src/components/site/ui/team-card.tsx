@@ -16,7 +16,7 @@ export function TeamCard({
   delay = 0,
   /** Teaser card: drops the biography and squares off the portrait on desktop. */
   compact = false,
-  sizes = "(max-width: 960px) 100vw, 33vw",
+  sizes = "(max-width: 1023px) 100vw, 33vw",
   className,
 }: {
   member: TeamCardData;
@@ -75,7 +75,7 @@ function Portrait({
         // A teaser row of three or four 4:5 portraits runs very tall on a wide
         // screen; square crops take about a fifth off without cropping faces.
         // The roster keeps the full 4:5 — there the photograph is the content.
-        compact ? "aspect-[4/5] nav:aspect-square" : "aspect-[4/5]",
+        compact ? "aspect-[4/5] tab:aspect-square" : "aspect-[4/5]",
       )}
     >
       {member.photo ? (

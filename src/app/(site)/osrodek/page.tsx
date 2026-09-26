@@ -72,7 +72,7 @@ export default async function OsrodekPage() {
           <div className="mb-section-sm">
             <Reveal
               as="figure"
-              className="relative m-0 aspect-[4/3] w-full overflow-hidden bg-stone nav:aspect-[21/9]"
+              className="relative m-0 aspect-[4/3] w-full overflow-hidden bg-stone tab:aspect-[16/9] desk:aspect-[21/9]"
             >
               <SiteImage
                 src={heroImage.src}
@@ -87,11 +87,11 @@ export default async function OsrodekPage() {
             {/*
               The figures sit on a dark panel laid over the photograph's bottom
               corner — the one place on the page where the numbers and the
-              picture are the same object. Below the nav breakpoint there is no
+              picture are the same object. Below the `desk` breakpoint there is no
               room to overlap anything, so the panel simply closes the figure.
             */}
-            <Reveal className="relative shadow lg:-translate-x-2 z-10 rounded-slab bg-ink-950 px-[clamp(22px,3vw,44px)] py-[clamp(24px,2.6vw,36px)] nav:-mt-[clamp(48px,5vw,84px)] rounded-t-none  lg:rounded-slab -translate-y-1 lg:translate-y-0 nav:mr-[clamp(60px,13vw,240px)]">
-              <dl className="m-0 grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-7 md:grid-cols-4">
+            <Reveal className="relative shadow desk:-translate-x-2 z-10 rounded-slab bg-ink-950 px-[clamp(22px,3vw,44px)] py-[clamp(24px,2.6vw,36px)] desk:-mt-[clamp(48px,5vw,84px)] rounded-t-none  desk:rounded-slab -translate-y-1 desk:translate-y-0 desk:mr-[clamp(60px,13vw,240px)]">
+              <dl className="m-0 grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-7 tab:grid-cols-4">
                 {osrodekDefaults.stats.map((stat) => (
                   <div key={stat.label} className="border-t border-white/15 pt-[14px]">
                     <dt className="text-eyebrow uppercase tracking-[0.2em] text-clay-300">
@@ -116,7 +116,7 @@ export default async function OsrodekPage() {
           </div>
         }
       >
-        <Reveal className="grid gap-x-16 gap-y-5 nav:grid-cols-2">
+        <Reveal className="grid gap-x-16 gap-y-5 tab:grid-cols-2">
           {copy.location.slice(1).map((paragraph) => (
             <p
               key={paragraph}
@@ -136,16 +136,16 @@ export default async function OsrodekPage() {
         title={copy.aspectsTitle}
         lead={copy.aspectsLead}
       >
-        <div className="grid items-start gap-x-16 gap-y-[clamp(28px,3.2vw,46px)] nav:[grid-template-columns:minmax(0,0.78fr)_minmax(0,1.22fr)]">
+        <div className="grid items-start gap-x-16 gap-y-[clamp(28px,3.2vw,46px)] tab:[grid-template-columns:minmax(0,0.78fr)_minmax(0,1.22fr)]">
           <Reveal
             as="figure"
-            className="relative m-0 aspect-[4/5] w-full min-w-0 overflow-hidden bg-ink-900 nav:sticky nav:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]"
+            className="relative m-0 aspect-[4/5] w-full min-w-0 overflow-hidden bg-ink-900 tab:sticky tab:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]"
           >
             <SiteImage
               src={aspectsFigure.src}
               alt={aspectsFigure.alt}
               fill
-              sizes="(max-width: 960px) 100vw, 34vw"
+              sizes="(max-width: 767px) 100vw, 34vw"
               className="object-cover saturate-[.92]"
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/80 via-ink-950/35 to-transparent px-[clamp(14px,1.4vw,22px)] pb-[clamp(12px,1.1vw,18px)] pt-[clamp(28px,3.4vw,48px)] text-[clamp(13px,0.95vw,15px)] leading-[1.45] text-bone">
@@ -229,7 +229,7 @@ export default async function OsrodekPage() {
         title={copy.arrivalTitle}
         lead={copy.arrivalLead}
       >
-        <div className="grid items-start gap-x-16 gap-y-[clamp(30px,3.4vw,48px)] nav:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="grid items-start gap-x-16 gap-y-[clamp(30px,3.4vw,48px)] tab:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]">
           <Reveal>
             <h3 className="font-heading text-heading text-ink-900">
               {copy.packingTitle}
@@ -337,7 +337,7 @@ function StockFigures({
               src={figure.src}
               alt={figure.alt}
               fill
-              sizes="(max-width: 960px) 100vw, 25vw"
+              sizes="(max-width: 1023px) 100vw, 25vw"
               className="object-cover saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
             />
             <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/75 via-ink-950/35 to-transparent px-[clamp(12px,1.4vw,22px)] pb-[clamp(12px,1.1vw,18px)] pt-[clamp(28px,3.4vw,48px)] text-[clamp(13px,0.95vw,15px)] leading-[1.45] text-bone">

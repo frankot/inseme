@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 export function ArticleCard({
   article,
   delay = 0,
-  sizes = "(max-width: 960px) 100vw, 25vw",
+  sizes = "(max-width: 1023px) 100vw, 25vw",
   className,
 }: {
   article: ArticleCardData;

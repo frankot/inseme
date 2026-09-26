@@ -72,19 +72,19 @@ export async function BlockRenderer({ blocks }: { blocks: Block[] }) {
 
 function ImageText({ block, image }: { block: ImageTextBlock; image: MediaSummary | null }) {
   return (
-    <Reveal className="grid items-start gap-x-[clamp(24px,3vw,56px)] gap-y-7 nav:grid-cols-2">
+    <Reveal className="grid items-start gap-x-[clamp(24px,3vw,56px)] gap-y-7 tab:grid-cols-2">
       {image && (
         <figure
           className={cn(
             "relative m-0 aspect-[4/3] overflow-hidden bg-stone",
-            block.imagePosition === "right" && "nav:order-2",
+            block.imagePosition === "right" && "tab:order-2",
           )}
         >
           <SiteImage
             src={image.url}
             alt={image.altText ?? ""}
             fill
-            sizes="(max-width: 960px) 100vw, 45vw"
+            sizes="(max-width: 767px) 100vw, 45vw"
             className="object-cover saturate-[.92]"
           />
         </figure>

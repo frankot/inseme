@@ -36,7 +36,7 @@ export default async function ArtykulyPage() {
                 key={article.id}
                 article={article}
                 delay={(i % 4) * 70}
-                sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 25vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1023px) 50vw, 25vw"
               />
             ))}
           </div>

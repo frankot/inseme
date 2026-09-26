@@ -81,7 +81,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
         <div
           className={cn(
             "mt-[clamp(22px,2.6vw,40px)] grid items-end gap-x-[clamp(32px,5vw,88px)] gap-y-[clamp(28px,3vw,44px)]",
-            article.cover && "nav:[grid-template-columns:minmax(0,1.1fr)_minmax(0,0.9fr)]",
+            article.cover && "tab:[grid-template-columns:minmax(0,1.1fr)_minmax(0,0.9fr)]",
           )}
         >
           <Reveal>
@@ -121,7 +121,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
                 alt={article.cover.altText ?? ""}
                 fill
                 priority
-                sizes="(max-width: 960px) 100vw, 40vw"
+                sizes="(max-width: 767px) 100vw, 40vw"
                 className="object-cover saturate-[.92]"
               />
             </Reveal>
@@ -136,7 +136,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
           number — and stays in view while they scroll, so the right side of a
           wide screen is never just empty cream.
         */}
-        <div className="grid items-start gap-x-[clamp(40px,6vw,112px)] gap-y-[clamp(40px,5vw,64px)] nav:[grid-template-columns:minmax(0,1fr)_minmax(260px,320px)]">
+        <div className="grid items-start gap-x-[clamp(40px,6vw,112px)] gap-y-[clamp(40px,5vw,64px)] desk:[grid-template-columns:minmax(0,1fr)_minmax(260px,320px)]">
           <div className="min-w-0">
             <BlockRenderer blocks={article.body} />
 
@@ -155,7 +155,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
             )}
           </div>
 
-          <aside className="flex flex-col gap-gap nav:sticky nav:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]">
+          <aside className="flex flex-col gap-gap desk:sticky desk:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]">
             {points.length > 0 && (
               <Reveal>
                 <p className="mb-[clamp(12px,1.3vw,18px)] text-eyebrow uppercase tracking-[0.2em] text-clay-600">
@@ -209,7 +209,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
                   key={item.id}
                   article={item}
                   delay={i * 70}
-                  sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 33vw"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1023px) 50vw, 33vw"
                 />
               ))}
             </div>

@@ -7,14 +7,14 @@ import { osrodekDefaults, type OsrodekContent } from "@/content/home";
 /**
  * The mosaic follows the design's 4-column grid: a 2×2 hero tile, a 2-wide
  * banner beside it, and two square tiles closing the second row. Below the
- * `nav` breakpoint the same spans read as a 2-column stack, so the tiles keep
+ * `tab` breakpoint the same spans read as a 2-column stack, so the tiles keep
  * their shapes instead of collapsing into a column of identical rectangles.
  */
 const TILES = [
-  { span: "col-span-2 row-span-2", sizes: "(max-width: 960px) 100vw, 50vw" },
-  { span: "col-span-2", sizes: "(max-width: 960px) 100vw, 50vw" },
-  { span: "col-span-1", sizes: "(max-width: 960px) 50vw, 25vw" },
-  { span: "col-span-1", sizes: "(max-width: 960px) 50vw, 25vw" },
+  { span: "col-span-2 row-span-2", sizes: "(max-width: 767px) 100vw, 50vw" },
+  { span: "col-span-2", sizes: "(max-width: 767px) 100vw, 50vw" },
+  { span: "col-span-1", sizes: "(max-width: 767px) 50vw, 25vw" },
+  { span: "col-span-1", sizes: "(max-width: 767px) 50vw, 25vw" },
 ] as const;
 
 export function Osrodek({
@@ -36,7 +36,7 @@ export function Osrodek({
         Given the full width they read as a band of facts, and they carry the
         eye from the heading down into the photographs.
       */}
-      <Reveal className="grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-7 md:grid-cols-4">
+      <Reveal className="grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-7 tab:grid-cols-4">
         {content.stats.map((stat) => (
           <div key={stat.label} className="border-t border-line-warm pt-[14px]">
             <span className="block text-eyebrow uppercase tracking-[0.2em] text-clay-600">
@@ -49,7 +49,7 @@ export function Osrodek({
         ))}
       </Reveal>
 
-      <div className="mt-[clamp(28px,3.2vw,48px)] grid grid-cols-2 auto-rows-[clamp(140px,15.5vw,220px)] gap-gap nav:grid-cols-4">
+      <div className="mt-[clamp(28px,3.2vw,48px)] grid grid-cols-2 auto-rows-[clamp(140px,15.5vw,220px)] gap-gap tab:grid-cols-4">
         {content.figures.slice(0, TILES.length).map((figure, i) => (
           <Figure
             key={figure.src}

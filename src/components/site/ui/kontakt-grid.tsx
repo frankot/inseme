@@ -6,6 +6,10 @@ import { footerDefaults, type SiteContact } from "@/content/home";
  * The two-column contact block shared by the homepage section and the /kontakt
  * page. The form sticks — same `StickySplit` method as the FAQ section — while
  * the phone card, map and emergency card scroll beside it.
+ *
+ * It splits at `desk`, not `tab`: half a tablet is too narrow for the form. On a
+ * tablet the form runs full width instead, and the two cards pair up under it
+ * with the map across the bottom.
  */
 export function KontaktGrid({
   contact,
@@ -23,6 +27,7 @@ export function KontaktGrid({
   return (
     <StickySplit
       className={className}
+      splitAt="desk"
       aside={
         <>
           <h2 className="mb-3 text-pretty font-heading text-display-sm text-ink-900">
@@ -35,7 +40,7 @@ export function KontaktGrid({
         </>
       }
     >
-      <div className="flex flex-col gap-gap">
+      <div className="flex flex-col gap-gap tab:max-desk:grid tab:max-desk:grid-cols-2">
         <div className="bg-ink-900 p-[clamp(24px,2.4vw,34px)]">
           <span className="mb-4 block text-eyebrow uppercase tracking-[0.2em] text-on-dark-muted">
             Telefon
@@ -64,7 +69,7 @@ export function KontaktGrid({
 
         {/* The band's own corner radius, and `overflow-hidden` to hold the
             embed to it — an iframe will not round itself. */}
-        <div className="relative aspect-[16/10] overflow-hidden  border border-line bg-stone">
+        <div className="relative aspect-[16/10] overflow-hidden border border-line bg-stone tab:max-desk:order-last tab:max-desk:col-span-2 tab:max-desk:aspect-[21/9]">
           <iframe
             title={map.title}
             loading="lazy"

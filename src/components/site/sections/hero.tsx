@@ -22,7 +22,7 @@ export function Hero({
   return (
     <section
       id="gora"
-      className="relative h-[var(--hero-h)] overflow-hidden bg-ink-950 nav:h-auto nav:min-h-[min(100svh,var(--hero-max))]"
+      className="relative h-[var(--hero-h)] overflow-hidden bg-ink-950 tab:h-auto tab:min-h-[min(100svh,var(--hero-max))]"
     >
       <div className="absolute inset-0 animate-slow-zoom">
         <SiteImage
@@ -38,7 +38,7 @@ export function Hero({
 
       <SiteHeader contact={contact} />
 
-      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end nav:h-auto nav:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[calc(clamp(40px,5vw,72px)+var(--spacing-slab))]">
+      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end tab:h-auto tab:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[calc(clamp(40px,5vw,72px)+var(--spacing-slab))]">
         <div>
           <p className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 text-eyebrow uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
             <span
@@ -60,7 +60,7 @@ export function Hero({
           )}
         </div>
 
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-t border-bone/20 pt-[clamp(20px,2.5vw,32px)] lg:pt-10">
+        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-t border-bone/20 pt-[clamp(20px,2.5vw,32px)] desk:pt-10">
           <p className="max-w-[27em] text-lead text-on-dark-lead">
             {content.lead}
           </p>

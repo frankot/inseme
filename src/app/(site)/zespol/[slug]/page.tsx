@@ -71,8 +71,8 @@ export default async function TeamMemberPage(props: PageProps<"/zespol/[slug]">)
       </PageIntro>
 
       <Container className="pb-section-lg">
-        <div className="grid items-start gap-[clamp(28px,4vw,72px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] nav:[grid-template-columns:minmax(0,0.85fr)_minmax(0,1.15fr)]">
-          <Reveal className="nav:sticky nav:top-[calc(var(--nav-h-sticky)+32px)]">
+        <div className="grid items-start gap-[clamp(28px,4vw,72px)] [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))] tab:[grid-template-columns:minmax(0,0.85fr)_minmax(0,1.15fr)]">
+          <Reveal className="tab:sticky tab:top-[calc(var(--nav-h-sticky)+32px)]">
             <Portrait member={member} />
 
             {member.qualifications && (
@@ -121,7 +121,7 @@ function Portrait({ member }: { member: TeamMemberDetail }) {
           alt={member.photo.altText ?? member.name}
           fill
           preload
-          sizes="(max-width: 960px) 100vw, 40vw"
+          sizes="(max-width: 767px) 100vw, 40vw"
           className="object-cover object-top saturate-[.92]"
         />
       ) : (
@@ -181,7 +181,7 @@ function Others({ members }: { members: Awaited<ReturnType<typeof getPublishedTe
             member={other}
             delay={i * 70}
             compact
-            sizes="(max-width: 640px) 100vw, (max-width: 960px) 50vw, 25vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 1023px) 50vw, 25vw"
           />
         ))}
       </div>

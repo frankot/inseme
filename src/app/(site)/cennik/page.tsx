@@ -128,7 +128,7 @@ export default function CennikPage() {
           <h2 className="mb-[clamp(20px,2.2vw,30px)] max-w-[16em] text-pretty font-heading text-display-sm text-ink-900">
             {teaser.dependsTitle}
           </h2>
-          <ul className="m-0 grid list-none gap-x-[clamp(24px,3vw,56px)] gap-y-0 p-0 md:grid-cols-3">
+          <ul className="m-0 grid list-none gap-x-[clamp(24px,3vw,56px)] gap-y-0 p-0 tab:grid-cols-3">
             {teaser.depends.map((item) => (
               <li
                 key={item.title}
