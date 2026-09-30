@@ -4,13 +4,16 @@ import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
 import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
 import { FaqList } from "@/components/site/ui/faq-list";
+import { JsonLd } from "@/components/site/ui/json-ld";
 import { contactDefaults, faqDefaults } from "@/content/home";
 import { getPublishedFaq } from "@/lib/queries/faq";
+import { faqJsonLd } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "Pytania i odpowiedzi — ośrodek leczenia uzależnień Insieme",
   description:
     "Odpowiedzi na pytania, które trudno zadać na głos: poufność, koszty, skierowanie, kontakt z rodziną, przyjazd do ośrodka.",
+  alternates: { canonical: "/pytania" },
 };
 
 /** Prerendered, refreshed every five minutes — see the homepage for the why. */
@@ -31,6 +34,7 @@ export default async function PytaniaPage() {
       lead={faqDefaults.note}
       breadcrumb={[{ label: "Strona główna", href: "/" }, { label: "Pytania" }]}
     >
+      {items.length > 0 && <JsonLd data={faqJsonLd(items)} />}
       <Container className="pb-section-lg">
         {items.length === 0 ? (
           <p className="max-w-[34em] border-t border-line pt-[clamp(24px,3vw,40px)] text-body-lg text-ink-300">

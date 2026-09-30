@@ -9,6 +9,7 @@ import { getPublishedTeam } from "@/lib/queries/team";
 export const metadata: Metadata = {
   title: teamPageDefaults.metaTitle,
   description: teamPageDefaults.metaDescription,
+  alternates: { canonical: "/zespol" },
 };
 
 export default async function ZespolPage() {

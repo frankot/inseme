@@ -32,21 +32,24 @@ export function SubpageLayout({
   return (
     <>
       <SiteHeader variant="solid" contact={contact} />
-      {intro && eyebrow && title && (
-        <PageIntro
-          eyebrow={eyebrow}
-          title={title}
-          lead={lead}
-          breadcrumb={breadcrumb}
-        />
-      )}
-      {/*
-        The footer is pulled up over whatever ends the page. On the homepage the
-        last band already carries that overhang in its padding; here the pages
-        end in ordinary containers, so the room is given back once, for all of
-        them, rather than on every page's last element.
-      */}
-      <div className="pb-slab">{children}</div>
+      {/* The skip link's target — `tabIndex` so focus actually lands here. */}
+      <div id="tresc" tabIndex={-1} className="outline-none">
+        {intro && eyebrow && title && (
+          <PageIntro
+            eyebrow={eyebrow}
+            title={title}
+            lead={lead}
+            breadcrumb={breadcrumb}
+          />
+        )}
+        {/*
+          The footer is pulled up over whatever ends the page. On the homepage the
+          last band already carries that overhang in its padding; here the pages
+          end in ordinary containers, so the room is given back once, for all of
+          them, rather than on every page's last element.
+        */}
+        <div className="pb-slab">{children}</div>
+      </div>
     </>
   );
 }

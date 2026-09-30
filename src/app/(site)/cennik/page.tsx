@@ -15,6 +15,7 @@ import { contactDefaults } from "@/content/home";
 export const metadata: Metadata = {
   title: copy.metaTitle,
   description: copy.metaDescription,
+  alternates: { canonical: "/cennik" },
 };
 
 /**

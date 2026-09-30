@@ -32,6 +32,7 @@ export const metadata: Metadata = {
   title: "Insieme — ośrodek terapii uzależnień w Magdalence pod Warszawą",
   description:
     "Prywatny ośrodek leczenia uzależnień w Magdalence. Detoks, terapia stacjonarna, wsparcie dla rodziny. Rozmowa nie zobowiązuje do przyjazdu.",
+  alternates: { canonical: "/" },
 };
 
 /**

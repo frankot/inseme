@@ -30,22 +30,22 @@ The basics are missing: there's no sitemap, robots file, canonical URL, Open Gra
 
 **Technical SEO (launch)**
 
-- [ ] Add `src/app/sitemap.ts`. Include the static pages plus published articles, team members and tests from the DB, each with `lastModified`. Leave out `/admin` and `/api`.
-- [ ] Add `src/app/robots.ts`. Disallow `/admin` and `/api`, and point to the sitemap. Return `noindex` on Vercel preview deployments (`VERCEL_ENV !== "production"`) so previews never get indexed.
-- [ ] In the root layout, set `metadataBase` from `NEXT_PUBLIC_SITE_URL`, plus a title template `"%s | Insieme"` and a real default description. Right now it's just `"Ośrodek terapii uzależnień Insieme."`.
-- [ ] Set `alternates.canonical` on every page and `generateMetadata`. The paginated `/galeria` pages already have a comment about this. Check they actually output it.
-- [ ] Add Open Graph and Twitter metadata, with a default `opengraph-image` (logo + photo, 1200×630) and article-specific images. Links shared on WhatsApp or Messenger (which is how families pass them around) currently show no preview.
-- [ ] Add `app/not-found.tsx` (global 404 page with the phone number) and `app/error.tsx`. Only `/testy/[slug]` and `/zespol/[slug]` have their own.
-- [ ] Check that each page has exactly one `<h1>`: the hero and `PageIntro` each render one, so make sure no page renders both.
+- [x] Add `src/app/sitemap.ts`. Include the static pages plus published articles, team members and tests from the DB, each with `lastModified`. Leave out `/admin` and `/api`.
+- [x] Add `src/app/robots.ts`. Disallow `/admin` and `/api`, and point to the sitemap. Return `noindex` on Vercel preview deployments (`VERCEL_ENV !== "production"`) so previews never get indexed.
+- [x] In the root layout, set `metadataBase` from `NEXT_PUBLIC_SITE_URL`, plus a title template `"%s | Insieme"` and a real default description. Right now it's just `"Ośrodek terapii uzależnień Insieme."`. *Done. The template is `%s` because every page title already contains the brand. Previews also get `noindex`.*
+- [x] Set `alternates.canonical` on every page and `generateMetadata`. The paginated `/galeria` pages already have a comment about this. Check they actually output it.
+- [ ] Add Open Graph and Twitter metadata, with a default `opengraph-image` (logo + photo, 1200×630) and article-specific images. *OG/Twitter tags and a text-only default card (`(site)/opengraph-image.tsx`) are in, and articles use their cover. Add the logo and a photo once the final assets exist.* Links shared on WhatsApp or Messenger (which is how families pass them around) currently show no preview.
+- [x] Add `app/not-found.tsx` (global 404 page with the phone number) and `app/error.tsx`. Only `/testy/[slug]` and `/zespol/[slug]` have their own.
+- [x] Check that each page has exactly one `<h1>`: the hero and `PageIntro` each render one, so make sure no page renders both.
 
 **Structured data (JSON-LD), launch**
 
-- [ ] Sitewide `MedicalClinic` (or `MedicalBusiness`) with exact NAP, `geo` (52.0923, 20.8946), `openingHoursSpecification` (24/7 if true), `telephone`, `url`, `logo`, and `sameAs` linking the Google Business Profile.
-- [ ] `Person` on `/zespol/[slug]` (name, jobTitle, qualifications, `worksFor`).
-- [ ] `Article` on `/artykuly/[slug]` with `author` linked to the Person, plus `datePublished` and `dateModified`.
-- [ ] `BreadcrumbList` wherever `PageIntro` already shows breadcrumbs.
-- [ ] `FAQPage` on `/pytania`. Google now shows FAQ rich results only for a few sites, but AI answers still read this markup.
-- [ ] **Never** add `AggregateRating` for your own reviews (SEO strategy §3.8). Google can penalise the whole domain for it.
+- [ ] Sitewide `MedicalClinic` (or `MedicalBusiness`) with exact NAP, `geo` (52.0923, 20.8946), `openingHoursSpecification` (24/7 if true), `telephone`, `url`, `logo`, and `sameAs` linking the Google Business Profile. *In place (`src/lib/structured-data.ts`). `SAME_AS` stays empty until the GBP URL is confirmed. Opening hours are left out on purpose: no 24/7 claims in metadata.*
+- [x] `Person` on `/zespol/[slug]` (name, jobTitle, qualifications, `worksFor`).
+- [x] `Article` on `/artykuly/[slug]` with `author` linked to the Person, plus `datePublished` and `dateModified`.
+- [x] `BreadcrumbList` wherever `PageIntro` already shows breadcrumbs.
+- [x] `FAQPage` on `/pytania`. Google now shows FAQ rich results only for a few sites, but AI answers still read this markup.
+- [x] **Never** add `AggregateRating` for your own reviews (SEO strategy §3.8). Google can penalise the whole domain for it.
 
 **E-E-A-T and content structure (launch → month 1)**
 
@@ -69,7 +69,7 @@ The biggest risk is the hero image. `src/lib/image-loader.ts` passes local `/pub
 
 - [ ] Serve every photo through R2 + the Cloudflare `/cdn-cgi/image/` resizing, or compress the local files to WebP/AVIF at 150–250 KB with proper `sizes`. Current sizes: `dom-staw` 2.0 MB, `dom-taras` 1.5 MB, `salon` 1.4 MB, `pokoj` 757 KB, `rozmowa` 512 KB.
 - [ ] Enable Cloudflare Image Resizing on the R2 media domain and check that `/cdn-cgi/image/width=640,...` returns a resized image.
-- [ ] Add `loading="lazy"` to the OpenStreetMap `<iframe>` in `kontakt-grid.tsx`.
+- [x] Add `loading="lazy"` to the OpenStreetMap `<iframe>` in `kontakt-grid.tsx`.
 - [ ] Review the 11 `"use client"` components under `src/components/site`. Keep only interactive leaves on the client.
 - [ ] Run PageSpeed Insights on the production URL for `/`, `/osrodek`, `/galeria` and one article, on mobile. Targets: LCP < 2.5 s, CLS < 0.1, INP < 200 ms (the QA checklist aims for under 3 s on 4G).
 - [ ] Turn on Vercel Speed Insights, or look at CrUX in Search Console after about 28 days, to get real-user data.
@@ -78,10 +78,10 @@ The biggest risk is the hero image. `src/lib/image-loader.ts` passes local `/pub
 
 The foundations are good: `lang="pl"`, reduced-motion rules in `globals.css`, and consent checkboxes with labels. The gaps below are small.
 
-- [ ] Add a "Przejdź do treści" skip link at the top of `(site)/layout.tsx`.
-- [ ] Give the contact form visible labels. Right now its fields rely on `aria-label` + placeholder, and the placeholder disappears as soon as someone starts typing, which is hard for stressed or older users.
-- [ ] Give the hero photo real alt text (it shows the house), and check that the lightbox images get their alt from the gallery data. `gallery-lightbox.tsx:185` uses `alt=""`.
-- [ ] Check keyboard access and focus trapping in the mobile menu, gallery lightbox and screening test. Check colour contrast for sage/cream text and on-dark text (WCAG AA 4.5:1).
+- [x] Add a "Przejdź do treści" skip link at the top of `(site)/layout.tsx`.
+- [x] Give the contact form visible labels. Right now its fields rely on `aria-label` + placeholder, and the placeholder disappears as soon as someone starts typing, which is hard for stressed or older users.
+- [x] Give the hero photo real alt text (it shows the house), and check that the lightbox images get their alt from the gallery data. `gallery-lightbox.tsx:185` uses `alt=""`. *The lightbox already uses `photo.alt`.*
+- [ ] Check keyboard access and focus trapping in the mobile menu, gallery lightbox and screening test. Check colour contrast for sage/cream text and on-dark text (WCAG AA 4.5:1). *Measured: `ink-300` (3.0:1), `clay-600` (3.0:1) and `clay-400` (2.2:1) fail on cream/bone. On-dark tokens pass, except `on-dark-faint`.*
 - [ ] Make sure the sticky call bar doesn't cover form buttons or the footer on small phones (320–375 px).
 - [ ] Test on real devices: iOS Safari, Android Chrome, desktop Firefox.
 
@@ -96,7 +96,7 @@ The client's feedback isn't in the repo yet. Add each point here as a task befor
 - [ ] Real Google reviews + profile URL, or a decision to launch without the section.
 - [ ] FAQ answers checked by a therapist. Screening tests checked (scoring bands, result wording, PDF with Polish characters).
 - [ ] Privacy policy, cookie text and data-retention period (`DATA_RETENTION_MONTHS`, default 24) from the client or their IOD.
-- [ ] Check that the section numbers on the home page run 01–08 with no duplicates after the latest `/osrodek` and team changes (QA §9).
+- [x] Check that the section numbers on the home page run 01–08 with no duplicates after the latest `/osrodek` and team changes (QA §9). *They do. But if Opinie ships with `reviews: []`, the numbers go 05 → 07.*
 - [ ] Before launch, move the text from `src/content/*.ts` defaults into the CMS/settings where the admin can edit it, so the client can change phone numbers, hours and prices without a deploy.
 
 ## 6. Analytics, legal, deployment and post-launch
@@ -112,7 +112,7 @@ The client's feedback isn't in the repo yet. Add each point here as a task befor
 - [ ] Point the domain at Vercel, set up apex/www redirects, and check HTTPS on both old domains.
 - [ ] Check Neon: point-in-time restore is on, and `main` and `dev` are separate branches.
 - [ ] Confirm the retention cron shows up in Vercel → Cron Jobs and has run once.
-- [ ] Add security headers in `next.config.ts`: HSTS, `X-Content-Type-Options`, `Referrer-Policy`, and a basic CSP that allows the OSM iframe and the R2 domain.
+- [ ] Add security headers in `next.config.ts`: HSTS, `X-Content-Type-Options`, `Referrer-Policy`, and a basic CSP that allows the OSM iframe and the R2 domain. *The headers are in. The CSP is **report-only**; switch it to enforcing once production shows a clean console and a working admin upload.*
 - [ ] Create the client's admin account (`npm run admin:create`), remove test accounts, and walk the client through `docs/ADMIN_GUIDE.md`.
 - [ ] Delete seeded test data (leads, submissions, draft articles) from the production DB.
 - [ ] Retire the old site(s) only after the redirects are verified to return 308s.

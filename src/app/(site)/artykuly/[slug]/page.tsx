@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
@@ -8,6 +8,7 @@ import { ArticleCard } from "@/components/site/ui/article-card";
 import { BlockRenderer } from "@/components/site/ui/block-renderer";
 import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
+import { JsonLd } from "@/components/site/ui/json-ld";
 import { Reveal } from "@/components/site/ui/reveal";
 import { SiteImage } from "@/components/site/ui/site-image";
 import {
@@ -21,6 +22,8 @@ import {
   getArticleSlugs,
   getRelatedArticles,
 } from "@/lib/queries/articles";
+import { SITE_NAME } from "@/lib/site-url";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 import { cn } from "@/lib/utils";
 
 /**
@@ -37,6 +40,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata(
   props: PageProps<"/artykuly/[slug]">,
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { slug } = await props.params;
   const article = await getArticleBySlug(slug);
@@ -45,6 +49,20 @@ export async function generateMetadata(
   return {
     title: article.metaTitle ?? `${article.title} — Poradnik Insieme`,
     description: article.metaDescription ?? article.excerpt ?? copy.metaDescription,
+    alternates: { canonical: `/artykuly/${article.slug}` },
+    // Replaces the layout's openGraph wholesale, so the site-wide fields are
+    // repeated; title and description still fall through from above.
+    openGraph: {
+      type: "article",
+      locale: "pl_PL",
+      siteName: SITE_NAME,
+      ...(article.publishedAt && { publishedTime: article.publishedAt }),
+      modifiedTime: article.updatedAt,
+      // Without a cover, keep the site-wide card rather than sending none.
+      images: article.cover
+        ? [{ url: article.cover.url, alt: article.cover.altText ?? article.title }]
+        : ((await parent).openGraph?.images ?? []),
+    },
   };
 }
 
@@ -60,6 +78,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
 
   return (
     <SubpageLayout intro={false}>
+      <JsonLd data={articleJsonLd(article)} />
       {/*
         The opening is a spread rather than a banner: title, lead and the review
         trail on one side, the cover at a reading size on the other. A 16:9
@@ -226,6 +245,7 @@ function Breadcrumb({ items }: { items: { label: string; href?: string }[] }) {
       aria-label="Ścieżka nawigacji"
       className="flex flex-wrap items-center gap-x-2.5 gap-y-2 text-eyebrow uppercase tracking-[0.22em] text-clay-400"
     >
+      <JsonLd data={breadcrumbJsonLd(items)} />
       {items.map((item, i) => (
         <Fragment key={item.label}>
           {i > 0 && (

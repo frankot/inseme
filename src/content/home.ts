@@ -64,7 +64,10 @@ export const heroDefaults: HeroContent = {
    * RPWDL entry is to hand.
    */
   rpwdl: { label: "Numer w RPWDL", number: "000000234596" },
-  image: { src: "/placeholder/dom-staw.jpg", alt: "" },
+  image: {
+    src: "/placeholder/dom-staw.jpg",
+    alt: "Dom ośrodka Insieme w Magdalence, widziany zza stawu wśród sosen",
+  },
 };
 
 /* ----------------------------------------------------------------- ośrodek */

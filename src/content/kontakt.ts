@@ -10,5 +10,5 @@ export const kontaktPageDefaults = {
   breadcrumbKontakt: "Kontakt",
   metaTitle: "Kontakt — Insieme, ośrodek terapii uzależnień w Magdalence",
   metaDescription:
-    "Telefon całą dobę, formularz kontaktowy i dojazd do ośrodka Insieme w Magdalence pod Warszawą. Rozmowa nie zobowiązuje do przyjazdu.",
+    "Telefon, formularz kontaktowy i dojazd do ośrodka Insieme w Magdalence pod Warszawą. Rozmowa nie zobowiązuje do przyjazdu.",
 } as const;

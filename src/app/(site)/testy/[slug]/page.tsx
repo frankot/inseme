@@ -25,6 +25,7 @@ export async function generateMetadata(
   return {
     title: test.metaTitle ?? `${test.title} — Insieme`,
     description: test.metaDescription ?? test.description ?? copy.metaDescription,
+    alternates: { canonical: `/testy/${test.slug}` },
   };
 }
 

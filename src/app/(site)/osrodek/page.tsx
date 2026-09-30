@@ -19,6 +19,7 @@ import { getGalleryTeaser } from "@/lib/queries/gallery";
 export const metadata: Metadata = {
   title: copy.metaTitle,
   description: copy.metaDescription,
+  alternates: { canonical: "/osrodek" },
 };
 
 /**

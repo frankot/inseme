@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Jost, Work_Sans } from "next/font/google";
+
+import { isIndexable, SITE_NAME, SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 /**
@@ -19,9 +21,34 @@ const body = Work_Sans({
   variable: "--font-body",
 });
 
+const DEFAULT_DESCRIPTION =
+  "Prywatny ośrodek leczenia uzależnień w Magdalence pod Warszawą. Detoks, terapia stacjonarna, wsparcie dla rodziny. Rozmowa nie zobowiązuje do przyjazdu.";
+
+/**
+ * Site-wide defaults. Page titles already carry the brand in their own wording
+ * ("… | Insieme", "… — Insieme"), so the template passes them through as-is
+ * rather than appending a second one.
+ *
+ * `openGraph` and `twitter` are replaced, not merged, by a page that sets its
+ * own — which is why pages only override `alternates` and leave these alone.
+ */
 export const metadata: Metadata = {
-  title: "Insieme",
-  description: "Ośrodek terapii uzależnień Insieme.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Insieme — ośrodek terapii uzależnień w Magdalence pod Warszawą",
+    template: "%s",
+  },
+  description: DEFAULT_DESCRIPTION,
+  applicationName: "Insieme",
+  openGraph: {
+    type: "website",
+    locale: "pl_PL",
+    siteName: SITE_NAME,
+    // No title/description here: Next fills them from each page's own, which
+    // it only does while this object leaves them unset.
+  },
+  twitter: { card: "summary_large_image" },
+  robots: isIndexable ? undefined : { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

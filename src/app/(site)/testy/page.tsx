@@ -10,6 +10,7 @@ import { getPublishedScreeningTests } from "@/lib/queries/screening";
 export const metadata: Metadata = {
   title: copy.metaTitle,
   description: copy.metaDescription,
+  alternates: { canonical: "/testy" },
 };
 
 export default async function TestyPage() {

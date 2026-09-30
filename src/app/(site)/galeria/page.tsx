@@ -7,10 +7,19 @@ import { Pagination } from "@/components/site/ui/pagination";
 import { galeriaPageDefaults as copy } from "@/content/galeria";
 import { getGalleryPage, parsePageParam } from "@/lib/queries/gallery";
 
-export const metadata: Metadata = {
-  title: copy.metaTitle,
-  description: copy.metaDescription,
-};
+/**
+ * Each page of the gallery is its own canonical — they show different photos,
+ * so pointing page 3 at page 1 would tell Google to drop them. Page 1 is the
+ * bare URL, matching what `Pagination` links to.
+ */
+export async function generateMetadata(props: PageProps<"/galeria">): Promise<Metadata> {
+  const page = parsePageParam((await props.searchParams).page);
+  return {
+    title: page > 1 ? `${copy.metaTitle} — strona ${page}` : copy.metaTitle,
+    description: copy.metaDescription,
+    alternates: { canonical: page > 1 ? `/galeria?page=${page}` : "/galeria" },
+  };
+}
 
 /**
  * Reading `?page=` makes this route dynamic — search params only exist on a

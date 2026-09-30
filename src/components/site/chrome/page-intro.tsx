@@ -2,7 +2,9 @@ import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 
 import { Container } from "@/components/site/ui/container";
+import { JsonLd } from "@/components/site/ui/json-ld";
 import { Reveal } from "@/components/site/ui/reveal";
+import { breadcrumbJsonLd } from "@/lib/structured-data";
 import { cn } from "@/lib/utils";
 
 export type Crumb = { label: string; href?: string };
@@ -71,6 +73,7 @@ export function PageIntro({
 function Breadcrumb({ items }: { items: Crumb[] }) {
   return (
     <nav aria-label="Ścieżka nawigacji" className="flex items-center gap-2.5">
+      <JsonLd data={breadcrumbJsonLd(items)} />
       {items.map((item, i) => (
         <Fragment key={item.label}>
           {i > 0 && (

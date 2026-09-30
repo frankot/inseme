@@ -6,6 +6,7 @@ import { PageIntro } from "@/components/site/chrome/page-intro";
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
 import { Container } from "@/components/site/ui/container";
 import { Reveal } from "@/components/site/ui/reveal";
+import { JsonLd } from "@/components/site/ui/json-ld";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { initials, TeamCard } from "@/components/site/ui/team-card";
 import { contactDefaults } from "@/content/home";
@@ -16,6 +17,7 @@ import {
   getTeamSlugs,
   type TeamMemberDetail,
 } from "@/lib/queries/team";
+import { personJsonLd } from "@/lib/structured-data";
 
 /**
  * Published members are known at build time, so their pages are prerendered.
@@ -41,6 +43,7 @@ export async function generateMetadata(
   return {
     title,
     description: member.shortBio ?? teamPageDefaults.metaDescription,
+    alternates: { canonical: `/zespol/${member.slug}` },
   };
 }
 
@@ -53,6 +56,7 @@ export default async function TeamMemberPage(props: PageProps<"/zespol/[slug]">)
 
   return (
     <SubpageLayout intro={false}>
+      <JsonLd data={personJsonLd(member)} />
       <PageIntro
         eyebrow={copy.eyebrow}
         title={member.name}

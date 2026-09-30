@@ -166,3 +166,11 @@ export async function getScreeningTestSlugs(): Promise<string[]> {
     .where(publishedOnly);
   return rows.map((row) => row.slug);
 }
+
+/** Slug and last edit, for the sitemap. */
+export async function getScreeningSitemapEntries(): Promise<{ slug: string; updatedAt: Date }[]> {
+  return db
+    .select({ slug: screeningTests.slug, updatedAt: screeningTests.updatedAt })
+    .from(screeningTests)
+    .where(publishedOnly);
+}

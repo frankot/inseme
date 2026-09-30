@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Program leczenia — detoks, terapia 28 dni, wsparcie dla rodziny | Insieme",
   description:
     "Z czego składa się pobyt w ośrodku Insieme: detoks pod opieką lekarza, program terapeutyczny 28 dni, konsultacje dla rodziny i kontakt po pobycie. Plan jednego dnia.",
+  alternates: { canonical: "/program" },
 };
 
 /**

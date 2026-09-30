@@ -38,7 +38,11 @@ export function Hero({
 
       <SiteHeader contact={contact} />
 
-      <div className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end tab:h-auto tab:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[calc(clamp(40px,5vw,72px)+var(--spacing-slab))]">
+      <div
+        id="tresc"
+        tabIndex={-1}
+        className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end tab:h-auto tab:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[calc(clamp(40px,5vw,72px)+var(--spacing-slab))] outline-none"
+      >
         <div>
           <p className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 text-eyebrow uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
             <span

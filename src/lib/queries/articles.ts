@@ -31,6 +31,7 @@ export type ArticleDetail = ArticleCardData & {
   authorReviewer: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
+  updatedAt: string;
 };
 
 const publishedOnly = eq(articles.status, "published");
@@ -80,6 +81,7 @@ function toDetail(row: Row): ArticleDetail {
     authorReviewer: row.authorReviewer,
     metaTitle: row.metaTitle,
     metaDescription: row.metaDescription,
+    updatedAt: row.updatedAt.toISOString(),
   };
 }
 
@@ -110,6 +112,14 @@ export async function getArticleSlugs(): Promise<string[]> {
     .where(publishedOnly)
     .orderBy(...newestFirst);
   return rows.map((row) => row.slug);
+}
+
+/** Slug and last edit, for the sitemap. */
+export async function getArticleSitemapEntries(): Promise<{ slug: string; updatedAt: Date }[]> {
+  return db
+    .select({ slug: articles.slug, updatedAt: articles.updatedAt })
+    .from(articles)
+    .where(publishedOnly);
 }
 
 /** Three more to read at the foot of an article, never the one being read. */

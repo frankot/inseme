@@ -91,3 +91,11 @@ export async function getTeamSlugs(): Promise<string[]> {
     .orderBy(...byOrder);
   return rows.map((row) => row.slug);
 }
+
+/** Slug and last edit, for the sitemap. */
+export async function getTeamSitemapEntries(): Promise<{ slug: string; updatedAt: Date }[]> {
+  return db
+    .select({ slug: teamMembers.slug, updatedAt: teamMembers.updatedAt })
+    .from(teamMembers)
+    .where(publishedOnly);
+}

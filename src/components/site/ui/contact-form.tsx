@@ -14,6 +14,12 @@ const FIELD =
   "w-full border border-line-strong bg-cream px-3.5 py-3 text-body text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600";
 
 /**
+ * Labels stay visible above each field. A placeholder alone disappears on the
+ * first keystroke, which loses the thread for anyone typing under stress.
+ */
+const LABEL = "flex flex-col gap-1.5";
+
+/**
  * Deliberately short. Someone reaching for this form is often reaching for it
  * instead of the phone — every extra required field is a reason to close the
  * tab. Name is optional, and only one of phone/e-mail is needed.
@@ -65,6 +71,7 @@ export function ContactForm({
   }
 
   const errors = form.formState.errors;
+  const labelText = cn("text-meta", dark ? "text-on-dark-muted" : "text-ink-400");
 
   return (
     <form
@@ -90,41 +97,42 @@ export function ContactForm({
       />
 
       <div className="grid gap-3 sm:grid-cols-2">
-        <input
-          {...form.register("name")}
-          className={FIELD}
-          placeholder="Imię (opcjonalnie)"
-          aria-label="Imię"
-          autoComplete="given-name"
-        />
-        <input
-          {...form.register("phone")}
-          className={FIELD}
-          placeholder="Telefon"
-          aria-label="Telefon"
-          type="tel"
-          inputMode="tel"
-          autoComplete="tel"
-        />
+        <label className={LABEL}>
+          <span className={labelText}>Imię (opcjonalnie)</span>
+          <input {...form.register("name")} className={FIELD} autoComplete="given-name" />
+        </label>
+        <label className={LABEL}>
+          <span className={labelText}>Telefon</span>
+          <input
+            {...form.register("phone")}
+            className={FIELD}
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+          />
+        </label>
       </div>
 
-      <input
-        {...form.register("email")}
-        className={FIELD}
-        placeholder="E-mail"
-        aria-label="E-mail"
-        type="email"
-        inputMode="email"
-        autoComplete="email"
-      />
+      <label className={LABEL}>
+        <span className={labelText}>E-mail</span>
+        <input
+          {...form.register("email")}
+          className={FIELD}
+          type="email"
+          inputMode="email"
+          autoComplete="email"
+        />
+      </label>
 
-      <textarea
-        {...form.register("message")}
-        rows={4}
-        className={cn(FIELD, "resize-y")}
-        placeholder="Napisz, co się dzieje. Nie musisz podawać nazwiska."
-        aria-label="Wiadomość"
-      />
+      <label className={LABEL}>
+        <span className={labelText}>Wiadomość</span>
+        <textarea
+          {...form.register("message")}
+          rows={4}
+          className={cn(FIELD, "resize-y")}
+          placeholder="Napisz, co się dzieje. Nie musisz podawać nazwiska."
+        />
+      </label>
 
       <fieldset className="flex flex-wrap items-center gap-x-5 gap-y-2">
         <legend

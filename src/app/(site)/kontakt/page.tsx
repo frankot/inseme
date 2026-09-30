@@ -10,6 +10,7 @@ import { getSiteContact } from "@/lib/queries/settings";
 export const metadata: Metadata = {
   title: copy.metaTitle,
   description: copy.metaDescription,
+  alternates: { canonical: "/kontakt" },
 };
 
 export default async function KontaktPage() {
