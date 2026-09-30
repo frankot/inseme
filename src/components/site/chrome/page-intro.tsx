@@ -70,7 +70,8 @@ export function PageIntro({
   );
 }
 
-function Breadcrumb({ items }: { items: Crumb[] }) {
+/** Also used on its own by pages that draw their own opening (`/osrodek`). */
+export function Breadcrumb({ items }: { items: Crumb[] }) {
   return (
     <nav aria-label="Ścieżka nawigacji" className="flex items-center gap-2.5">
       <JsonLd data={breadcrumbJsonLd(items)} />

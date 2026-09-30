@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 
+import { Breadcrumb } from "@/components/site/chrome/page-intro";
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
+import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
 import { GalleryGrid } from "@/components/site/ui/gallery-grid";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Section } from "@/components/site/ui/section";
 import { SiteImage } from "@/components/site/ui/site-image";
+import { Slab } from "@/components/site/ui/slab";
 import { galeriaTeaserDefaults as galeria } from "@/content/galeria";
 import {
   contactDefaults,
@@ -24,8 +27,8 @@ export const metadata: Metadata = {
 
 /**
  * The place, at length — the long form of the homepage's 03 band, and built out
- * of the same parts: the four stat figures, the captioned photographs, and the
- * same masthead over every block.
+ * of the same parts: the captioned photographs and the same masthead over every
+ * block after the opening.
  *
  * It runs as bands rather than one container of stacked blocks, because that is
  * what the rest of the site does: a cream sheet, the dark ground under it, a
@@ -49,85 +52,96 @@ export default async function OsrodekPage() {
   const aspectsFigure = osrodekDefaults.figures[DARK_BAND_FIGURE];
 
   return (
-    <SubpageLayout
-      eyebrow={copy.eyebrow}
-      title={copy.title}
-      lead={copy.lead}
-      breadcrumb={[
-        { label: copy.breadcrumbHome, href: "/" },
-        { label: copy.breadcrumbLabel },
-      ]}
-    >
+    <SubpageLayout intro={false}>
       {/*
-        The page opens on the house and answers "where is it" underneath. It
-        used to open on four stat figures, which is a strange first thing to
-        show someone deciding whether to bring a relative here — a photograph
-        answers the actual question before any number does.
+        The opening is one sheet rather than a page intro followed by a band:
+        title and lead with the numbers people ask first beside them, then the
+        house at full height, then where it is. It used to be three separate
+        blocks — a title with an empty middle, a letterboxed photo with a card
+        half-laid over it, and a masthead whose paragraphs read right, left,
+        right. `mt-0` because this sheet has no band above it to overlap.
       */}
-      <Section
-        raised
-        label={copy.locationEyebrow}
-        title={copy.locationTitle}
-        lead={copy.location[0]}
-        above={
-          <div className="mb-section-sm">
-            <Reveal
-              as="figure"
-              className="relative m-0 aspect-[4/3] w-full overflow-hidden bg-stone tab:aspect-[16/9] desk:aspect-[21/9]"
-            >
+      <Slab raised className="mt-0 pt-section-sm">
+        <Container>
+          <Reveal>
+            <div className="text-eyebrow uppercase tracking-[0.22em] text-clay-400">
+              <Breadcrumb
+                items={[
+                  { label: copy.breadcrumbHome, href: "/" },
+                  { label: copy.breadcrumbLabel },
+                ]}
+              />
+            </div>
+
+            <div className="mt-[clamp(18px,2vw,28px)] grid items-end gap-x-[clamp(32px,6vw,112px)] gap-y-[clamp(28px,3vw,40px)] desk:[grid-template-columns:minmax(0,1.25fr)_minmax(0,0.75fr)]">
+              <div>
+                <h1 className="text-pretty font-heading text-display text-ink-900">
+                  {copy.title}
+                </h1>
+                <p className="mt-[clamp(14px,1.6vw,22px)] max-w-[30em] text-pretty text-lead text-ink-500">
+                  {copy.lead}
+                </p>
+              </div>
+
+              {/* A spec sheet, not stat tiles: label and value on one line,
+                  read down the column like the travel times further on. */}
+              <dl className="m-0 grid grid-cols-2 gap-x-[clamp(20px,3vw,40px)] border-t border-line-strong desk:grid-cols-1">
+                {copy.facts.map((fact) => (
+                  <div
+                    key={fact.label}
+                    className="flex flex-col gap-1 border-b border-line py-3 desk:flex-row desk:items-baseline desk:justify-between desk:gap-6"
+                  >
+                    <dt className="text-meta text-ink-400">{fact.label}</dt>
+                    <dd className="m-0 font-heading text-[clamp(20px,1.7vw,24px)] leading-none tracking-[-0.025em] tabular-nums text-ink-900">
+                      {fact.value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          </Reveal>
+
+          <Reveal as="figure" className="m-0 mt-section-sm">
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-stone sm:aspect-[3/2] desk:aspect-[16/9]">
               <SiteImage
                 src={heroImage.src}
                 alt={heroImage.alt}
                 fill
                 priority
-                sizes="100vw"
+                sizes="(max-width: 1440px) 100vw, 1440px"
                 className="object-cover saturate-[.92]"
               />
-            </Reveal>
-
-            {/*
-              The figures sit on a dark panel laid over the photograph's bottom
-              corner — the one place on the page where the numbers and the
-              picture are the same object. Below the `desk` breakpoint there is no
-              room to overlap anything, so the panel simply closes the figure.
-            */}
-            <Reveal className="relative shadow desk:-translate-x-2 z-10 rounded-slab bg-ink-950 px-[clamp(22px,3vw,44px)] py-[clamp(24px,2.6vw,36px)] desk:-mt-[clamp(48px,5vw,84px)] rounded-t-none  desk:rounded-slab -translate-y-1 desk:translate-y-0 desk:mr-[clamp(60px,13vw,240px)]">
-              <dl className="m-0 grid grid-cols-2 gap-x-[clamp(20px,3vw,56px)] gap-y-7 tab:grid-cols-4">
-                {osrodekDefaults.stats.map((stat) => (
-                  <div key={stat.label} className="border-t border-white/15 pt-[14px]">
-                    <dt className="text-eyebrow uppercase tracking-[0.2em] text-clay-300">
-                      {stat.label}
-                    </dt>
-                    <dd className="m-0 mt-2.5 font-heading text-[clamp(26px,2.4vw,34px)] leading-none tracking-[-0.03em] tabular-nums text-on-dark">
-                      {stat.value}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-
-              <div className="mt-[clamp(22px,2.4vw,32px)] flex flex-wrap items-baseline justify-between gap-x-8 gap-y-3 border-t border-white/12 pt-[clamp(16px,1.6vw,22px)]">
-                <span className="text-meta text-on-dark-muted">
+            </div>
+            <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 text-meta text-ink-400">
+              <span>{copy.heroCaption}</span>
+              <span className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
+                <span>
                   {contactDefaults.addressLine1}, {contactDefaults.addressLine2}
                 </span>
-                <Cta href="#dojazd" variant="quiet-on-dark">
+                <Cta href="#dojazd" className="text-meta">
                   {copy.statsLinkLabel}
                 </Cta>
-              </div>
-            </Reveal>
-          </div>
-        }
-      >
-        <Reveal className="grid gap-x-16 gap-y-5 tab:grid-cols-2">
-          {copy.location.slice(1).map((paragraph) => (
-            <p
-              key={paragraph}
-              className="max-w-[38em] text-pretty text-body-lg text-ink-500"
-            >
-              {paragraph}
-            </p>
-          ))}
-        </Reveal>
-      </Section>
+              </span>
+            </figcaption>
+          </Reveal>
+
+          {/* Heading on the left, the answer on the right in reading order —
+              the first paragraph is the answer, the rest explain it. */}
+          <Reveal className="mt-section grid gap-x-[clamp(32px,6vw,112px)] gap-y-5 border-t border-line-strong pt-[clamp(24px,2.6vw,36px)] desk:[grid-template-columns:minmax(0,0.75fr)_minmax(0,1.25fr)]">
+            <h2 className="font-heading text-display-sm text-ink-900">{copy.locationTitle}</h2>
+            <div className="flex max-w-[38em] flex-col gap-4">
+              <p className="text-pretty font-heading text-[clamp(19px,1.8vw,25px)] font-light leading-[1.4] tracking-[-0.022em] text-ink-900">
+                {copy.location[0]}
+              </p>
+              {copy.location.slice(1).map((paragraph) => (
+                <p key={paragraph} className="text-pretty text-body-lg text-ink-500">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </Reveal>
+        </Container>
+      </Slab>
 
       {/* The dark ground the two cream sheets are laid on. */}
       <Section

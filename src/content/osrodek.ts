@@ -28,9 +28,12 @@ export type OsrodekPageContent = {
   lead: string;
   /** The wide photograph under the intro, used until a gallery photo exists. */
   heroFallback: { src: string; alt: string };
-  /** The link out of the dark figures panel, into the arrival band. */
+  /** Under the photograph — what it shows, and why that matters. */
+  heroCaption: string;
+  /** Beside the lead: the numbers people ask for before anything else. */
+  facts: { label: string; value: string }[];
+  /** The link under the photograph, into the arrival band. */
   statsLinkLabel: string;
-  locationEyebrow: string;
   locationTitle: string;
   location: string[];
   aspectsEyebrow: string;
@@ -66,9 +69,15 @@ export const osrodekPageDefaults: OsrodekPageContent = {
     src: "/placeholder/dom-staw.jpg",
     alt: "Dom ośrodka widziany zza stawu, w otoczeniu sosen",
   },
+  heroCaption: "Dom od strony stawu. Z drogi go nie widać.",
+  facts: [
+    { label: "Miejsc", value: "12" },
+    { label: "Od centrum Warszawy", value: "20 min" },
+    { label: "Z lotniska Okęcie", value: "15 min" },
+    { label: "Program", value: "28 dni" },
+  ],
   statsLinkLabel: "Jak dojechać",
 
-  locationEyebrow: "Lokalizacja",
   locationTitle: "Gdzie to jest",
   location: [
     "Magdalenka, piętnaście kilometrów na południe od Warszawy. Dom stoi w lesie, na uboczu i za ogrodzeniem — nie przy drodze, nie w pierzei, bez tabliczki przy wjeździe.",
