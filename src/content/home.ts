@@ -29,7 +29,12 @@ export const contactDefaults: SiteContact = {
   email: "kontakt@osrodek-insieme.pl",
   addressLine1: "ul. Świerkowa 13",
   addressLine2: "05-506 Magdalenka",
-  hours: "dyżur całą dobę, także w weekendy",
+  /**
+   * Empty until the client confirms real phone hours — every place that shows
+   * it renders nothing rather than promising availability nobody has agreed to.
+   * Editors fill it in under Ustawienia.
+   */
+  hours: "",
 };
 
 /** Nav links themselves live in `content/nav.ts`. */
@@ -58,14 +63,14 @@ export const heroDefaults: HeroContent = {
    * The three things a frightened person needs to know before deciding whether
    * to dial, kept short enough to read in a glance.
    */
-  trust: ["Dyżur całą dobę, także w weekendy", "Rozmowa bez nazwiska", "Bez opłat za konsultację"],
+  trust: ["Rozmowa bez nazwiska", "Bez opłat za konsultację"],
   /*
    * Registry number right below the main title. Placeholder until the real
    * RPWDL entry is to hand.
    */
   rpwdl: { label: "Numer w RPWDL", number: "000000234596" },
   image: {
-    src: "/placeholder/dom-staw.jpg",
+    src: "/placeholder/dom-staw.webp",
     alt: "Dom ośrodka Insieme w Magdalence, widziany zza stawu wśród sosen",
   },
 };
@@ -96,27 +101,27 @@ export const osrodekDefaults: OsrodekContent = {
   stats: [
     { label: "Miejsc", value: "12" },
     { label: "Od centrum", value: "20 min" },
-    { label: "Dyżur", value: "24/7" },
+    { label: "Z lotniska", value: "15 min" },
     { label: "Program", value: "28 dni" },
   ],
   figures: [
     {
-      src: "/placeholder/dom-taras.jpg",
+      src: "/placeholder/dom-taras.webp",
       alt: "Taras ośrodka i porośnięta bluszczem elewacja domu",
       caption: "Taras od strony ogrodu — tu pije się kawę między zajęciami.",
     },
     {
-      src: "/placeholder/pokoj.jpg",
+      src: "/placeholder/pokoj.webp",
       alt: "Jasny pokój z widokiem na las",
       caption: "Pokoje dwu- i trzyosobowe, okna na sosny.",
     },
     {
-      src: "/placeholder/salon-terapeutyczny.jpg",
+      src: "/placeholder/salon-terapeutyczny.webp",
       alt: "Salon terapeutyczny z fotelami i widokiem na las",
       caption: "Salon — tu odbywają się grupy.",
     },
     {
-      src: "/placeholder/rozmowa.jpg",
+      src: "/placeholder/rozmowa.webp",
       alt: "Rozmowa indywidualna z terapeutą",
       caption: "Sesje indywidualne.",
     },
@@ -381,7 +386,7 @@ export const jedenDzienDefaults: JedenDzienContent = {
   scheduleLabel: "Plan dnia · pn–sb",
   note: "W niedzielę dzień jest luźniejszy — bez bloków terapeutycznych.",
   image: {
-    src: "/placeholder/dom-staw.jpg",
+    src: "/placeholder/dom-staw.webp",
     alt: "Dom ośrodka widziany zza stawu, w otoczeniu sosen",
   },
   entries: [
@@ -472,7 +477,7 @@ export const testDefaults: TestContent = {
   consentLabel:
     "Zgadzam się na jednorazowe przesłanie wyniku na podany adres. Adresu nie używamy do niczego innego.",
   sentMessage:
-    "Wynik jest w drodze. Jeśli chcesz o nim porozmawiać — 669 916 005, całą dobę.",
+    "Wynik jest w drodze. Jeśli chcesz o nim porozmawiać — 669 916 005.",
   callLabel: "Porozmawiaj z terapeutą",
   restartLabel: "Wypełnij ponownie",
 };
@@ -498,7 +503,7 @@ export const faqDefaults: FaqContent = {
   eyebrow: "Pytania",
   title: "Pytania, które trudno zadać na głos.",
   note: "Odpowiadamy tak samo przez telefon. Jeśli czegoś tu brakuje — zapytaj, nie ma pytań niewygodnych.",
-  href: "/pytania",
+  href: "/faq",
   linkLabel: "Wszystkie pytania",
 };
 
@@ -572,7 +577,7 @@ export const footerDefaults: FooterContent = {
     { label: "Program", href: "/program" },
     { label: "Ośrodek", href: "/osrodek" },
     { label: "Zespół", href: "/zespol" },
-    { label: "Pytania", href: "/pytania" },
+    { label: "Pytania", href: "/faq" },
   ],
   privacyLabel: "Polityka prywatności · RODO",
   privacyHref: "#",

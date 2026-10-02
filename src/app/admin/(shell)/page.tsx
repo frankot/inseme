@@ -6,7 +6,7 @@ import { auth } from "@/auth";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
-import { articles, faqItems, media, pages, teamMembers } from "@/db/schema";
+import { articles, faqItems, media, teamMembers } from "@/db/schema";
 import { adminNav } from "@/lib/admin-nav";
 import { getLeadStats, getNewContactCount } from "@/lib/queries/leads";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 /** [total, published] for one content table. */
-async function countsFor(table: typeof pages | typeof articles | typeof teamMembers | typeof faqItems) {
+async function countsFor(table: typeof articles | typeof teamMembers | typeof faqItems) {
   const [[total], [published]] = await Promise.all([
     db.select({ value: count() }).from(table),
     db.select({ value: count() }).from(table).where(eq(table.status, "published")),
@@ -27,7 +27,6 @@ export default async function AdminDashboardPage() {
   const session = await auth();
 
   const [
-    pageCounts,
     articleCounts,
     teamCounts,
     faqCounts,
@@ -36,33 +35,32 @@ export default async function AdminDashboardPage() {
     newMessages,
     leadStats,
   ] = await Promise.all([
-      countsFor(pages),
       countsFor(articles),
       countsFor(teamMembers),
       countsFor(faqItems),
       db.select({ value: count() }).from(media),
+      // Articles, not CMS pages: "Strony" is hidden until the site renders them.
       db
         .select({
-          id: pages.id,
-          title: pages.title,
-          status: pages.status,
-          updatedAt: pages.updatedAt,
+          id: articles.id,
+          title: articles.title,
+          status: articles.status,
+          updatedAt: articles.updatedAt,
         })
-        .from(pages)
-        .orderBy(desc(pages.updatedAt))
+        .from(articles)
+        .orderBy(desc(articles.updatedAt))
         .limit(5),
       getNewContactCount(),
       getLeadStats(),
     ]);
 
   const tiles = [
-    { href: "/admin/pages", label: "Strony", ...pageCounts },
     { href: "/admin/articles", label: "Artykuły", ...articleCounts },
     { href: "/admin/team", label: "Zespół", ...teamCounts },
     { href: "/admin/faq", label: "FAQ", ...faqCounts },
   ];
 
-  const upcoming = adminNav.filter((item) => !item.available);
+  const upcoming = adminNav.filter((item) => !item.available && !item.hidden);
 
   return (
     <div className="flex flex-col gap-6">
@@ -97,7 +95,7 @@ export default async function AdminDashboardPage() {
         </Link>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-3">
         {tiles.map((tile) => (
           <Link
             key={tile.href}
@@ -115,7 +113,7 @@ export default async function AdminDashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Ostatnio edytowane strony</CardTitle>
+          <CardTitle>Ostatnio edytowane artykuły</CardTitle>
           <CardDescription>
             W bibliotece mediów: {mediaCount.value}{" "}
             {mediaCount.value === 1 ? "plik" : "plików"}.
@@ -123,13 +121,13 @@ export default async function AdminDashboardPage() {
         </CardHeader>
         <CardContent>
           {recent.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Nie utworzono jeszcze żadnej strony.</p>
+            <p className="text-sm text-muted-foreground">Nie utworzono jeszcze żadnego artykułu.</p>
           ) : (
             <ul className="flex flex-col gap-2">
               {recent.map((row) => (
                 <li key={row.id} className="flex items-center justify-between gap-3 text-sm">
                   <Link
-                    href={`/admin/pages/${row.id}`}
+                    href={`/admin/articles/${row.id}`}
                     className="truncate underline-offset-4 hover:underline"
                   >
                     {row.title}

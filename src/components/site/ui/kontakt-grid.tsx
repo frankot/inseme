@@ -47,13 +47,16 @@ export function KontaktGrid({
           </span>
           <a
             href={`tel:${contact.phoneHref}`}
+            data-track="contact"
             className="font-heading text-[clamp(30px,3vw,42px)] leading-none tracking-[-0.035em] tabular-nums text-on-dark transition-colors hover:text-on-dark-sage-2"
           >
             {contact.phone}
           </a>
-          <p className="mt-3 text-[14px] leading-[1.7] text-on-dark-muted">
-            {contact.hours}
-          </p>
+          {contact.hours && (
+            <p className="mt-3 text-[14px] leading-[1.7] text-on-dark-muted">
+              {contact.hours}
+            </p>
+          )}
           <a
             href={`mailto:${contact.email}`}
             className="mt-4 block border-t border-on-dark-3/16 pt-3 text-[15px] text-on-dark-muted transition-colors hover:text-on-dark"

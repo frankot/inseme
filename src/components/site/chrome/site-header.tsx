@@ -87,6 +87,7 @@ export function SiteHeader({
     <>
       {/* Compact bar: full-width, flush to the top, slid in past the threshold. */}
       <header
+        data-track="header"
         inert={!barShown}
         className={cn(
           // The same plain cream as section 01, and nothing else: no rule, no
@@ -123,6 +124,7 @@ export function SiteHeader({
         navbar — and its burger, now the close control — stays visible.
       */}
       <div
+        data-track="header"
         inert={!menuOpen}
         className={cn(
           "fixed inset-x-0 bottom-0 z-60 flex flex-col bg-cream",
@@ -175,7 +177,7 @@ export function SiteHeader({
             </span>
           </a>
           <span className="mt-3.5 text-[13px] leading-[1.7] text-ink-200">
-            dyżur całą dobę · {contact.addressLine1}, Magdalenka
+            {contact.addressLine1}, Magdalenka
           </span>
         </div>
       </div>
@@ -184,6 +186,7 @@ export function SiteHeader({
           menu opens so only one header is ever on screen. */}
       {!solid && (
         <header
+          data-track="header"
           inert={menuOpen}
           className={cn(
             "absolute inset-x-0 top-0 z-60 transition-opacity duration-300",

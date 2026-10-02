@@ -66,7 +66,7 @@ export const osrodekPageDefaults: OsrodekPageContent = {
   lead: "Dwanaście miejsc w jednym domu pod Warszawą. Bez korytarzy, bez dyżurki za szybą, bez zapachu szpitala — i bez widoku z ulicy na to, kto przyjeżdża.",
 
   heroFallback: {
-    src: "/placeholder/dom-staw.jpg",
+    src: "/placeholder/dom-staw.webp",
     alt: "Dom ośrodka widziany zza stawu, w otoczeniu sosen",
   },
   heroCaption: "Dom od strony stawu. Z drogi go nie widać.",

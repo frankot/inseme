@@ -11,6 +11,7 @@ import { Cta } from "@/components/site/ui/cta";
 import { JsonLd } from "@/components/site/ui/json-ld";
 import { Reveal } from "@/components/site/ui/reveal";
 import { SiteImage } from "@/components/site/ui/site-image";
+import { initials } from "@/components/site/ui/team-card";
 import {
   artykulyPageDefaults as copy,
   formatArticleDate,
@@ -21,6 +22,7 @@ import {
   getArticleBySlug,
   getArticleSlugs,
   getRelatedArticles,
+  type ArticleReviewer,
 } from "@/lib/queries/articles";
 import { SITE_NAME } from "@/lib/site-url";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
@@ -39,7 +41,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-  props: PageProps<"/artykuly/[slug]">,
+  props: PageProps<"/porady/[slug]">,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   const { slug } = await props.params;
@@ -49,7 +51,7 @@ export async function generateMetadata(
   return {
     title: article.metaTitle ?? `${article.title} — Poradnik Insieme`,
     description: article.metaDescription ?? article.excerpt ?? copy.metaDescription,
-    alternates: { canonical: `/artykuly/${article.slug}` },
+    alternates: { canonical: `/porady/${article.slug}` },
     // Replaces the layout's openGraph wholesale, so the site-wide fields are
     // repeated; title and description still fall through from above.
     openGraph: {
@@ -66,7 +68,7 @@ export async function generateMetadata(
   };
 }
 
-export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) {
+export default async function ArticlePage(props: PageProps<"/porady/[slug]">) {
   const { slug } = await props.params;
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
@@ -91,7 +93,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
           <Breadcrumb
             items={[
               { label: copy.breadcrumbHome, href: "/" },
-              { label: copy.breadcrumbLabel, href: "/artykuly" },
+              { label: copy.breadcrumbLabel, href: "/porady" },
               { label: article.title },
             ]}
           />
@@ -117,12 +119,21 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
               {date && <span className="tabular-nums text-clay-600">{date}</span>}
               {date && <span aria-hidden>·</span>}
               <span>{copy.readingTime(minutes)}</span>
-              {article.authorReviewer && (
+              {article.reviewerName && (
                 <>
                   <span aria-hidden>·</span>
                   <span>
                     {copy.reviewerLabel}:{" "}
-                    <span className="text-ink-600">{article.authorReviewer}</span>
+                    {article.reviewer?.slug ? (
+                      <Link
+                        href={`/zespol/${article.reviewer.slug}`}
+                        className="text-ink-600 underline decoration-line-strong underline-offset-4 transition-colors hover:text-sage-600"
+                      >
+                        {article.reviewerName}
+                      </Link>
+                    ) : (
+                      <span className="text-ink-600">{article.reviewerName}</span>
+                    )}
                   </span>
                 </>
               )}
@@ -160,17 +171,23 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
             <BlockRenderer blocks={article.body} />
 
             {/* The review trail the publish gate insists on — named, so a
-                reader can see who checked the medical claims and when. */}
-            {(article.authorReviewer || date) && (
-              <Reveal className="mt-[clamp(36px,4vw,64px)] flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3 border-t border-line-strong pt-5 text-[14px] text-ink-300">
-                {article.authorReviewer && (
-                  <span>
-                    {copy.reviewerLabel}:{" "}
-                    <span className="text-ink-600">{article.authorReviewer}</span>
-                  </span>
-                )}
-                {date && <span className="tabular-nums">{date}</span>}
-              </Reveal>
+                reader can see who checked the medical claims and when. A team
+                member gets their face, role and qualifications, and a way to
+                read who they are. */}
+            {article.reviewer ? (
+              <ReviewerCard reviewer={article.reviewer} date={date} />
+            ) : (
+              (article.reviewerName || date) && (
+                <Reveal className="mt-[clamp(36px,4vw,64px)] flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3 border-t border-line-strong pt-5 text-[14px] text-ink-300">
+                  {article.reviewerName && (
+                    <span>
+                      {copy.reviewerLabel}:{" "}
+                      <span className="text-ink-600">{article.reviewerName}</span>
+                    </span>
+                  )}
+                  {date && <span className="tabular-nums">{date}</span>}
+                </Reveal>
+              )
             )}
           </div>
 
@@ -218,7 +235,7 @@ export default async function ArticlePage(props: PageProps<"/artykuly/[slug]">) 
           <div className="mt-[clamp(56px,7vw,104px)]">
             <div className="mb-[clamp(20px,2.4vw,32px)] flex items-baseline justify-between gap-6">
               <h2 className="font-heading text-heading text-ink-900">{copy.relatedTitle}</h2>
-              <Cta href="/artykuly" className="shrink-0">
+              <Cta href="/porady" className="shrink-0">
                 {copy.backLabel}
               </Cta>
             </div>
@@ -264,5 +281,52 @@ function Breadcrumb({ items }: { items: { label: string; href?: string }[] }) {
         </Fragment>
       ))}
     </nav>
+  );
+}
+
+function ReviewerCard({ reviewer, date }: { reviewer: ArticleReviewer; date: string | null }) {
+  return (
+    <Reveal
+      as="figure"
+      className="m-0 mt-[clamp(36px,4vw,64px)] flex items-start gap-[clamp(16px,1.8vw,24px)] border-t border-line-strong pt-[clamp(20px,2.2vw,28px)]"
+    >
+      <div className="relative size-[clamp(64px,6vw,84px)] shrink-0 overflow-hidden bg-stone">
+        {reviewer.photo ? (
+          <SiteImage
+            src={reviewer.photo.url}
+            alt=""
+            fill
+            sizes="84px"
+            className="object-cover object-top saturate-[.92]"
+          />
+        ) : (
+          <span
+            aria-hidden
+            className="absolute inset-0 flex items-center justify-center font-heading text-[22px] text-clay-400"
+          >
+            {initials(reviewer.name)}
+          </span>
+        )}
+      </div>
+
+      <figcaption className="min-w-0">
+        <p className="text-meta text-ink-300">{copy.reviewerLabel}</p>
+        <p className="mt-1 font-heading text-[clamp(18px,1.5vw,21px)] leading-tight tracking-[-0.02em] text-ink-900">
+          {reviewer.name}
+        </p>
+        {reviewer.role && <p className="mt-1 text-meta text-ink-500">{reviewer.role}</p>}
+        {reviewer.qualifications && (
+          <p className="mt-2 max-w-[36em] text-meta text-ink-400">{reviewer.qualifications}</p>
+        )}
+        <p className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-meta text-ink-300">
+          {date && <span className="tabular-nums">{date}</span>}
+          {reviewer.slug && (
+            <Cta href={`/zespol/${reviewer.slug}`} className="text-meta">
+              {copy.reviewerBioLabel}
+            </Cta>
+          )}
+        </p>
+      </figcaption>
+    </Reveal>
   );
 }

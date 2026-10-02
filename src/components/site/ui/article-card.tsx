@@ -8,7 +8,7 @@ import type { ArticleCardData } from "@/lib/queries/articles";
 import { cn } from "@/lib/utils";
 
 /**
- * One article, on the homepage teaser and on /artykuly alike. Follows the card
+ * One article, on the homepage teaser and on /porady alike. Follows the card
  * grammar the rest of the site uses — square corners, hairline borders, a cover
  * that drifts on hover, an arrow link that opens up.
  */
@@ -28,7 +28,7 @@ export function ArticleCard({
   return (
     <Reveal as="article" delay={delay} className={cn("min-w-0", className)}>
       <Link
-        href={`/artykuly/${article.slug}`}
+        href={`/porady/${article.slug}`}
         className="card-surface group flex h-full flex-col"
       >
         <div className="relative aspect-[3/2] overflow-hidden bg-stone">

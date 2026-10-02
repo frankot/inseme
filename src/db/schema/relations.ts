@@ -19,6 +19,7 @@ export const pagesRelations = relations(pages, ({ one }) => ({
 
 export const articlesRelations = relations(articles, ({ one }) => ({
   coverImage: one(media, { fields: [articles.coverImageId], references: [media.id] }),
+  reviewer: one(teamMembers, { fields: [articles.reviewerId], references: [teamMembers.id] }),
 }));
 
 export const teamMembersRelations = relations(teamMembers, ({ one }) => ({

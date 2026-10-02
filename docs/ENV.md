@@ -31,6 +31,7 @@ zatrzymuje aplikację przy starcie, celowo, zamiast psuć się później.
 | `CRON_SECRET` | Endpoint retencji zwraca 503 i **nie usuwa niczego** | `openssl rand -hex 32` |
 | `DATA_RETENTION_MONTHS` | Domyślnie `24` | decyzja ośrodka / IOD |
 | `NEXT_PUBLIC_SITE_URL` | Domyślnie `https://osrodek-insieme.pl` | docelowa domena |
+| `NEXT_PUBLIC_GA_ID` | **Brak analityki i brak banera cookies** — nic nie trafia do Google | GA4 → Administracja → Strumienie danych → Identyfikator pomiaru (`G-…`) |
 
 ## Minimum, żeby uruchomić lokalnie
 

@@ -49,13 +49,13 @@ The basics are missing: there's no sitemap, robots file, canonical URL, Open Gra
 
 **E-E-A-T and content structure (launch → month 1)**
 
-- [ ] Link article authors to team members. `articles.authorReviewer` is free text right now. Make it a relation to `team_members` and show a byline with a photo, certificate and link to the bio. This is the core of the strategy (§3.1).
+- [x] Link article authors to team members. `articles.authorReviewer` is free text right now. Make it a relation to `team_members` and show a byline with a photo, certificate and link to the bio. This is the core of the strategy (§3.1). *Done: `articles.reviewer_id` (migration 0005, applied to dev; run `npm run db:migrate` on production). Articles show a reviewer card with photo, role, qualifications and a link to the bio; the `Article` JSON-LD names that Person.*
 - [ ] Show qualifications and KCPU certificate numbers on the team bios, and name the clinical lead.
-- [ ] Build the missing intent pages from implementation plan §3/§8: `/dla-rodziny`, `/dla-osoby-szukajacej-pomocy`, a separate `/pierwszy-kontakt` page (currently only an anchor on `/`), `/detoks-i-kwalifikacja`, and treatment pages (`/leczenie-alkoholizmu`, `-narkomanii`, `-lekomanii`, `-hazardu`). These carry the main search intents. If they're pushed to phase 2, agree that with the client explicitly.
-- [ ] The CMS **Pages** (`pages` table) have no public route in `src/app/(site)`, so pages created in the admin never appear on the site. Either wire up a route or hide the section before training the client.
+- [x] Build the missing intent pages from implementation plan §3/§8: `/dla-rodziny`, `/dla-osoby-szukajacej-pomocy`, a separate `/pierwszy-kontakt` page (currently only an anchor on `/`), `/detoks-i-kwalifikacja`, and treatment pages (`/leczenie-alkoholizmu`, `-narkomanii`, `-lekomanii`, `-hazardu`). These carry the main search intents. If they're pushed to phase 2, agree that with the client explicitly. *Moved to phase 2 — full brief in `docs/PHASE2_INTENT_PAGES.md`. Needs the client's explicit OK.*
+- [x] The CMS **Pages** (`pages` table) have no public route in `src/app/(site)`, so pages created in the admin never appear on the site. Either wire up a route or hide the section before training the client. *Hidden from the admin nav and dashboard for now; wiring a public route is part of phase 2 (`docs/PHASE2_INTENT_PAGES.md`).*
 - [ ] Publish the three launch articles from the plan: calling on behalf of someone, whether detox is needed, what the first day looks like. Link them to and from the relevant pages.
 - [ ] Write alt text for every image, and descriptive file names (`dom-staw.jpg` is fine; `assets-1786693086106-ibnm.jpg` isn't). The hero image has `alt: ""`.
-- [ ] Decide on URL slugs before indexing: `/artykuly` vs the plan's `/poradnik`, `/pytania` vs `/faq`. Changing them later means more redirects.
+- [x] Decide on URL slugs before indexing: `/artykuly` vs the plan's `/poradnik`, `/pytania` vs `/faq`. Changing them later means more redirects. *Decided Oct 2: `/porady` and `/faq`. The interim `/artykuly` and `/pytania` 308-redirect to them.*
 
 **Off-site (launch week)**
 
@@ -67,7 +67,7 @@ The basics are missing: there's no sitemap, robots file, canonical URL, Open Gra
 
 The biggest risk is the hero image. `src/lib/image-loader.ts` passes local `/public` files through untouched, so the preloaded full-width hero (`dom-staw.jpg`, 2.0 MB) is sent as-is to every phone. That alone will fail LCP on 4G.
 
-- [ ] Serve every photo through R2 + the Cloudflare `/cdn-cgi/image/` resizing, or compress the local files to WebP/AVIF at 150–250 KB with proper `sizes`. Current sizes: `dom-staw` 2.0 MB, `dom-taras` 1.5 MB, `salon` 1.4 MB, `pokoj` 757 KB, `rozmowa` 512 KB.
+- [ ] Serve every photo through R2 + the Cloudflare `/cdn-cgi/image/` resizing, or compress the local files to WebP/AVIF at 150–250 KB with proper `sizes`. *Placeholders are now WebP (70–350 KB, 6.2 MB → 0.9 MB in total); the originals and the 189 MB of design-mockup photos are deleted. Final photos should go through R2.* Current sizes: `dom-staw` 2.0 MB, `dom-taras` 1.5 MB, `salon` 1.4 MB, `pokoj` 757 KB, `rozmowa` 512 KB.
 - [ ] Enable Cloudflare Image Resizing on the R2 media domain and check that `/cdn-cgi/image/width=640,...` returns a resized image.
 - [x] Add `loading="lazy"` to the OpenStreetMap `<iframe>` in `kontakt-grid.tsx`.
 - [ ] Review the 11 `"use client"` components under `src/components/site`. Keep only interactive leaves on the client.
@@ -81,7 +81,7 @@ The foundations are good: `lang="pl"`, reduced-motion rules in `globals.css`, an
 - [x] Add a "Przejdź do treści" skip link at the top of `(site)/layout.tsx`.
 - [x] Give the contact form visible labels. Right now its fields rely on `aria-label` + placeholder, and the placeholder disappears as soon as someone starts typing, which is hard for stressed or older users.
 - [x] Give the hero photo real alt text (it shows the house), and check that the lightbox images get their alt from the gallery data. `gallery-lightbox.tsx:185` uses `alt=""`. *The lightbox already uses `photo.alt`.*
-- [ ] Check keyboard access and focus trapping in the mobile menu, gallery lightbox and screening test. Check colour contrast for sage/cream text and on-dark text (WCAG AA 4.5:1). *Measured: `ink-300` (3.0:1), `clay-600` (3.0:1) and `clay-400` (2.2:1) fail on cream/bone. On-dark tokens pass, except `on-dark-faint`.*
+- [ ] Check keyboard access and focus trapping in the mobile menu, gallery lightbox and screening test. Check colour contrast for sage/cream text and on-dark text (WCAG AA 4.5:1). *Fixed Oct 2: `ink-300`, `ink-400`, `sage-600`, `clay-400` and `clay-600` darkened to pass 4.5:1 on every light ground.* *Measured: `ink-300` (3.0:1), `clay-600` (3.0:1) and `clay-400` (2.2:1) fail on cream/bone. On-dark tokens pass, except `on-dark-faint`.*
 - [ ] Make sure the sticky call bar doesn't cover form buttons or the footer on small phones (320–375 px).
 - [ ] Test on real devices: iOS Safari, Android Chrome, desktop Firefox.
 
@@ -103,8 +103,8 @@ The client's feedback isn't in the repo yet. Add each point here as a task befor
 
 **Analytics (launch)**
 
-- [ ] Choose a tool. There's no analytics code yet. Either use GA4 via GTM with a consent banner (Consent Mode v2), or a cookieless option (Plausible, Umami or Vercel Web Analytics) that needs no banner.
-- [ ] Track the events from implementation plan §9: `click_phone_header`, `click_phone_sticky`, `click_phone_contact`, `click_email`, `form_start`, `form_submit`, `directions_click`. Never send message text, substance type or test answers. No remarketing.
+- [x] Choose a tool. There's no analytics code yet. Either use GA4 via GTM with a consent banner (Consent Mode v2), or a cookieless option (Plausible, Umami or Vercel Web Analytics) that needs no banner. *GA4 with a consent banner (Consent Mode v2, basic: nothing loads before consent). Set `NEXT_PUBLIC_GA_ID` to switch it on.*
+- [x] Track the events from implementation plan §9: `click_phone_header`, `click_phone_sticky`, `click_phone_contact`, `click_email`, `form_start`, `form_submit`, `directions_click`. Never send message text, substance type or test answers. No remarketing. *Done in `src/lib/analytics.ts`, plus `click_phone_content` for phone links outside the header, sticky bar and contact block. No payloads are sent.*
 - [ ] Start the 14-day log of incoming calls (source, answered, outcome) with the client. It's free and it's the only real measure of cost per admission (SEO strategy §1.1, §9).
 
 **Deployment (launch day)**

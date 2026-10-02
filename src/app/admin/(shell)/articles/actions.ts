@@ -17,8 +17,8 @@ import { articleSchema, emptyToNull, type ArticleInput } from "@/lib/validations
  */
 function revalidatePublic(slug?: string) {
   revalidatePath("/");
-  revalidatePath("/artykuly");
-  if (slug) revalidatePath(`/artykuly/${slug}`);
+  revalidatePath("/porady");
+  if (slug) revalidatePath(`/porady/${slug}`);
 }
 
 export async function saveArticle(
@@ -48,6 +48,7 @@ export async function saveArticle(
       excerpt: emptyToNull(parsed.data.excerpt),
       body: sanitizeBlocks(parsed.data.body),
       authorReviewer: emptyToNull(parsed.data.authorReviewer),
+      reviewerId: parsed.data.reviewerId,
       coverImageId: parsed.data.coverImageId,
       metaTitle: emptyToNull(parsed.data.metaTitle),
       metaDescription: emptyToNull(parsed.data.metaDescription),
@@ -77,14 +78,14 @@ export async function publishArticle(id: string): Promise<ActionResult> {
     // Publishing is the review gate for medical/factual copy: refuse to release
     // an article that doesn't name who checked it.
     const row = await db.query.articles.findFirst({
-      columns: { authorReviewer: true, slug: true },
+      columns: { authorReviewer: true, reviewerId: true, slug: true },
       where: eq(articles.id, id),
     });
     if (!row) return { ok: false, error: "Nie znaleziono artykułu." };
-    if (!row.authorReviewer) {
+    if (!row.reviewerId && !row.authorReviewer) {
       return {
         ok: false,
-        error: "Uzupełnij pole „Autor / osoba weryfikująca” przed publikacją.",
+        error: "Wskaż osobę weryfikującą (z zespołu albo spoza niego) przed publikacją.",
       };
     }
 

@@ -10,14 +10,14 @@ import type { FaqEntry } from "@/lib/queries/faq";
  * Zespół it removes itself when there is nothing published, rather than
  * printing a heading over an empty list.
  *
- * The accordion itself is `FaqList`, so /pytania can render the full set
+ * The accordion itself is `FaqList`, so /faq can render the full set
  * without this section's heading column repeating the page title.
  */
 export function Faq({
   items,
   content = faqDefaults,
   /**
-   * How many questions the homepage shows. The rest live on /pytania — a
+   * How many questions the homepage shows. The rest live on /faq — a
    * fifteen-row accordion here is a wall the reader scrolls past, and the
    * questions that convert are the first few anyway.
    */

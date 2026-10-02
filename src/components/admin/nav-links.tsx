@@ -11,7 +11,7 @@ export function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <nav className="flex flex-col gap-1">
-      {adminNav.map((item) => {
+      {adminNav.filter((item) => !item.hidden).map((item) => {
         const Icon = item.icon;
         const isActive =
           item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);

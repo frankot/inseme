@@ -1,3 +1,4 @@
+import { ConsentSettingsButton } from "@/components/site/chrome/consent";
 import { Container } from "@/components/site/ui/container";
 import { SiteImage } from "@/components/site/ui/site-image";
 import {
@@ -57,7 +58,7 @@ export function SiteFooter({
 
         <FooterColumn title="Kontakt">
           <FooterLink href={`tel:${contact.phoneHref}`}>
-            {contact.phone} — całą dobę
+            {contact.phone}
           </FooterLink>
           <FooterLink href={`mailto:${contact.email}`}>
             {contact.email}
@@ -65,6 +66,7 @@ export function SiteFooter({
           <FooterLink href={content.privacyHref}>
             {content.privacyLabel}
           </FooterLink>
+          <ConsentSettingsButton className="self-start text-left text-[13.5px] leading-[1.7] text-on-dark-lead transition-colors hover:text-sage-300" />
         </FooterColumn>
 
         <div className="flex flex-col gap-2.5">

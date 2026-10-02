@@ -234,6 +234,12 @@
   --hero-max: 900px;
 
   /* --- Insieme brand palette --- */
+  /*
+   * Every text tone below ink-500 is set to clear WCAG AA (4.5:1) on the
+   * darkest light ground it sits on (stone #EFECE3), not just on cream. The
+   * old ink-300 / clay-600 / clay-400 read at 2.2–3:1 — fine as decoration,
+   * not as the breadcrumbs, meta lines and eyebrows they are used for.
+   */
   --cream: oklch(0.9848 0.0054 95.1); /* #FBFAF6 */
   --bone: oklch(0.97 0.0082 91.48); /* #F7F5EF */
   --sand: oklch(0.9467 0.0127 86.83); /* #F1EDE4 */
@@ -245,16 +251,16 @@
   --ink-700: oklch(0.3906 0.0148 133.55); /* #42473F */
   --ink-600: oklch(0.4379 0.015 137.82); /* #4E544C */
   --ink-500: oklch(0.474 0.0147 137.82); /* #585E56 */
-  --ink-400: oklch(0.5406 0.0155 134.97); /* #6B7168 */
-  --ink-300: oklch(0.6564 0.0143 130.86); /* #8E938A */
+  --ink-400: oklch(0.505 0.0155 134.97); /* #61675E */
+  --ink-300: oklch(0.524 0.0143 130.86); /* #676C63 */
   --ink-200: oklch(0.6955 0.0154 128.71); /* #9A9F95 */
 
   --sage-700: oklch(0.421 0.0415 138.64); /* #42533D */
-  --sage-600: oklch(0.5316 0.0463 138.52); /* #5F7359 */
+  --sage-600: oklch(0.515 0.0463 138.52); /* #5A6E54 */
   --sage-300: oklch(0.7647 0.0745 136.48); /* #9DBE8F */
 
-  --clay-600: oklch(0.6575 0.0348 68.68); /* #A08E7B */
-  --clay-400: oklch(0.7414 0.0235 80.66); /* #B3AA9B */
+  --clay-600: oklch(0.4915 0.0348 68.68); /* #6E5E4C */
+  --clay-400: oklch(0.527 0.0235 80.66); /* #726A5C */
   --clay-300: oklch(0.7934 0.0235 87.17); /* #C2BBAB */
 
   --on-dark: oklch(0.9613 0.0111 89.72); /* #F5F2EA */

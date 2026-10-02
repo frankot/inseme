@@ -20,7 +20,7 @@ export const articlesTeaserDefaults: ArticlesTeaserContent = {
   title: "To, o co pytają najczęściej — spisane na spokojnie.",
   lead: "Teksty pisane przez nasz zespół i sprawdzone przed publikacją. Bez straszenia i bez obiecywania cudów.",
   linkLabel: "Wszystkie artykuły",
-  href: "/artykuly",
+  href: "/porady",
 };
 
 export type LatestArticleContent = {
@@ -45,7 +45,7 @@ export const latestArticleDefaults: LatestArticleContent = {
   reviewerLabel: "Sprawdził(a)",
   readLabel: "Czytaj dalej",
   allLabel: "Wszystkie artykuły",
-  allHref: "/artykuly",
+  allHref: "/porady",
 };
 
 export type ArticlesPageContent = {
@@ -64,6 +64,8 @@ export type ArticlesPageContent = {
   backLabel: string;
   /** Beside the body: the outline, then the call card. */
   outlineLabel: string;
+  /** The link from the reviewer card to their page in Zespół. */
+  reviewerBioLabel: string;
   readingTime: (minutes: number) => string;
   callTitle: string;
   callText: string;
@@ -83,9 +85,10 @@ export const artykulyPageDefaults: ArticlesPageContent = {
   relatedTitle: "Przeczytaj również",
   backLabel: "Wszystkie artykuły",
   outlineLabel: "W tym tekście",
+  reviewerBioLabel: "Biogram",
   readingTime: (minutes) => `${minutes} min czytania`,
   callTitle: "Wolisz porozmawiać?",
-  callText: "Zadzwoń — odbieramy całą dobę. Rozmowa nie zobowiązuje do przyjazdu.",
+  callText: "Odbiera terapeuta z ośrodka. Rozmowa nie zobowiązuje do przyjazdu.",
 };
 
 /** One date format for every article surface. */

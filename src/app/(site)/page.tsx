@@ -17,7 +17,7 @@ import { getPublishedFaq } from "@/lib/queries/faq";
 import { getScreeningTestBySlug } from "@/lib/queries/screening";
 import { getFeaturedTeam } from "@/lib/queries/team";
 
-/** How many questions the homepage carries before handing off to /pytania. */
+/** How many questions the homepage carries before handing off to /faq. */
 const HOMEPAGE_FAQ_LIMIT = 5;
 
 /**
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
  * Everything below a summary's worth of depth lives on its own page: the day
  * plan and the therapy detail on /program, the gallery and logistics on
  * /osrodek, the full price list on /cennik, the rest of the questions on
- * /pytania. Each band here ends in the link to its page.
+ * /faq. Each band here ends in the link to its page.
  */
 export default async function HomePage() {
   const [featuredTeam, featuredTest, faqEntries, latestArticle] = await Promise.all([

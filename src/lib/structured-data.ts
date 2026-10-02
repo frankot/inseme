@@ -102,20 +102,30 @@ export function articleJsonLd(article: {
   publishedAt: string | null;
   updatedAt: string;
   cover: { url: string } | null;
+  reviewer: { name: string; slug: string | null } | null;
 }) {
+  // A published team member is the same Person their /zespol page declares;
+  // otherwise the clinic stands as author.
+  const author = article.reviewer?.slug
+    ? {
+        "@type": "Person",
+        "@id": absoluteUrl(`/zespol/${article.reviewer.slug}#osoba`),
+        name: article.reviewer.name,
+        url: absoluteUrl(`/zespol/${article.reviewer.slug}`),
+      }
+    : { "@id": CLINIC_ID };
+
   return {
     "@type": "Article",
     headline: article.title,
-    url: absoluteUrl(`/artykuly/${article.slug}`),
-    mainEntityOfPage: absoluteUrl(`/artykuly/${article.slug}`),
+    url: absoluteUrl(`/porady/${article.slug}`),
+    mainEntityOfPage: absoluteUrl(`/porady/${article.slug}`),
     inLanguage: "pl-PL",
     ...(article.excerpt && { description: article.excerpt }),
     ...(article.cover && { image: absoluteUrl(article.cover.url) }),
     ...(article.publishedAt && { datePublished: article.publishedAt }),
     dateModified: article.updatedAt,
-    // `authorReviewer` is free text today; once it is a relation to
-    // `team_members`, this becomes a reference to that Person.
-    author: { "@id": CLINIC_ID },
+    author,
     publisher: { "@id": CLINIC_ID },
   };
 }

@@ -34,11 +34,12 @@ function loadRedirects(): RedirectEntry[] {
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
+  // googletagmanager.com only ever loads after analytics consent.
+  `script-src 'self' 'unsafe-inline' https://www.googletagmanager.com${process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https:",
   "font-src 'self'",
-  "connect-src 'self' https://*.r2.cloudflarestorage.com",
+  "connect-src 'self' https://*.r2.cloudflarestorage.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
   "frame-src https://www.openstreetmap.org",
   "frame-ancestors 'none'",
   "object-src 'none'",
@@ -69,11 +70,18 @@ const nextConfig: NextConfig = {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
   async redirects() {
-    return loadRedirects().map((entry) => ({
-      source: entry.from,
-      destination: entry.to,
-      permanent: entry.permanent !== false,
-    }));
+    return [
+      // The new site's own first slugs, renamed before launch. Kept so any
+      // link shared from a preview still lands.
+      { source: "/artykuly", destination: "/porady", permanent: true },
+      { source: "/artykuly/:slug", destination: "/porady/:slug", permanent: true },
+      { source: "/pytania", destination: "/faq", permanent: true },
+      ...loadRedirects().map((entry) => ({
+        source: entry.from,
+        destination: entry.to,
+        permanent: entry.permanent !== false,
+      })),
+    ];
   },
 };
 

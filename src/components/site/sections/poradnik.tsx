@@ -29,7 +29,7 @@ export function Poradnik({
 }) {
   const { opening, points } = getArticlePreview(article.body);
   const date = formatArticleDate(article.publishedAt);
-  const href = `/artykuly/${article.slug}`;
+  const href = `/porady/${article.slug}`;
 
   return (
     <Section
@@ -43,13 +43,13 @@ export function Poradnik({
     >
       <div className="grid items-start gap-x-[clamp(32px,5.5vw,104px)] gap-y-[clamp(36px,4vw,56px)] tab:[grid-template-columns:minmax(0,1.3fr)_minmax(0,0.7fr)]">
         <Reveal className="min-w-0">
-          {(date || article.authorReviewer) && (
+          {(date || article.reviewerName) && (
             <p className="flex flex-wrap gap-x-3 gap-y-1 border-t border-line-strong pt-[14px] text-meta text-ink-300">
               {date && <span className="tabular-nums text-clay-600">{date}</span>}
-              {date && article.authorReviewer && <span aria-hidden>·</span>}
-              {article.authorReviewer && (
+              {date && article.reviewerName && <span aria-hidden>·</span>}
+              {article.reviewerName && (
                 <span>
-                  {content.reviewerLabel}: <span className="text-ink-600">{article.authorReviewer}</span>
+                  {content.reviewerLabel}: <span className="text-ink-600">{article.reviewerName}</span>
                 </span>
               )}
             </p>

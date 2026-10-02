@@ -8,6 +8,7 @@ import {
   unpublishArticle,
 } from "@/app/admin/(shell)/articles/actions";
 import { ArticleForm } from "@/app/admin/(shell)/articles/article-form";
+import { getReviewerOptions } from "@/app/admin/(shell)/articles/reviewers";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
 import { PublishControls } from "@/components/admin/publish-controls";
@@ -22,7 +23,10 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
   const row = await db.query.articles.findFirst({ where: eq(articles.id, id) });
   if (!row) notFound();
 
-  const mediaRows = await db.select().from(media).orderBy(desc(media.uploadedAt));
+  const [mediaRows, team] = await Promise.all([
+    db.select().from(media).orderBy(desc(media.uploadedAt)),
+    getReviewerOptions(),
+  ]);
   const coverImage = mediaRows.find((item) => item.id === row.coverImageId) ?? null;
 
   return (
@@ -53,12 +57,14 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
         id={row.id}
         defaultCoverImage={coverImage ? toMediaSummary(coverImage) : null}
         mediaLibrary={mediaRows.map(toMediaSummary)}
+        team={team}
         defaultValues={{
           title: row.title,
           slug: row.slug,
           excerpt: row.excerpt ?? "",
           body: row.body,
           authorReviewer: row.authorReviewer ?? "",
+          reviewerId: row.reviewerId,
           coverImageId: row.coverImageId,
           metaTitle: row.metaTitle ?? "",
           metaDescription: row.metaDescription ?? "",

@@ -9,7 +9,7 @@ import { getPublishedArticles } from "@/lib/queries/articles";
 export const metadata: Metadata = {
   title: copy.metaTitle,
   description: copy.metaDescription,
-  alternates: { canonical: "/artykuly" },
+  alternates: { canonical: "/porady" },
 };
 
 /** Prerendered, refreshed every five minutes — see the homepage for the why. */

@@ -68,7 +68,7 @@ export function SettingsForm({
             label="Godziny pracy"
             htmlFor="hours"
             error={errors.hours?.message}
-            hint="Np. pon.–pt. 8:00–20:00, dyżur telefoniczny całodobowo."
+            hint="Np. pon.–pt. 8:00–20:00. Puste pole — godziny nie pokazują się na stronie."
           >
             <Textarea id="hours" rows={3} {...register("hours")} />
           </Field>

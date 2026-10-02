@@ -37,8 +37,8 @@ function registerFonts() {
 
 const INK = "#2E3330";
 const INK_SOFT = "#585E56";
-const MUTED = "#9A9F95";
-const CLAY = "#A08E7B";
+const MUTED = "#676C63";
+const CLAY = "#6E5E4C";
 const LINE = "#E8E4DA";
 
 const styles = StyleSheet.create({
@@ -145,7 +145,6 @@ function ScreeningResultDocument({ data }: { data: ScreeningResultPdfData }) {
             kończy się ofertą.
           </Text>
           <Text style={styles.phone}>{data.phone}</Text>
-          <Text style={{ fontSize: 9, color: MUTED }}>dyżur całą dobę</Text>
         </View>
 
         <Text style={styles.disclaimer}>{data.disclaimer}</Text>

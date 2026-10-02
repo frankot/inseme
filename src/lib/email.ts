@@ -68,7 +68,7 @@ export function emailLayout(options: {
 <html lang="pl"><body style="margin:0;padding:24px;background:#F7F5EF;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#2E3330;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#FBFAF6;border:1px solid #E8E4DA;">
     <tr><td style="padding:28px 28px 8px;">
-      <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#A08E7B;">Insieme</p>
+      <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6E5E4C;">Insieme</p>
       <h1 style="margin:0;font-size:21px;line-height:1.25;font-weight:600;color:#232823;">${escapeHtml(options.heading)}</h1>
     </td></tr>
     <tr><td style="padding:12px 28px 24px;font-size:15px;line-height:1.7;color:#4E544C;">${options.body}</td></tr>

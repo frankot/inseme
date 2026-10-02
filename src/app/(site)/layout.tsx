@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 
+import { ConsentBanner } from "@/components/site/chrome/consent";
 import { SiteFooter } from "@/components/site/chrome/site-footer";
 import { StickyCallBar } from "@/components/site/chrome/sticky-call-bar";
 import { JsonLd } from "@/components/site/ui/json-ld";
@@ -34,6 +35,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       <main className="flex-auto overflow-x-clip bg-cream">{children}</main>
       <SiteFooter />
       <StickyCallBar />
+      <ConsentBanner />
     </>
   );
 }

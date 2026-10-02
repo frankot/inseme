@@ -123,10 +123,10 @@ export async function submitLeadSignup(input: LeadSignupInput): Promise<ActionRe
         heading: "Zapisaliśmy Twój adres",
         body: `
           <p style="margin:0 0 14px;">Odezwiemy się tylko wtedy, gdy będziemy mieć coś konkretnego do przekazania. Adres nie trafia do żadnej listy reklamowej.</p>
-          <p style="margin:0;">Jeśli chcesz porozmawiać już teraz — <strong style="color:#2E3330;">${escapeHtml(contact.phone)}</strong>, dyżur całą dobę.</p>
+          <p style="margin:0;">Jeśli chcesz porozmawiać już teraz — <strong style="color:#2E3330;">${escapeHtml(contact.phone)}</strong>.</p>
         `,
       }),
-      text: `Zapisaliśmy Twój adres.\n\nJeśli chcesz porozmawiać już teraz — ${contact.phone}, dyżur całą dobę.`,
+      text: `Zapisaliśmy Twój adres.\n\nJeśli chcesz porozmawiać już teraz — ${contact.phone}.`,
     });
 
     return { ok: true };

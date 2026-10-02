@@ -100,7 +100,7 @@ export async function sendScreeningResult(
         body: `
           <p style="margin:0 0 14px;">${escapeHtml(band.resultBody)}</p>
           <p style="margin:0 0 14px;color:#9A9F95;font-size:13px;">Wynik orientacyjny: <strong style="color:#2E3330;">${score} / ${test.maxScore}</strong></p>
-          <p style="margin:0 0 6px;">Jeśli chcesz o tym porozmawiać — <strong style="color:#2E3330;">${escapeHtml(contact.phone)}</strong>, dyżur całą dobę. Rozmowa nie zobowiązuje do przyjazdu.</p>
+          <p style="margin:0 0 6px;">Jeśli chcesz o tym porozmawiać — <strong style="color:#2E3330;">${escapeHtml(contact.phone)}</strong>. Rozmowa nie zobowiązuje do przyjazdu.</p>
         `,
         footer: escapeHtml(disclaimer),
       }),
@@ -111,7 +111,7 @@ export async function sendScreeningResult(
         "",
         `Wynik orientacyjny: ${score} / ${test.maxScore}`,
         "",
-        `Jeśli chcesz o tym porozmawiać — ${contact.phone}, dyżur całą dobę.`,
+        `Jeśli chcesz o tym porozmawiać — ${contact.phone}.`,
         "",
         disclaimer,
       ].join("\n"),

@@ -47,9 +47,9 @@ export const navLinks: NavEntry[] = [
   },
   { label: "Cennik", href: "/cennik" },
   { label: "Testy przesiewowe", href: "/testy", barLabel: "Testy" },
-  { label: "Artykuły", href: "/artykuly" },
+  { label: "Porady", href: "/porady" },
   { label: "Kontakt", href: "/kontakt" },
-  { label: "Pytania", href: "/pytania", mobileOnly: true },
+  { label: "Pytania", href: "/faq", mobileOnly: true },
   { label: "Jeden dzień", href: "/program#dzien", mobileOnly: true },
   { label: "Opinie", href: "/#opinie", mobileOnly: true },
 ];

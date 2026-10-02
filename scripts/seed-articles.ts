@@ -1,5 +1,5 @@
 /**
- * Seeds four example articles so the poradnik — the homepage teaser, /artykuly
+ * Seeds four example articles so the poradnik — the homepage teaser, /porady
  * and an article page — has something to render before an editor has written
  * anything.
  *
@@ -96,10 +96,10 @@ async function main() {
       .values(values)
       .onConflictDoUpdate({ target: articles.slug, set: values });
 
-    console.log(`✓ ${item.title} — /artykuly/${item.slug}`);
+    console.log(`✓ ${item.title} — /porady/${item.slug}`);
   }
 
-  console.log(`\n${ARTICLES.length} artykuły opublikowane. Sprawdź /artykuly i sekcję 07 na stronie.`);
+  console.log(`\n${ARTICLES.length} artykuły opublikowane. Sprawdź /porady i sekcję 07 na stronie.`);
 }
 
 const ARTICLES: Seed[] = [

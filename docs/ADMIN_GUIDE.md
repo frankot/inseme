@@ -39,7 +39,7 @@ Cofnięcie publikacji od razu zdejmuje treść ze strony; sam wpis zostaje.
 > **Uwaga na slug.** Zmiana adresu zrywa wszystkie istniejące linki do tej osoby.
 > Jeśli poprawiasz literówkę w nazwisku, slug możesz zostawić stary.
 
-## FAQ, Artykuły, Strony
+## FAQ i Artykuły
 
 Ta sama logika: lista → wpis → zapis → publikacja. Przy artykułach pole
 **„Autor / osoba weryfikująca”** wypełnij przed publikacją — to ślad po tym, kto

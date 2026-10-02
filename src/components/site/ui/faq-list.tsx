@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 /**
  * The accordion itself, without any section chrome around it.
  *
- * The homepage wraps it in a `Section` with a sticky heading column; /pytania
+ * The homepage wraps it in a `Section` with a sticky heading column; /faq
  * puts it straight under the page intro, which already carries the heading.
  * Keeping the list separate is what stops the full page from printing the same
  * title twice.

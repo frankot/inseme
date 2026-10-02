@@ -3,7 +3,7 @@ import "server-only";
 import { and, desc, eq, ne } from "drizzle-orm";
 
 import { db } from "@/db";
-import { articles } from "@/db/schema";
+import { articles, type TeamMember } from "@/db/schema";
 import type { Block } from "@/lib/blocks";
 import { toMediaSummary } from "@/lib/media-summary";
 import type { MediaSummary } from "@/lib/media-types";
@@ -25,10 +25,22 @@ export type ArticleCardData = {
   cover: MediaSummary | null;
 };
 
+/** The team member who reviewed an article, as the byline shows them. */
+export type ArticleReviewer = {
+  name: string;
+  role: string | null;
+  qualifications: string | null;
+  photo: MediaSummary | null;
+  /** Null while their profile is a draft — no link to a page that 404s. */
+  slug: string | null;
+};
+
 /** The article page adds the block body and the review trail. */
 export type ArticleDetail = ArticleCardData & {
   body: Block[];
-  authorReviewer: string | null;
+  /** Who checked it: the team member's name, else the free-text field. */
+  reviewerName: string | null;
+  reviewer: ArticleReviewer | null;
   metaTitle: string | null;
   metaDescription: string | null;
   updatedAt: string;
@@ -40,6 +52,15 @@ const newestFirst = [desc(articles.publishedAt), desc(articles.createdAt)] as co
 type Row = typeof articles.$inferSelect & {
   coverImage: Parameters<typeof toMediaSummary>[0] | null;
 };
+
+type DetailRow = Row & {
+  reviewer:
+    | (TeamMember & { photo: Parameters<typeof toMediaSummary>[0] | null })
+    | null;
+};
+
+/** What every detail query loads alongside the article. */
+const detailWith = { coverImage: true, reviewer: { with: { photo: true } } } as const;
 
 function toCard(row: Row): ArticleCardData {
   return {
@@ -53,7 +74,7 @@ function toCard(row: Row): ArticleCardData {
   };
 }
 
-/** Everything published, for /artykuly. */
+/** Everything published, for /porady. */
 export async function getPublishedArticles(): Promise<ArticleCardData[]> {
   const rows = await db.query.articles.findMany({
     where: publishedOnly,
@@ -74,11 +95,21 @@ export async function getLatestArticles(limit = 4): Promise<ArticleCardData[]> {
   return rows.map(toCard);
 }
 
-function toDetail(row: Row): ArticleDetail {
+function toDetail(row: DetailRow): ArticleDetail {
+  const reviewer = row.reviewer;
   return {
     ...toCard(row),
     body: row.body,
-    authorReviewer: row.authorReviewer,
+    reviewerName: reviewer?.name ?? row.authorReviewer,
+    reviewer: reviewer
+      ? {
+          name: reviewer.name,
+          role: reviewer.role,
+          qualifications: reviewer.qualifications,
+          photo: reviewer.photo ? toMediaSummary(reviewer.photo) : null,
+          slug: reviewer.status === "published" ? reviewer.slug : null,
+        }
+      : null,
     metaTitle: row.metaTitle,
     metaDescription: row.metaDescription,
     updatedAt: row.updatedAt.toISOString(),
@@ -89,7 +120,7 @@ function toDetail(row: Row): ArticleDetail {
 export async function getArticleBySlug(slug: string): Promise<ArticleDetail | null> {
   const row = await db.query.articles.findFirst({
     where: and(publishedOnly, eq(articles.slug, slug)),
-    with: { coverImage: true },
+    with: detailWith,
   });
   return row ? toDetail(row) : null;
 }
@@ -99,7 +130,7 @@ export async function getLatestArticle(): Promise<ArticleDetail | null> {
   const row = await db.query.articles.findFirst({
     where: publishedOnly,
     orderBy: [...newestFirst],
-    with: { coverImage: true },
+    with: detailWith,
   });
   return row ? toDetail(row) : null;
 }

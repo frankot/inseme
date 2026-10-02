@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "Pytania i odpowiedzi — ośrodek leczenia uzależnień Insieme",
   description:
     "Odpowiedzi na pytania, które trudno zadać na głos: poufność, koszty, skierowanie, kontakt z rodziną, przyjazd do ośrodka.",
-  alternates: { canonical: "/pytania" },
+  alternates: { canonical: "/faq" },
 };
 
 /** Prerendered, refreshed every five minutes — see the homepage for the why. */

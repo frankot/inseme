@@ -1,10 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { contactDefaults, type SiteContact } from "@/content/home";
+import { track } from "@/lib/analytics";
 import { submitContactForm } from "@/lib/contact";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { contactFormSchema, type ContactFormInput } from "@/lib/validations/contact";
@@ -35,6 +36,8 @@ export function ContactForm({
   tone?: "light" | "dark";
 }) {
   const [sent, setSent] = useState(false);
+  // form_start fires once, on the first field someone actually enters.
+  const started = useRef(false);
   const dark = tone === "dark";
 
   const form = useForm<ContactFormInput>({
@@ -63,8 +66,7 @@ export function ContactForm({
           Wiadomość dotarła.
         </p>
         <p>
-          Odezwiemy się w ciągu dnia. Jeśli sprawa nie może czekać — {contact.phone}, dyżur
-          całą dobę.
+          Odezwiemy się w ciągu dnia. Jeśli sprawa nie może czekać, zadzwoń: {contact.phone}.
         </p>
       </div>
     );
@@ -77,9 +79,15 @@ export function ContactForm({
     <form
       noValidate
       className={cn("flex flex-col gap-3", className)}
+      onFocusCapture={() => {
+        if (started.current) return;
+        started.current = true;
+        track("form_start");
+      }}
       onSubmit={form.handleSubmit(async (values) => {
         const result = await submitContactForm(values);
         if (result.ok) {
+          track("form_submit");
           setSent(true);
           return;
         }

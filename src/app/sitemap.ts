@@ -15,9 +15,9 @@ const STATIC_ROUTES = [
   "/program",
   "/cennik",
   "/zespol",
-  "/artykuly",
+  "/porady",
   "/testy",
-  "/pytania",
+  "/faq",
   "/galeria",
   "/kontakt",
 ];
@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]);
 
   const dynamic = [
-    ...articles.map((row) => ({ path: `/artykuly/${row.slug}`, updatedAt: row.updatedAt })),
+    ...articles.map((row) => ({ path: `/porady/${row.slug}`, updatedAt: row.updatedAt })),
     ...team.map((row) => ({ path: `/zespol/${row.slug}`, updatedAt: row.updatedAt })),
     ...tests.map((row) => ({ path: `/testy/${row.slug}`, updatedAt: row.updatedAt })),
   ];

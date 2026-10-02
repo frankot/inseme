@@ -24,7 +24,10 @@ import { articles } from "@/db/schema";
 export const metadata: Metadata = { title: "Artykuły — panel Insieme" };
 
 export default async function ArticlesListPage() {
-  const rows = await db.select().from(articles).orderBy(desc(articles.updatedAt));
+  const rows = await db.query.articles.findMany({
+    orderBy: [desc(articles.updatedAt)],
+    with: { reviewer: { columns: { name: true } } },
+  });
 
   return (
     <>
@@ -61,7 +64,7 @@ export default async function ArticlesListPage() {
                   <p className="font-mono text-xs text-muted-foreground">/{row.slug}</p>
                 </TableCell>
                 <TableCell className="text-muted-foreground">
-                  {row.authorReviewer ?? "—"}
+                  {row.reviewer?.name ?? row.authorReviewer ?? "—"}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {row.updatedAt.toLocaleDateString("pl-PL")}

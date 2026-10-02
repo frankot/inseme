@@ -41,6 +41,7 @@ export function StickyCallBar({
       <div aria-hidden style={{ height: BAR_H }} className="tab:hidden" />
 
       <div
+        data-track="sticky"
         inert={!shown}
         className={cn(
           "fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-cream tab:hidden",
@@ -55,7 +56,9 @@ export function StickyCallBar({
           <span className="min-w-0 flex-auto text-meta leading-[1.35] text-ink-300">
             Odbiera terapeuta.
             <br />
-            {contact.hours.replace(/^dyżur /, "Dyżur ")}
+            {contact.hours
+              ? contact.hours.charAt(0).toUpperCase() + contact.hours.slice(1)
+              : "Rozmowa bez zobowiązań."}
           </span>
           <a
             href={`tel:${contact.phoneHref}`}

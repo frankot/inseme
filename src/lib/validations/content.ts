@@ -83,6 +83,7 @@ export const articleSchema = z.object({
   excerpt: z.string().trim().max(400, "Maksymalnie 400 znaków.").optional(),
   body: blocksSchema,
   authorReviewer: optionalText,
+  reviewerId: z.uuid().nullable(),
   coverImageId: z.uuid().nullable(),
   ...metaFields,
 });
