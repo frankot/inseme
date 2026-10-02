@@ -20,6 +20,7 @@ const STATIC_ROUTES = [
   "/faq",
   "/galeria",
   "/kontakt",
+  "/polityka-prywatnosci",
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

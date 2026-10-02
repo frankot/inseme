@@ -91,7 +91,10 @@ export function LeadSignup({
               className="mt-0.5 size-3.5 shrink-0 accent-[var(--sage-600)]"
             />
             <span>
-              Zgadzam się na zapisanie adresu i kontakt w sprawie oferty ośrodka.
+              Zgadzam się na zapisanie adresu i kontakt w sprawie oferty ośrodka.{" "}
+              <a href="/polityka-prywatnosci" className="underline underline-offset-2 hover:text-sage-600">
+                Polityka prywatności
+              </a>
             </span>
           </label>
 

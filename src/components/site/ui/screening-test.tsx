@@ -287,7 +287,12 @@ function ResultDelivery({
           {...form.register("consent")}
           className={cn("mt-0.5 size-3.5 shrink-0", dark ? "accent-[var(--sage-300)]" : "accent-[var(--sage-600)]")}
         />
-        <span>{labels.consentLabel}</span>
+        <span>
+          {labels.consentLabel}{" "}
+          <a href="/polityka-prywatnosci" className="underline underline-offset-2 hover:text-sage-600">
+            Polityka prywatności
+          </a>
+        </span>
       </label>
 
       {(form.formState.errors.email || form.formState.errors.consent) && (

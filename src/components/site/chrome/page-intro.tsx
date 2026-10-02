@@ -73,7 +73,7 @@ export function PageIntro({
 /** Also used on its own by pages that draw their own opening (`/osrodek`). */
 export function Breadcrumb({ items }: { items: Crumb[] }) {
   return (
-    <nav aria-label="Ścieżka nawigacji" className="flex items-center gap-2.5">
+    <nav aria-label="Ścieżka nawigacji" className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
       <JsonLd data={breadcrumbJsonLd(items)} />
       {items.map((item, i) => (
         <Fragment key={item.label}>
@@ -83,11 +83,11 @@ export function Breadcrumb({ items }: { items: Crumb[] }) {
             </span>
           )}
           {item.href ? (
-            <Link href={item.href} className="transition-colors hover:text-sage-600">
+            <Link href={item.href} className="whitespace-nowrap transition-colors hover:text-sage-600">
               {item.label}
             </Link>
           ) : (
-            <span className="text-clay-600">{item.label}</span>
+            <span className="whitespace-nowrap text-clay-600">{item.label}</span>
           )}
         </Fragment>
       ))}

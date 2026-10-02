@@ -183,7 +183,10 @@ export function ContactForm({
         />
         <span>
           Zgadzam się na kontakt w sprawie tej wiadomości. Adresu i numeru nie używamy do
-          niczego innego.
+          niczego innego.{" "}
+          <a href="/polityka-prywatnosci" className="underline underline-offset-2 hover:text-sage-600">
+            Polityka prywatności
+          </a>
         </span>
       </label>
 

@@ -580,7 +580,7 @@ export const footerDefaults: FooterContent = {
     { label: "Pytania", href: "/faq" },
   ],
   privacyLabel: "Polityka prywatności · RODO",
-  privacyHref: "#",
+  privacyHref: "/polityka-prywatnosci",
   emergencyLabel: "Jeśli dzieje się coś złego teraz",
   emergencyNumber: "112",
   helplineLabel: "telefon zaufania",
