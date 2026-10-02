@@ -50,25 +50,26 @@ export type HeroContent = {
   /** Short reassurances under the hero CTA. Empty array renders nothing. */
   trust: string[];
   /** Registry number rendered below the main title. */
-  rpwdl: { label: string; number: string };
+  rpwdl: { statement?: string; label: string; number: string };
   image: { src: string; alt: string };
 };
 
 export const heroDefaults: HeroContent = {
-  eyebrow: "Magdalenka pod Warszawą · ośrodek leczenia uzależnień",
-  title: "Możesz zadzwonić i niczego nie obiecywać.",
-  lead: "Rozmowa nie zobowiązuje do przyjazdu. Odbiera terapeuta z ośrodka — nie ma tu call center ani konsultanta sprzedaży.",
+  eyebrow: "Magdalenka pod Warszawą · prywatny ośrodek terapii uzależnień",
+  title: "Dobrze, że jesteś. Porozmawiajmy o tym jak możemy Ci pomóc.",
+  lead: "Pierwsza rozmowa służy temu, żeby ustalić, co się dzieje i jaka forma pomocy będzie odpowiednia. Nie wymaga żadnego przygotowania — nie musisz mieć diagnozy ani wiedzieć, od czego zacząć. Sam kontakt z nami nie zobowiązuje do rozpoczęcia terapii.",
   ctaLabel: "Zadzwoń: 669 916 005",
-  /*
-   * The three things a frightened person needs to know before deciding whether
-   * to dial, kept short enough to read in a glance.
-   */
-  trust: ["Rozmowa bez nazwiska", "Bez opłat za konsultację"],
-  /*
-   * Registry number right below the main title. Placeholder until the real
-   * RPWDL entry is to hand.
-   */
-  rpwdl: { label: "Numer w RPWDL", number: "000000234596" },
+  trust: [
+    "możliwość przyjęcia w krótkim terminie",
+    "kwalifikacja do leczenia przez lekarza psychiatrę",
+    "28 dni intensywnej terapii stacjonarnej + program ambulatoryjny",
+    "dyskrecja i poufność",
+  ],
+  rpwdl: {
+    statement: "Jesteśmy podmiotem leczniczym wpisanym do RPWDL.",
+    label: "Numer w RPWDL",
+    number: "000000234596",
+  },
   image: {
     src: "/placeholder/dom-staw.webp",
     alt: "Dom ośrodka Insieme w Magdalence, widziany zza stawu wśród sosen",
@@ -94,15 +95,15 @@ export type OsrodekContent = {
 export const osrodekDefaults: OsrodekContent = {
   index: "03",
   eyebrow: "Ośrodek",
-  title: "Jeden dom w sosnowym lesie, dwadzieścia minut od Warszawy.",
-  body: "Mieszkamy razem: pokoje z widokiem na drzewa, wspólny salon z fotelami, taras i ogród. Bez korytarzy, bez dyżurki za szybą, bez zapachu szpitala. Dwanaście miejsc, jeden zespół, ta sama kadra przez cały pobyt.",
+  title: "Kameralny dom w sosnowym lesie, dwadzieścia minut od Warszawy.",
+  body: "Insieme to ośrodek dla maksymalnie 12 osób — przestrzeń, w której możesz w pełni skupić się na sobie i na terapii. Pokoje z prywatnymi łazienkami i widokiem na las, wspólny salon, taras i ogród, a w czasie wolnym sauna i siłownia.",
   href: "/osrodek",
   linkLabel: "Zobacz ośrodek i dojazd",
   stats: [
+    { label: "Program stacjonarny", value: "28 dni" },
     { label: "Miejsc", value: "12" },
-    { label: "Od centrum", value: "20 min" },
-    { label: "Z lotniska", value: "15 min" },
-    { label: "Program", value: "28 dni" },
+    { label: "Opieka terapeutyczna", value: "24/7" },
+    { label: "Od Warszawy/lotniska", value: "20 min" },
   ],
   figures: [
     {
@@ -133,19 +134,8 @@ export const osrodekDefaults: OsrodekContent = {
 export type Step = { index: string; title: string; body: string };
 export type PathPoint = { title: string; body: string };
 
-/**
- * Two ways into the same ośrodek: the person who drinks, and the person who is
- * frightened for someone who does. They need different first sentences, so each
- * path carries a full set of copy rather than one text with a swapped pronoun.
- */
 export type ContactPathId = "self" | "family";
 
-/**
- * One path, end to end. This used to be split across two sections — a fork with
- * its own cards and promises, and a separate run of steps with its own tab bar —
- * which said the same thing twice and made the visitor choose before reading.
- * They are one section now, so the copy is one object.
- */
 export type ContactPath = {
   id: ContactPathId;
   /** Label on the quiet switch. */
@@ -174,11 +164,6 @@ export type PierwszyKontaktContent = {
   paths: ContactPath[];
 };
 
-/**
- * Section 01. `self` is first and selected by default: most people who call are
- * calling about themselves, so the page opens on their words and offers the
- * family path beside them rather than making everyone pick first.
- */
 export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
   index: "01",
   eyebrow: "Pierwszy kontakt",
@@ -186,50 +171,50 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
     {
       id: "self",
       tabLabel: "Dla siebie",
-      cardTitle: "To o mnie",
+      cardTitle: "Potrzebuję pomocy dla siebie",
       cardBody:
-        "Chcę przestać, ale nie wiem, od czego zacząć ani co się stanie po przyjeździe.",
-      chooseLabel: "Wybierz tę ścieżkę",
+        "Widzę, że alkohol, inne substancje albo nałogowe zachowania zaczynają przejmować kontrolę nad moim życiem. Chcę coś zmienić, ale nie wiem jeszcze, od czego zacząć.",
+      chooseLabel: "Sprawdź, jak możemy pomóc →",
       selectedLabel: "Czytasz tę ścieżkę",
-      title: "Co się dzieje po tym, jak podniesiesz słuchawkę.",
-      lead: "Najtrudniejszy jest pierwszy telefon — wszystko inne ustalamy już w jego trakcie. Cztery kroki: pierwszy trwa kilka minut, ostatni zwykle zdarza się tego samego albo następnego dnia.",
+      title: "Co się dzieje, jak podniesiesz słuchawkę.",
+      lead: "Pierwsza rozmowa służy temu, żeby poznać Twoją sytuację i ustalić, co możemy zrobić dalej. Nie musisz mieć diagnozy ani podjętej decyzji o leczeniu.",
       points: [
         {
-          title: "Bez nazwiska",
-          body: "Do rozmowy nie potrzebujemy danych, diagnozy ani dokumentów.",
+          title: "Bez przygotowania",
+          body: "Nie potrzebujesz dokumentów ani gotowych odpowiedzi. Wystarczy, że opowiesz, co się dzieje.",
         },
         {
-          title: "Bez czekania",
-          body: "Przy detoksie zwykle przyjmujemy tego samego dnia, w którym dzwonisz.",
+          title: "Konkretnie",
+          body: "Wyjaśnimy, jak wygląda kwalifikacja, terapia, możliwy termin przyjęcia i koszt leczenia.",
         },
         {
-          title: "Bez oferty",
-          body: "Cenę podajemy w pierwszej rozmowie i nie dzwonimy drugi raz bez Twojej zgody.",
+          title: "Bez zobowiązań",
+          body: "Rozmowa nie zobowiązuje Cię do rozpoczęcia terapii ani przyjazdu do ośrodka.",
         },
       ],
       steps: [
         {
           index: "01",
           title: "Telefon",
-          body: "Odbiera terapeuta z ośrodka. Nie musisz wiedzieć, co powiedzieć — możesz zacząć od zdania: „potrzebuję porozmawiać o terapii dla siebie”.",
+          body: "Nie musisz wiedzieć, od czego zacząć ani co dokładnie powiedzieć. Wystarczy, że powiesz, że szukasz pomocy — krok po kroku poprowadzimy Cię przez dalszą rozmowę.",
         },
         {
           index: "02",
-          title: "O co zapytamy",
-          body: "Od jak dawna to trwa, co działo się w ostatnich dniach, jakie leki przyjmujesz, czy było już leczenie.",
+          title: "Zapytamy o Twoją sytuację",
+          body: "Porozmawiamy o tym, jak się czujesz, co się dzieje, czego używasz i kiedy ostatnio. Zapytamy też o przyjmowane leki oraz wcześniejsze próby leczenia.",
         },
         {
           index: "03",
-          title: "Co ustalamy w tej samej rozmowie",
-          body: "Czy potrzebny jest detoks, kiedy jest wolne miejsce, ile potrwa pobyt i ile będzie kosztował. Kwotę podajemy przed przyjazdem, nie po.",
+          title: "Przedstawimy dalsze kroki",
+          body: "Wyjaśnimy, jak wygląda kwalifikacja, program terapii, możliwy termin przyjęcia i koszt leczenia.",
         },
         {
           index: "04",
-          title: "Przyjazd",
-          body: "Możesz przyjechać sam, z kimś bliskim albo poprosić o pomoc w transporcie. Co zabrać — powiemy przez telefon, lista jest krótka.",
+          title: "Jeśli zdecydujesz się na podjęcie terapii",
+          body: "Po rozmowie ustalamy termin rozpoczęcia leczenia i wyjaśnimy, jak przygotować się do pobytu.",
         },
       ],
-      note: "Rozmowa nie zobowiązuje do przyjazdu.",
+      note: "Nie musisz podejmować decyzji od razu.",
       ctaLabel: "Zadzwoń teraz",
       secondaryLabel: "Najpierw wypełnij test",
       secondaryHref: "#test",
@@ -237,50 +222,50 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
     {
       id: "family",
       tabLabel: "Dla bliskiej osoby",
-      cardTitle: "Chodzi o kogoś bliskiego",
+      cardTitle: "Szukam pomocy dla bliskiej osoby",
       cardBody:
-        "Boję się o kogoś i nie wiem, jak rozmawiać, żeby nie zamknąć drzwi na dobre.",
-      chooseLabel: "Wybierz tę ścieżkę",
+        "Martwię się o kogoś bliskiego i nie wiem, jak z nim rozmawiać, jak reagować ani co zrobić, jeśli nie chce podjąć leczenia.",
+      chooseLabel: "Sprawdź, co możesz zrobić →",
       selectedLabel: "Czytasz tę ścieżkę",
-      title: "Możesz zadzwonić, zanim ta osoba będzie gotowa.",
-      lead: "Najczęściej dzwoni ktoś, kto boi się, że jednym zdaniem pogorszy sprawę — od tego zaczynamy. Rozmowa z rodziną jest tak samo poufna jak z pacjentem.",
+      title: "Co się dzieje, jak podniesiesz słuchawkę.",
+      lead: "Pierwsza rozmowa pomaga uporządkować sytuację i ustalić, co można zrobić dalej. Możesz zadzwonić zarówno wtedy, gdy dopiero szukasz sposobu, jak pomóc, jak i wtedy, gdy decyzja o leczeniu została już podjęta.",
       points: [
         {
-          title: "Bez jego zgody",
-          body: "Możesz zadzwonić, zanim ta osoba w ogóle będzie chciała o tym słyszeć.",
+          title: "Nie musisz czekać na decyzję bliskiej osoby",
+          body: "Możesz porozmawiać z nami, jeszcze zanim ta osoba będzie gotowa na leczenie.",
         },
         {
-          title: "Bez kontaktu za plecami",
-          body: "Sami nie dzwonimy do niej ani nie piszemy — ani teraz, ani później.",
+          title: "Ustalimy kolejne kroki",
+          body: "Wyjaśnimy możliwości pomocy, zasady przyjęcia, terminy i koszt leczenia.",
         },
         {
-          title: "Bez jednej rozmowy na zawsze",
-          body: "Możesz wrócić za tydzień albo za pół roku. Nie zaczynamy wtedy od zera.",
+          title: "Podpowiemy, jak działać",
+          body: "Jeśli bliska osoba nie chce podjąć leczenia, omówimy, jak z nią rozmawiać i jakie działania możesz podjąć.",
         },
       ],
       steps: [
         {
           index: "01",
           title: "Telefon",
-          body: "Odbiera ten sam terapeuta, który rozmawia z pacjentami. Możesz zacząć od zdania: „dzwonię w sprawie kogoś bliskiego”. Nie musisz podawać ani swojego, ani jej nazwiska.",
+          body: "Nie musisz wiedzieć, od czego zacząć. Wystarczy, że opowiesz nam, co dzieje się z bliską Ci osobą i co najbardziej Cię niepokoi — krok po kroku poprowadzimy Cię przez dalszą rozmowę.",
         },
         {
           index: "02",
-          title: "O co zapytamy",
-          body: "Od jak dawna to trwa, co dzieje się w domu w ostatnich tygodniach, czy było już leczenie, czy pojawia się przemoc albo zagrożenie zdrowia. Pytamy też, jak Ty to znosisz.",
+          title: "Zapytamy o sytuację",
+          body: "Porozmawiamy o tym, jak długo trwa problem, co dzieje się teraz i czy wcześniej były podejmowane próby leczenia. Zapytamy też, jak Ty radzisz sobie z tą sytuacją i ustalimy, jak możemy Cię wesprzeć.",
         },
         {
           index: "03",
-          title: "Co powiedzieć, a czego nie mówić",
-          body: "Kiedy zacząć rozmowę, jakich zdań unikać i co odpowiedzieć na „nie mam problemu”. To zwykle najtrudniejsza część i na nią poświęcamy najwięcej czasu.",
+          title: "Podpowiemy, co możesz zrobić",
+          body: "Wyjaśnimy, jak rozmawiać z bliską osobą o leczeniu i co możesz zrobić, jeśli nie dostrzega problemu lub nie chce podjąć terapii.",
         },
         {
           index: "04",
-          title: "Zostajemy w kontakcie",
-          body: "Także wtedy, gdy bliska osoba jeszcze nie chce leczenia. Możesz zadzwonić ponownie za tydzień albo za pół roku — nie zaczynamy wtedy od zera.",
+          title: "Jeśli decyzja o leczeniu już zapadła",
+          body: "Za zgodą osoby podejmującej terapię możesz pomóc w organizacji przyjęcia. Wyjaśnimy, jak wygląda kwalifikacja, jakie są dostępne terminy i koszty oraz jak przygotować się do pobytu.",
         },
       ],
-      note: "Do rozmowy nie potrzebujesz zgody tej osoby.",
+      note: "",
       ctaLabel: "Zadzwoń teraz",
       secondaryLabel: "Zobacz wsparcie dla rodziny",
       secondaryHref: "/program#rodzina",

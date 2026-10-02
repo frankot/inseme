@@ -139,7 +139,9 @@ export function PierwszyKontakt({
             {active.ctaLabel}
           </Cta>
           <Cta href={active.secondaryHref}>{active.secondaryLabel}</Cta>
-          <span className="text-meta text-ink-300">{active.note}</span>
+          {active.note && (
+            <span className="text-meta text-ink-300">{active.note}</span>
+          )}
         </Reveal>
       </div>
     </Section>

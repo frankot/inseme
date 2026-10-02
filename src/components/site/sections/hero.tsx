@@ -56,6 +56,12 @@ export function Hero({
           </h1>
           {content.rpwdl && (
             <p className="mt-[clamp(16px,2.2vw,26px)]  font-heading text-[clamp(12.5px,1vw,15px)] leading-snug text-on-dark-muted">
+              {content.rpwdl.statement && (
+                <>
+                  {content.rpwdl.statement}
+                  <br />
+                </>
+              )}
               {content.rpwdl.label}:{" "}
               <span className="tabular-nums  text-on-dark-sage-2">
                 {content.rpwdl.number}
@@ -77,13 +83,8 @@ export function Hero({
           </Cta>
         </div>
 
-        {/*
-          Above the fold on purpose: the visitor deciding whether to dial is
-          weighing exactly these three things, and making them scroll for the
-          answers is what loses the call.
-        */}
         {content.trust.length > 0 && (
-          <ul className="m-0 flex list-none flex-wrap gap-x-[clamp(18px,2.4vw,34px)] gap-y-2 p-0 text-meta text-on-dark-lead">
+          <ul className="m-0 flex list-none flex-wrap gap-x-[clamp(18px,2.4vw,34px)] gap-y-2 p-0 desk:grid desk:grid-cols-[repeat(2,max-content)] desk:gap-x-[clamp(32px,4vw,64px)] text-meta text-on-dark-lead">
             {content.trust.map((item) => (
               <li key={item} className="flex items-center gap-2.5">
                 <span aria-hidden className="block size-[5px] bg-sage-300" />
