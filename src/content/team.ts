@@ -8,7 +8,8 @@ export type TeamTeaserContent = {
   index: string;
   eyebrow: string;
   title: string;
-  lead: string;
+  /** One entry per paragraph. */
+  lead: string[];
   linkLabel: string;
   href: string;
 };
@@ -17,8 +18,11 @@ export type TeamTeaserContent = {
 export const teamTeaserDefaults: TeamTeaserContent = {
   index: "05",
   eyebrow: "Zespół",
-  title: "Ci sami ludzie przez cały pobyt.",
-  lead: "Nie ma tu rotacji kontraktowej i nikt nie poznaje Cię od nowa co tydzień. Terapeuta prowadzący zostaje z Tobą od pierwszej rozmowy do wyjazdu.",
+  title: "Różni ludzie, wspólny cel.",
+  lead: [
+    "Każdy z naszych terapeutów jest inny — ma własny sposób pracy, doświadczenie i perspektywę. Dzięki temu możesz usłyszeć różne punkty widzenia, ale zawsze w jednym kierunku: zdrowienia i realnej zmiany.",
+    "Pracujemy jako zespół. Jesteśmy ze sobą w stałym kontakcie, na bieżąco omawiamy proces terapii i wspólnie szukamy najlepszego sposobu wsparcia. Nad jakością naszej pracy czuwa doświadczony superwizor Leszek Kapler.",
+  ],
   linkLabel: "Poznaj cały zespół",
   href: "/zespol",
 };

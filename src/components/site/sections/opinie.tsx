@@ -1,17 +1,18 @@
 import { Cta } from "@/components/site/ui/cta";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Section } from "@/components/site/ui/section";
-import { opinieDefaults, type OpinieContent, type Review } from "@/content/opinie";
+import { ReviewSourceLogo } from "@/components/site/ui/review-source-logo";
+import {
+  opinieDefaults,
+  type OpinieContent,
+  type Review,
+  type ReviewSource,
+} from "@/content/opinie";
 
 /**
- * Three reviews, quoted from the Google profile.
- *
- * It replaces the single anonymous pull quote the page used to carry. One quote
- * nobody can check is decoration; three attributed ones on a profile the reader
- * can open themselves are evidence — which is what a family comparing ośrodki
- * is actually looking for.
- *
- * Removes itself when there is nothing to quote, like Zespół and Artykuły.
+ * Reviews quoted from Google and osrodkiterapii.pl, each badged and linked to
+ * its source. Removes itself when there is nothing to quote, like Zespół and
+ * Artykuły.
  */
 export function Opinie({
   content = opinieDefaults,
@@ -31,20 +32,25 @@ export function Opinie({
       title={content.title}
       lead={content.lead}
       action={
-        content.profileUrl ? (
-          <Cta
-            href={content.profileUrl}
-            variant="quiet-on-dark"
-            target="_blank"
-            rel="noopener"
-          >
-            {content.linkLabel}
-          </Cta>
+        content.sources.length > 0 ? (
+          <span className="flex flex-wrap gap-x-8 gap-y-2">
+            {content.sources.map((source) => (
+              <Cta
+                key={source.id}
+                href={source.url}
+                variant="quiet-on-dark"
+                target="_blank"
+                rel="noopener"
+              >
+                {source.name}
+              </Cta>
+            ))}
+          </span>
         ) : undefined
       }
     >
       {hasAggregate && (
-        <Reveal className="mb-gap flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-white/12 pb-[clamp(16px,1.8vw,24px)]">
+        <Reveal className="mb-gap flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b lg:-mt-6 border-white/12 pb-[clamp(16px,1.8vw,24px)]">
           <span className="font-heading text-[clamp(26px,2.4vw,34px)] leading-none tracking-[-0.03em] tabular-nums text-on-dark">
             {content.rating?.toFixed(1).replace(".", ",")}
           </span>
@@ -57,7 +63,12 @@ export function Opinie({
 
       <div className="grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
         {content.reviews.map((review, i) => (
-          <ReviewCard key={review.author + review.date} review={review} delay={i * 70} />
+          <ReviewCard
+            key={review.author + review.date}
+            review={review}
+            source={content.sources.find((s) => s.id === review.source)}
+            delay={i * 70}
+          />
         ))}
       </div>
 
@@ -68,17 +79,32 @@ export function Opinie({
   );
 }
 
-function ReviewCard({ review, delay }: { review: Review; delay: number }) {
+function ReviewCard({
+  review,
+  source,
+  delay,
+}: {
+  review: Review;
+  source?: ReviewSource;
+  delay: number;
+}) {
   return (
     <Reveal
       as="figure"
       delay={delay}
       className="m-0 flex min-w-0 flex-col gap-5 border border-white/12 bg-white/[0.045] p-card"
     >
-      <Stars rating={review.rating} />
+      <div className="flex items-center justify-between gap-4">
+        <Stars rating={review.rating} />
+        {source && <SourceBadge source={source} />}
+      </div>
 
+      {/* Clamped so one long review doesn't stretch the row; the full text is
+          behind the source badge. */}
       <blockquote className="m-0 flex-auto">
-        <p className="text-pretty text-body text-on-dark-lead">„{review.body}”</p>
+        <p className="line-clamp-6 text-pretty text-body text-on-dark-lead">
+          „{review.body}”
+        </p>
       </blockquote>
 
       <figcaption className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-t border-white/12 pt-4 text-meta">
@@ -88,6 +114,21 @@ function ReviewCard({ review, delay }: { review: Review; delay: number }) {
         </time>
       </figcaption>
     </Reveal>
+  );
+}
+
+function SourceBadge({ source }: { source: ReviewSource }) {
+  return (
+    <a
+      href={source.url}
+      target="_blank"
+      rel="noopener"
+      aria-label={`Opinia w serwisie ${source.name} (otwiera się w nowej karcie)`}
+      className="flex shrink-0 items-center gap-1.5 rounded-full bg-bone px-2.5 py-1 text-[12px] leading-none text-ink-900 transition-opacity hover:opacity-85"
+    >
+      <ReviewSourceLogo source={source.id} className="size-3.5" />
+      <span>{source.name}</span>
+    </a>
   );
 }
 

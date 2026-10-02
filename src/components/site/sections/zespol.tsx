@@ -28,7 +28,12 @@ export function Zespol({
       index={content.index}
       label={content.eyebrow}
       title={content.title}
-      lead={content.lead}
+      // Section renders the lead inside a <p>, so paragraphs are block spans.
+      lead={content.lead.map((paragraph, i) => (
+        <span key={i} className={i > 0 ? "mt-4 block" : "block"}>
+          {paragraph}
+        </span>
+      ))}
       action={<Cta href={content.href}>{content.linkLabel}</Cta>}
     >
       <div className="grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(248px,1fr))]">

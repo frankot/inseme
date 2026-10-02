@@ -1,15 +1,7 @@
 /**
- * Reviews, quoted from the ośrodek's Google Business profile.
- *
- * ⚠️ THE REVIEWS BELOW ARE PLACEHOLDERS, written to the right shape and length
- * so the section can be built. None of them is real. Before launch: replace
- * them with genuine quotes from the Google profile, set `profileUrl` to that
- * profile, and fill in `rating` / `count` from it.
- *
- * Why Google rather than testimonials collected by the ośrodek: a quote anyone
- * can go and verify on a third-party profile is worth more than one only this
- * site has seen, and it avoids soliciting and storing patients' written consent
- * for marketing copy.
+ * Reviews quoted from the ośrodek's Google Business profile and its listing on
+ * osrodkiterapii.pl, copied verbatim. Long bodies are clamped in the card; the
+ * full text stays on the source page the card links to.
  *
  * ⚖️ Art. 14 ustawy o działalności leczniczej separates informing from
  * advertising, and specifically bars claims about effectiveness or treatment
@@ -21,13 +13,25 @@
  * Artykuły do — so shipping with nothing here is safe.
  */
 
+export type ReviewSourceId = "google" | "osrodkiterapii";
+
+export type ReviewSource = {
+  id: ReviewSourceId;
+  /** Shown on the card badge and as the header link. */
+  name: string;
+  url: string;
+};
+
 export type Review = {
-  /** First name and initial, as Google shows it. */
   author: string;
-  /** ISO date of the review. */
+  /**
+   * ISO date. Both sources show only "N miesięcy temu", so this is the month
+   * worked back from when the review was copied.
+   */
   date: string;
   rating: number;
   body: string;
+  source: ReviewSourceId;
 };
 
 export type OpinieContent = {
@@ -35,10 +39,8 @@ export type OpinieContent = {
   eyebrow: string;
   title: string;
   lead: string;
-  /** Link to the Google profile. Empty string renders no link. */
-  profileUrl: string;
-  linkLabel: string;
-  /** Aggregate score, or null while unknown. */
+  sources: ReviewSource[];
+  /** Google aggregate score, or null while unknown. */
   rating: number | null;
   count: number | null;
   /** Rendered under the quotes — says where these came from. */
@@ -50,30 +52,44 @@ export const opinieDefaults: OpinieContent = {
   index: "06",
   eyebrow: "Opinie",
   title: "Co piszą ludzie, którzy tu byli.",
-  lead: "Cytujemy opinie z profilu Google — tam są wszystkie, także te mniej pochlebne, i można je sprawdzić bez naszego pośrednictwa.",
-  profileUrl: "",
-  linkLabel: "Zobacz wszystkie opinie w Google",
-  rating: null,
-  count: null,
-  sourceNote: "Opinie pochodzą z profilu Google i nie były przez nas redagowane.",
+  lead: "Cytujemy opinie z profilu Google i serwisu osrodkiterapii.pl — tam są wszystkie i można je sprawdzić bez naszego pośrednictwa.",
+  sources: [
+    {
+      id: "google",
+      name: "Google",
+      url: "https://maps.app.goo.gl/Bv8u8d31G39Vf56P8",
+    },
+    {
+      id: "osrodkiterapii",
+      name: "osrodkiterapii.pl",
+      url: "https://osrodkiterapii.pl/ranking/insieme-prywatny-osrodek-terapii-uzaleznien/",
+    },
+  ],
+  rating: 5,
+  count: 25,
+  sourceNote:
+    "Opinie pochodzą z profilu Google i serwisu osrodkiterapii.pl i nie były przez nas redagowane. Dłuższe skróciliśmy — pełna treść jest w źródle.",
   reviews: [
     {
-      author: "Marcin K.",
-      date: "2026-07-18",
+      author: "Sebastian C.",
+      date: "2025-10-01",
       rating: 5,
-      body: "Dzwoniłem w sobotę wieczorem, spodziewałem się sekretarki. Odebrał terapeuta i rozmawialiśmy czterdzieści minut. Nie namawiał, nie wciskał, powiedział wprost ile to kosztuje i kiedy jest miejsce.",
+      source: "google",
+      body: "Spędziłem w Insieme pełne 28 dni. Terapia profejonalna, super obsługa zarówno terapeutyczna jak i właścicielska opieka nad pacjentami. Super przyjazne warunki zarówno terenowe jak i lokalowe. Sauna tenis stołowy, ogród i przestronne pokoje dają super komfort i bezpieczeństwo. Czysto, ciepło i nic więcej oprócz skupienia na samym sobie tam nie potrzeba. Bardzo dobra organizacja pracy. Jeśli szukasz miejsca gdzie chcesz sobie pomóc to z pewnością jest to miejsce do polecenia. 100%",
     },
     {
-      author: "Anna W.",
-      date: "2026-06-02",
+      author: "Wanda W.",
+      date: "2021-10-01",
       rating: 5,
-      body: "Dzwoniłam w sprawie męża, który wtedy nie chciał o niczym słyszeć. Dostałam konkretne wskazówki, jak z nim rozmawiać. Przyjechał trzy miesiące później, ale przyjechał.",
+      source: "google",
+      body: "Jestem szczęśliwa, że mogłam uczestniczyć w terapii w ośrodku Insieme. W miłej domowej atmosferze , otoczona kadrą terapeutów przekazujących nam swoją wiedzę, uczących nas jak żyć w trzeźwości ze swoją chorobą. Wspaniały zespół ludzi którzy mają zawsze czas, cierpliwość, spokój a przede wszystkim otwarte serce. Podczas terapii poznałam mechanizm mojego uzależnienia i poznałam samą siebie.",
     },
     {
-      author: "Tomasz R.",
-      date: "2026-04-25",
-      rating: 4,
-      body: "Miejsce małe i kameralne, bez szpitalnej atmosfery. Ten sam terapeuta przez cały pobyt, co dla mnie było najważniejsze. Jedzenie mogłoby być lepsze.",
+      author: "Jasiek",
+      date: "2026-05-01",
+      rating: 5,
+      source: "osrodkiterapii",
+      body: "Największą wartością byli dla mnie ludzie – zarówno terapeuci, jak i inni uczestnicy terapii. Wspólne rozmowy i dzielenie się doświadczeniem uświadomiły mi, że nie jestem sam. To było bardzo budujące.",
     },
   ],
 };
