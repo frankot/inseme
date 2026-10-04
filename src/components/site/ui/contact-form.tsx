@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { contactDefaults, type SiteContact } from "@/content/home";
+import { useSiteSettings } from "@/components/site/chrome/site-settings";
+import type { SiteContact } from "@/content/home";
 import { track } from "@/lib/analytics";
 import { submitContactForm } from "@/lib/contact";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
@@ -26,7 +27,7 @@ const LABEL = "flex flex-col gap-1.5";
  * tab. Name is optional, and only one of phone/e-mail is needed.
  */
 export function ContactForm({
-  contact = contactDefaults,
+  contact: contactProp,
   className,
   tone = "light",
 }: {
@@ -35,6 +36,8 @@ export function ContactForm({
   /** `dark` sits on the ink-900 panel in the homepage Kontakt section. */
   tone?: "light" | "dark";
 }) {
+  const { contact: siteContact, privacyNote } = useSiteSettings();
+  const contact = contactProp ?? siteContact;
   const [sent, setSent] = useState(false);
   // form_start fires once, on the first field someone actually enters.
   const started = useRef(false);
@@ -182,8 +185,7 @@ export function ContactForm({
           className="mt-0.5 size-3.5 shrink-0 accent-[var(--sage-600)]"
         />
         <span>
-          Zgadzam się na kontakt w sprawie tej wiadomości. Adresu i numeru nie używamy do
-          niczego innego.{" "}
+          {privacyNote}{" "}
           <a href="/polityka-prywatnosci" className="underline underline-offset-2 hover:text-sage-600">
             Polityka prywatności
           </a>

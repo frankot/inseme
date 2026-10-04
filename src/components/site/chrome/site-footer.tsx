@@ -2,19 +2,31 @@ import { ConsentSettingsButton } from "@/components/site/chrome/consent";
 import { Container } from "@/components/site/ui/container";
 import { SiteImage } from "@/components/site/ui/site-image";
 import {
-  contactDefaults,
   footerDefaults,
   type FooterContent,
   type SiteContact,
 } from "@/content/home";
+import type { SocialLinks } from "@/content/settings";
+import { getSiteSettings } from "@/lib/queries/settings";
 
-export function SiteFooter({
+/** Shown only for the profiles filled in under Ustawienia. */
+const SOCIAL_LABELS = [
+  ["facebook", "Facebook"],
+  ["instagram", "Instagram"],
+  ["youtube", "YouTube"],
+  ["linkedin", "LinkedIn"],
+] as const satisfies readonly (readonly [keyof SocialLinks, string])[];
+
+export async function SiteFooter({
   content = footerDefaults,
-  contact = contactDefaults,
+  contact: contactProp,
 }: {
   content?: FooterContent;
   contact?: SiteContact;
 }) {
+  const settings = await getSiteSettings();
+  const contact = contactProp ?? settings.contact;
+  const social = SOCIAL_LABELS.filter(([key]) => settings.socialLinks[key]);
   return (
     /*
      * The stack closes on a dark sheet, pulled up over the last band with a
@@ -71,6 +83,15 @@ export function SiteFooter({
           <FooterLink href={`mailto:${contact.email}`}>
             {contact.email}
           </FooterLink>
+          {social.length > 0 && (
+            <span className="flex flex-wrap gap-x-4">
+              {social.map(([key, label]) => (
+                <FooterLink key={key} href={settings.socialLinks[key]!}>
+                  {label}
+                </FooterLink>
+              ))}
+            </span>
+          )}
           <FooterLink href={content.privacyHref}>
             {content.privacyLabel}
           </FooterLink>

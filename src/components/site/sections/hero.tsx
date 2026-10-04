@@ -2,7 +2,6 @@ import { SiteHeader } from "@/components/site/chrome/site-header";
 import { Cta } from "@/components/site/ui/cta";
 import { SiteImage } from "@/components/site/ui/site-image";
 import {
-  contactDefaults,
   heroDefaults,
   type HeroContent,
   type SiteContact,
@@ -14,10 +13,10 @@ import {
  */
 export function Hero({
   content = heroDefaults,
-  contact = contactDefaults,
+  contact,
 }: {
   content?: HeroContent;
-  contact?: SiteContact;
+  contact: SiteContact;
 }) {
   return (
     <section

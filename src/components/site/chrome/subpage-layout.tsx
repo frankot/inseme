@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 
 import { PageIntro, type Crumb } from "@/components/site/chrome/page-intro";
 import { SiteHeader } from "@/components/site/chrome/site-header";
-import { contactDefaults, type SiteContact } from "@/content/home";
+import type { SiteContact } from "@/content/home";
 
 /**
  * The shell every subpage sits in: the solid header (the homepage's lives
@@ -18,7 +18,7 @@ export function SubpageLayout({
   lead,
   breadcrumb,
   intro = true,
-  contact = contactDefaults,
+  contact,
   children,
 }: {
   eyebrow?: string;
@@ -26,6 +26,7 @@ export function SubpageLayout({
   lead?: ReactNode;
   breadcrumb?: Crumb[];
   intro?: boolean;
+  /** Omit to use the site settings (the header reads them itself). */
   contact?: SiteContact;
   children: ReactNode;
 }) {

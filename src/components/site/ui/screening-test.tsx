@@ -4,7 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { contactDefaults, testDefaults, type SiteContact } from "@/content/home";
+import { useSiteContact } from "@/components/site/chrome/site-settings";
+import { testDefaults, type SiteContact } from "@/content/home";
 import type { PublicScreeningTest } from "@/lib/queries/screening";
 import { sendScreeningResult } from "@/lib/screening";
 import {
@@ -26,7 +27,7 @@ type Stage = "intro" | "question" | "result";
  */
 export function ScreeningTest({
   test,
-  contact = contactDefaults,
+  contact: contactProp,
   labels = testDefaults,
   /** Renders on a dark band — the homepage puts the test on one. */
   dark = false,
@@ -36,6 +37,8 @@ export function ScreeningTest({
   labels?: typeof testDefaults;
   dark?: boolean;
 }) {
+  const siteContact = useSiteContact();
+  const contact = contactProp ?? siteContact;
   const [stage, setStage] = useState<Stage>("intro");
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);

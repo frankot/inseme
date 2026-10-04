@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import { contactDefaults, type SiteContact } from "@/content/home";
+import { useSiteContact } from "@/components/site/chrome/site-settings";
+import type { SiteContact } from "@/content/home";
 import { cn } from "@/lib/utils";
 
 /** Hidden from `tab` up, where the header bar carries the number. */
@@ -21,10 +22,12 @@ const BAR_H = 64;
  * so an open menu hides this without the two needing to know about each other.
  */
 export function StickyCallBar({
-  contact = contactDefaults,
+  contact: contactProp,
 }: {
   contact?: SiteContact;
 }) {
+  const siteContact = useSiteContact();
+  const contact = contactProp ?? siteContact;
   const [shown, setShown] = useState(false);
 
   useEffect(() => {

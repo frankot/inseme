@@ -27,6 +27,7 @@ import { opinieDefaults } from "@/content/opinie";
 import { teamTeaserDefaults } from "@/content/team";
 import { numberSections, type CmsPage } from "@/lib/cms/get-page";
 import { resolveArticle, resolveFaq, resolveTeam, resolveTest } from "@/lib/cms/resolve";
+import { getSiteContact } from "@/lib/queries/settings";
 import { FAQ_FEATURED_MAX } from "@/lib/validations/content";
 
 /* The stored shapes of the landing sections — see `cms/pages/landing.ts`. */
@@ -54,11 +55,12 @@ export async function LandingView({ page }: { page: CmsPage }) {
   const numbers = numberSections(page);
   const data = <T,>(id: string) => s[id].data as T;
 
-  const [test, article, team, faq] = await Promise.all([
+  const [test, article, team, faq, contact] = await Promise.all([
     resolveTest(s.test.data.testId),
     resolveArticle(s.poradnik.data.articleId),
     resolveTeam(s.zespol.data.teamIds, 4),
     resolveFaq(s.faq.data.faqIds, FAQ_FEATURED_MAX),
+    getSiteContact(),
   ]);
 
   const hero = data<HeroData>("hero");
@@ -71,6 +73,7 @@ export async function LandingView({ page }: { page: CmsPage }) {
     <ContactPathProvider>
       <CmsSlot page={page} id="hero">
         <Hero
+          contact={contact}
           content={{
             ...heroDefaults,
             ...hero,
@@ -103,7 +106,7 @@ export async function LandingView({ page }: { page: CmsPage }) {
         questions are a far smaller step than a phone call.
       */}
       <CmsSlot page={page} id="test">
-        <TestPrzesiewowy test={test} content={{ ...testDefaults, index: numbers.test ?? "" }} />
+        <TestPrzesiewowy test={test} contact={contact} content={{ ...testDefaults, index: numbers.test ?? "" }} />
       </CmsSlot>
 
       <CmsSlot page={page} id="osrodek">
@@ -120,7 +123,7 @@ export async function LandingView({ page }: { page: CmsPage }) {
             content={{ ...latestArticleDefaults, index: numbers.poradnik ?? "" }}
           />
         ) : (
-          <Program content={{ ...programDefaults, index: numbers.poradnik ?? "" }} />
+          <Program contact={contact} content={{ ...programDefaults, index: numbers.poradnik ?? "" }} />
         )}
       </CmsSlot>
 
@@ -143,7 +146,7 @@ export async function LandingView({ page }: { page: CmsPage }) {
         />
       </CmsSlot>
 
-      <Kontakt content={{ ...kontaktDefaults, index: kontaktIndex }} />
+      <Kontakt contact={contact} content={{ ...kontaktDefaults, index: kontaktIndex }} />
     </ContactPathProvider>
   );
 }

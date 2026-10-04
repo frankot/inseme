@@ -61,7 +61,12 @@ export function SettingsForm({
           <Field label="WhatsApp" htmlFor="whatsapp" error={errors.whatsapp?.message}>
             <Input id="whatsapp" {...register("whatsapp")} />
           </Field>
-          <Field label="Adres" htmlFor="address" error={errors.address?.message}>
+          <Field
+            label="Adres"
+            htmlFor="address"
+            error={errors.address?.message}
+            hint="Ulica w pierwszej linii, kod i miejscowość w drugiej — tak jak w stopce."
+          >
             <Textarea id="address" rows={3} {...register("address")} />
           </Field>
           <Field
@@ -78,6 +83,9 @@ export function SettingsForm({
       <Card>
         <CardHeader>
           <CardTitle>Social media</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            Tylko oficjalne profile ośrodka — trafiają do danych strukturalnych dla Google.
+          </p>
         </CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-2">
           <Field label="Facebook" htmlFor="facebook" error={errors.socialLinks?.facebook?.message}>
@@ -104,7 +112,7 @@ export function SettingsForm({
             label="Nota o przetwarzaniu danych"
             htmlFor="privacyNote"
             error={errors.privacyNote?.message}
-            hint="Wyświetlana przy formularzach kontaktowych i testach."
+            hint="Zdanie przy zgodzie pod formularzem kontaktowym. Link do polityki prywatności dodaje się sam."
           >
             <Textarea id="privacyNote" rows={4} {...register("privacyNote")} />
           </Field>
@@ -112,6 +120,7 @@ export function SettingsForm({
             label="Treść banera zgód"
             htmlFor="consentBannerText"
             error={errors.consentBannerText?.message}
+            hint="Tekst okienka z pytaniem o zgodę na Google Analytics."
           >
             <Textarea id="consentBannerText" rows={3} {...register("consentBannerText")} />
           </Field>
@@ -122,7 +131,15 @@ export function SettingsForm({
         <CardHeader>
           <CardTitle>Domyślny obraz Open Graph</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex flex-col gap-3">
+          <p className="text-sm text-muted-foreground">
+            Podgląd linku w WhatsAppie, Messengerze i na Facebooku dla stron bez własnego
+            zdjęcia. Najlepiej 1200 × 630 px. Bez wybranego obrazu używany jest wbudowany{" "}
+            <a href="/og-default.jpg" target="_blank" rel="noreferrer" className="underline">
+              og-default.jpg
+            </a>
+            .
+          </p>
           <MediaPicker
             value={ogImage}
             onChange={(item) => {

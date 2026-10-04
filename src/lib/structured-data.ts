@@ -1,4 +1,5 @@
 import { contactDefaults, heroDefaults, kontaktDefaults, type SiteContact } from "@/content/home";
+import type { SocialLinks } from "@/content/settings";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site-url";
 
 /**
@@ -14,13 +15,14 @@ import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site-url";
 export const CLINIC_ID = `${SITE_URL}/#osrodek`;
 
 /**
- * The Google Business Profile and any other official listings. Empty until
- * the client confirms the canonical profile — an unverified `sameAs` merges
- * the site with the wrong entity.
+ * `sameAs` comes from the social links in Ustawienia. Only official profiles
+ * belong there — an unverified one merges the site with the wrong entity.
  */
-const SAME_AS: string[] = [];
-
-export function clinicJsonLd(contact: SiteContact = contactDefaults) {
+export function clinicJsonLd(
+  contact: SiteContact = contactDefaults,
+  socialLinks: SocialLinks = {},
+) {
+  const sameAs = Object.values(socialLinks).filter((url): url is string => Boolean(url));
   const [postalCode, ...locality] = contact.addressLine2.split(" ");
 
   return {
@@ -45,7 +47,7 @@ export function clinicJsonLd(contact: SiteContact = contactDefaults) {
       latitude: kontaktDefaults.map.lat,
       longitude: kontaktDefaults.map.lon,
     },
-    ...(SAME_AS.length > 0 && { sameAs: SAME_AS }),
+    ...(sameAs.length > 0 && { sameAs }),
   };
 }
 

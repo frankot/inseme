@@ -24,3 +24,14 @@ export function absoluteUrl(path: string): string {
 export const isIndexable = process.env.VERCEL_ENV
   ? process.env.VERCEL_ENV === "production"
   : process.env.NODE_ENV === "production";
+
+/**
+ * The site-wide Open Graph fields. A nested `openGraph` replaces its parent's
+ * wholesale, so the site layout — which adds the share image from settings —
+ * spreads these back in.
+ */
+export const BASE_OPEN_GRAPH = {
+  type: "website",
+  locale: "pl_PL",
+  siteName: SITE_NAME,
+} as const;

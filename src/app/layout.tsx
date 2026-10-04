@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Jost, Work_Sans } from "next/font/google";
 
-import { isIndexable, SITE_NAME, SITE_URL } from "@/lib/site-url";
+import { BASE_OPEN_GRAPH, isIndexable, SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
 /**
@@ -40,13 +40,10 @@ export const metadata: Metadata = {
   },
   description: DEFAULT_DESCRIPTION,
   applicationName: "Insieme",
-  openGraph: {
-    type: "website",
-    locale: "pl_PL",
-    siteName: SITE_NAME,
-    // No title/description here: Next fills them from each page's own, which
-    // it only does while this object leaves them unset.
-  },
+  // No title/description here: Next fills them from each page's own, which it
+  // only does while this object leaves them unset. The image is added by the
+  // site layout, from settings.
+  openGraph: BASE_OPEN_GRAPH,
   twitter: { card: "summary_large_image" },
   robots: isIndexable ? undefined : { index: false, follow: false },
 };

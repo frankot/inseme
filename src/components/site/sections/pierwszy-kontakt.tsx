@@ -2,12 +2,12 @@
 
 import { useRef } from "react";
 
+import { useSiteContact } from "@/components/site/chrome/site-settings";
 import { useContactPath } from "@/components/site/ui/contact-path";
 import { Cta } from "@/components/site/ui/cta";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Section } from "@/components/site/ui/section";
 import {
-  contactDefaults,
   pierwszyKontaktDefaults,
   type ContactPath,
   type PierwszyKontaktContent,
@@ -34,11 +34,13 @@ const ACCENTS: Record<ContactPath["id"], string> = {
  */
 export function PierwszyKontakt({
   content = pierwszyKontaktDefaults,
-  contact = contactDefaults,
+  contact: contactProp,
 }: {
   content?: PierwszyKontaktContent;
   contact?: SiteContact;
 }) {
+  const siteContact = useSiteContact();
+  const contact = contactProp ?? siteContact;
   const { path, setPath } = useContactPath();
   const tabsRef = useRef<HTMLDivElement>(null);
   const active = content.paths.find((item) => item.id === path) ?? content.paths[0];

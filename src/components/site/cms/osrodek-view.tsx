@@ -9,11 +9,12 @@ import { Section } from "@/components/site/ui/section";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { Slab } from "@/components/site/ui/slab";
 import { StickySplit } from "@/components/site/ui/sticky-split";
-import { contactDefaults, kontaktDefaults } from "@/content/home";
+import { kontaktDefaults } from "@/content/home";
 import { osrodekPageDefaults, type OsrodekPageContent } from "@/content/osrodek";
 import type { CmsImage } from "@/cms/types";
 import type { CmsPage } from "@/lib/cms/get-page";
 import { getGalleryTeaser } from "@/lib/queries/gallery";
+import { getSiteContact } from "@/lib/queries/settings";
 
 /**
  * The place, at length — the long form of the homepage's 03 band.
@@ -67,6 +68,7 @@ function copyFrom(page: CmsPage): OsrodekPageContent {
 }
 
 export async function OsrodekView({ page }: { page: CmsPage }) {
+  const contact = await getSiteContact();
   const copy = copyFrom(page);
   // The first published photo opens the page at full width; the named rooms
   // further down are fixed, so nothing else is read from the gallery here.
@@ -146,7 +148,7 @@ export async function OsrodekView({ page }: { page: CmsPage }) {
               </div>
               <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 text-meta text-ink-400">
                 <span>
-                  {contactDefaults.addressLine1}, {contactDefaults.addressLine2}
+                  {contact.addressLine1}, {contact.addressLine2}
                 </span>
                 <Cta href="#dojazd" className="text-meta">
                   {copy.statsLinkLabel}
@@ -398,8 +400,8 @@ export async function OsrodekView({ page }: { page: CmsPage }) {
               <p className="max-w-[34em] text-pretty text-body-lg text-ink-500">
                 {copy.firstDayBody}
               </p>
-              <Cta href={`tel:${contactDefaults.phoneHref}`} variant="solid" className="tabular-nums">
-                {copy.firstDayCtaLabel} — {contactDefaults.phone}
+              <Cta href={`tel:${contact.phoneHref}`} variant="solid" className="tabular-nums">
+                {copy.firstDayCtaLabel} — {contact.phone}
               </Cta>
             </div>
           </Reveal>

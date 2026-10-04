@@ -9,8 +9,8 @@ import { Reveal } from "@/components/site/ui/reveal";
 import { JsonLd } from "@/components/site/ui/json-ld";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { initials, TeamCard } from "@/components/site/ui/team-card";
-import { contactDefaults } from "@/content/home";
 import { teamMemberPageDefaults as copy, teamPageDefaults } from "@/content/team";
+import { getSiteContact } from "@/lib/queries/settings";
 import {
   getPublishedTeam,
   getTeamMemberBySlug,
@@ -140,7 +140,8 @@ function Portrait({ member }: { member: TeamMemberDetail }) {
   );
 }
 
-function Cta() {
+async function Cta() {
+  const contact = await getSiteContact();
   return (
     <div className="mt-[clamp(32px,4vw,56px)] flex flex-wrap items-end justify-between gap-x-10 gap-y-5 border border-line bg-sand p-[clamp(22px,2.4vw,34px)]">
       <div className="max-w-[26em]">
@@ -150,10 +151,10 @@ function Cta() {
         <p className="text-[15px] leading-[1.7] text-ink-400">{copy.ctaBody}</p>
       </div>
       <a
-        href={`tel:${contactDefaults.phoneHref}`}
+        href={`tel:${contact.phoneHref}`}
         className="link-arrow bg-ink-900 px-[26px] py-[15px] text-[15px] tabular-nums text-bone transition-colors hover:bg-ink-700"
       >
-        <span>Zadzwoń: {contactDefaults.phone}</span>
+        <span>Zadzwoń: {contact.phone}</span>
         <span aria-hidden className="text-[14px]">
           →
         </span>

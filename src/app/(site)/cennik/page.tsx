@@ -8,8 +8,8 @@ import { Reveal } from "@/components/site/ui/reveal";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { cennikPageDefaults as copy } from "@/content/cennik";
 import { NFZ_ARTICLE_SLUG } from "@/content/artykul-nfz";
-import { contactDefaults } from "@/content/home";
 import { getArticleBySlug } from "@/lib/queries/articles";
+import { getSiteContact } from "@/lib/queries/settings";
 import { cn } from "@/lib/utils";
 
 // The NFZ card borrows the article's cover, which editors can change.
@@ -32,7 +32,11 @@ export const metadata: Metadata = {
  */
 export default async function CennikPage() {
   const { program } = copy;
-  const nfzCover = (await getArticleBySlug(NFZ_ARTICLE_SLUG))?.cover ?? null;
+  const [nfzArticle, contact] = await Promise.all([
+    getArticleBySlug(NFZ_ARTICLE_SLUG),
+    getSiteContact(),
+  ]);
+  const nfzCover = nfzArticle?.cover ?? null;
 
   return (
     <SubpageLayout
@@ -107,11 +111,11 @@ export default async function CennikPage() {
           <div className="flex flex-col items-start gap-[clamp(20px,2.2vw,30px)]">
             <p className="max-w-[34em] text-pretty text-body-lg text-ink-500">{copy.closingBody}</p>
             <Cta
-              href={`tel:${contactDefaults.phoneHref}`}
+              href={`tel:${contact.phoneHref}`}
               variant="solid"
               className="tabular-nums"
             >
-              {copy.closingCta} — {contactDefaults.phone}
+              {copy.closingCta} — {contact.phone}
             </Cta>
           </div>
         </Reveal>

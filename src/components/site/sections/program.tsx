@@ -8,7 +8,6 @@ import {
   type CennikContent,
 } from "@/content/cennik";
 import {
-  contactDefaults,
   programDefaults,
   type ProgramContent,
   type SiteContact,
@@ -27,11 +26,11 @@ import {
 export function Program({
   content = programDefaults,
   cennik = cennikTeaserDefaults,
-  contact = contactDefaults,
+  contact,
 }: {
   content?: ProgramContent;
   cennik?: CennikContent;
-  contact?: SiteContact;
+  contact: SiteContact;
 }) {
   return (
     <Section

@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect, useSyncExternalStore } from "react";
 
+import { useSiteSettings } from "@/components/site/chrome/site-settings";
 import { footerDefaults } from "@/content/home";
 import { eventForLink, GA_ID, track } from "@/lib/analytics";
 
@@ -66,6 +67,7 @@ function clearGaCookies() {
 }
 
 export function ConsentBanner() {
+  const { consentBannerText } = useSiteSettings();
   const choice = useSyncExternalStore<Snapshot>(subscribe, read, () => "unknown");
   const reopened = useSyncExternalStore(subscribeOpen, readOpen, () => false);
 
@@ -128,9 +130,7 @@ gtag('config','${GA_ID}',{allow_google_signals:false,allow_ad_personalization_si
               Czy możemy liczyć odwiedziny?
             </p>
             <p className="text-meta text-on-dark-muted">
-              Z Twoją zgodą Google Analytics zapisze, które strony są czytane i czy ktoś
-              zadzwonił z telefonu. Nie wysyłamy treści wiadomości, odpowiedzi z testów
-              ani niczego do reklam. Bez zgody strona działa tak samo.
+              {consentBannerText}
               {privacyHref && (
                 <>
                   {" "}

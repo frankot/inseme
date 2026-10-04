@@ -1,7 +1,6 @@
 import { KontaktGrid } from "@/components/site/ui/kontakt-grid";
 import { Section } from "@/components/site/ui/section";
 import {
-  contactDefaults,
   kontaktDefaults,
   type KontaktContent,
   type SiteContact,
@@ -9,10 +8,10 @@ import {
 
 export function Kontakt({
   content = kontaktDefaults,
-  contact = contactDefaults,
+  contact,
 }: {
   content?: KontaktContent;
-  contact?: SiteContact;
+  contact: SiteContact;
 }) {
   return (
     <Section id="kontakt" index={content.index} label={content.eyebrow}>

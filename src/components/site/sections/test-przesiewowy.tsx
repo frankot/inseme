@@ -3,7 +3,6 @@ import { Reveal } from "@/components/site/ui/reveal";
 import { ScreeningTest } from "@/components/site/ui/screening-test";
 import { Section } from "@/components/site/ui/section";
 import {
-  contactDefaults,
   testDefaults,
   type SiteContact,
   type TestContent,
@@ -18,11 +17,11 @@ import type { PublicScreeningTest } from "@/lib/queries/screening";
 export function TestPrzesiewowy({
   test,
   content = testDefaults,
-  contact = contactDefaults,
+  contact,
 }: {
   test: PublicScreeningTest | null;
   content?: TestContent;
-  contact?: SiteContact;
+  contact: SiteContact;
 }) {
   if (!test) return null;
 

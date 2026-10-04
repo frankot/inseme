@@ -39,7 +39,8 @@ export async function saveSettings(input: SettingsInput): Promise<ActionResult> 
       .values({ id: SETTINGS_ID, ...values })
       .onConflictDoUpdate({ target: settings.id, set: values });
 
-    revalidatePath("/admin/settings");
+    // Contact details, the consent copy and the share image are on every page.
+    revalidatePath("/", "layout");
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się zapisać ustawień.");

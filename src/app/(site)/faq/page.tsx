@@ -5,8 +5,9 @@ import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
 import { FaqList } from "@/components/site/ui/faq-list";
 import { JsonLd } from "@/components/site/ui/json-ld";
-import { contactDefaults, faqDefaults } from "@/content/home";
+import { faqDefaults } from "@/content/home";
 import { getPublishedFaq } from "@/lib/queries/faq";
+import { getSiteContact } from "@/lib/queries/settings";
 import { faqJsonLd } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export const revalidate = 300;
  * bare accordion rather than the homepage's `Faq` section.
  */
 export default async function PytaniaPage() {
+  const contact = await getSiteContact();
   const items = await getPublishedFaq();
 
   return (
@@ -48,11 +50,11 @@ export default async function PytaniaPage() {
         )}
 
         <Cta
-          href={`tel:${contactDefaults.phoneHref}`}
+          href={`tel:${contact.phoneHref}`}
           variant="solid"
           className="mt-[clamp(24px,3vw,40px)]"
         >
-          Nie ma tu Twojego pytania? Zadzwoń — {contactDefaults.phone}
+          Nie ma tu Twojego pytania? Zadzwoń — {contact.phone}
         </Cta>
       </Container>
     </SubpageLayout>

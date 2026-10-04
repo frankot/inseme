@@ -4,8 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
 
+import { useSiteContact } from "@/components/site/chrome/site-settings";
 import { SiteImage } from "@/components/site/ui/site-image";
-import { contactDefaults, type SiteContact } from "@/content/home";
+import type { SiteContact } from "@/content/home";
 import {
   barLinks,
   isNavGroup,
@@ -38,7 +39,7 @@ export type HeaderVariant = "hero" | "solid";
 export function SiteHeader({
   nav = barLinks,
   mobileNav = panelLinks,
-  contact = contactDefaults,
+  contact: contactProp,
   variant = "hero",
 }: {
   nav?: NavEntry[];
@@ -46,6 +47,8 @@ export function SiteHeader({
   contact?: SiteContact;
   variant?: HeaderVariant;
 }) {
+  const siteContact = useSiteContact();
+  const contact = contactProp ?? siteContact;
   const solid = variant === "solid";
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);

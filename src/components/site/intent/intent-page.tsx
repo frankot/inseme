@@ -12,10 +12,10 @@ import {
   IntentStepsSection,
 } from "@/components/site/intent/intent-sections";
 import { ProgramStageBand } from "@/components/site/ui/program-stage";
-import { contactDefaults } from "@/content/home";
 import type { IntentPageContent } from "@/content/intent/types";
 import { getCmsPage, numberSections, type CmsPage } from "@/lib/cms/get-page";
 import { getPublishedFaq } from "@/lib/queries/faq";
+import { getSiteContact } from "@/lib/queries/settings";
 
 export async function intentMetadata(key: string, path: string): Promise<Metadata> {
   const { seo } = await getCmsPage(key);
@@ -71,7 +71,7 @@ export async function IntentView({
 }) {
   const copy = copyFrom(page, defaults);
   const faq = await getPublishedFaq(copy.faq.category).catch(() => []);
-  const contact = contactDefaults;
+  const contact = await getSiteContact();
   const on = (id: string) => page.sections[id]?.enabled ?? false;
   const numbers = numberSections(page);
 

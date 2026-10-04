@@ -16,7 +16,6 @@ import {
   artykulyPageDefaults as copy,
   formatArticleDate,
 } from "@/content/artykuly";
-import { contactDefaults } from "@/content/home";
 import { getArticlePreview, getReadingMinutes } from "@/lib/article-preview";
 import {
   getArticleBySlug,
@@ -24,6 +23,7 @@ import {
   getRelatedArticles,
   type ArticleReviewer,
 } from "@/lib/queries/articles";
+import { getSiteContact } from "@/lib/queries/settings";
 import { SITE_NAME } from "@/lib/site-url";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
 import { cn } from "@/lib/utils";
@@ -69,6 +69,7 @@ export async function generateMetadata(
 }
 
 export default async function ArticlePage(props: PageProps<"/porady/[slug]">) {
+  const contact = await getSiteContact();
   const { slug } = await props.params;
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
@@ -221,11 +222,11 @@ export default async function ArticlePage(props: PageProps<"/porady/[slug]">) {
               </p>
               <p className="mt-2 text-meta text-on-dark-muted">{copy.callText}</p>
               <Cta
-                href={`tel:${contactDefaults.phoneHref}`}
+                href={`tel:${contact.phoneHref}`}
                 variant="light"
                 className="mt-5 tabular-nums"
               >
-                {contactDefaults.phone}
+                {contact.phone}
               </Cta>
             </Reveal>
           </aside>
