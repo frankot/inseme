@@ -24,34 +24,51 @@ export function isNavGroup(entry: NavEntry): entry is NavGroup {
 }
 
 /**
- * Whether a nav destination is the page currently open. Hash-only links
- * (`/#…`) target sections, not pages, so they are never "active".
+ * Whether a nav destination is the page currently open. Links with a hash
+ * (`/#…`, `/program#dzien`) target sections, not pages, so they are never
+ * "active" — otherwise /program would underline both of its entries.
  */
 export function isPathActive(pathname: string, href: string): boolean {
-  if (!href.startsWith("/") || href.startsWith("/#")) return false;
-  const path = href.split("#")[0].split("?")[0];
+  if (!href.startsWith("/") || href.includes("#")) return false;
+  const path = href.split("?")[0];
   if (path === "/") return pathname === "/";
   return pathname === path || pathname.startsWith(path + "/");
 }
 
+/**
+ * Ordered by what a visitor wants to know: what you offer, who you are, what it
+ * costs, what else they need answered, what to read, how to reach you. The
+ * intent pages (leczenie alkoholizmu, dla rodziny, detoks, NFZ) live in the
+ * footer only.
+ */
 export const navLinks: NavEntry[] = [
-  { label: "Pierwszy kontakt", href: "/#pierwszy-kontakt" },
   {
-    label: "O nas",
+    label: "Program",
+    items: [
+      { label: "Program terapii", href: "/program" },
+      { label: "Jak wygląda dzień", href: "/program#dzien" },
+      { label: "Jak zacząć", href: "/#pierwszy-kontakt" },
+    ],
+  },
+  {
+    label: "O ośrodku",
     items: [
       { label: "Ośrodek", href: "/osrodek" },
-      { label: "Program", href: "/program" },
-      { label: "Galeria", href: "/galeria" },
       { label: "Zespół", href: "/zespol" },
+      { label: "Galeria", href: "/galeria" },
+      { label: "Opinie", href: "/#opinie" },
     ],
   },
   { label: "Cennik", href: "/cennik" },
-  { label: "Testy przesiewowe", href: "/testy", barLabel: "Testy" },
-  { label: "Porady", href: "/porady" },
+  { label: "Pytania", href: "/faq" },
+  {
+    label: "Poradnik",
+    items: [
+      { label: "Porady", href: "/porady" },
+      { label: "Testy przesiewowe", href: "/testy" },
+    ],
+  },
   { label: "Kontakt", href: "/kontakt" },
-  { label: "Pytania", href: "/faq", mobileOnly: true },
-  { label: "Jeden dzień", href: "/program#dzien", mobileOnly: true },
-  { label: "Opinie", href: "/#opinie", mobileOnly: true },
 ];
 
 /** Entries shown in the desktop bar. */
