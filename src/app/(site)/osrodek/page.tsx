@@ -4,6 +4,7 @@ import { Breadcrumb } from "@/components/site/chrome/page-intro";
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
 import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
+import { PHOTO_GRID, PHOTO_IMAGE, PhotoTile } from "@/components/site/ui/photo-tile";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Section } from "@/components/site/ui/section";
 import { SiteImage } from "@/components/site/ui/site-image";
@@ -217,9 +218,8 @@ export default async function OsrodekPage() {
         </Container>
       </Slab>
 
-      {/* The four rooms by name, each with the line that says what it is for.
-          Captions sit under the photographs rather than over them — they are
-          two lines of copy now, and a scrim that tall would hide the room. */}
+      {/* The four rooms by name, each with the line that says what it is for —
+          the same tiles /galeria is built from. */}
       <Section
         id="galeria"
         raised
@@ -228,26 +228,22 @@ export default async function OsrodekPage() {
         lead={<Paragraphs lines={copy.galleryLead} />}
         action={<Cta href={copy.galleryHref}>{copy.galleryLinkLabel}</Cta>}
       >
-        <div className="grid gap-x-gap gap-y-[clamp(26px,2.8vw,40px)] tab:grid-cols-2 desk:grid-cols-4">
+        <div className={PHOTO_GRID}>
           {copy.spaces.map((space, i) => (
             <Reveal as="figure" key={space.title} delay={(i % 4) * 70} className="group m-0 min-w-0">
-              <div className="relative aspect-[4/5] overflow-hidden bg-stone tab:aspect-[4/3] desk:aspect-[4/5]">
-                <SiteImage
-                  src={space.src}
-                  alt={space.alt}
-                  fill
-                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 25vw"
-                  className="object-cover saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
-                />
-              </div>
-              <figcaption className="mt-3.5 border-t border-line-strong pt-3">
-                <span className="block font-heading text-[clamp(17px,1.4vw,20px)] leading-[1.3] tracking-[-0.025em] text-ink-900">
-                  {space.title}
-                </span>
-                <span className="mt-1 block text-pretty text-meta text-ink-400">
-                  {space.body}
-                </span>
-              </figcaption>
+              <PhotoTile
+                media={
+                  <SiteImage
+                    src={space.src}
+                    alt={space.alt}
+                    fill
+                    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 25vw"
+                    className={PHOTO_IMAGE}
+                  />
+                }
+                title={space.title}
+                body={space.body}
+              />
             </Reveal>
           ))}
         </div>

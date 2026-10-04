@@ -34,8 +34,8 @@ export type GalleriaPageContent = {
 
 export const galeriaPageDefaults: GalleriaPageContent = {
   eyebrow: "Galeria",
-  title: "Zobacz, dokąd przyjeżdżasz.",
-  lead: "Zdjęcia robione u nas, bez aranżacji i bez zdjęć z banku. Dom, pokoje, salon terapeutyczny, ogród i las, który zaczyna się za płotem.",
+  title: "Zobacz miejsce, do którego przyjeżdżasz.",
+  lead: "Pierwszy przyjazd nie musi oznaczać kolejnej niewiadomej. Zobacz wcześniej pokoje, przestrzenie terapeutyczne, miejsca do odpoczynku, ogród i otoczenie Insieme.",
   emptyNote:
     "Przygotowujemy galerię. W międzyczasie zadzwoń — chętnie opowiemy o ośrodku i umówimy wizytę.",
   metaTitle: "Galeria — ośrodek Insieme w Magdalence",

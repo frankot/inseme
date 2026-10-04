@@ -19,6 +19,8 @@ const FONT_SIZES = [
   "stat",
   "lead",
   "body-lg",
+  "body",
+  "meta",
   "eyebrow",
 ];
 
