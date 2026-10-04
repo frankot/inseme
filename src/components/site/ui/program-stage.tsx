@@ -3,7 +3,7 @@ import { Cta } from "@/components/site/ui/cta";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Slab, type SectionTone } from "@/components/site/ui/slab";
 import { StickySplit } from "@/components/site/ui/sticky-split";
-import type { ProgramPoint, ProgramStage } from "@/content/program";
+import type { ProgramPoint, ProgramStage, StageBand } from "@/content/program";
 import { cn } from "@/lib/utils";
 
 /**
@@ -68,6 +68,7 @@ const TONE = {
     pointBody: "text-ink-500",
     dash: "bg-clay-300",
     closing: "border-clay-300 text-ink-900",
+    link: "quiet",
   },
   dark: {
     eyebrowIndex: "text-on-dark-faint",
@@ -82,6 +83,7 @@ const TONE = {
     pointBody: "text-on-dark-muted",
     dash: "bg-clay-300",
     closing: "border-clay-300 text-on-dark",
+    link: "quiet-on-dark",
   },
 } as const;
 
@@ -98,7 +100,7 @@ export function ProgramStageBand({
   raised,
   sticky = true,
 }: {
-  stage: ProgramStage;
+  stage: StageBand;
   index: string;
   tone?: SectionTone;
   raised?: boolean;
@@ -201,6 +203,14 @@ export function ProgramStageBand({
                   {paragraph}
                 </p>
               ))}
+            </Reveal>
+          )}
+
+          {stage.link && (
+            <Reveal className="mt-[clamp(22px,2.4vw,32px)]">
+              <Cta href={stage.link.href} variant={t.link}>
+                {stage.link.label}
+              </Cta>
             </Reveal>
           )}
         </StickySplit>

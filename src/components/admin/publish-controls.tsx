@@ -22,7 +22,8 @@ export function PublishControls({
   status: "draft" | "published";
   publishedAt: string | null;
   onPublish: () => Promise<ActionResult>;
-  onUnpublish: () => Promise<ActionResult>;
+  /** Omit for a record that must stay live; the button is then not shown. */
+  onUnpublish?: () => Promise<ActionResult>;
 }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -48,15 +49,17 @@ export function PublishControls({
         </span>
       ) : null}
       {status === "published" ? (
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={isPending}
-          onClick={() => run(onUnpublish, "Cofnięto publikację.")}
-        >
-          Cofnij publikację
-        </Button>
+        onUnpublish && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={isPending}
+            onClick={() => run(onUnpublish, "Cofnięto publikację.")}
+          >
+            Cofnij publikację
+          </Button>
+        )
       ) : (
         <Button
           type="button"

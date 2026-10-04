@@ -1,5 +1,7 @@
 /**
- * Seeds four example articles so the poradnik — the homepage teaser, /porady
+ * Seeds four example articles plus the protected NFZ article
+ * (`src/content/artykul-nfz.ts` — /cennik and the footer link to it) so the
+ * poradnik — the homepage teaser, /porady
  * and an article page — has something to render before an editor has written
  * anything.
  *
@@ -19,6 +21,8 @@ import { config as loadEnv } from "dotenv";
 // Type-only: erased at compile time, so it does not pull in the env validation
 // that the runtime imports below deliberately defer until dotenv has run.
 import type { Block } from "../src/lib/blocks";
+// Plain data, no env access — safe to import before dotenv.
+import { nfzArticleSeed as nfz } from "../src/content/artykul-nfz";
 
 loadEnv({ path: ".env.local" });
 loadEnv({ path: ".env" });
@@ -99,7 +103,47 @@ async function main() {
     console.log(`✓ ${item.title} — /porady/${item.slug}`);
   }
 
-  console.log(`\n${ARTICLES.length} artykuły opublikowane. Sprawdź /porady i sekcję 07 na stronie.`);
+  // The NFZ article: its own shape (headings, steps, the FAQ embed), and its
+  // slug is protected — see `src/lib/protected-articles.ts`.
+  const nfzValues = {
+    title: nfz.title,
+    slug: nfz.slug,
+    excerpt: nfz.excerpt,
+    metaTitle: nfz.metaTitle,
+    metaDescription: nfz.metaDescription,
+    body: [
+      { ...createBlock("richtext"), type: "richtext" as const, html: sanitizeRichText(nfz.html) },
+      {
+        ...createBlock("step_list"),
+        type: "step_list" as const,
+        heading: nfz.stepsHeading,
+        steps: nfz.steps.map((step) => ({ id: crypto.randomUUID(), ...step })),
+      },
+      {
+        ...createBlock("richtext"),
+        type: "richtext" as const,
+        html: sanitizeRichText(nfz.closingHtml),
+      },
+      {
+        ...createBlock("faq_embed"),
+        type: "faq_embed" as const,
+        heading: nfz.faqHeading,
+        category: nfz.faqCategory,
+      },
+      { ...createBlock("cta"), type: "cta" as const, ...nfz.cta },
+    ] satisfies Block[],
+    authorReviewer: nfz.reviewer,
+    status: "published" as const,
+    publishedAt: now,
+    updatedAt: now,
+  };
+  await db
+    .insert(articles)
+    .values(nfzValues)
+    .onConflictDoUpdate({ target: articles.slug, set: nfzValues });
+  console.log(`✓ ${nfz.title} — /porady/${nfz.slug} (stały artykuł)`);
+
+  console.log(`\n${ARTICLES.length + 1} artykułów opublikowanych. Sprawdź /porady i sekcję 07 na stronie.`);
 }
 
 const ARTICLES: Seed[] = [

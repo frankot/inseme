@@ -4,6 +4,7 @@ import { Breadcrumb } from "@/components/site/chrome/page-intro";
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
 import { JedenDzien } from "@/components/site/sections/jeden-dzien";
 import { Container } from "@/components/site/ui/container";
+import { Cta } from "@/components/site/ui/cta";
 import {
   ProgramStageBand,
   ProgramStageCard,
@@ -86,9 +87,12 @@ export default function ProgramPage() {
 
           <Reveal className="mt-[clamp(20px,2.2vw,30px)] flex gap-3.5 border-t border-line-strong pt-[clamp(16px,1.6vw,22px)]">
             <span aria-hidden className="mt-[0.8em] block h-px w-[12px] shrink-0 bg-clay-300" />
-            <p className="max-w-[52em] text-pretty text-body text-ink-500">
-              {copy.detoxNote}
-            </p>
+            <div className="flex flex-col items-start gap-2">
+              <p className="max-w-[52em] text-pretty text-body text-ink-500">
+                {copy.detoxNote}
+              </p>
+              <Cta href={copy.detoxLink.href}>{copy.detoxLink.label}</Cta>
+            </div>
           </Reveal>
         </Container>
       </Slab>

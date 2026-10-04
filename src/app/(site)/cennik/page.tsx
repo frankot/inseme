@@ -155,6 +155,16 @@ export default function CennikPage() {
             Zapytaj o cenę — {contactDefaults.phone}
           </Cta>
         </Reveal>
+
+        <Reveal className="mt-section-sm grid items-start gap-x-16 gap-y-4 border-t border-line-strong pt-[clamp(24px,3vw,40px)] tab:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]">
+          <h2 className="max-w-[16em] text-pretty font-heading text-display-sm text-ink-900">
+            {copy.nfzTitle}
+          </h2>
+          <div className="flex flex-col items-start gap-4">
+            <p className="max-w-[34em] text-pretty text-body-lg text-ink-500">{copy.nfzBody}</p>
+            <Cta href={copy.nfzHref}>{copy.nfzLinkLabel}</Cta>
+          </div>
+        </Reveal>
       </Container>
     </SubpageLayout>
   );

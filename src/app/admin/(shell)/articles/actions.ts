@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { articles } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
+import { isProtectedArticle } from "@/lib/protected-articles";
 import { sanitizeBlocks } from "@/lib/sanitize-blocks";
 import { articleSchema, emptyToNull, type ArticleInput } from "@/lib/validations/content";
 
@@ -30,6 +31,16 @@ export async function saveArticle(
     const parsed = articleSchema.safeParse(input);
     if (!parsed.success) {
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
+    }
+
+    if (id) {
+      const current = await db.query.articles.findFirst({
+        columns: { slug: true },
+        where: eq(articles.id, id),
+      });
+      if (isProtectedArticle(current?.slug) && current?.slug !== parsed.data.slug) {
+        return { ok: false, error: "To stały artykuł — jego adresu (slug) nie można zmienić." };
+      }
     }
 
     const clash = await db.query.articles.findFirst({
@@ -109,6 +120,9 @@ export async function unpublishArticle(id: string): Promise<ActionResult> {
       columns: { slug: true },
       where: eq(articles.id, id),
     });
+    if (isProtectedArticle(row?.slug)) {
+      return { ok: false, error: "To stały artykuł — nie można cofnąć jego publikacji." };
+    }
     await db
       .update(articles)
       .set({ status: "draft", updatedAt: new Date() })
@@ -129,6 +143,9 @@ export async function deleteArticle(id: string): Promise<ActionResult> {
       columns: { slug: true },
       where: eq(articles.id, id),
     });
+    if (isProtectedArticle(row?.slug)) {
+      return { ok: false, error: "To stały artykuł — nie można go usunąć." };
+    }
     await db.delete(articles).where(eq(articles.id, id));
     revalidatePath("/admin/articles");
     revalidatePublic(row?.slug);

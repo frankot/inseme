@@ -14,13 +14,12 @@
 /** One line of a stage's list. Titled points read as numbered rows. */
 export type ProgramPoint = { title?: string; body: string };
 
-export type ProgramStage = {
+/**
+ * The long-form band on its own — what `ProgramStageBand` renders. The intent
+ * pages (`content/intent/*`) are built from the same bands, without the card.
+ */
+export type StageBand = {
   id: string;
-  /** Overview card. */
-  cardTitle: string;
-  cardMeta: string;
-  summary: string;
-  /** Detail band. */
   title: string;
   /** Under the band's eyebrow — the length, where the stage has one. */
   meta?: string;
@@ -30,6 +29,15 @@ export type ProgramStage = {
   points: ProgramPoint[];
   /** After the list: what the stage is for, said once more. */
   closing?: string[];
+  /** A quiet link closing the band — where to read further. */
+  link?: { label: string; href: string };
+};
+
+export type ProgramStage = StageBand & {
+  /** Overview card. */
+  cardTitle: string;
+  cardMeta: string;
+  summary: string;
 };
 
 export type ProgramPageContent = {
@@ -42,6 +50,7 @@ export type ProgramPageContent = {
   body: string;
   /** Under the overview cards. */
   detoxNote: string;
+  detoxLink: { label: string; href: string };
   cardLinkLabel: string;
   stages: ProgramStage[];
 };
@@ -58,6 +67,10 @@ export const programPageDefaults: ProgramPageContent = {
   body: "Zaczynamy od intensywnej pracy stacjonarnej, a następnie wspieramy pacjenta w przenoszeniu zmian do codziennego życia. Ważnym elementem tego procesu jest również praca z osobami najbliższymi.",
   detoxNote:
     "Jeśli przed rozpoczęciem terapii potrzebna jest detoksykacja, pomagamy w organizacji leczenia na prywatnym oddziale detoksykacyjnym, z którym współpracujemy.",
+  detoxLink: {
+    label: "Kiedy potrzebny jest detoks",
+    href: "/detoks-i-kwalifikacja",
+  },
   cardLinkLabel: "Więcej",
   stages: [
     {
@@ -157,6 +170,10 @@ export const programPageDefaults: ProgramPageContent = {
           body: "Rozmawiamy o tym, czego można spodziewać się po zakończeniu pobytu, jak wspierać wprowadzane zmiany oraz gdzie przebiega granica między pomocą a odpowiedzialnością osoby zdrowiejącej za własną trzeźwość.",
         },
       ],
+      link: {
+        label: "Jak pomóc bliskiej osobie, która nie chce się leczyć",
+        href: "/dla-rodziny",
+      },
     },
     {
       id: "pro",

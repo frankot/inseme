@@ -56,7 +56,15 @@ export function SiteFooter({
           ))}
         </FooterColumn>
 
-        <FooterColumn title="Kontakt">
+        <FooterColumn title={content.helpColumnTitle}>
+          {content.helpLinks.map((link) => (
+            <FooterLink key={link.label} href={link.href}>
+              {link.label}
+            </FooterLink>
+          ))}
+        </FooterColumn>
+
+        <FooterColumn title={content.contactTitle}>
           <FooterLink href={`tel:${contact.phoneHref}`}>
             {contact.phone}
           </FooterLink>
@@ -67,23 +75,26 @@ export function SiteFooter({
             {content.privacyLabel}
           </FooterLink>
           <ConsentSettingsButton className="self-start text-left text-[13.5px] leading-[1.7] text-on-dark-lead transition-colors hover:text-sage-300" />
-        </FooterColumn>
 
-        <div className="flex flex-col gap-2.5">
-          <span className="text-eyebrow uppercase tracking-[0.2em] text-clay-300">
-            {content.emergencyLabel}
-          </span>
-          <span className="font-heading text-[26px] leading-none tracking-[-0.03em] tabular-nums text-on-dark">
-            {content.emergencyNumber}
-          </span>
-          <span className="text-[13.5px] leading-[1.7] text-on-dark-muted">
-            {content.helplineLabel}
-            <br />
-            <span className="tabular-nums text-on-dark-sage-2">
-              {content.helplineNumber}
+          {/* The emergency numbers close the contact column rather than
+              taking one of their own — the fourth column went to the
+              intent pages. Still set apart: a rule, its own label, 112 large. */}
+          <div className="mt-3 flex flex-col gap-2 border-t border-white/12 pt-4">
+            <span className="text-eyebrow uppercase tracking-[0.2em] text-clay-300">
+              {content.emergencyLabel}
             </span>
-          </span>
-        </div>
+            <span className="font-heading text-[26px] leading-none tracking-[-0.03em] tabular-nums text-on-dark">
+              {content.emergencyNumber}
+            </span>
+            <span className="text-[13.5px] leading-[1.7] text-on-dark-muted">
+              {content.helplineLabel}
+              <br />
+              <span className="tabular-nums text-on-dark-sage-2">
+                {content.helplineNumber}
+              </span>
+            </span>
+          </div>
+        </FooterColumn>
       </Container>
 
       <div className="border-t border-white/12">

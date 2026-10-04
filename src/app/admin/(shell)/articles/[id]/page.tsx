@@ -15,6 +15,7 @@ import { PublishControls } from "@/components/admin/publish-controls";
 import { db } from "@/db";
 import { articles, media } from "@/db/schema";
 import { toMediaSummary } from "@/lib/media-summary";
+import { isProtectedArticle, PROTECTED_ARTICLE_NOTE } from "@/lib/protected-articles";
 
 export const metadata: Metadata = { title: "Edycja artykułu — panel Insieme" };
 
@@ -27,6 +28,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
     db.select().from(media).orderBy(desc(media.uploadedAt)),
     getReviewerOptions(),
   ]);
+  const locked = isProtectedArticle(row.slug);
   const coverImage = mediaRows.find((item) => item.id === row.coverImageId) ?? null;
 
   return (
@@ -36,20 +38,28 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
         description={`/${row.slug}`}
         backHref="/admin/articles"
         actions={
-          <ConfirmDelete
-            onConfirm={deleteArticle.bind(null, row.id)}
-            title="Usunąć artykuł?"
-            redirectTo="/admin/articles"
-          />
+          locked ? undefined : (
+            <ConfirmDelete
+              onConfirm={deleteArticle.bind(null, row.id)}
+              title="Usunąć artykuł?"
+              redirectTo="/admin/articles"
+            />
+          )
         }
       />
+
+      {locked && (
+        <p className="mb-4 rounded-lg border border-dashed px-4 py-3 text-sm text-muted-foreground">
+          {PROTECTED_ARTICLE_NOTE}
+        </p>
+      )}
 
       <div className="mb-6 rounded-lg border px-4 py-3">
         <PublishControls
           status={row.status}
           publishedAt={row.publishedAt?.toISOString() ?? null}
           onPublish={publishArticle.bind(null, row.id)}
-          onUnpublish={unpublishArticle.bind(null, row.id)}
+          onUnpublish={locked ? undefined : unpublishArticle.bind(null, row.id)}
         />
       </div>
 
@@ -58,6 +68,7 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
         defaultCoverImage={coverImage ? toMediaSummary(coverImage) : null}
         mediaLibrary={mediaRows.map(toMediaSummary)}
         team={team}
+        slugLocked={locked}
         defaultValues={{
           title: row.title,
           slug: row.slug,

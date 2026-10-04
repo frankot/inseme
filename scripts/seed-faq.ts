@@ -2,6 +2,11 @@
  * Seeds the FAQ. The first `FEATURED` questions are marked for the homepage
  * section; the rest appear only on /faq. Editors change both in /admin/faq.
  *
+ * Questions with a `category` are also embedded on the page that reads that
+ * category — `alkohol` on /leczenie-alkoholizmu, `rodzina` on /dla-rodziny,
+ * `detoks` on /detoks-i-kwalifikacja, `nfz` in the NFZ article. They appear on
+ * /faq as well.
+ *
  *   npm run seed:faq
  *   npm run seed:faq -- --reset   # delete every existing question first
  *
@@ -37,7 +42,7 @@ async function main() {
     const values = {
       question: item.question,
       answer: sanitizeRichText(paragraph(item.answer)),
-      category: null,
+      category: item.category ?? null,
       sortOrder: i * 10,
       featured: i < FEATURED,
       status: "published" as const,
@@ -66,7 +71,9 @@ async function main() {
 /** How many of the questions below, from the top, the homepage features. */
 const FEATURED = 6;
 
-const QUESTIONS = [
+type Question = { question: string; answer: string; category?: string };
+
+const QUESTIONS: Question[] = [
   {
     question: "Czy mogę zadzwonić w imieniu bliskiej osoby?",
     answer:
@@ -141,6 +148,104 @@ const QUESTIONS = [
     question: "Jak wygląda pierwszy dzień?",
     answer:
       "Pierwszy dzień służy przede wszystkim spokojnemu wejściu w leczenie, poznaniu ośrodka i zespołu oraz zmniejszeniu napięcia związanego z rozpoczęciem terapii.",
+  },
+
+  /* ------------------------------------------- alkohol: /leczenie-alkoholizmu */
+  {
+    category: "alkohol",
+    question: "Skąd mam wiedzieć, czy to już uzależnienie?",
+    answer:
+      "Pierwszą orientację daje test przesiewowy AUDIT, który możesz wypełnić anonimowo na naszej stronie. Rozpoznanie stawia jednak lekarz lub terapeuta po rozmowie — na podstawie objawów takich jak utrata kontroli nad piciem, głód alkoholowy czy objawy odstawienia, a nie samej ilości alkoholu.",
+  },
+  {
+    category: "alkohol",
+    question: "Czy uzależnienie od alkoholu można wyleczyć?",
+    answer:
+      "Uzależnienie jest chorobą przewlekłą — nie znika po jednym pobycie w ośrodku. Leczenie pozwala jednak przestać pić, zrozumieć mechanizmy choroby i nauczyć się z nią żyć. Dlatego po terapii stacjonarnej ważna jest jej kontynuacja.",
+  },
+  {
+    category: "alkohol",
+    question: "Czy wszywka (Esperal) wystarczy zamiast terapii?",
+    answer:
+      "Nie. Disulfiram nie zmniejsza głodu alkoholowego ani nie zmienia przyczyn picia — jedynie sprawia, że picie po jego przyjęciu wywołuje silne, nieprzyjemne objawy. Może być wsparciem dla osoby, która się leczy, ale o jego zastosowaniu decyduje lekarz po badaniu.",
+  },
+  {
+    category: "alkohol",
+    question: "Czy po terapii można pić okazjonalnie?",
+    answer:
+      "W przypadku uzależnienia celem leczenia jest abstynencja. Próby „kontrolowanego picia” u osób uzależnionych zwykle prowadzą do powrotu dawnego wzorca. Inaczej bywa przy piciu szkodliwym bez uzależnienia — dlatego tak ważna jest rzetelna diagnoza.",
+  },
+
+  /* --------------------------------------------------- rodzina: /dla-rodziny */
+  {
+    category: "rodzina",
+    question: "Czy bliska osoba dowie się, że do Was dzwoniłem lub dzwoniłam?",
+    answer:
+      "Nie od nas. Rozmowa jest poufna, a o tym, czy i kiedy powiedzieć o niej bliskiej osobie, decydujesz Ty. Możesz też nie podawać nazwiska.",
+  },
+  {
+    category: "rodzina",
+    question: "Czy można zmusić kogoś do leczenia?",
+    answer:
+      "Do leczenia w prywatnym ośrodku — nie, pobyt jest dobrowolny. W przypadku uzależnienia od alkoholu istnieje sądowy obowiązek leczenia w placówce publicznej: procedurę zaczyna się od zgłoszenia do gminnej komisji rozwiązywania problemów alkoholowych w miejscu zamieszkania osoby pijącej.",
+  },
+  {
+    category: "rodzina",
+    question: "Czy rodzina może brać udział w terapii?",
+    answer:
+      "Tak. Oferujemy konsultacje dla bliskich przed leczeniem, w trakcie pobytu i przed powrotem do domu. W niedziele możliwe są odwiedziny, zgodnie z zasadami ośrodka.",
+  },
+  {
+    category: "rodzina",
+    question: "Gdzie mogę szukać wsparcia dla siebie?",
+    answer:
+      "Bezpłatnie: w grupach Al-Anon (dla rodzin i przyjaciół osób pijących), w poradni leczenia uzależnień w ramach NFZ — bez skierowania — oraz w grupach DDA. Możesz też porozmawiać z naszym terapeutą.",
+  },
+
+  /* -------------------------------------------- detoks: /detoks-i-kwalifikacja */
+  {
+    category: "detoks",
+    question: "Czy mogę zrobić detoks w domu?",
+    answer:
+      "Po długotrwałym, codziennym piciu lub przy przyjmowaniu leków uspokajających nie jest to bezpieczne — mogą wystąpić drgawki albo majaczenie alkoholowe, których nie da się przewidzieć. O tym, czy detoks jest potrzebny i w jakiej formie, powinien zdecydować lekarz.",
+  },
+  {
+    category: "detoks",
+    question: "Ile trwa detoks alkoholowy?",
+    answer:
+      "Zwykle od kilku do kilkunastu dni, zależnie od nasilenia objawów odstawienia i stanu zdrowia. Przy lekach uspokajających trwa dłużej, bo dawki zmniejsza się stopniowo.",
+  },
+  {
+    category: "detoks",
+    question: "Czy detoks odbywa się w Insieme?",
+    answer:
+      "Nie. Jeśli lekarz uzna, że detoks jest potrzebny, pomagamy go zorganizować na prywatnym oddziale detoksykacyjnym, z którym współpracujemy, i ustalamy termin przyjęcia do Insieme po jego zakończeniu.",
+  },
+  {
+    category: "detoks",
+    question: "Biorę leki uspokajające lub nasenne. Czy mam je odstawić przed przyjazdem?",
+    answer:
+      "Nie odstawiaj ich samodzielnie. Powiedz nam o nich w pierwszej rozmowie — lekarz oceni, czy potrzebne jest stopniowe zmniejszanie dawek i jak je zaplanować.",
+  },
+
+  /* ---------------------------------------------------- nfz: artykuł o NFZ */
+  {
+    category: "nfz",
+    question: "Czy na leczenie uzależnienia na NFZ potrzebne jest skierowanie?",
+    answer:
+      "Do poradni leczenia uzależnień — nie. Na oddział lub do ośrodka stacjonarnego zwykle potrzebne jest skierowanie od lekarza, najczęściej z poradni. Wymagania warto potwierdzić w wybranej placówce.",
+  },
+  {
+    category: "nfz",
+    question: "Jak sprawdzić, ile czeka się na odwyk na NFZ?",
+    answer:
+      "W Informatorze o terminach leczenia NFZ (terminyleczenia.nfz.gov.pl) — po wybraniu rodzaju świadczenia i województwa. Informacji udziela też Telefoniczna Informacja Pacjenta: 800 190 590.",
+  },
+  {
+    category: "nfz",
+    question: "Czy po pobycie w prywatnym ośrodku mogę kontynuować terapię na NFZ?",
+    answer:
+      "Tak. Ścieżki można łączyć — po pobycie prywatnym możesz kontynuować terapię w poradni leczenia uzależnień w ramach NFZ.",
   },
 ];
 

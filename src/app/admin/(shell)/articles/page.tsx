@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/db";
 import { articles } from "@/db/schema";
+import { isProtectedArticle } from "@/lib/protected-articles";
 
 export const metadata: Metadata = { title: "Artykuły — panel Insieme" };
 
@@ -52,36 +53,42 @@ export default async function ArticlesListPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>
-                  <Link
-                    href={`/admin/articles/${row.id}`}
-                    className="font-medium underline-offset-4 hover:underline"
-                  >
-                    {row.title}
-                  </Link>
-                  <p className="font-mono text-xs text-muted-foreground">/{row.slug}</p>
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {row.reviewer?.name ?? row.authorReviewer ?? "—"}
-                </TableCell>
-                <TableCell className="text-muted-foreground">
-                  {row.updatedAt.toLocaleDateString("pl-PL")}
-                </TableCell>
-                <TableCell>
-                  <RowActions
-                    label={row.title}
-                    editHref={`/admin/articles/${row.id}`}
-                    status={row.status}
-                    onPublish={publishArticle.bind(null, row.id)}
-                    onUnpublish={unpublishArticle.bind(null, row.id)}
-                    onDelete={deleteArticle.bind(null, row.id)}
-                    deleteTitle="Usunąć artykuł?"
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+            {rows.map((row) => {
+              const locked = isProtectedArticle(row.slug);
+              return (
+                <TableRow key={row.id}>
+                  <TableCell>
+                    <Link
+                      href={`/admin/articles/${row.id}`}
+                      className="font-medium underline-offset-4 hover:underline"
+                    >
+                      {row.title}
+                    </Link>
+                    <p className="font-mono text-xs text-muted-foreground">
+                      /{row.slug}
+                      {locked && <span className="ml-2 font-sans">· stały artykuł</span>}
+                    </p>
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {row.reviewer?.name ?? row.authorReviewer ?? "—"}
+                  </TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {row.updatedAt.toLocaleDateString("pl-PL")}
+                  </TableCell>
+                  <TableCell>
+                    <RowActions
+                      label={row.title}
+                      editHref={`/admin/articles/${row.id}`}
+                      status={row.status}
+                      onPublish={publishArticle.bind(null, row.id)}
+                      onUnpublish={locked ? undefined : unpublishArticle.bind(null, row.id)}
+                      onDelete={locked ? undefined : deleteArticle.bind(null, row.id)}
+                      deleteTitle="Usunąć artykuł?"
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       )}

@@ -37,12 +37,15 @@ export function ArticleForm({
   defaultCoverImage,
   mediaLibrary,
   team,
+  slugLocked = false,
 }: {
   id: string | null;
   defaultValues: ArticleInput;
   defaultCoverImage: MediaSummary | null;
   mediaLibrary: MediaSummary[];
   team: ReviewerOption[];
+  /** A protected article (`lib/protected-articles.ts`) keeps its address. */
+  slugLocked?: boolean;
 }) {
   const router = useRouter();
   const [coverImage, setCoverImage] = useState<MediaSummary | null>(defaultCoverImage);
@@ -89,8 +92,13 @@ export function ArticleForm({
                 })}
               />
             </Field>
-            <Field label="Adres (slug)" htmlFor="slug" error={errors.slug?.message}>
-              <Input id="slug" {...register("slug")} />
+            <Field
+              label="Adres (slug)"
+              htmlFor="slug"
+              hint={slugLocked ? "Stały adres — linkują do niego inne strony." : undefined}
+              error={errors.slug?.message}
+            >
+              <Input id="slug" readOnly={slugLocked} {...register("slug")} />
             </Field>
           </div>
 

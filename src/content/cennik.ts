@@ -13,6 +13,8 @@
  * to ship; a wrong one is not.
  */
 
+import { NFZ_ARTICLE_HREF } from "./artykul-nfz";
+
 /** Flip to true once the client's real price list is in. */
 export const PRICES_ARE_REAL = false;
 
@@ -155,4 +157,9 @@ export const cennikPageDefaults = {
   tableHeadProgram: "Program",
   tableHeadLength: "Długość",
   tableHeadPrice: "Cena od",
+  nfzTitle: "NFZ czy prywatnie?",
+  nfzBody:
+    "Leczenie uzależnień w placówkach z umową z NFZ jest bezpłatne. Różnice dotyczą głównie czasu oczekiwania, długości pobytu i wielkości grupy — wyjaśniamy je w osobnym artykule.",
+  nfzLinkLabel: "Odwyk na NFZ — jak to wygląda",
+  nfzHref: NFZ_ARTICLE_HREF,
 } as const;

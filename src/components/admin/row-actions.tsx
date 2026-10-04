@@ -43,8 +43,10 @@ export function RowActions({
   /** Row name, used for the trigger's accessible label. */
   label: string;
   onPublish: () => Promise<ActionResult>;
-  onUnpublish: () => Promise<ActionResult>;
-  onDelete: () => Promise<ActionResult>;
+  /** Omit for a record that must stay live — the item is then not offered. */
+  onUnpublish?: () => Promise<ActionResult>;
+  /** Omit for a record that cannot be deleted. */
+  onDelete?: () => Promise<ActionResult>;
   deleteTitle?: string;
   deleteDescription?: string;
 }) {
@@ -97,12 +99,14 @@ export function RowActions({
           <DropdownMenuSeparator />
 
           {status === "published" ? (
-            <DropdownMenuItem
-              disabled={isPending}
-              onClick={() => run(onUnpublish, "Cofnięto publikację.")}
-            >
-              <EyeOff aria-hidden /> Cofnij publikację
-            </DropdownMenuItem>
+            onUnpublish && (
+              <DropdownMenuItem
+                disabled={isPending}
+                onClick={() => run(onUnpublish, "Cofnięto publikację.")}
+              >
+                <EyeOff aria-hidden /> Cofnij publikację
+              </DropdownMenuItem>
+            )
           ) : (
             <DropdownMenuItem
               disabled={isPending}
@@ -112,21 +116,26 @@ export function RowActions({
             </DropdownMenuItem>
           )}
 
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
-            <Trash2 aria-hidden /> Usuń
-          </DropdownMenuItem>
+          {onDelete && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
+                <Trash2 aria-hidden /> Usuń
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ConfirmDeleteDialog
-        open={confirmOpen}
-        onOpenChange={setConfirmOpen}
-        onConfirm={onDelete}
-        title={deleteTitle}
-        description={deleteDescription}
-      />
+      {onDelete && (
+        <ConfirmDeleteDialog
+          open={confirmOpen}
+          onOpenChange={setConfirmOpen}
+          onConfirm={onDelete}
+          title={deleteTitle}
+          description={deleteDescription}
+        />
+      )}
     </>
   );
 }

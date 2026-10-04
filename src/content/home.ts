@@ -8,6 +8,7 @@
  * FAQ — mirror `settings` and `faq_items` so wiring them is a straight swap.
  */
 
+import { NFZ_ARTICLE_HREF } from "./artykul-nfz";
 import type { NavItem } from "./nav";
 
 /* ------------------------------------------------------------------ shared */
@@ -267,8 +268,8 @@ export const pierwszyKontaktDefaults: PierwszyKontaktContent = {
       ],
       note: "",
       ctaLabel: "Zadzwoń teraz",
-      secondaryLabel: "Zobacz wsparcie dla rodziny",
-      secondaryHref: "/program#rodzina",
+      secondaryLabel: "Jak możesz pomóc bliskiej osobie",
+      secondaryHref: "/dla-rodziny",
     },
   ],
 };
@@ -542,6 +543,10 @@ export type FooterContent = {
   tagline: string;
   columnTitle: string;
   links: NavItem[];
+  /** The intent pages — linked from every page, kept out of the header. */
+  helpColumnTitle: string;
+  helpLinks: NavItem[];
+  contactTitle: string;
   privacyLabel: string;
   privacyHref: string;
   emergencyLabel: string;
@@ -563,6 +568,14 @@ export const footerDefaults: FooterContent = {
     { label: "Zespół", href: "/zespol" },
     { label: "Pytania", href: "/faq" },
   ],
+  helpColumnTitle: "Leczenie i pomoc",
+  helpLinks: [
+    { label: "Leczenie alkoholizmu", href: "/leczenie-alkoholizmu" },
+    { label: "Dla rodziny", href: "/dla-rodziny" },
+    { label: "Detoks i kwalifikacja", href: "/detoks-i-kwalifikacja" },
+    { label: "Odwyk na NFZ", href: NFZ_ARTICLE_HREF },
+  ],
+  contactTitle: "Kontakt",
   privacyLabel: "Polityka prywatności · RODO",
   privacyHref: "/polityka-prywatnosci",
   emergencyLabel: "Jeśli dzieje się coś złego teraz",
