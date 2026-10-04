@@ -58,17 +58,3 @@ export const galeriaPageDefaults: GalleriaPageContent = {
     summary: (page, pageCount) => `Strona ${page} z ${pageCount}`,
   },
 };
-
-/** The band on /osrodek that links here. */
-export const galeriaTeaserDefaults = {
-  title: "Galeria",
-  lead: "Pokoje, salon, ogród i las za płotem.",
-  linkLabel: "Zobacz całą galerię",
-  href: "/galeria",
-  /**
-   * How many photos the teaser shows before handing off to /galeria. Seven
-   * fills the featured grid's two rows exactly: a 2×2 lead and six beside it.
-   */
-  limit: 7,
-  emptyNote: "Zdjęcia ośrodka pojawią się tutaj wkrótce.",
-};

@@ -4,18 +4,12 @@ import { Breadcrumb } from "@/components/site/chrome/page-intro";
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
 import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
-import { GalleryGrid } from "@/components/site/ui/gallery-grid";
 import { Reveal } from "@/components/site/ui/reveal";
 import { Section } from "@/components/site/ui/section";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { Slab } from "@/components/site/ui/slab";
-import { galeriaTeaserDefaults as galeria } from "@/content/galeria";
-import {
-  contactDefaults,
-  kontaktDefaults,
-  osrodekDefaults,
-  type OsrodekContent,
-} from "@/content/home";
+import { StickySplit } from "@/components/site/ui/sticky-split";
+import { contactDefaults, kontaktDefaults } from "@/content/home";
 import { osrodekPageDefaults as copy } from "@/content/osrodek";
 import { getGalleryTeaser } from "@/lib/queries/gallery";
 
@@ -26,9 +20,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * The place, at length — the long form of the homepage's 03 band, and built out
- * of the same parts: the captioned photographs and the same masthead over every
- * block after the opening.
+ * The place, at length — the long form of the homepage's 03 band.
  *
  * It runs as bands rather than one container of stacked blocks, because that is
  * what the rest of the site does: a cream sheet, the dark ground under it, a
@@ -39,27 +31,32 @@ export const metadata: Metadata = {
  */
 export const revalidate = 300;
 
-/** The salon photograph, which the dark band borrows from the homepage. */
-const DARK_BAND_FIGURE = 2;
+/**
+ * A multi-paragraph lead inside a `Section` masthead, which renders its lead in
+ * a single <p> — so the paragraphs are block spans rather than nested <p>s.
+ */
+function Paragraphs({ lines }: { lines: string[] }) {
+  return lines.map((line, i) => (
+    <span key={line} className={i > 0 ? "mt-3 block" : "block"}>
+      {line}
+    </span>
+  ));
+}
 
 export default async function OsrodekPage() {
-  // One more than the grid needs: the first published photo opens the page at
-  // full width, and the rest fill the gallery band, so nothing appears twice.
-  const [hero, ...photos] = await getGalleryTeaser(galeria.limit + 1);
-  const heroImage = hero
-    ? { src: hero.full.url, alt: hero.alt }
-    : copy.heroFallback;
-  const aspectsFigure = osrodekDefaults.figures[DARK_BAND_FIGURE];
+  // The first published photo opens the page at full width; the named rooms
+  // further down are fixed, so nothing else is read from the gallery here.
+  const [hero] = await getGalleryTeaser(1);
+  const heroImage = hero ? { src: hero.full.url, alt: hero.alt } : copy.heroFallback;
+  const [locationFirst, ...locationRest] = copy.location;
 
   return (
     <SubpageLayout intro={false}>
       {/*
         The opening is one sheet rather than a page intro followed by a band:
         title and lead with the numbers people ask first beside them, then the
-        house at full height, then where it is. It used to be three separate
-        blocks — a title with an empty middle, a letterboxed photo with a card
-        half-laid over it, and a masthead whose paragraphs read right, left,
-        right. `mt-0` because this sheet has no band above it to overlap.
+        house at full height, then where it is. `mt-0` because this sheet has no
+        band above it to overlap.
       */}
       <Slab raised className="mt-0 pt-section-sm">
         <Container>
@@ -75,24 +72,34 @@ export default async function OsrodekPage() {
 
             <div className="mt-[clamp(18px,2vw,28px)] grid items-end gap-x-[clamp(32px,6vw,112px)] gap-y-[clamp(28px,3vw,40px)] desk:[grid-template-columns:minmax(0,1.25fr)_minmax(0,0.75fr)]">
               <div>
-                <h1 className="text-pretty font-heading text-display text-ink-900">
+                <h1 className="max-w-[14em] text-pretty font-heading text-display text-ink-900">
                   {copy.title}
                 </h1>
-                <p className="mt-[clamp(14px,1.6vw,22px)] max-w-[30em] text-pretty text-lead text-ink-500">
-                  {copy.lead}
+                <p className="mt-[clamp(14px,1.6vw,22px)] max-w-[34em] text-pretty text-lead text-ink-700">
+                  {copy.lead[0]}
                 </p>
+                {copy.lead.slice(1).map((paragraph) => (
+                  <p
+                    key={paragraph}
+                    className="mt-3 max-w-[34em] text-pretty text-lead text-ink-500"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
               </div>
 
               {/* A spec sheet, not stat tiles: label and value on one line,
-                  read down the column like the travel times further on. */}
+                  read down the column like the travel details further on. */}
               <dl className="m-0 grid grid-cols-2 gap-x-[clamp(20px,3vw,40px)] border-t border-line-strong desk:grid-cols-1">
                 {copy.facts.map((fact) => (
                   <div
                     key={fact.label}
                     className="flex flex-col gap-1 border-b border-line py-3 desk:flex-row desk:items-baseline desk:justify-between desk:gap-6"
                   >
-                    <dt className="text-meta text-ink-400">{fact.label}</dt>
-                    <dd className="m-0 font-heading text-[clamp(20px,1.7vw,24px)] leading-none tracking-[-0.025em] tabular-nums text-ink-900">
+                    <dt className="text-eyebrow uppercase tracking-[0.2em] text-clay-600">
+                      {fact.label}
+                    </dt>
+                    <dd className="m-0 font-heading text-[clamp(19px,1.6vw,23px)] leading-[1.15] tracking-[-0.025em] tabular-nums text-ink-900 desk:text-right">
                       {fact.value}
                     </dd>
                   </div>
@@ -113,15 +120,12 @@ export default async function OsrodekPage() {
               />
             </div>
             <figcaption className="mt-3 flex flex-wrap items-baseline justify-between gap-x-8 gap-y-2 text-meta text-ink-400">
-              <span>{copy.heroCaption}</span>
-              <span className="flex flex-wrap items-baseline gap-x-6 gap-y-1">
-                <span>
-                  {contactDefaults.addressLine1}, {contactDefaults.addressLine2}
-                </span>
-                <Cta href="#dojazd" className="text-meta">
-                  {copy.statsLinkLabel}
-                </Cta>
+              <span>
+                {contactDefaults.addressLine1}, {contactDefaults.addressLine2}
               </span>
+              <Cta href="#dojazd" className="text-meta">
+                {copy.statsLinkLabel}
+              </Cta>
             </figcaption>
           </Reveal>
 
@@ -131,9 +135,9 @@ export default async function OsrodekPage() {
             <h2 className="font-heading text-display-sm text-ink-900">{copy.locationTitle}</h2>
             <div className="flex max-w-[38em] flex-col gap-4">
               <p className="text-pretty font-heading text-[clamp(19px,1.8vw,25px)] font-light leading-[1.4] tracking-[-0.022em] text-ink-900">
-                {copy.location[0]}
+                {locationFirst}
               </p>
-              {copy.location.slice(1).map((paragraph) => (
+              {locationRest.map((paragraph) => (
                 <p key={paragraph} className="text-pretty text-body-lg text-ink-500">
                   {paragraph}
                 </p>
@@ -143,74 +147,110 @@ export default async function OsrodekPage() {
         </Container>
       </Slab>
 
-      {/* The dark ground the two cream sheets are laid on. */}
-      <Section
-        tone="dark"
-        raised={false}
-        label={copy.aspectsEyebrow}
-        title={copy.aspectsTitle}
-        lead={copy.aspectsLead}
-      >
-        <div className="grid items-start gap-x-16 gap-y-[clamp(28px,3.2vw,46px)] tab:[grid-template-columns:minmax(0,0.78fr)_minmax(0,1.22fr)]">
-          <Reveal
-            as="figure"
-            className="relative m-0 aspect-[4/5] w-full min-w-0 overflow-hidden bg-ink-900 tab:sticky tab:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]"
-          >
-            <SiteImage
-              src={aspectsFigure.src}
-              alt={aspectsFigure.alt}
-              fill
-              sizes="(max-width: 767px) 100vw, 34vw"
-              className="object-cover saturate-[.92]"
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/80 via-ink-950/35 to-transparent px-[clamp(14px,1.4vw,22px)] pb-[clamp(12px,1.1vw,18px)] pt-[clamp(28px,3.4vw,48px)] text-[clamp(13px,0.95vw,15px)] leading-[1.45] text-bone">
-              {aspectsFigure.caption}
-            </figcaption>
-          </Reveal>
-
-          {/* A list, not cards: these are four answers to one question, and a
-              reader compares them down the left edge. The numerals are the
-              homepage's, borrowed to say the same thing on a smaller scale. */}
-          <ul className="m-0 list-none border-t border-white/12 p-0">
-            {copy.aspects.map((aspect, i) => (
-              <Reveal
-                as="li"
-                key={aspect.title}
-                delay={(i % 4) * 70}
-                className="grid gap-x-[clamp(14px,1.6vw,26px)] border-b border-white/12 py-[clamp(20px,2.1vw,28px)] [grid-template-columns:auto_minmax(0,1fr)]"
-              >
-                <span
-                  aria-hidden
-                  className="pt-[3px] font-heading text-eyebrow tabular-nums text-on-dark-faint"
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="min-w-0">
-                  <span className="block text-eyebrow uppercase tracking-[0.2em] text-clay-300">
-                    {aspect.title}
-                  </span>
-                  <h3 className="mt-2.5 max-w-[22em] text-pretty font-heading text-heading text-on-dark">
-                    {aspect.lead}
-                  </h3>
-                  <p className="mt-2.5 max-w-[44em] text-pretty text-body text-on-dark-muted">
-                    {aspect.body}
+      {/*
+        The dark ground the cream sheets are laid on. The masthead's place is
+        taken by the pinned column: the band's own two-paragraph intro stays put
+        while the four aspects scroll past it.
+      */}
+      <Slab tone="dark" raised={false}>
+        <Container>
+          <StickySplit
+            aside={
+              <>
+                <p className="text-eyebrow uppercase tracking-[0.22em] text-on-dark-muted">
+                  {copy.aspectsEyebrow}
+                </p>
+                <h2 className="mt-[clamp(18px,2vw,28px)] max-w-[13em] text-pretty font-heading text-display-sm text-on-dark">
+                  {copy.aspectsTitle}
+                </h2>
+                <p className="mt-[clamp(18px,2vw,28px)] max-w-[30em] text-pretty font-heading text-[clamp(18px,1.6vw,22px)] font-light leading-[1.45] tracking-[-0.02em] text-on-dark">
+                  {copy.aspectsLead[0]}
+                </p>
+                {copy.aspectsLead.slice(1).map((paragraph) => (
+                  <p
+                    key={paragraph}
+                    className="mt-4 max-w-[32em] text-pretty text-body-lg text-on-dark-muted"
+                  >
+                    {paragraph}
                   </p>
-                </div>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      </Section>
+                ))}
+              </>
+            }
+          >
+            {/* A list, not cards: four answers to one question, compared down
+                the left edge. The numerals are the homepage's, borrowed to say
+                the same thing on a smaller scale. */}
+            <ul className="m-0 list-none border-t border-white/12 p-0">
+              {copy.aspects.map((aspect, i) => (
+                <Reveal
+                  as="li"
+                  key={aspect.title}
+                  delay={(i % 4) * 70}
+                  className="grid gap-x-[clamp(14px,1.6vw,26px)] border-b border-white/12 py-[clamp(22px,2.3vw,32px)] [grid-template-columns:auto_minmax(0,1fr)]"
+                >
+                  <span
+                    aria-hidden
+                    className="pt-[3px] font-heading text-eyebrow tabular-nums text-on-dark-faint"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="min-w-0">
+                    <span className="block text-eyebrow uppercase tracking-[0.2em] text-clay-300">
+                      {aspect.title}
+                    </span>
+                    <h3 className="mt-2.5 max-w-[22em] text-pretty font-heading text-heading text-on-dark">
+                      {aspect.lead}
+                    </h3>
+                    {aspect.body.map((paragraph) => (
+                      <p
+                        key={paragraph}
+                        className="mt-2.5 max-w-[44em] text-pretty text-body text-on-dark-muted"
+                      >
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                </Reveal>
+              ))}
+            </ul>
+          </StickySplit>
+        </Container>
+      </Slab>
 
+      {/* The four rooms by name, each with the line that says what it is for.
+          Captions sit under the photographs rather than over them — they are
+          two lines of copy now, and a scrim that tall would hide the room. */}
       <Section
         id="galeria"
         raised
-        label={galeria.title}
+        label={copy.galleryEyebrow}
         title={copy.galleryTitle}
-        lead={galeria.lead}
-        action={<Cta href={galeria.href}>{galeria.linkLabel}</Cta>}
+        lead={<Paragraphs lines={copy.galleryLead} />}
+        action={<Cta href={copy.galleryHref}>{copy.galleryLinkLabel}</Cta>}
       >
-        {photos.length > 0 ? <GalleryGrid photos={photos} featured /> : <StockFigures />}
+        <div className="grid gap-x-gap gap-y-[clamp(26px,2.8vw,40px)] tab:grid-cols-2 desk:grid-cols-4">
+          {copy.spaces.map((space, i) => (
+            <Reveal as="figure" key={space.title} delay={(i % 4) * 70} className="group m-0 min-w-0">
+              <div className="relative aspect-[4/5] overflow-hidden bg-stone tab:aspect-[4/3] desk:aspect-[4/5]">
+                <SiteImage
+                  src={space.src}
+                  alt={space.alt}
+                  fill
+                  sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 25vw"
+                  className="object-cover saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
+                />
+              </div>
+              <figcaption className="mt-3.5 border-t border-line-strong pt-3">
+                <span className="block font-heading text-[clamp(17px,1.4vw,20px)] leading-[1.3] tracking-[-0.025em] text-ink-900">
+                  {space.title}
+                </span>
+                <span className="mt-1 block text-pretty text-meta text-ink-400">
+                  {space.body}
+                </span>
+              </figcaption>
+            </Reveal>
+          ))}
+        </div>
       </Section>
 
       {/* The warm ground is what gives a bone card its edge — see `Slab`. */}
@@ -221,7 +261,7 @@ export default async function OsrodekPage() {
         title={copy.amenitiesTitle}
         lead={copy.amenitiesLead}
       >
-        <div className="grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(258px,1fr))]">
+        <div className="grid gap-gap tab:grid-cols-2 desk:grid-cols-4">
           {copy.amenities.map((amenity, i) => (
             <Reveal
               key={amenity.title}
@@ -229,10 +269,14 @@ export default async function OsrodekPage() {
               delay={(i % 4) * 70}
               className="card-surface flex min-w-0 flex-col gap-3 p-card"
             >
-              <h3 className="font-heading text-[clamp(17px,1.45vw,21px)] leading-[1.3] tracking-[-0.025em] text-ink-900">
+              <h3 className="text-pretty font-heading text-[clamp(17px,1.45vw,21px)] leading-[1.3] tracking-[-0.025em] text-ink-900">
                 {amenity.title}
               </h3>
-              <p className="text-pretty text-meta text-ink-500">{amenity.body}</p>
+              {amenity.body.map((paragraph) => (
+                <p key={paragraph} className="text-pretty text-meta text-ink-500">
+                  {paragraph}
+                </p>
+              ))}
             </Reveal>
           ))}
         </div>
@@ -242,13 +286,11 @@ export default async function OsrodekPage() {
         raised
         label={copy.arrivalEyebrow}
         title={copy.arrivalTitle}
-        lead={copy.arrivalLead}
+        lead={<Paragraphs lines={copy.arrivalLead} />}
       >
         <div className="grid items-start gap-x-16 gap-y-[clamp(30px,3.4vw,48px)] tab:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]">
           <Reveal>
-            <h3 className="font-heading text-heading text-ink-900">
-              {copy.packingTitle}
-            </h3>
+            <h3 className="font-heading text-heading text-ink-900">{copy.packingTitle}</h3>
             <p className="mt-3 mb-6 max-w-[32em] text-pretty text-lead text-ink-500">
               {copy.packingLead}
             </p>
@@ -263,42 +305,45 @@ export default async function OsrodekPage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-5 max-w-[32em] text-meta text-ink-300">{copy.packingNote}</p>
+            {copy.packingNotes.map((note) => (
+              <p key={note} className="mt-4 max-w-[34em] text-pretty text-meta text-ink-400">
+                {note}
+              </p>
+            ))}
           </Reveal>
 
           <Reveal id="dojazd" className="scroll-mt-[calc(var(--nav-h-sticky)+12px)]">
-            <h3 className="mb-6 font-heading text-heading text-ink-900">
-              {copy.travelTitle}
-            </h3>
+            <h3 className="mb-6 font-heading text-heading text-ink-900">{copy.travelTitle}</h3>
 
-            {/* The times are the answer most people scroll here for, so they
-                get the page's one dark card rather than another hairline box. */}
+            {/* The address is the answer most people scroll here for, so it
+                gets the page's one dark card rather than another hairline box. */}
             <div className="bg-ink-950 p-[clamp(24px,2.4vw,34px)]">
-              {kontaktDefaults.travel.map((row, i) => (
-                <div
-                  key={row.label}
-                  className={
-                    i === kontaktDefaults.travel.length - 1
-                      ? "flex items-baseline justify-between gap-4 pt-3"
-                      : "flex items-baseline justify-between gap-4 border-b border-white/12 pb-3 [&:not(:first-child)]:pt-3"
-                  }
-                >
-                  <span className="text-meta text-on-dark-muted">{row.label}</span>
-                  <span className="font-heading text-[18px] tracking-[-0.025em] tabular-nums text-on-dark">
-                    {row.value}
+              <p className="text-meta text-on-dark-muted">{copy.travelAddressLead}</p>
+              <address className="mt-2 font-heading text-[clamp(20px,1.8vw,26px)] not-italic leading-[1.3] tracking-[-0.025em] text-on-dark">
+                {copy.travelAddress.map((line) => (
+                  <span key={line} className="block">
+                    {line}
                   </span>
-                </div>
-              ))}
+                ))}
+              </address>
 
-              <p className="mt-5 text-meta text-on-dark-faint">
-                {kontaktDefaults.travelNote}
-              </p>
+              <ul className="m-0 mt-5 list-none border-t border-white/12 p-0">
+                {copy.travel.map((line) => (
+                  <li
+                    key={line}
+                    className="border-b border-white/12 py-3 text-pretty text-meta text-on-dark-muted last:border-b-0 last:pb-0"
+                  >
+                    {line}
+                  </li>
+                ))}
+              </ul>
+
               <Cta
                 href={kontaktDefaults.mapsHref}
                 variant="quiet-on-dark"
                 target="_blank"
                 rel="noopener"
-                className="mt-4"
+                className="mt-5"
               >
                 {kontaktDefaults.mapsLabel}
               </Cta>
@@ -312,58 +357,25 @@ export default async function OsrodekPage() {
                 className="absolute inset-0 block size-full border-0"
               />
             </div>
-
-            <Cta
-              href={`tel:${contactDefaults.phoneHref}`}
-              variant="solid"
-              className="mt-gap tabular-nums"
-            >
-              Zapytaj o przyjazd — {contactDefaults.phone}
-            </Cta>
           </Reveal>
         </div>
+
+        {/* The page ends on the day itself — the question left over once the
+            bag is packed and the route is known — and on the phone number. */}
+        <Reveal className="mt-section-sm grid items-start gap-x-16 gap-y-5 border-t border-line-strong pt-[clamp(24px,2.6vw,36px)] tab:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]">
+          <h3 className="max-w-[16em] text-pretty font-heading text-display-sm text-ink-900">
+            {copy.firstDayTitle}
+          </h3>
+          <div className="flex flex-col items-start gap-[clamp(18px,2vw,26px)]">
+            <p className="max-w-[34em] text-pretty text-body-lg text-ink-500">
+              {copy.firstDayBody}
+            </p>
+            <Cta href={`tel:${contactDefaults.phoneHref}`} variant="solid" className="tabular-nums">
+              {copy.firstDayCtaLabel} — {contactDefaults.phone}
+            </Cta>
+          </div>
+        </Reveal>
       </Section>
     </SubpageLayout>
-  );
-}
-
-/**
- * What the gallery band shows before anything is published: the homepage's own
- * four captioned photographs. The band used to collapse to a single grey line
- * of "zdjęcia pojawią się wkrótce", which left the middle of the page empty on
- * exactly the pages that need photographs most.
- */
-function StockFigures({
-  figures = osrodekDefaults.figures,
-}: {
-  figures?: OsrodekContent["figures"];
-}) {
-  return (
-    <>
-      <div className="grid gap-gap [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
-        {figures.map((figure, i) => (
-          <Reveal
-            as="figure"
-            key={figure.src}
-            delay={(i % 4) * 70}
-            className="group relative m-0 aspect-[4/3] min-w-0 overflow-hidden bg-stone"
-          >
-            <SiteImage
-              src={figure.src}
-              alt={figure.alt}
-              fill
-              sizes="(max-width: 1023px) 100vw, 25vw"
-              className="object-cover saturate-[.92] transition-transform duration-[900ms] ease-out group-hover:scale-[1.035]"
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink-950/75 via-ink-950/35 to-transparent px-[clamp(12px,1.4vw,22px)] pb-[clamp(12px,1.1vw,18px)] pt-[clamp(28px,3.4vw,48px)] text-[clamp(13px,0.95vw,15px)] leading-[1.45] text-bone">
-              {figure.caption}
-            </figcaption>
-          </Reveal>
-        ))}
-      </div>
-      <p className="mt-[clamp(18px,2vw,26px)] text-meta text-ink-300">
-        {galeria.emptyNote}
-      </p>
-    </>
   );
 }
