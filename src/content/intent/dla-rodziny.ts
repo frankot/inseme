@@ -36,8 +36,8 @@ export const dlaRodzinyDefaults: IntentPageContent = {
       "Wsparcie należy się także Tobie, niezależnie od tego, co zdecyduje osoba uzależniona.",
     ],
     image: {
-      src: "/placeholder/dom-taras.webp",
-      alt: "Taras ośrodka i porośnięta bluszczem elewacja domu od strony ogrodu",
+      src: "/placeholder/bliska-osoba.webp",
+      alt: "Mężczyzna ze szklanką alkoholu siedzi na kanapie, za nim stoi zmartwiona partnerka",
     },
   },
 

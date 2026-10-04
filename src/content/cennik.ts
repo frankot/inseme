@@ -108,9 +108,6 @@ export type CennikContent = {
   noPriceLabel: string;
   /** The honest line when the whole list is still unpublished. */
   noPriceLead: string;
-  includesTitle: string;
-  dependsTitle: string;
-  depends: { title: string; body: string }[];
   note: string;
 };
 
@@ -125,38 +122,62 @@ export const cennikTeaserDefaults: CennikContent = {
   noPriceLabel: "wycena w rozmowie",
   noPriceLead:
     "Kwotę podajemy w pierwszej rozmowie telefonicznej, przed przyjazdem — nie po nim. Rozmowa jest bezpłatna i nie zobowiązuje do przyjazdu.",
-  includesTitle: "Co obejmuje cena",
-  dependsTitle: "Od czego zależy cena",
-  depends: [
-    {
-      title: "Długość pobytu",
-      body: "Sam detoks trwa 7–10 dni, pełny program 28. Pobyt można skrócić albo wydłużyć — rozliczamy wtedy proporcjonalnie.",
-    },
-    {
-      title: "Czy potrzebny jest detoks",
-      body: "Nie każdy go potrzebuje. Decyduje lekarz po rozmowie, nie my przez telefon.",
-    },
-    {
-      title: "Standard pokoju",
-      body: "Pokoje dwu- i trzyosobowe. Jednoosobowy bywa wolny — dopłata jest stała i podajemy ją przed przyjazdem.",
-    },
-  ],
   note: "Nie pobieramy opłaty za konsultację telefoniczną i nie wystawiamy faktur za rozmowę, która nie skończyła się przyjazdem.",
 };
 
-/** The /cennik page. */
+/** The /cennik page — the client's copy. */
 export const cennikPageDefaults = {
   metaTitle: "Cennik — prywatny ośrodek leczenia uzależnień Insieme, Magdalenka",
   metaDescription:
-    "Ile kosztuje detoks i terapia stacjonarna w ośrodku Insieme pod Warszawą. Co obejmuje cena i od czego zależy. Konsultacja telefoniczna bezpłatna.",
+    "Ile kosztuje leczenie w ośrodku Insieme pod Warszawą i co obejmuje cena. Program stacjonarny trwa minimum 28 dni. Pierwsza rozmowa telefoniczna jest bezpłatna.",
   eyebrow: "Cennik",
   breadcrumbHome: "Strona główna",
   breadcrumbLabel: "Cennik",
-  title: "Ile kosztuje pobyt i co jest w tej cenie.",
-  lead: "Podajemy widełki, żeby nie trzeba było dzwonić po to jedno pytanie. Dokładną kwotę ustalamy w pierwszej rozmowie — przed przyjazdem, nie po nim.",
-  tableHeadProgram: "Program",
-  tableHeadLength: "Długość",
-  tableHeadPrice: "Cena od",
+  title: "Ile kosztuje leczenie i co obejmuje cena.",
+  lead: "Koszt leczenia przedstawiamy przed podjęciem decyzji o przyjeździe. Podstawą jest program stacjonarny trwający minimum 28 dni. Jeśli w trakcie terapii wspólnie uznamy, że potrzebny jest dłuższy pobyt lub dalsza forma leczenia, wszystkie możliwości i koszty omawiamy wcześniej.",
+  freeCall:
+    "Pierwsza rozmowa telefoniczna jest bezpłatna i nie zobowiązuje do rozpoczęcia terapii.",
+  program: {
+    id: "terapia",
+    name: "Program stacjonarny",
+    length: "28 dni",
+    includesTitle: "W cenie pobytu otrzymujesz",
+    includes: [
+      "intensywny program terapii grupowej, psychoedukacji i warsztatów",
+      "regularne indywidualne sesje z terapeutą",
+      "kwalifikację i konsultacje lekarza psychiatry",
+      "całodobową opiekę zespołu terapeutycznego",
+      "zakwaterowanie przez cały okres leczenia",
+      "pełne wyżywienie",
+      "wsparcie dla osób najbliższych w trakcie pobytu",
+      "przygotowanie indywidualnego planu dalszego zdrowienia",
+      "możliwość korzystania z infrastruktury ośrodka: ogrodu, siłowni, sauny i przestrzeni rekreacyjnych",
+    ],
+  },
+  dependsTitle: "Od czego zależy koszt leczenia?",
+  depends: [
+    {
+      title: "Długość pobytu",
+      body: "Program stacjonarny trwa minimum 28 dni. Jeśli przebieg terapii wskazuje, że warto przedłużyć leczenie, decyzję podejmujemy wspólnie z pacjentem i wcześniej przedstawiamy koszt dalszego pobytu.",
+    },
+    {
+      title: "Dalsza kontynuacja leczenia",
+      body: "Po zakończeniu pobytu można kontynuować terapię w programie ambulatoryjnym. Jest to odrębny etap leczenia, standardowo trwający około 12–13 miesięcy.",
+    },
+    {
+      title: "Dodatkowe wsparcie dla bliskich",
+      body: "Podstawowe wsparcie osób najbliższych jest elementem procesu leczenia. Jeśli rodzina potrzebuje dodatkowych indywidualnych konsultacji lub interwencji kryzysowej, zakres i koszt takich spotkań ustalamy oddzielnie.",
+    },
+    {
+      title: "Potrzeba wcześniejszej detoksykacji",
+      body: "Detoksykacja nie jest prowadzona w Insieme i nie wchodzi w cenę pobytu. Jeśli przed rozpoczęciem terapii jest potrzebna, możemy pomóc w organizacji leczenia na prywatnym oddziale detoksykacyjnym, z którym współpracujemy.",
+    },
+  ],
+  closingTitle: "Zanim podejmiesz decyzję, poznasz wszystkie koszty.",
+  closingBody:
+    "Podczas pierwszej rozmowy opowiemy, jak przebiega program terapeutyczny, jaki jest aktualny koszt leczenia i czy w Twojej sytuacji potrzebne są dodatkowe działania przed przyjęciem.",
+  closingCta: "Zapytaj o koszt leczenia",
+  nfzEyebrow: "Z poradnika",
   nfzTitle: "NFZ czy prywatnie?",
   nfzBody:
     "Leczenie uzależnień w placówkach z umową z NFZ jest bezpłatne. Różnice dotyczą głównie czasu oczekiwania, długości pobytu i wielkości grupy — wyjaśniamy je w osobnym artykule.",

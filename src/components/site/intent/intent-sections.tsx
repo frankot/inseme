@@ -45,11 +45,14 @@ function Photo({
   image,
   sizes,
   className,
+  imgClassName,
   preload,
 }: {
   image: IntentImage;
   sizes: string;
   className?: string;
+  /** Where the crop anchors, e.g. `object-top` for a portrait in a wide frame. */
+  imgClassName?: string;
   preload?: boolean;
 }) {
   return (
@@ -61,7 +64,7 @@ function Photo({
           fill
           preload={preload}
           sizes={sizes}
-          className="object-cover saturate-[.92]"
+          className={cn("object-cover saturate-[.92]", imgClassName)}
         />
       </div>
       {image.caption && (
@@ -142,6 +145,8 @@ export function IntentIntroSection({
               preload
               sizes="(max-width: 1023px) 100vw, 44vw"
               className="aspect-[4/3] desk:aspect-[4/5]"
+              // Faces sit high in a portrait photo; a centred 4:3 crop cuts them.
+              imgClassName="object-top desk:object-center"
             />
           </Reveal>
         </div>
