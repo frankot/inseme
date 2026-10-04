@@ -360,6 +360,16 @@
   html {
     @apply font-sans;
   }
+  /*
+   * In-page anchors glide rather than jump — the /program overview cards, the
+   * homepage's "#test" link. Route changes still land instantly: Next turns
+   * this off around navigation because <html> carries data-scroll-behavior.
+   */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
 }
 
 /*

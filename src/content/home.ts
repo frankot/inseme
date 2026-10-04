@@ -351,67 +351,66 @@ export type DayEntry = {
 };
 
 export type JedenDzienContent = {
-  /** Label over the day plan — a sub-heading inside 04, so no numeral. */
+  /** Label over the day plan — a band of /program, so no numeral. */
   eyebrow: string;
   title: string;
   lead: string;
+  /** The paragraphs under the lead — why the day has a fixed shape. */
+  body: string[];
   /** Sits over the right-hand column, opposite the word "Godzina". */
   scheduleLabel: string;
   /** Footnote under the intro — what the timetable does not cover. */
   note: string;
-  /** Closes the intro column, beside the hours. No caption — the plan is the point. */
-  image: { src: string; alt: string };
   entries: DayEntry[];
 };
 
 export const jedenDzienDefaults: JedenDzienContent = {
   eyebrow: "Jeden zwykły dzień",
-  title: "Nie wiesz, co Cię czeka. To najtrudniejsza część.",
-  lead: "Dzień ma stałe ramy: te same godziny dla wszystkich, od pobudki po ciszę nocną. Po dwóch, trzech dniach przestajesz o nich myśleć — i to zwykle pierwszy moment ulgi.",
-  scheduleLabel: "Plan dnia · pn–sb",
-  note: "W niedzielę dzień jest luźniejszy — bez bloków terapeutycznych.",
-  image: {
-    src: "/placeholder/dom-staw.webp",
-    alt: "Dom ośrodka widziany zza stawu, w otoczeniu sosen",
-  },
+  title: "Wiesz, jak wygląda każdy dzień.",
+  lead: "Początek pobytu oznacza wiele nowych rzeczy naraz. Dlatego dzień w Insieme ma stały, przewidywalny rytm — od pobudki, przez terapię i wspólne posiłki, po czas na odpoczynek.",
+  body: [
+    "Ta struktura pomaga odzyskać regularność, poczucie bezpieczeństwa i zdrowe nawyki. Jest też częścią terapii — uczymy się równowagi między pracą nad sobą, odpowiedzialnością, relacjami, aktywnością i odpoczynkiem.",
+  ],
+  scheduleLabel: "Plan dnia · poniedziałek–sobota",
+  note: "W niedzielę rytm dnia jest spokojniejszy — rano spotykamy się na bloku terapii grupowej, po południu jest czas na odwiedziny osób najbliższych albo relaks i regenerację.",
   entries: [
     { time: "6:45", title: "Pobudka" },
     {
       time: "7:00",
       title: "Aktywacja",
-      detail: "Wspólne ćwiczenia. Krótko i bez wyczynu.",
+      detail: "Wspólna aktywność fizyczna na dobry początek dnia.",
     },
     { time: "8:00", title: "Śniadanie" },
     {
       time: "9:00–12:00",
       title: "Poranny blok terapeutyczny",
       detail:
-        "Medytacja, omówienie funkcji, dzienniki emocji i głodu, prace terapeutyczne, informacje zwrotne.",
+        "Medytacja, omówienie funkcji, dzienniki emocji i głodu, prace terapeutyczne oraz informacja zwrotna.",
     },
     {
       time: "12:00–13:30",
       title: "Przerwa",
-      detail: "Czas własny: spacer, drzemka, rozmowa.",
+      detail:
+        "Czas na indywidualne sesje z terapeutą, zadania terapeutyczne, spacer, rozmowę lub pobycie samemu ze sobą czy odpoczynek.",
     },
     { time: "13:30", title: "Obiad" },
     {
       time: "15:00–18:00",
       title: "Popołudniowy blok terapeutyczny",
-      detail:
-        "Psychoedukacja, ćwiczenia terapeutyczne, praca grupowa, informacje zwrotne.",
+      detail: "Psychoedukacja, warsztaty, ćwiczenia, praca grupowa.",
     },
-    { time: "18:00–19:00", title: "Przerwa", detail: "Czas własny." },
+    {
+      time: "18:00–19:00",
+      title: "Przerwa",
+      detail: "Czas własny i odpoczynek.",
+    },
     { time: "19:00", title: "Kolacja" },
     {
-      time: "wieczór",
+      time: "Wieczór",
       title: "Czas własny",
-      detail: "Prace terapeutyczne, rekreacja, siłownia.",
+      detail: "Prace terapeutyczne, rozmowy, rekreacja, siłownia, sauna i odpoczynek.",
     },
-    {
-      time: "19:30 / 20:30",
-      title: "Sauna",
-      detail: "Dwie tury do 22:00, zgodnie z harmonogramem, niekoedukacyjnie.",
-    },
+    { time: "23:00", title: "Cisza nocna" },
   ],
 };
 

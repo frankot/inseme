@@ -21,12 +21,16 @@ import { cn } from "@/lib/utils";
 const SPLIT = {
   tab: {
     grid: "tab:[grid-template-columns:minmax(0,0.86fr)_minmax(0,1.14fr)]",
+    gridRight: "tab:[grid-template-columns:minmax(0,1.14fr)_minmax(0,0.86fr)]",
+    asideRight: "tab:order-last",
     aside: "tab:sticky tab:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]",
     figure: "tab:max-h-[30vh]",
     sizes: "(max-width: 767px) 100vw, 40vw",
   },
   desk: {
     grid: "desk:[grid-template-columns:minmax(0,0.86fr)_minmax(0,1.14fr)]",
+    gridRight: "desk:[grid-template-columns:minmax(0,1.14fr)_minmax(0,0.86fr)]",
+    asideRight: "desk:order-last",
     aside: "desk:sticky desk:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]",
     figure: "desk:max-h-[30vh]",
     sizes: "(max-width: 1023px) 100vw, 40vw",
@@ -38,6 +42,8 @@ export function StickySplit({
   aside,
   image,
   splitAt = "tab",
+  asideSide = "left",
+  sticky = true,
   children,
   className,
 }: {
@@ -48,22 +54,31 @@ export function StickySplit({
   image?: { src: string; alt: string };
   /** The breakpoint the two columns go side by side at. */
   splitAt?: keyof typeof SPLIT;
+  /**
+   * Which column the aside takes once the two are side by side. Below the
+   * breakpoint it always stacks first — the heading still has to come before
+   * what it introduces.
+   */
+  asideSide?: "left" | "right";
+  /** Pin the aside while the long column scrolls. Off for a short column. */
+  sticky?: boolean;
   /** The long column. */
   children: ReactNode;
   className?: string;
 }) {
   const split = SPLIT[splitAt];
+  const right = asideSide === "right";
 
   return (
     <div
       id={id}
       className={cn(
         "grid items-start gap-x-16 gap-y-[clamp(30px,3.2vw,46px)]",
-        split.grid,
+        right ? split.gridRight : split.grid,
         className,
       )}
     >
-      <Reveal className={split.aside}>
+      <Reveal className={cn(sticky && split.aside, right && split.asideRight)}>
         {aside}
         {/* Capped in height so the pinned block still fits a laptop viewport —
             a sticky column taller than the screen can never sit still. */}
