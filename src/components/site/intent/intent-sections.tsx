@@ -213,14 +213,17 @@ export function IntentStepsSection({
 export function IntentStatementSection({
   statement,
   index,
+  raised = false,
 }: {
   statement: IntentStatement;
   index: string;
+  /** Normally ground; a sheet only when sections above it are switched off. */
+  raised?: boolean;
 }) {
   const titled = statement.points.every((point) => point.title);
 
   return (
-    <Slab id={statement.id} tone="dark" raised={false}>
+    <Slab id={statement.id} tone="dark" raised={raised}>
       <Container>
         <Reveal>
           <p className="flex items-center gap-2.5 text-eyebrow uppercase tracking-[0.22em]">
@@ -243,7 +246,7 @@ export function IntentStatementSection({
           ))}
         </Reveal>
 
-        {titled ? (
+        {statement.points.length === 0 ? null : titled ? (
           <ul className="m-0 mt-[clamp(32px,3.6vw,56px)] grid list-none gap-x-[clamp(24px,3vw,56px)] p-0 tab:grid-cols-3">
             {statement.points.map((point, i) => (
               <Reveal

@@ -1,11 +1,15 @@
-import { IntentPage, intentMetadata } from "@/components/site/intent/intent-page";
-import { detoksIKwalifikacjaDefaults as copy } from "@/content/intent/detoks-i-kwalifikacja";
+import { IntentView, intentMetadata } from "@/components/site/intent/intent-page";
+import { detoksIKwalifikacjaDefaults as defaults } from "@/content/intent/detoks-i-kwalifikacja";
+import { getCmsPage } from "@/lib/cms/get-page";
 
-export const metadata = intentMetadata(copy);
-
-/** Prerendered, refreshed every five minutes — the FAQ block reads the DB. */
+/** Prerendered, refreshed every five minutes; publishing in the CMS revalidates it. */
 export const revalidate = 300;
 
-export default function DetoksIKwalifikacjaPage() {
-  return <IntentPage copy={copy} />;
+export function generateMetadata() {
+  return intentMetadata("detoks-i-kwalifikacja", defaults.path);
+}
+
+/** Copy from the CMS (`/admin/cms/detoks-i-kwalifikacja`); see `IntentView`. */
+export default async function DetoksIKwalifikacjaPage() {
+  return <IntentView page={await getCmsPage("detoks-i-kwalifikacja")} defaults={defaults} />;
 }

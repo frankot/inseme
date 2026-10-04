@@ -1,11 +1,15 @@
-import { IntentPage, intentMetadata } from "@/components/site/intent/intent-page";
-import { dlaRodzinyDefaults as copy } from "@/content/intent/dla-rodziny";
+import { IntentView, intentMetadata } from "@/components/site/intent/intent-page";
+import { dlaRodzinyDefaults as defaults } from "@/content/intent/dla-rodziny";
+import { getCmsPage } from "@/lib/cms/get-page";
 
-export const metadata = intentMetadata(copy);
-
-/** Prerendered, refreshed every five minutes — the FAQ block reads the DB. */
+/** Prerendered, refreshed every five minutes; publishing in the CMS revalidates it. */
 export const revalidate = 300;
 
-export default function DlaRodzinyPage() {
-  return <IntentPage copy={copy} />;
+export function generateMetadata() {
+  return intentMetadata("dla-rodziny", defaults.path);
+}
+
+/** Copy from the CMS (`/admin/cms/dla-rodziny`); see `IntentView`. */
+export default async function DlaRodzinyPage() {
+  return <IntentView page={await getCmsPage("dla-rodziny")} defaults={defaults} />;
 }

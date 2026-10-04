@@ -125,6 +125,15 @@ export async function getArticleBySlug(slug: string): Promise<ArticleDetail | nu
   return row ? toDetail(row) : null;
 }
 
+/** One published article by id — the homepage's picked read-in. */
+export async function getPublishedArticleById(id: string): Promise<ArticleDetail | null> {
+  const row = await db.query.articles.findFirst({
+    where: and(publishedOnly, eq(articles.id, id)),
+    with: detailWith,
+  });
+  return row ? toDetail(row) : null;
+}
+
 /** The newest article with its body, for the homepage's read-in. */
 export async function getLatestArticle(): Promise<ArticleDetail | null> {
   const row = await db.query.articles.findFirst({

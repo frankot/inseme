@@ -7,6 +7,7 @@ import {
   publishArticle,
   unpublishArticle,
 } from "@/app/admin/(shell)/articles/actions";
+import { featuredToggles, isFeatured } from "@/components/admin/featured-toggles";
 import { PageHeader } from "@/components/admin/page-header";
 import { RowActions } from "@/components/admin/row-actions";
 import { Button } from "@/components/ui/button";
@@ -20,11 +21,13 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/db";
 import { articles } from "@/db/schema";
+import { getFeaturedSlots } from "@/lib/cms/featured";
 import { isProtectedArticle } from "@/lib/protected-articles";
 
 export const metadata: Metadata = { title: "Artykuły — panel Insieme" };
 
 export default async function ArticlesListPage() {
+  const featured = await getFeaturedSlots("article");
   const rows = await db.query.articles.findMany({
     orderBy: [desc(articles.updatedAt)],
     with: { reviewer: { columns: { name: true } } },
@@ -63,7 +66,9 @@ export default async function ArticlesListPage() {
                       className="font-medium underline-offset-4 hover:underline"
                     >
                       {row.title}
-                    </Link>
+                    </Link> {isFeatured(featured, row.id) && (
+                      <span className="ml-2 text-xs text-amber-700" title="Na stronie głównej">★</span>
+                    )}
                     <p className="font-mono text-xs text-muted-foreground">
                       /{row.slug}
                       {locked && <span className="ml-2 font-sans">· stały artykuł</span>}
@@ -84,6 +89,7 @@ export default async function ArticlesListPage() {
                       onUnpublish={locked ? undefined : unpublishArticle.bind(null, row.id)}
                       onDelete={locked ? undefined : deleteArticle.bind(null, row.id)}
                       deleteTitle="Usunąć artykuł?"
+                      featured={featuredToggles(featured, row.id)}
                     />
                   </TableCell>
                 </TableRow>

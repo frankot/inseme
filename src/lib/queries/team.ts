@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, eq } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 
 import { db } from "@/db";
 import { teamMembers, type Media, type TeamMember } from "@/db/schema";
@@ -69,6 +69,20 @@ export async function getFeaturedTeam(limit = 4): Promise<TeamCardData[]> {
     with: { photo: true },
   });
   return rows.map(toCard);
+}
+
+/**
+ * Published people by id, in the order given — the homepage's picked row.
+ * Unknown and unpublished ids are dropped.
+ */
+export async function getTeamByIds(ids: string[]): Promise<TeamCardData[]> {
+  if (ids.length === 0) return [];
+  const rows = await db.query.teamMembers.findMany({
+    where: and(publishedOnly, inArray(teamMembers.id, ids)),
+    with: { photo: true },
+  });
+  const byId = new Map(rows.map((row) => [row.id, toCard(row)]));
+  return ids.flatMap((id) => byId.get(id) ?? []);
 }
 
 /** One person, or null when the slug is unknown or the row is still a draft. */

@@ -1,6 +1,7 @@
 /**
- * Seeds the FAQ. The first `FEATURED` questions are marked for the homepage
- * section; the rest appear only on /faq. Editors change both in /admin/faq.
+ * Seeds the FAQ. Which questions the homepage shows is not set here: that
+ * lives in the CMS (Strona główna › Pytania, or the row menu in /admin/faq).
+ * `seed:cms` starts it with the first six by order.
  *
  * Questions with a `category` are also embedded on the page that reads that
  * category — `alkohol` on /leczenie-alkoholizmu, `rodzina` on /dla-rodziny,
@@ -44,7 +45,6 @@ async function main() {
       answer: sanitizeRichText(paragraph(item.answer)),
       category: item.category ?? null,
       sortOrder: i * 10,
-      featured: i < FEATURED,
       status: "published" as const,
       publishedAt: now,
       updatedAt: now,
@@ -67,9 +67,6 @@ async function main() {
 
   console.log(`\n${QUESTIONS.length} pytań opublikowanych. Sprawdź /admin/faq, sekcję 07 na stronie głównej i /faq.`);
 }
-
-/** How many of the questions below, from the top, the homepage features. */
-const FEATURED = 6;
 
 type Question = { question: string; answer: string; category?: string };
 

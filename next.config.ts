@@ -40,7 +40,8 @@ const csp = [
   "img-src 'self' data: blob: https:",
   "font-src 'self'",
   "connect-src 'self' https://*.r2.cloudflarestorage.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com",
-  "frame-src https://www.openstreetmap.org",
+  // 'self': the CMS editor frames its own preview (/admin/preview/*).
+  "frame-src 'self' https://www.openstreetmap.org",
   "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",
@@ -67,7 +68,22 @@ const nextConfig: NextConfig = {
     loaderFile: "./src/lib/image-loader.ts",
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // The CMS preview is shown inside the editor's iframe, on the same
+      // origin. Everything else stays unframeable. Later entries win, so
+      // these two keys override the site-wide DENY / 'none' for this route.
+      {
+        source: "/admin/preview/:path*",
+        headers: [
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          {
+            key: "Content-Security-Policy-Report-Only",
+            value: csp.replace("frame-ancestors 'none'", "frame-ancestors 'self'"),
+          },
+        ],
+      },
+    ];
   },
   async redirects() {
     return [

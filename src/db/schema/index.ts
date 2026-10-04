@@ -9,3 +9,4 @@ export * from "./relations";
 export * from "./screening-tests";
 export * from "./settings";
 export * from "./team-members";
+export * from "./cms-pages";

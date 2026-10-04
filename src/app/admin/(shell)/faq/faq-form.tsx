@@ -11,12 +11,7 @@ import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import {
-  FAQ_FEATURED_MAX,
-  faqItemSchema,
-  type FaqItemInput,
-} from "@/lib/validations/content";
+import { faqItemSchema, type FaqItemInput } from "@/lib/validations/content";
 
 export function FaqForm({
   id,
@@ -96,22 +91,6 @@ export function FaqForm({
             </Field>
           </div>
 
-          <Field
-            label="Na stronie głównej"
-            hint={`Pokazuje pytanie w sekcji FAQ na stronie głównej (najwyżej ${FAQ_FEATURED_MAX}). Pełna lista jest zawsze na /faq.`}
-          >
-            <Controller
-              control={control}
-              name="featured"
-              render={({ field }) => (
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                  aria-label="Na stronie głównej"
-                />
-              )}
-            />
-          </Field>
         </CardContent>
       </Card>
 

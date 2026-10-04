@@ -1,8 +1,9 @@
-import { asc, desc } from "drizzle-orm";
+import { asc } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { deleteFaqItem, publishFaqItem, unpublishFaqItem } from "@/app/admin/(shell)/faq/actions";
+import { featuredToggles, isFeatured } from "@/components/admin/featured-toggles";
 import { PageHeader } from "@/components/admin/page-header";
 import { RowActions } from "@/components/admin/row-actions";
 import { Button } from "@/components/ui/button";
@@ -16,20 +17,21 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/db";
 import { faqItems } from "@/db/schema";
+import { getFeaturedSlots } from "@/lib/cms/featured";
 
 export const metadata: Metadata = { title: "FAQ — panel Insieme" };
 
 export default async function FaqListPage() {
-  const rows = await db
-    .select()
-    .from(faqItems)
-    .orderBy(desc(faqItems.featured), asc(faqItems.sortOrder), asc(faqItems.createdAt));
+  const [rows, featured] = await Promise.all([
+    db.select().from(faqItems).orderBy(asc(faqItems.sortOrder), asc(faqItems.createdAt)),
+    getFeaturedSlots("faq"),
+  ]);
 
   return (
     <>
       <PageHeader
         title="FAQ"
-        description="Najczęstsze pytania. Zaznaczone „Na stronie głównej” (najwyżej 6) trafiają do sekcji FAQ na stronie głównej; wszystkie opublikowane są na /faq."
+        description="Najczęstsze pytania. Wszystkie opublikowane są na /faq. Które trafiają na stronę główną (najwyżej 6), wybierasz w menu wiersza albo w CMS › Strona główna › Pytania. Kategoria osadza pytanie na stronie tematycznej (alkohol, rodzina, detoks, nfz)."
         actions={<Button render={<Link href="/admin/faq/new" />}>Dodaj pytanie</Button>}
       />
 
@@ -59,7 +61,7 @@ export default async function FaqListPage() {
                     {row.question}
                   </Link>
                 </TableCell>
-                <TableCell className="text-muted-foreground">{row.featured ? "✓" : "—"}</TableCell>
+                <TableCell className="text-muted-foreground">{isFeatured(featured, row.id) ? "★" : "—"}</TableCell>
                 <TableCell className="text-muted-foreground">{row.category ?? "—"}</TableCell>
                 <TableCell className="text-muted-foreground">{row.sortOrder}</TableCell>
                 <TableCell>
@@ -71,6 +73,7 @@ export default async function FaqListPage() {
                     onUnpublish={unpublishFaqItem.bind(null, row.id)}
                     onDelete={deleteFaqItem.bind(null, row.id)}
                     deleteTitle="Usunąć pytanie?"
+                    featured={featuredToggles(featured, row.id)}
                   />
                 </TableCell>
               </TableRow>

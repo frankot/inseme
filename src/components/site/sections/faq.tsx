@@ -6,9 +6,10 @@ import { faqDefaults, type FaqContent } from "@/content/home";
 import type { FaqEntry } from "@/lib/queries/faq";
 
 /**
- * Published rows of `faq_items`, in the order /admin/faq shows them. Like
- * Zespół it removes itself when there is nothing published, rather than
- * printing a heading over an empty list.
+ * The homepage's questions: the ones picked in the CMS (07), or the first ones
+ * by order when nothing is picked — see `resolveFaq`. Like Zespół it removes
+ * itself when there is nothing published, rather than printing a heading over
+ * an empty list.
  *
  * The accordion itself is `FaqList`, so /faq can render the full set
  * without this section's heading column repeating the page title.
@@ -16,23 +17,14 @@ import type { FaqEntry } from "@/lib/queries/faq";
 export function Faq({
   items,
   content = faqDefaults,
-  /**
-   * Set on the homepage: show only the questions featured in /admin/faq, at
-   * most this many. With none featured it falls back to the first ones, so the
-   * section never disappears just because nobody ticked the box.
-   */
-  limit,
+  hasMore = false,
 }: {
   items: FaqEntry[];
   content?: FaqContent;
-  limit?: number;
+  /** Show the link to /faq — there are questions beyond these. */
+  hasMore?: boolean;
 }) {
   if (items.length === 0) return null;
-
-  const featured = items.filter((item) => item.featured);
-  const pool = limit && featured.length > 0 ? featured : items;
-  const shown = limit ? pool.slice(0, limit) : pool;
-  const hasMore = shown.length < items.length;
 
   return (
     <Section id="faq" tone="tinted" index={content.index} label={content.eyebrow}>
@@ -48,7 +40,7 @@ export function Faq({
           </>
         }
       >
-        <FaqList items={shown} />
+        <FaqList items={items} />
 
         {hasMore && (
           <Cta href={content.href} className="mt-[clamp(22px,2.4vw,32px)]">

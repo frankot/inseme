@@ -57,6 +57,20 @@
       "when": 1791034126733,
       "tag": "0007_drop_pages",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791112826370,
+      "tag": "0008_cms_pages",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791114563761,
+      "tag": "0009_drop_faq_featured",
+      "breakpoints": true
     }
   ]
 }

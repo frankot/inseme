@@ -1,0 +1,1 @@
+ALTER TABLE "faq_items" DROP COLUMN "featured";

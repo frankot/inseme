@@ -7,6 +7,7 @@ import {
   publishTeamMember,
   unpublishTeamMember,
 } from "@/app/admin/(shell)/team/actions";
+import { featuredToggles, isFeatured } from "@/components/admin/featured-toggles";
 import { PageHeader } from "@/components/admin/page-header";
 import { RowActions } from "@/components/admin/row-actions";
 import { Button } from "@/components/ui/button";
@@ -20,20 +21,21 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/db";
 import { teamMembers } from "@/db/schema";
+import { getFeaturedSlots } from "@/lib/cms/featured";
 
 export const metadata: Metadata = { title: "Zespół — panel Insieme" };
 
 export default async function TeamListPage() {
-  const rows = await db
-    .select()
-    .from(teamMembers)
-    .orderBy(asc(teamMembers.sortOrder), asc(teamMembers.name));
+  const [rows, featured] = await Promise.all([
+    db.select().from(teamMembers).orderBy(asc(teamMembers.sortOrder), asc(teamMembers.name)),
+    getFeaturedSlots("team"),
+  ]);
 
   return (
     <>
       <PageHeader
         title="Zespół"
-        description="Terapeuci i personel ośrodka. Kolejność ustala pole „Kolejność” — pierwsze trzy osoby trafiają też na stronę główną."
+        description="Terapeuci i personel ośrodka. Kolejność ustala pole „Kolejność”. Kto jest na stronie głównej (najwyżej 4, ★), wybierasz w menu wiersza albo w CMS › Strona główna › Zespół."
         actions={
           <Button render={<Link href="/admin/team/new" />}>Dodaj osobę</Button>
         }
@@ -60,7 +62,9 @@ export default async function TeamListPage() {
                 <TableCell>
                   <Link href={`/admin/team/${row.id}`} className="font-medium underline-offset-4 hover:underline">
                     {row.name}
-                  </Link>
+                  </Link> {isFeatured(featured, row.id) && (
+                    <span className="ml-2 text-xs text-amber-700" title="Na stronie głównej">★</span>
+                  )}
                 </TableCell>
                 <TableCell className="text-muted-foreground">{row.role ?? "—"}</TableCell>
                 <TableCell className="text-muted-foreground">
@@ -88,6 +92,7 @@ export default async function TeamListPage() {
                     onUnpublish={unpublishTeamMember.bind(null, row.id)}
                     onDelete={deleteTeamMember.bind(null, row.id)}
                     deleteTitle="Usunąć osobę?"
+                    featured={featuredToggles(featured, row.id)}
                   />
                 </TableCell>
               </TableRow>

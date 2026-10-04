@@ -7,6 +7,7 @@ import {
   publishScreeningTest,
   unpublishScreeningTest,
 } from "@/app/admin/(shell)/tests/actions";
+import { featuredToggles, isFeatured } from "@/components/admin/featured-toggles";
 import { PageHeader } from "@/components/admin/page-header";
 import { RowActions } from "@/components/admin/row-actions";
 import { Button } from "@/components/ui/button";
@@ -24,10 +25,12 @@ import {
   screeningTestSubmissions,
   screeningTests,
 } from "@/db/schema";
+import { getFeaturedSlots } from "@/lib/cms/featured";
 
 export const metadata: Metadata = { title: "Testy przesiewowe — panel Insieme" };
 
 export default async function TestsListPage() {
+  const featured = await getFeaturedSlots("test");
   const rows = await db
     .select({
       id: screeningTests.id,
@@ -78,7 +81,9 @@ export default async function TestsListPage() {
                     className="font-medium underline-offset-4 hover:underline"
                   >
                     {row.title}
-                  </Link>
+                  </Link> {isFeatured(featured, row.id) && (
+                    <span className="ml-2 text-xs text-amber-700" title="Na stronie głównej">★</span>
+                  )}
                   <span className="block text-xs text-muted-foreground">/testy/{row.slug}</span>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{row.questions}</TableCell>
@@ -105,6 +110,7 @@ export default async function TestsListPage() {
                     onDelete={deleteScreeningTest.bind(null, row.id)}
                     deleteTitle="Usunąć test?"
                     deleteDescription="Zniknie razem z pytaniami, przedziałami i zgłoszeniami."
+                    featured={featuredToggles(featured, row.id)}
                   />
                 </TableCell>
               </TableRow>

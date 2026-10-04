@@ -15,7 +15,7 @@ export default async function NewFaqItemPage() {
       <FaqForm
         id={null}
         categories={categories}
-        defaultValues={{ question: "", answer: "", category: "", sortOrder: 0, featured: false }}
+        defaultValues={{ question: "", answer: "", category: "", sortOrder: 0 }}
       />
     </>
   );

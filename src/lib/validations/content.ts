@@ -59,7 +59,7 @@ export const teamMemberSchema = z.object({
   sortOrder: z.number().int().min(0).max(9999),
 });
 
-/** How many questions the homepage FAQ section can feature. */
+/** How many questions the homepage FAQ section can feature (CMS: Strona główna › Pytania). */
 export const FAQ_FEATURED_MAX = 6;
 
 export const faqItemSchema = z.object({
@@ -67,7 +67,6 @@ export const faqItemSchema = z.object({
   answer: z.string().trim().min(1, "Podaj odpowiedź.").max(20000),
   category: optionalText,
   sortOrder: z.number().int().min(0).max(9999),
-  featured: z.boolean(),
 });
 
 export const articleSchema = z.object({

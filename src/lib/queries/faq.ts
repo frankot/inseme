@@ -16,7 +16,6 @@ export type FaqEntry = {
   id: string;
   question: string;
   answer: string;
-  featured: boolean;
 };
 
 /**
@@ -31,7 +30,6 @@ export async function getPublishedFaq(category?: string): Promise<FaqEntry[]> {
       id: faqItems.id,
       question: faqItems.question,
       answer: faqItems.answer,
-      featured: faqItems.featured,
     })
     .from(faqItems)
     .where(category ? and(published, eq(faqItems.category, category)) : published)

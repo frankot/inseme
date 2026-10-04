@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ExternalLink, EyeOff, Globe, Pencil, Trash2 } from "lucide-react";
+import { Check, ChevronDown, ExternalLink, EyeOff, Globe, Pencil, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -16,7 +16,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { ActionResult } from "@/lib/action-result";
+import type { ActionResult, DataResult } from "@/lib/action-result";
+
+/**
+ * "Show this on the homepage" — one per CMS slot the record's kind can fill.
+ * The same doc the CMS editor writes (plans/CMS_PLAN.md §3); the change is
+ * live at once.
+ */
+export type FeaturedToggle = {
+  label: string;
+  on: boolean;
+  /** The slot is at its limit — switching this one on would be refused. */
+  full?: boolean;
+  onToggle: () => Promise<ActionResult | DataResult<unknown>>;
+};
 
 /**
  * One menu per row on every list: edit, preview, the publish toggle and delete.
@@ -35,6 +48,7 @@ export function RowActions({
   onDelete,
   deleteTitle,
   deleteDescription,
+  featured = [],
 }: {
   editHref: string;
   status: "draft" | "published";
@@ -49,12 +63,13 @@ export function RowActions({
   onDelete?: () => Promise<ActionResult>;
   deleteTitle?: string;
   deleteDescription?: string;
+  featured?: FeaturedToggle[];
 }) {
   const [isPending, startTransition] = useTransition();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const router = useRouter();
 
-  function run(action: () => Promise<ActionResult>, successMessage: string) {
+  function run(action: () => Promise<ActionResult | DataResult<unknown>>, successMessage: string) {
     startTransition(async () => {
       const result = await action();
       if (!result.ok) {
@@ -83,7 +98,7 @@ export function RowActions({
           <ChevronDown className="size-3.5 text-muted-foreground" aria-hidden />
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuContent align="end" className="w-64">
           <DropdownMenuItem render={<Link href={editHref} />}>
             <Pencil aria-hidden /> Edytuj
           </DropdownMenuItem>
@@ -95,6 +110,25 @@ export function RowActions({
               <ExternalLink aria-hidden /> Zobacz na stronie
             </DropdownMenuItem>
           ) : null}
+
+          {featured.length > 0 && (
+            <>
+              <DropdownMenuSeparator />
+              {featured.map((item) => (
+                <DropdownMenuItem
+                  key={item.label}
+                  disabled={isPending || item.full}
+                  title={item.full ? "Limit osiągnięty — najpierw odznacz inną pozycję." : undefined}
+                  onClick={() =>
+                    run(item.onToggle, item.on ? "Usunięto ze strony głównej." : "Dodano na stronę główną.")
+                  }
+                >
+                  {item.on ? <Check aria-hidden /> : <Star aria-hidden />}
+                  <span className="min-w-0 truncate">{item.label}</span>
+                </DropdownMenuItem>
+              ))}
+            </>
+          )}
 
           <DropdownMenuSeparator />
 
