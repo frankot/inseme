@@ -141,15 +141,11 @@ export const leczenieAlkoholizmuDefaults: IntentPageContent = {
     id: "wybor-osrodka",
     label: "Wybór miejsca",
     title: "Jak wybrać ośrodek leczenia uzależnień",
-    lead: "Różnice między ośrodkami nie zawsze widać na pierwszy rzut oka. Sześć pytań pomaga je porównać — niezależnie od tego, czy wybierasz leczenie prywatne, czy w ramach NFZ.",
+    lead: "Różnice między ośrodkami nie zawsze widać na pierwszy rzut oka. Pięć pytań pomaga je porównać — niezależnie od tego, czy wybierasz leczenie prywatne, czy w ramach NFZ.",
     cards: [
       {
-        title: "Czy to podmiot leczniczy?",
-        body: "Sprawdź wpis w rejestrze RPWDL. Placówka, która leczy uzależnienia, powinna w nim figurować.",
-      },
-      {
-        title: "Kto prowadzi terapię?",
-        body: "Zapytaj, czy terapię prowadzą certyfikowani specjaliści psychoterapii uzależnień i kto sprawuje opiekę lekarską.",
+        title: "Kto i na jakiej podstawie leczy?",
+        body: "Sprawdź wpis placówki w rejestrze RPWDL i zapytaj, czy terapię prowadzą certyfikowani specjaliści psychoterapii uzależnień.",
       },
       {
         title: "Jak wygląda kwalifikacja?",
