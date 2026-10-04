@@ -36,14 +36,14 @@ async function main() {
     .returning();
   assert.ok(image.id, "media row gets a uuid");
 
-  // Pages: defaults, blocks round-trip, unique slug ------------------------
-  const [page] = await db
-    .insert(schema.pages)
+  // Articles: defaults, blocks round-trip, unique slug ---------------------
+  const [entry] = await db
+    .insert(schema.articles)
     .values({
-      title: "Cennik",
-      slug: "cennik",
-      ogImageId: image.id,
-      sections: [
+      title: "Pierwszy kontakt",
+      slug: "pierwszy-kontakt",
+      coverImageId: image.id,
+      body: [
         { id: "b1", type: "richtext", html: "<p>Treść</p>" },
         {
           id: "b2",
@@ -55,17 +55,16 @@ async function main() {
     })
     .returning();
 
-  assert.equal(page.status, "draft", "new pages default to draft");
-  assert.equal(page.pageType, "standard", "page type defaults to standard");
-  assert.equal(page.publishedAt, null, "a draft has no publish date");
-  assert.equal(page.sections.length, 2, "blocks round-trip through json");
-  assert.equal(page.sections[1].type, "step_list");
-  console.log("✓ page defaults + block json round-trip");
+  assert.equal(entry.status, "draft", "new articles default to draft");
+  assert.equal(entry.publishedAt, null, "a draft has no publish date");
+  assert.equal(entry.body.length, 2, "blocks round-trip through json");
+  assert.equal(entry.body[1].type, "step_list");
+  console.log("✓ article defaults + block json round-trip");
 
   // Drizzle wraps driver errors, so the constraint message is on the cause.
   const duplicate = await db
-    .insert(schema.pages)
-    .values({ title: "Duplikat", slug: "cennik" })
+    .insert(schema.articles)
+    .values({ title: "Duplikat", slug: "pierwszy-kontakt", body: [] })
     .then(() => null)
     .catch((error: unknown) => error);
   assert.ok(duplicate, "inserting a duplicate slug must fail");
@@ -78,19 +77,19 @@ async function main() {
 
   // Publish transition ----------------------------------------------------
   await db
-    .update(schema.pages)
+    .update(schema.articles)
     .set({ status: "published", publishedAt: new Date() })
-    .where(eq(schema.pages.id, page.id));
-  const published = await db.query.pages.findFirst({ where: eq(schema.pages.id, page.id) });
+    .where(eq(schema.articles.id, entry.id));
+  const published = await db.query.articles.findFirst({ where: eq(schema.articles.id, entry.id) });
   assert.equal(published?.status, "published");
   assert.ok(published?.publishedAt instanceof Date, "publishedAt is stamped");
   console.log("✓ publish transition");
 
   // Deleting media must blank references, not fail or cascade -------------
   await db.delete(schema.media).where(eq(schema.media.id, image.id));
-  const afterDelete = await db.query.pages.findFirst({ where: eq(schema.pages.id, page.id) });
-  assert.ok(afterDelete, "page survives deletion of its image");
-  assert.equal(afterDelete?.ogImageId, null, "og image reference is nulled");
+  const afterDelete = await db.query.articles.findFirst({ where: eq(schema.articles.id, entry.id) });
+  assert.ok(afterDelete, "article survives deletion of its image");
+  assert.equal(afterDelete?.coverImageId, null, "cover image reference is nulled");
   console.log("✓ media delete nulls references (ON DELETE SET NULL)");
 
   // Settings singleton upsert ---------------------------------------------
@@ -125,24 +124,24 @@ async function main() {
   assert.equal(team[0].status, "draft", "team members start as drafts");
   console.log("✓ team ordering + draft default");
 
-  // Slug-clash query used by savePage/saveArticle ------------------------
+  // Slug-clash query used by saveArticle ----------------------------------
   // The dangerous case is editing a record without changing its slug: the
   // check must ignore the record's own row, or every save reports a conflict.
-  const selfClash = await db.query.pages.findFirst({
+  const selfClash = await db.query.articles.findFirst({
     columns: { id: true },
-    where: and(eq(schema.pages.slug, "cennik"), ne(schema.pages.id, page.id)),
+    where: and(eq(schema.articles.slug, "pierwszy-kontakt"), ne(schema.articles.id, entry.id)),
   });
-  assert.equal(selfClash, undefined, "a page keeping its own slug is not a clash");
+  assert.equal(selfClash, undefined, "an article keeping its own slug is not a clash");
 
   const [other] = await db
-    .insert(schema.pages)
-    .values({ title: "Kontakt", slug: "kontakt" })
+    .insert(schema.articles)
+    .values({ title: "Detoks", slug: "detoks", body: [] })
     .returning();
-  const realClash = await db.query.pages.findFirst({
+  const realClash = await db.query.articles.findFirst({
     columns: { id: true },
-    where: and(eq(schema.pages.slug, "kontakt"), ne(schema.pages.id, page.id)),
+    where: and(eq(schema.articles.slug, "detoks"), ne(schema.articles.id, entry.id)),
   });
-  assert.equal(realClash?.id, other.id, "another page's slug is a clash");
+  assert.equal(realClash?.id, other.id, "another article's slug is a clash");
   console.log("✓ slug-clash check ignores the record itself");
 
   // Publish gate for articles ---------------------------------------------

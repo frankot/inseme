@@ -2,7 +2,6 @@ import { relations } from "drizzle-orm";
 
 import { articles } from "./articles";
 import { media } from "./media";
-import { pages } from "./pages";
 import {
   screeningTestAnswerOptions,
   screeningTestQuestions,
@@ -12,10 +11,6 @@ import {
 } from "./screening-tests";
 import { settings } from "./settings";
 import { teamMembers } from "./team-members";
-
-export const pagesRelations = relations(pages, ({ one }) => ({
-  ogImage: one(media, { fields: [pages.ogImageId], references: [media.id] }),
-}));
 
 export const articlesRelations = relations(articles, ({ one }) => ({
   coverImage: one(media, { fields: [articles.coverImageId], references: [media.id] }),

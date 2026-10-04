@@ -48,17 +48,6 @@ export const settingsSchema = z.object({
   defaultOgImageId: z.uuid().nullable(),
 });
 
-export const pageSchema = z.object({
-  title: z.string().trim().min(1, "Podaj tytuł.").max(160),
-  slug: slugField,
-  pageType: z.enum(["standard", "service"]),
-  heroTitle: optionalText,
-  heroSubtitle: optionalText,
-  sections: blocksSchema,
-  ogImageId: z.uuid().nullable(),
-  ...metaFields,
-});
-
 export const teamMemberSchema = z.object({
   name: z.string().trim().min(1, "Podaj imię i nazwisko.").max(120),
   slug: slugField,
@@ -130,7 +119,6 @@ export const mediaAltTextSchema = z.object({
 });
 
 export type SettingsInput = z.infer<typeof settingsSchema>;
-export type PageInput = z.infer<typeof pageSchema>;
 export type TeamMemberInput = z.infer<typeof teamMemberSchema>;
 export type FaqItemInput = z.infer<typeof faqItemSchema>;
 export type ArticleInput = z.infer<typeof articleSchema>;

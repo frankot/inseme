@@ -8,8 +8,8 @@ import { cn } from "@/lib/utils";
 
 /**
  * The public half of the block editor: renders the typed blocks an editor
- * stacks in /admin (articles today, `pages` when those get a route). Every type
- * in `src/lib/blocks.ts` needs a case here, or it renders as nothing.
+ * stacks in /admin for articles. Every type in `src/lib/blocks.ts` needs a case
+ * here, or it renders as nothing.
  *
  * Blocks reference media and FAQ rows by id rather than carrying them, so the
  * lookups happen once up front instead of per block.

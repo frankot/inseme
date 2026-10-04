@@ -1,6 +1,5 @@
 import type { LucideIcon } from "lucide-react";
 import {
-  FileText,
   HelpCircle,
   Image,
   Images,
@@ -20,18 +19,11 @@ export type AdminNavItem = {
   /** Routes from later phases render as disabled placeholders, not dead links. */
   available: boolean;
   phase: "B1" | "B2" | "B3" | "B4";
-  /**
-   * Left out of the panel entirely. "Strony" is hidden until the public site
-   * has a route that renders CMS pages — without one, a page created here
-   * never appears anywhere, which is worse than not offering it.
-   */
-  hidden?: boolean;
 };
 
 export const adminNav: AdminNavItem[] = [
   { href: "/admin", label: "Pulpit", icon: LayoutDashboard, available: true, phase: "B1" },
   { href: "/admin/settings", label: "Ustawienia", icon: Settings, available: true, phase: "B2" },
-  { href: "/admin/pages", label: "Strony", icon: FileText, available: true, phase: "B2", hidden: true },
   { href: "/admin/team", label: "Zespół", icon: Users, available: true, phase: "B2" },
   { href: "/admin/faq", label: "FAQ", icon: HelpCircle, available: true, phase: "B2" },
   { href: "/admin/articles", label: "Artykuły", icon: Newspaper, available: true, phase: "B2" },

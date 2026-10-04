@@ -39,7 +39,6 @@ export default async function AdminDashboardPage() {
       countsFor(teamMembers),
       countsFor(faqItems),
       db.select({ value: count() }).from(media),
-      // Articles, not CMS pages: "Strony" is hidden until the site renders them.
       db
         .select({
           id: articles.id,
@@ -60,7 +59,7 @@ export default async function AdminDashboardPage() {
     { href: "/admin/faq", label: "FAQ", ...faqCounts },
   ];
 
-  const upcoming = adminNav.filter((item) => !item.available && !item.hidden);
+  const upcoming = adminNav.filter((item) => !item.available);
 
   return (
     <div className="flex flex-col gap-6">
