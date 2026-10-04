@@ -30,7 +30,11 @@ export function Opinie({
       index={content.index}
       label={content.eyebrow}
       title={content.title}
-      lead={content.lead}
+      lead={content.lead.map((paragraph, i) => (
+        <span key={i} className={i > 0 ? "mt-4 block" : "block"}>
+          {paragraph}
+        </span>
+      ))}
       action={
         content.sources.length > 0 ? (
           <span className="flex flex-wrap gap-x-8 gap-y-2">

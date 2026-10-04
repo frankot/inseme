@@ -17,9 +17,9 @@ export function Faq({
   items,
   content = faqDefaults,
   /**
-   * How many questions the homepage shows. The rest live on /faq — a
-   * fifteen-row accordion here is a wall the reader scrolls past, and the
-   * questions that convert are the first few anyway.
+   * Set on the homepage: show only the questions featured in /admin/faq, at
+   * most this many. With none featured it falls back to the first ones, so the
+   * section never disappears just because nobody ticked the box.
    */
   limit,
 }: {
@@ -29,7 +29,9 @@ export function Faq({
 }) {
   if (items.length === 0) return null;
 
-  const shown = limit ? items.slice(0, limit) : items;
+  const featured = items.filter((item) => item.featured);
+  const pool = limit && featured.length > 0 ? featured : items;
+  const shown = limit ? pool.slice(0, limit) : pool;
   const hasMore = shown.length < items.length;
 
   return (

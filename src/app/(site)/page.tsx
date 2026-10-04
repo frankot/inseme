@@ -16,9 +16,7 @@ import { getLatestArticle } from "@/lib/queries/articles";
 import { getPublishedFaq } from "@/lib/queries/faq";
 import { getScreeningTestBySlug } from "@/lib/queries/screening";
 import { getFeaturedTeam } from "@/lib/queries/team";
-
-/** How many questions the homepage carries before handing off to /faq. */
-const HOMEPAGE_FAQ_LIMIT = 5;
+import { FAQ_FEATURED_MAX } from "@/lib/validations/content";
 
 /**
  * The page is prerendered and refreshed every five minutes, so a published
@@ -76,7 +74,7 @@ export default async function HomePage() {
       {latestArticle ? <Poradnik article={latestArticle} /> : <Program />}
       <Zespol members={featuredTeam} />
       <Opinie />
-      <Faq items={faqEntries} limit={HOMEPAGE_FAQ_LIMIT} />
+      <Faq items={faqEntries} limit={FAQ_FEATURED_MAX} />
       <Kontakt />
     </ContactPathProvider>
   );

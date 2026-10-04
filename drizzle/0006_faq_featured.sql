@@ -1,0 +1,1 @@
+ALTER TABLE "faq_items" ADD COLUMN "featured" boolean DEFAULT false NOT NULL;

@@ -32,6 +32,7 @@ export function FaqList({
             <button
               type="button"
               aria-expanded={open}
+              aria-controls={`faq-${item.id}`}
               onClick={() => setOpenIndex(open ? null : i)}
               className={cn(
                 "flex w-full items-baseline justify-between gap-5 py-[clamp(18px,1.9vw,24px)] text-left transition-colors",
@@ -55,15 +56,27 @@ export function FaqList({
               </span>
             </button>
 
-            {open && (
-              // Sanitised on write by `sanitizeRichText` in the save action.
-              // Not the `rich-text` utility: answers sit inside an accordion
-              // and read at body size, not article size.
-              <div
-                className="reveal-shown max-w-[38em] text-pretty pr-[clamp(24px,3vw,60px)] pb-[clamp(22px,2.2vw,28px)] text-body text-ink-400 [&_a]:text-sage-600 [&_a]:underline [&_a]:underline-offset-2 [&_li]:mt-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_p+p]:mt-3 [&_strong]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-5"
-                dangerouslySetInnerHTML={{ __html: item.answer }}
-              />
-            )}
+            {/* Always mounted so it can animate: the grid row eases between
+                0fr and 1fr, which tracks the answer's real height. `inert`
+                keeps a closed answer's links out of the tab order. */}
+            <div
+              id={`faq-${item.id}`}
+              inert={!open}
+              className={cn(
+                "grid transition-[grid-template-rows,opacity] duration-[400ms] ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none",
+                open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+              )}
+            >
+              <div className="min-h-0 overflow-hidden">
+                {/* Sanitised on write by `sanitizeRichText` in the save action.
+                    Not the `rich-text` utility: answers sit inside an accordion
+                    and read at body size, not article size. */}
+                <div
+                  className="max-w-[38em] text-pretty pr-[clamp(24px,3vw,60px)] pb-[clamp(22px,2.2vw,28px)] text-body text-ink-400 [&_a]:text-sage-600 [&_a]:underline [&_a]:underline-offset-2 [&_li]:mt-1 [&_ol]:list-decimal [&_ol]:pl-5 [&_p+p]:mt-3 [&_strong]:text-ink-900 [&_ul]:list-disc [&_ul]:pl-5"
+                  dangerouslySetInnerHTML={{ __html: item.answer }}
+                />
+              </div>
+            </div>
           </div>
         );
       })}

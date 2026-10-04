@@ -19,7 +19,11 @@ export default async function ZespolPage() {
     <SubpageLayout
       eyebrow={teamPageDefaults.eyebrow}
       title={teamPageDefaults.title}
-      lead={teamPageDefaults.lead}
+      lead={teamPageDefaults.lead.map((paragraph, i) => (
+        <span key={i} className={i > 0 ? "mt-4 block" : "block"}>
+          {paragraph}
+        </span>
+      ))}
       breadcrumb={[
         { label: "Strona główna", href: "/" },
         { label: "Zespół" },

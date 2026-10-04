@@ -55,6 +55,7 @@ export default async function EditFaqItemPage({ params }: { params: Promise<{ id
           answer: row.answer,
           category: row.category ?? "",
           sortOrder: row.sortOrder,
+          featured: row.featured,
         }}
       />
     </>

@@ -12,7 +12,12 @@ import { faqItems } from "@/db/schema";
  */
 
 /** Answers are sanitised rich text (`sanitizeRichText`), not plain strings. */
-export type FaqEntry = { id: string; question: string; answer: string };
+export type FaqEntry = {
+  id: string;
+  question: string;
+  answer: string;
+  featured: boolean;
+};
 
 /**
  * Published questions, optionally narrowed to one category — the field exists
@@ -26,6 +31,7 @@ export async function getPublishedFaq(category?: string): Promise<FaqEntry[]> {
       id: faqItems.id,
       question: faqItems.question,
       answer: faqItems.answer,
+      featured: faqItems.featured,
     })
     .from(faqItems)
     .where(category ? and(published, eq(faqItems.category, category)) : published)

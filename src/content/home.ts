@@ -486,8 +486,8 @@ export type FaqContent = {
 export const faqDefaults: FaqContent = {
   index: "07",
   eyebrow: "Pytania",
-  title: "Pytania, które trudno zadać na głos.",
-  note: "Odpowiadamy tak samo przez telefon. Jeśli czegoś tu brakuje — zapytaj, nie ma pytań niewygodnych.",
+  title: "Pytania, które często pojawiają się na początku",
+  note: "Możesz zapytać nas o wszystko, każde pytanie jest ważne. Jeśli nie znajdujesz tu swojego pytania — po prostu zadzwoń.",
   href: "/faq",
   linkLabel: "Wszystkie pytania",
 };

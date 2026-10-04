@@ -38,7 +38,8 @@ export type OpinieContent = {
   index: string;
   eyebrow: string;
   title: string;
-  lead: string;
+  /** One entry per paragraph. */
+  lead: string[];
   sources: ReviewSource[];
   /** Google aggregate score, or null while unknown. */
   rating: number | null;
@@ -51,8 +52,11 @@ export type OpinieContent = {
 export const opinieDefaults: OpinieContent = {
   index: "06",
   eyebrow: "Opinie",
-  title: "Co piszą ludzie, którzy tu byli.",
-  lead: "Cytujemy opinie z profilu Google i serwisu osrodkiterapii.pl — tam są wszystkie i można je sprawdzić bez naszego pośrednictwa.",
+  title: "Co mówią osoby, które były w Insieme.",
+  lead: [
+    "Najlepiej o pobycie, atmosferze i pracy naszego zespołu opowiadają osoby, które same przeszły przez terapię w Insieme.",
+    "Poniżej publikujemy wybrane opinie z naszego profilu Google oraz największego w Polsce rankingu ośrodków terapii. Możesz tam również przeczytać pozostałe recenzje i sprawdzić je bezpośrednio u źródła.",
+  ],
   sources: [
     {
       id: "google",
@@ -68,7 +72,7 @@ export const opinieDefaults: OpinieContent = {
   rating: 5,
   count: 25,
   sourceNote:
-    "Opinie pochodzą z profilu Google i serwisu osrodkiterapii.pl i nie były przez nas redagowane. Dłuższe skróciliśmy — pełna treść jest w źródle.",
+    "Opinie pochodzą z portali zewnętrznych i zostały przytoczone bez zmiany ich treści.",
   reviews: [
     {
       author: "Sebastian C.",

@@ -4,12 +4,17 @@
  * belongs here, the same way `home.ts` holds the rest of the site's strings.
  */
 
+/** The homepage teaser quotes the first paragraph; /zespol prints both. */
+const TEAM_INTRO = [
+  "Każdy z naszych terapeutów jest inny — ma własny sposób pracy, doświadczenie i perspektywę. Dzięki temu możesz usłyszeć różne punkty widzenia, ale zawsze w jednym kierunku: zdrowienia i realnej zmiany.",
+  "Pracujemy jako zespół. Jesteśmy ze sobą w stałym kontakcie, na bieżąco omawiamy proces terapii i wspólnie szukamy najlepszego sposobu wsparcia. Nad jakością naszej pracy czuwa doświadczony superwizor Leszek Kapler.",
+];
+
 export type TeamTeaserContent = {
   index: string;
   eyebrow: string;
   title: string;
-  /** One entry per paragraph. */
-  lead: string[];
+  lead: string;
   linkLabel: string;
   href: string;
 };
@@ -19,10 +24,7 @@ export const teamTeaserDefaults: TeamTeaserContent = {
   index: "05",
   eyebrow: "Zespół",
   title: "Różni ludzie, wspólny cel.",
-  lead: [
-    "Każdy z naszych terapeutów jest inny — ma własny sposób pracy, doświadczenie i perspektywę. Dzięki temu możesz usłyszeć różne punkty widzenia, ale zawsze w jednym kierunku: zdrowienia i realnej zmiany.",
-    "Pracujemy jako zespół. Jesteśmy ze sobą w stałym kontakcie, na bieżąco omawiamy proces terapii i wspólnie szukamy najlepszego sposobu wsparcia. Nad jakością naszej pracy czuwa doświadczony superwizor Leszek Kapler.",
-  ],
+  lead: TEAM_INTRO[0],
   linkLabel: "Poznaj cały zespół",
   href: "/zespol",
 };
@@ -30,7 +32,8 @@ export const teamTeaserDefaults: TeamTeaserContent = {
 export type TeamPageContent = {
   eyebrow: string;
   title: string;
-  lead: string;
+  /** One entry per paragraph. */
+  lead: string[];
   /** Shown when nothing is published yet — an editor sees this, not a blank page. */
   emptyNote: string;
   metaTitle: string;
@@ -39,8 +42,8 @@ export type TeamPageContent = {
 
 export const teamPageDefaults: TeamPageContent = {
   eyebrow: "Zespół",
-  title: "Kto z Tobą pracuje przez te kilka tygodni.",
-  lead: "Terapeuci uzależnień, psychiatra, psycholog i pielęgniarki — dwanaście miejsc na tyle osób oznacza, że każdy zna każdego po imieniu. Poniżej cały zespół, z kwalifikacjami i tym, czym się zajmuje.",
+  title: "Różni ludzie, wspólny cel.",
+  lead: TEAM_INTRO,
   emptyNote: "Przygotowujemy tę stronę. Zadzwoń — powiemy przez telefon, kto poprowadzi terapię.",
   metaTitle: "Zespół — terapeuci ośrodka Insieme w Magdalence",
   metaDescription:

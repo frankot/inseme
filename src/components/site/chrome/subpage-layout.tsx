@@ -23,7 +23,7 @@ export function SubpageLayout({
 }: {
   eyebrow?: string;
   title?: string;
-  lead?: string;
+  lead?: ReactNode;
   breadcrumb?: Crumb[];
   intro?: boolean;
   contact?: SiteContact;

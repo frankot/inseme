@@ -1,4 +1,4 @@
-import { asc } from "drizzle-orm";
+import { asc, desc } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -23,13 +23,13 @@ export default async function FaqListPage() {
   const rows = await db
     .select()
     .from(faqItems)
-    .orderBy(asc(faqItems.category), asc(faqItems.sortOrder));
+    .orderBy(desc(faqItems.featured), asc(faqItems.sortOrder), asc(faqItems.createdAt));
 
   return (
     <>
       <PageHeader
         title="FAQ"
-        description="Najczęstsze pytania. Kategorie pozwalają osadzić wybraną grupę pytań na dowolnej stronie."
+        description="Najczęstsze pytania. Zaznaczone „Na stronie głównej” (najwyżej 6) trafiają do sekcji FAQ na stronie głównej; wszystkie opublikowane są na /faq."
         actions={<Button render={<Link href="/admin/faq/new" />}>Dodaj pytanie</Button>}
       />
 
@@ -42,6 +42,7 @@ export default async function FaqListPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Pytanie</TableHead>
+              <TableHead className="w-28">Strona główna</TableHead>
               <TableHead className="w-40">Kategoria</TableHead>
               <TableHead className="w-24">Kolejność</TableHead>
               <TableHead className="w-36">Status</TableHead>
@@ -58,6 +59,7 @@ export default async function FaqListPage() {
                     {row.question}
                   </Link>
                 </TableCell>
+                <TableCell className="text-muted-foreground">{row.featured ? "✓" : "—"}</TableCell>
                 <TableCell className="text-muted-foreground">{row.category ?? "—"}</TableCell>
                 <TableCell className="text-muted-foreground">{row.sortOrder}</TableCell>
                 <TableCell>

@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, count, eq, ne } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
@@ -8,7 +8,12 @@ import { faqItems } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
 import { sanitizeRichText } from "@/lib/sanitize";
-import { emptyToNull, faqItemSchema, type FaqItemInput } from "@/lib/validations/content";
+import {
+  emptyToNull,
+  FAQ_FEATURED_MAX,
+  faqItemSchema,
+  type FaqItemInput,
+} from "@/lib/validations/content";
 
 export async function saveFaqItem(
   id: string | null,
@@ -21,11 +26,28 @@ export async function saveFaqItem(
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
     }
 
+    if (parsed.data.featured) {
+      const others = id
+        ? and(eq(faqItems.featured, true), ne(faqItems.id, id))
+        : eq(faqItems.featured, true);
+      const [{ value: featuredCount }] = await db
+        .select({ value: count() })
+        .from(faqItems)
+        .where(others);
+      if (featuredCount >= FAQ_FEATURED_MAX) {
+        return {
+          ok: false,
+          error: `Na stronie głównej może być najwyżej ${FAQ_FEATURED_MAX} pytań. Najpierw odznacz inne.`,
+        };
+      }
+    }
+
     const values = {
       question: parsed.data.question,
       answer: sanitizeRichText(parsed.data.answer),
       category: emptyToNull(parsed.data.category),
       sortOrder: parsed.data.sortOrder,
+      featured: parsed.data.featured,
       updatedAt: new Date(),
     };
 

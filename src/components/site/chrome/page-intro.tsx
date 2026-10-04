@@ -27,7 +27,7 @@ export function PageIntro({
 }: {
   eyebrow: string;
   title: string;
-  lead?: string;
+  lead?: ReactNode;
   breadcrumb?: Crumb[];
   className?: string;
   /** Anything that belongs under the lead — a CTA, a note, a filter row. */

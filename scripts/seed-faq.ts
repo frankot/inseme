@@ -1,6 +1,6 @@
 /**
- * Seeds the FAQ with the questions the homepage used to carry as hardcoded
- * defaults, so /admin/faq opens on real rows instead of an empty table.
+ * Seeds the FAQ. The first `FEATURED` questions are marked for the homepage
+ * section; the rest appear only on /faq. Editors change both in /admin/faq.
  *
  *   npm run seed:faq
  *   npm run seed:faq -- --reset   # delete every existing question first
@@ -37,8 +37,9 @@ async function main() {
     const values = {
       question: item.question,
       answer: sanitizeRichText(paragraph(item.answer)),
-      category: CATEGORY,
+      category: null,
       sortOrder: i * 10,
+      featured: i < FEATURED,
       status: "published" as const,
       publishedAt: now,
       updatedAt: now,
@@ -59,47 +60,87 @@ async function main() {
     }
   }
 
-  console.log(`\n${QUESTIONS.length} pytań opublikowanych. Sprawdź /admin/faq i sekcję 06 na stronie.`);
+  console.log(`\n${QUESTIONS.length} pytań opublikowanych. Sprawdź /admin/faq, sekcję 07 na stronie głównej i /faq.`);
 }
 
-/** Groups these seven as the set the homepage shows; see `getPublishedFaq()`. */
-const CATEGORY = "strona główna";
+/** How many of the questions below, from the top, the homepage features. */
+const FEATURED = 6;
 
 const QUESTIONS = [
   {
     question: "Czy mogę zadzwonić w imieniu bliskiej osoby?",
     answer:
-      "Tak i bardzo często tak się to zaczyna. Powiemy, co zwykle pomaga, a co pogarsza sprawę, i jak rozmawiać, żeby nie skończyło się kłótnią. Do tej osoby nie dzwonimy bez Twojej wiedzy.",
+      "Tak. Możesz zadzwonić zarówno wtedy, gdy bliska osoba nie chce jeszcze leczenia, jak i wtedy, gdy jest już zdecydowana. Za jej zgodą możesz również pomóc w organizacji przyjęcia.",
+  },
+  {
+    question: "Co jeśli bliska osoba nie chce się leczyć?",
+    answer:
+      "Możesz skontaktować się z nami samodzielnie. Porozmawiamy o sytuacji, podpowiemy, jak rozmawiać o leczeniu i jakie działania możesz podjąć, nie przejmując odpowiedzialności za decyzję drugiej osoby.",
   },
   {
     question: "Czy rozmowa do czegoś zobowiązuje?",
     answer:
-      "Nie. Nie musisz podawać nazwiska, nie wysyłamy po niej ofert i nie dzwonimy drugi raz bez Twojej zgody.",
+      "Nie. Pierwszy kontakt służy poznaniu sytuacji, odpowiedzi na pytania i przedstawieniu możliwych dalszych kroków.",
+  },
+  {
+    question: "Czy leczycie tylko uzależnienie od alkoholu?",
+    answer:
+      "Nie. Prowadzimy terapię osób uzależnionych od alkoholu, narkotyków i leków, a także zmagających się z uzależnieniami behawioralnymi takimi jak np. patologiczny hazard.",
   },
   {
     question: "Czy można przyjechać od razu?",
     answer:
-      "Przy detoksie zwykle tak, często tego samego dnia. Mamy dwanaście miejsc, więc konkretny termin ustalamy w rozmowie — i mówimy wprost, jeśli miejsca nie ma.",
+      "Czasem przyjęcie jest możliwe w bardzo krótkim terminie. Zależy to od dostępności miejsca oraz sytuacji zdrowotnej pacjenta. Termin zawsze ustalamy indywidualnie.",
+  },
+  {
+    question: "Czy przed przyjęciem muszę być trzeźwy?",
+    answer:
+      "Tak. Przed rozpoczęciem terapii wymagamy kilkudniowej lub dłuższej abstynencji — jej długość zależy m.in. od rodzaju używanej substancji i sytuacji pacjenta. Jeśli ten warunek nie jest spełniony, możemy skierować pacjenta na wcześniejszą detoksykację.",
   },
   {
     question: "Czy potrzebne jest skierowanie?",
     answer:
-      "Nie. Pobyt jest prywatny, nie wymaga skierowania ani ubezpieczenia. Potrzebna jest lista przyjmowanych leków, jeśli jakieś przyjmujesz.",
+      "Nie. Do rozpoczęcia leczenia w Insieme nie potrzebujesz skierowania. Proces zaczynamy od rozmowy i kwalifikacji prowadzonej przez naszego lekarza.",
   },
   {
-    question: "Czy mogę mieć telefon i czy są odwiedziny?",
+    question: "Jak długo trwa leczenie?",
     answer:
-      "Telefon zostaje przy Tobie. Odwiedziny są możliwe, zwykle po pierwszym tygodniu — termin ustalasz z terapeutą prowadzącym.",
+      "Program stacjonarny obejmuje minimum 28 dni pobytu. Po jego zakończeniu możliwa jest kontynuacja leczenia w formie ambulatoryjnej, cały proces standardowo trwa około 12–13 miesięcy.",
   },
   {
-    question: "Ile to kosztuje i od czego zależy cena?",
+    question: "Czy mogę otrzymać zwolnienie lekarskie?",
     answer:
-      "Koszt zależy od długości pobytu, potrzeby detoksu, konsultacji psychiatrycznej i stanu zdrowia. Konkretną kwotę podajemy w pierwszej rozmowie, przed przyjazdem — nie po.",
+      "Tak, lekarz może wystawić zwolnienie na cały okres leczenia.",
   },
   {
-    question: "Czy pobyt jest poufny? Czy informacje trafią do rodziny?",
+    question: "Czy mogę mieć telefon?",
     answer:
-      "Bez Twojej pisemnej zgody nie przekazujemy nikomu informacji o pobycie — także rodzinie. Zaświadczenia i dokumenty wydajemy wyłącznie Tobie.",
+      "Tak, pacjenci uzależnieni od alkoholu i/lub innych substancji mogą korzystać z telefonów w sposób niezakłócający terapii. W przypadku pacjentów zmagających się z patologicznym hazardem zasady korzystania z telefonu ustalamy indywidualnie.",
+  },
+  {
+    question: "Czy rodzina może mnie odwiedzać?",
+    answer:
+      "Tak. Odwiedziny osób najbliższych odbywają się w niedziele, zgodnie z zasadami obowiązującymi w ośrodku.",
+  },
+  {
+    question: "Ile kosztuje leczenie?",
+    answer:
+      "Cena zależy przede wszystkim od długości pobytu i zakresu świadczeń. Aktualny koszt programu przedstawiamy jasno przed podjęciem decyzji o rozpoczęciu terapii.",
+  },
+  {
+    question: "Czy pobyt jest poufny?",
+    answer:
+      "Tak. Obowiązuje nas tajemnica zawodowa i zasady ochrony dokumentacji medycznej.",
+  },
+  {
+    question: "Co powinienem zabrać ze sobą?",
+    answer:
+      "Po ustaleniu terminu otrzymasz dokładne informacje dotyczące przygotowania do pobytu oraz listę rzeczy, które warto zabrać.",
+  },
+  {
+    question: "Jak wygląda pierwszy dzień?",
+    answer:
+      "Pierwszy dzień służy przede wszystkim spokojnemu wejściu w leczenie, poznaniu ośrodka i zespołu oraz zmniejszeniu napięcia związanego z rozpoczęciem terapii.",
   },
 ];
 
