@@ -71,6 +71,13 @@
       "when": 1791114563761,
       "tag": "0009_drop_faq_featured",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791273747998,
+      "tag": "0010_team_licenses",
+      "breakpoints": true
     }
   ]
 }

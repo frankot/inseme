@@ -55,7 +55,7 @@ export const opinieDefaults: OpinieContent = {
   title: "Co mówią osoby, które były w Insieme.",
   lead: [
     "Najlepiej o pobycie, atmosferze i pracy naszego zespołu opowiadają osoby, które same przeszły przez terapię w Insieme.",
-    "Poniżej publikujemy wybrane opinie z naszego profilu Google oraz największego w Polsce rankingu ośrodków terapii. Możesz tam również przeczytać pozostałe recenzje i sprawdzić je bezpośrednio u źródła.",
+    "Poniżej publikujemy wybrane opinie z naszego profilu Google oraz największego w Polsce rankingu ośrodków terapii.",
   ],
   sources: [
     {

@@ -10,7 +10,7 @@ import { getFeaturedTeam, getTeamByIds } from "@/lib/queries/team";
  * Picked ids → published rows (plans/CMS_PLAN.md §3.3). Missing or
  * unpublished ids are dropped; an empty pick falls back to the automatic
  * choice the homepage made before the CMS (first FAQ rows, top of the team
- * order, the AUDIT test, the newest article). Every resolver tolerates a DB
+ * order, the featured test, the newest article). Every resolver tolerates a DB
  * error by returning nothing — the section then removes itself.
  */
 

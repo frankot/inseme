@@ -8,7 +8,7 @@
  * Never overwrites an existing page unless forced. For the homepage it also
  * carries today's automatic picks into the doc, so the CMS starts from what the
  * site already shows: the first six published questions and the top four
- * people by order, the AUDIT test. The article pick stays empty (= newest).
+ * people by order, the featured test. The article pick stays empty (= newest).
  */
 import { config as loadEnv } from "dotenv";
 

@@ -56,10 +56,12 @@ export const teamMemberPageDefaults = {
   breadcrumbHome: "Strona główna",
   breadcrumbTeam: "Zespół",
   qualificationsLabel: "Kwalifikacje",
+  licensesLabel: "Licencje i certyfikaty",
+  licenseNumberPrefix: "nr",
   othersTitle: "Pozostali w zespole",
-  ctaTitle: "Chcesz porozmawiać, zanim zdecydujesz?",
+  ctaTitle: "Chcesz dowiedzieć się więcej o leczeniu?",
   ctaBody:
-    "Odbiera terapeuta z ośrodka — nie call center. Rozmowa nie zobowiązuje do przyjazdu.",
+    "Pierwsza rozmowa służy poznaniu Twojej sytuacji i ustaleniu możliwych dalszych kroków. Nie musisz się do niej przygotowywać ani podejmować decyzji o terapii podczas pierwszego kontaktu.",
   backLabel: "Wróć do zespołu",
   notFoundTitle: "Nie ma takiej osoby.",
   notFoundBody:

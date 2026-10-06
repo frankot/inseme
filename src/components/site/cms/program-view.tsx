@@ -23,12 +23,16 @@ import type { CmsPage } from "@/lib/cms/get-page";
  * dark band falls on the outpatient year — the stage people know least about
  * and the one the page most needs them to stop at.
  */
-const BANDS: Record<string, { tone: SectionTone; raised: boolean; sticky?: boolean }> = {
+const BANDS: Record<
+  string,
+  { tone: SectionTone; raised: boolean; sticky?: boolean; layout?: "list" | "cards" }
+> = {
   stacjonarny: { tone: "tinted", raised: false },
   // These two lists are barely longer than their heading columns — pinning
   // bought nothing but a column that sat still for a few pixels.
   ambulatoryjny: { tone: "dark", raised: false, sticky: false },
-  rodzina: { tone: "default", raised: true, sticky: false },
+  // Three titled points side by side, as cards — the shape of the overview.
+  rodzina: { tone: "default", raised: true, layout: "cards" },
   pro: { tone: "tinted", raised: false },
 };
 

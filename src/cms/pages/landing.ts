@@ -88,7 +88,7 @@ export const landingPage = definePage({
       numbered: true,
       fields: f.group("Test przesiewowy", {
         testId: f.ref("Test na stronie głównej", "test", {
-          hint: "Puste = test AUDIT. Tytuł i opis pochodzą z samego testu.",
+          hint: "Puste = test „Czy to już problem?”. Tytuł i opis pochodzą z samego testu.",
         }),
       }),
     }),

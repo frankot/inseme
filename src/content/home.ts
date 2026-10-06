@@ -358,9 +358,9 @@ export type JedenDzienContent = {
   lead: string;
   /** The paragraphs under the lead — why the day has a fixed shape. */
   body: string[];
-  /** Sits over the right-hand column, opposite the word "Godzina". */
+  /** Over the three parts of the day. */
   scheduleLabel: string;
-  /** Footnote under the intro — what the timetable does not cover. */
+  /** The Sunday row under the timeline — what the weekday plan does not cover. */
   note: string;
   entries: DayEntry[];
 };
@@ -425,7 +425,7 @@ export const jedenDzienDefaults: JedenDzienContent = {
  *
  * This used to carry a full copy of the questions, options and score bands.
  * They were a second, drifting source of truth against the database — and once
- * the featured test became AUDIT they were simply wrong. Deleted.
+ * the featured test was replaced they were simply wrong. Deleted.
  */
 export type TestContent = {
   index: string;
@@ -448,12 +448,12 @@ export type TestContent = {
 export const testDefaults: TestContent = {
   index: "02",
   eyebrow: "Test przesiewowy",
-  title: "Dziesięć pytań, które można zadać sobie bez świadków.",
-  lead: "AUDIT — test przesiewowy Światowej Organizacji Zdrowia, w polskiej wersji opracowanej przez PARPA. Ten sam, którego używają poradnie. Odpowiedzi nie zapisujemy i nie wysyłamy nikomu.",
+  title: "Czy moje używanie lub zachowanie zaczyna być problemem?",
+  lead: "Dwadzieścia pytań o najczęstsze sygnały uzależnienia: utratę kontroli, nieudane próby ograniczenia, wpływ na codzienność, relacje i zdrowie. Odpowiedzi nie zapisujemy i nie wysyłamy nikomu.",
   disclaimer:
-    "AUDIT jest testem przesiewowym i nie jest diagnozą. Wskazuje prawdopodobieństwo problemu, a nie jego pewność — nie zastępuje rozmowy z terapeutą ani badania lekarskiego.",
+    "To nie jest test diagnostyczny i nie ma klinicznego progu. Liczba odpowiedzi „tak” pokazuje, w ilu obszarach pojawiają się sygnały warte uwagi — rozpoznanie wymaga indywidualnej oceny specjalisty.",
   prompt:
-    "Pytania dotyczą ostatnich dwunastu miesięcy. Jedna porcja standardowa to 10 g czystego alkoholu — ok. 250 ml piwa 5%, 100 ml wina 12% albo 30 ml wódki 40%.",
+    "Pomyśl o ostatnich dwunastu miesiącach — o substancji albo zachowaniu, które Cię niepokoi. Odpowiadasz tylko „tak” lub „nie”.",
   startLabel: "Zacznij test",
   resultLabel: "Wynik orientacyjny",
   emailNote: "Wyślemy wynik w PDF — bez nazwiska, bez dalszych wiadomości.",

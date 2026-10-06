@@ -89,6 +89,29 @@ export default async function TeamMemberPage(props: PageProps<"/zespol/[slug]">)
                 </p>
               </div>
             )}
+
+            {member.licenses.length > 0 && (
+              <div className="mt-[clamp(20px,2.2vw,30px)] border-t border-line pt-4">
+                <span className="text-eyebrow uppercase tracking-[0.2em] text-clay-600">
+                  {copy.licensesLabel}
+                </span>
+                <ul className="mt-2.5 flex flex-col gap-2">
+                  {member.licenses.map((license) => (
+                    <li
+                      key={`${license.name}-${license.number}`}
+                      className="text-[15px] leading-[1.6] text-ink-500"
+                    >
+                      {license.name}
+                      {license.number && (
+                        <span className="block text-meta tabular-nums text-ink-300">
+                          {copy.licenseNumberPrefix} {license.number}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </Reveal>
 
           <Reveal delay={70}>
@@ -105,10 +128,10 @@ export default async function TeamMemberPage(props: PageProps<"/zespol/[slug]">)
                 dangerouslySetInnerHTML={{ __html: member.longBio }}
               />
             )}
-
-            <Cta />
           </Reveal>
         </div>
+
+        <Cta />
 
         {others.length > 0 && <Others members={others} />}
       </Container>
@@ -143,8 +166,8 @@ function Portrait({ member }: { member: TeamMemberDetail }) {
 async function Cta() {
   const contact = await getSiteContact();
   return (
-    <div className="mt-[clamp(32px,4vw,56px)] flex flex-wrap items-end justify-between gap-x-10 gap-y-5 border border-line bg-sand p-[clamp(22px,2.4vw,34px)]">
-      <div className="max-w-[26em]">
+    <Reveal className="mt-section flex flex-wrap items-end justify-between gap-x-10 gap-y-5 border border-line bg-sand p-[clamp(22px,2.4vw,34px)]">
+      <div className="max-w-[34em]">
         <h2 className="mb-2.5 font-heading text-heading text-ink-900">
           {copy.ctaTitle}
         </h2>
@@ -159,7 +182,7 @@ async function Cta() {
           →
         </span>
       </a>
-    </div>
+    </Reveal>
   );
 }
 
@@ -185,7 +208,6 @@ function Others({ members }: { members: Awaited<ReturnType<typeof getPublishedTe
             key={other.id}
             member={other}
             delay={i * 70}
-            compact
             sizes="(max-width: 640px) 100vw, (max-width: 1023px) 50vw, 25vw"
           />
         ))}

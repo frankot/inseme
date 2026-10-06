@@ -99,6 +99,7 @@ export function ProgramStageBand({
   tone = "default",
   raised,
   sticky = true,
+  layout = "list",
 }: {
   stage: StageBand;
   index: string;
@@ -106,9 +107,17 @@ export function ProgramStageBand({
   raised?: boolean;
   /** Pin the heading column while the list scrolls past. */
   sticky?: boolean;
+  /**
+   * `cards` sets the heading across the top and the points as a row of cards,
+   * the way the /program overview opens — for a stage with a few titled
+   * points that read better side by side than as a list.
+   */
+  layout?: "list" | "cards";
 }) {
   const t = TONE[tone === "dark" ? "dark" : "light"];
   const [first, ...rest] = stage.intro;
+
+  if (layout === "cards") return <CardsBand stage={stage} index={index} tone={tone} raised={raised} t={t} />;
 
   return (
     <Slab id={stage.id} tone={tone} raised={raised}>
@@ -214,6 +223,116 @@ export function ProgramStageBand({
             </Reveal>
           )}
         </StickySplit>
+      </Container>
+    </Slab>
+  );
+}
+
+/**
+ * The card layout of a band: eyebrow, then the title beside its intro — the
+ * same split as the /program opening — and the points as cards below it.
+ */
+function CardsBand({
+  stage,
+  index,
+  tone,
+  raised,
+  t,
+}: {
+  stage: StageBand;
+  index: string;
+  tone: SectionTone;
+  raised?: boolean;
+  t: (typeof TONE)[keyof typeof TONE];
+}) {
+  const [first, ...rest] = stage.intro;
+
+  return (
+    <Slab id={stage.id} tone={tone} raised={raised}>
+      <Container>
+        <Reveal>
+          <p className="flex flex-wrap items-center gap-2.5 text-eyebrow uppercase tracking-[0.22em]">
+            <span className={cn("tabular-nums", t.eyebrowIndex)}>{index}</span>
+            {stage.meta && (
+              <>
+                <span aria-hidden className={cn("opacity-60", t.eyebrowIndex)}>
+                  /
+                </span>
+                <span className={t.eyebrow}>{stage.meta}</span>
+              </>
+            )}
+          </p>
+
+          <div className="mt-[clamp(18px,2vw,28px)] grid items-start gap-x-[clamp(32px,6vw,112px)] gap-y-[clamp(18px,2vw,28px)] desk:[grid-template-columns:minmax(0,1.1fr)_minmax(0,0.9fr)]">
+            <h2 className={cn("max-w-[14em] text-pretty font-heading text-display-sm", t.title)}>
+              {stage.title}
+            </h2>
+            <div className="flex max-w-[34em] flex-col gap-4">
+              {first && (
+                <p
+                  className={cn(
+                    "text-pretty font-heading text-[clamp(18px,1.6vw,22px)] font-light leading-[1.45] tracking-[-0.02em]",
+                    t.lead,
+                  )}
+                >
+                  {first}
+                </p>
+              )}
+              {rest.map((paragraph) => (
+                <p key={paragraph} className={cn("text-pretty text-body-lg", t.body)}>
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        <ul className="m-0 mt-section-sm grid list-none gap-gap p-0 desk:grid-cols-3">
+          {stage.points.map((point, i) => (
+            <Reveal
+              as="li"
+              key={point.title ?? point.body}
+              delay={i * 70}
+              className="card-surface flex min-w-0 flex-col gap-4 p-card"
+            >
+              <span className="text-eyebrow tabular-nums tracking-[0.2em] text-clay-400">
+                {stageIndex(i)}
+              </span>
+              {point.title && (
+                <h3 className="text-pretty font-heading text-[clamp(19px,1.6vw,23px)] leading-[1.25] tracking-[-0.025em] text-ink-900">
+                  {point.title}
+                </h3>
+              )}
+              <p className="text-pretty text-meta text-ink-500">{point.body}</p>
+            </Reveal>
+          ))}
+        </ul>
+
+        {stage.closing && (
+          <Reveal
+            className={cn(
+              "mt-[clamp(28px,3vw,44px)] flex flex-col gap-3 border-l-2 pl-[clamp(16px,1.6vw,24px)]",
+              t.closing,
+            )}
+          >
+            {stage.closing.map((paragraph) => (
+              <p
+                key={paragraph}
+                className="max-w-[36em] text-pretty font-heading text-[clamp(17px,1.4vw,20px)] font-light leading-[1.5] tracking-[-0.015em]"
+              >
+                {paragraph}
+              </p>
+            ))}
+          </Reveal>
+        )}
+
+        {stage.link && (
+          <Reveal className="mt-[clamp(22px,2.4vw,32px)]">
+            <Cta href={stage.link.href} variant={t.link}>
+              {stage.link.label}
+            </Cta>
+          </Reveal>
+        )}
       </Container>
     </Slab>
   );

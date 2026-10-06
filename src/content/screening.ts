@@ -4,7 +4,7 @@
  * component edit — and if no test with this slug is published, the section
  * removes itself.
  */
-export const FEATURED_TEST_SLUG = "test-przesiewowy-alkohol";
+export const FEATURED_TEST_SLUG = "czy-to-juz-problem";
 
 export const testyPageDefaults = {
   eyebrow: "Testy przesiewowe",

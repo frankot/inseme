@@ -152,7 +152,7 @@ const QUESTIONS: Question[] = [
     category: "alkohol",
     question: "Skąd mam wiedzieć, czy to już uzależnienie?",
     answer:
-      "Pierwszą orientację daje test przesiewowy AUDIT, który możesz wypełnić anonimowo na naszej stronie. Rozpoznanie stawia jednak lekarz lub terapeuta po rozmowie — na podstawie objawów takich jak utrata kontroli nad piciem, głód alkoholowy czy objawy odstawienia, a nie samej ilości alkoholu.",
+      "Pierwszą orientację daje test przesiewowy, który możesz wypełnić anonimowo na naszej stronie. Rozpoznanie stawia jednak lekarz lub terapeuta po rozmowie — na podstawie objawów takich jak utrata kontroli nad piciem, głód alkoholowy czy objawy odstawienia, a nie samej ilości alkoholu.",
   },
   {
     category: "alkohol",

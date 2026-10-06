@@ -48,11 +48,18 @@ export const settingsSchema = z.object({
   defaultOgImageId: z.uuid().nullable(),
 });
 
+/** One licence row in the team form. A number is optional — not every certificate has one. */
+export const teamLicenseSchema = z.object({
+  name: z.string().trim().min(1, "Podaj nazwę licencji lub certyfikatu.").max(200),
+  number: z.string().trim().max(100),
+});
+
 export const teamMemberSchema = z.object({
   name: z.string().trim().min(1, "Podaj imię i nazwisko.").max(120),
   slug: slugField,
   role: optionalText,
   qualifications: optionalText,
+  licenses: z.array(teamLicenseSchema).max(10, "Maksymalnie 10 licencji."),
   shortBio: optionalText,
   longBio: optionalLongText,
   photoId: z.uuid().nullable(),

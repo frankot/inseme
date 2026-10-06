@@ -3,7 +3,7 @@ import "server-only";
 import { and, asc, eq, inArray } from "drizzle-orm";
 
 import { db } from "@/db";
-import { teamMembers, type Media, type TeamMember } from "@/db/schema";
+import { teamMembers, type Media, type TeamLicense, type TeamMember } from "@/db/schema";
 import { toMediaSummary } from "@/lib/media-summary";
 import type { MediaSummary } from "@/lib/media-types";
 
@@ -24,8 +24,8 @@ export type TeamCardData = {
   photo: MediaSummary | null;
 };
 
-/** The detail page adds the sanitised rich-text biography. */
-export type TeamMemberDetail = TeamCardData & { longBio: string | null };
+/** The detail page adds the sanitised rich-text biography and the licences. */
+export type TeamMemberDetail = TeamCardData & { longBio: string | null; licenses: TeamLicense[] };
 
 const publishedOnly = eq(teamMembers.status, "published");
 const byOrder = [asc(teamMembers.sortOrder), asc(teamMembers.name)] as const;
@@ -93,7 +93,7 @@ export async function getTeamMemberBySlug(
     where: and(publishedOnly, eq(teamMembers.slug, slug)),
     with: { photo: true },
   });
-  return row ? { ...toCard(row), longBio: row.longBio } : null;
+  return row ? { ...toCard(row), longBio: row.longBio, licenses: row.licenses } : null;
 }
 
 /** Slugs alone, for `generateStaticParams`. */

@@ -14,14 +14,11 @@ import { cn } from "@/lib/utils";
 export function TeamCard({
   member,
   delay = 0,
-  /** Teaser card: drops the biography and squares off the portrait on desktop. */
-  compact = false,
   sizes = "(max-width: 1023px) 100vw, 33vw",
   className,
 }: {
   member: TeamCardData;
   delay?: number;
-  compact?: boolean;
   sizes?: string;
   className?: string;
 }) {
@@ -31,26 +28,26 @@ export function TeamCard({
         href={`/zespol/${member.slug}`}
         className="card-surface group flex h-full flex-col"
       >
-        <Portrait member={member} sizes={sizes} compact={compact} />
+        <Portrait member={member} sizes={sizes} />
 
-        <div className="flex flex-auto flex-col p-[clamp(18px,1.8vw,26px)]">
-          {member.role && (
-            <span className="mb-2.5 text-eyebrow uppercase tracking-[0.18em] text-clay-600">
-              {member.role}
-            </span>
-          )}
+        {/*
+          Fixed shape: the role always reserves two lines and is clamped to
+          them, so names and links line up across a row no matter how long
+          the titles run; the bio likewise holds three. Qualifications and the
+          full bio live on /zespol/<slug>.
+        */}
+        <div className="flex flex-auto flex-col p-[clamp(16px,1.6vw,22px)]">
+          <span className="mb-2 line-clamp-2 min-h-[2lh] text-eyebrow uppercase tracking-[0.18em] text-clay-600">
+            {member.role}
+          </span>
 
           <h3 className="font-heading text-heading text-ink-900">{member.name}</h3>
 
-          {member.qualifications && (
-            <p className="mt-2 text-meta text-ink-300">{member.qualifications}</p>
-          )}
+          <p className="mt-2.5 line-clamp-3 min-h-[3lh] text-meta text-ink-400">
+            {member.shortBio}
+          </p>
 
-          {!compact && member.shortBio && (
-            <p className="mt-3.5 text-body text-ink-400">{member.shortBio}</p>
-          )}
-
-          <Cta as="span" className="mt-auto pt-5">
+          <Cta as="span" className="mt-auto pt-4">
             Poznaj
           </Cta>
         </div>
@@ -62,20 +59,17 @@ export function TeamCard({
 function Portrait({
   member,
   sizes,
-  compact,
 }: {
   member: TeamCardData;
   sizes: string;
-  compact: boolean;
 }) {
   return (
     <div
       className={cn(
         "relative overflow-hidden bg-stone",
-        // A teaser row of three or four 4:5 portraits runs very tall on a wide
-        // screen; square crops take about a fifth off without cropping faces.
-        // The roster keeps the full 4:5 — there the photograph is the content.
-        compact ? "aspect-[4/5] tab:aspect-square" : "aspect-[4/5]",
+        // A row of 4:5 portraits runs very tall on a wide screen; a square
+        // crop takes about a fifth off without cropping faces (object-top).
+        "aspect-[4/5] tab:aspect-square",
       )}
     >
       {member.photo ? (

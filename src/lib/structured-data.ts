@@ -81,16 +81,27 @@ export function personJsonLd(member: {
   name: string;
   role: string | null;
   qualifications: string | null;
+  licenses?: { name: string; number: string }[];
   shortBio: string | null;
   photo: { url: string } | null;
 }) {
+  const credentials = [
+    ...(member.qualifications ? [member.qualifications] : []),
+    ...(member.licenses ?? []).map((license) => ({
+      "@type": "EducationalOccupationalCredential",
+      name: license.name,
+      ...(license.number && { identifier: license.number }),
+    })),
+  ];
   return {
     "@type": "Person",
     "@id": absoluteUrl(`/zespol/${member.slug}#osoba`),
     name: member.name,
     url: absoluteUrl(`/zespol/${member.slug}`),
     ...(member.role && { jobTitle: member.role }),
-    ...(member.qualifications && { hasCredential: member.qualifications }),
+    ...(credentials.length > 0 && {
+      hasCredential: credentials.length === 1 ? credentials[0] : credentials,
+    }),
     ...(member.shortBio && { description: member.shortBio }),
     ...(member.photo && { image: absoluteUrl(member.photo.url) }),
     worksFor: { "@id": CLINIC_ID },

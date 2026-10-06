@@ -1,7 +1,10 @@
-import { integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { contentStatus } from "./enums";
 import { media } from "./media";
+
+/** A professional licence or certificate, shown on the person's page. */
+export type TeamLicense = { name: string; number: string };
 
 export const teamMembers = pgTable("team_members", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -10,6 +13,8 @@ export const teamMembers = pgTable("team_members", {
   slug: text("slug").notNull().unique(),
   role: text("role"),
   qualifications: text("qualifications"),
+  /** Optional; e.g. „Certyfikat specjalisty psychoterapii uzależnień” + its number. */
+  licenses: jsonb("licenses").$type<TeamLicense[]>().notNull().default([]),
   shortBio: text("short_bio"),
   longBio: text("long_bio"),
   photoId: uuid("photo_id").references(() => media.id, { onDelete: "set null" }),

@@ -1,13 +1,14 @@
 /**
- * Seeds the team roster so /zespol and the homepage teaser have something to
- * render before an editor has typed anything.
+ * Seeds the team roster so /zespol and the homepage teaser render the real
+ * Insieme team.
  *
  *   npm run seed:team
  *   npm run seed:team -- --reset   # delete every existing member first
  *
  * Idempotent: rows are upserted on `slug`, so re-running updates in place.
- * Photos are left empty on purpose — `<TeamCard>` falls back to initials, and
- * real headshots belong in the media library, not in a seed script.
+ * The placeholder roster from early development is removed by slug on every
+ * run. Photos are left empty on purpose — they are assigned in /admin/team,
+ * and an upsert never touches `photoId`, so re-running keeps them.
  */
 import { config as loadEnv } from "dotenv";
 
@@ -16,6 +17,7 @@ loadEnv({ path: ".env" });
 
 async function main() {
   // Imported after dotenv: `src/lib/env.ts` validates at module load.
+  const { inArray } = await import("drizzle-orm");
   const { db } = await import("../src/db");
   const { teamMembers } = await import("../src/db/schema");
   const { sanitizeRichText } = await import("../src/lib/sanitize");
@@ -24,11 +26,17 @@ async function main() {
   if (reset) {
     await db.delete(teamMembers);
     console.log("· cleared existing team members");
+  } else {
+    const removed = await db
+      .delete(teamMembers)
+      .where(inArray(teamMembers.slug, PLACEHOLDER_SLUGS))
+      .returning({ name: teamMembers.name });
+    for (const row of removed) console.log(`· removed placeholder ${row.name}`);
   }
 
   const now = new Date();
 
-  for (const person of PEOPLE) {
+  for (const [index, person] of PEOPLE.entries()) {
     const values = {
       name: person.name,
       slug: person.slug,
@@ -36,7 +44,7 @@ async function main() {
       qualifications: person.qualifications,
       shortBio: person.shortBio,
       longBio: sanitizeRichText(person.longBio),
-      sortOrder: person.sortOrder,
+      sortOrder: index,
       status: "published" as const,
       publishedAt: now,
       updatedAt: now,
@@ -53,132 +61,237 @@ async function main() {
   console.log(`\n${PEOPLE.length} osób w zespole. Sprawdź /zespol.`);
 }
 
+/** The made-up roster the site launched with. */
+const PLACEHOLDER_SLUGS = [
+  "marta-zielinska",
+  "tomasz-wieczorek",
+  "katarzyna-rembiszewska",
+  "pawel-lisiecki",
+  "grazyna-sobczak",
+  "igor-mazurkiewicz",
+];
+
+/** Order here is the order on /zespol. */
 const PEOPLE = [
   {
-    name: "Marta Zielińska",
-    slug: "marta-zielinska",
-    role: "kierowniczka programu, terapeutka uzależnień",
+    name: "Dominika Walczak",
+    slug: "dominika-walczak",
+    role: "właścicielka · managerka · kierowniczka ośrodka",
     qualifications:
-      "Certyfikat specjalisty psychoterapii uzależnień (PARPA), Studium Terapii Uzależnień, 16 lat praktyki",
+      "Studia psychologiczne · Studium Pomocy Psychologicznej i Interwencji Kryzysowej · Program Rozwoju Osobistego · wieloletnie doświadczenie managerskie",
     shortBio:
-      "Prowadzi program i pierwsze rozmowy telefoniczne. Jeśli dzwonisz po raz pierwszy, najczęściej odbierze Marta.",
+      "Tworzę i prowadzę Insieme, odpowiadając za kierunek rozwoju ośrodka, organizację jego pracy i standard opieki nad pacjentem. Zależy mi, żeby leczenie uzależnienia nie było jedynie okresem abstynencji, ale początkiem trwałej zmiany sposobu funkcjonowania i poprawy jakości życia.",
     longBio: `
-      <p>Pracuję z osobami uzależnionymi od szesnastu lat — najpierw na oddziale detoksykacyjnym w Warszawie, potem w poradni, a od 2019 roku w Insieme. Najwięcej nauczyłam się nie na szkoleniach, tylko z rozmów, które kończyły się słowami „jeszcze nie teraz”. Wracały po pół roku.</p>
       <h3>Czym się zajmuję</h3>
       <ul>
-        <li>pierwszy kontakt telefoniczny i kwalifikacja do programu</li>
-        <li>terapia grupowa — dwa razy w tygodniu</li>
-        <li>konsultacje dla rodzin, także bez udziału osoby uzależnionej</li>
+        <li>koordynuję codzienne funkcjonowanie ośrodka</li>
+        <li>współpracuję z zespołem przy rozwijaniu programu leczenia</li>
+        <li>dbam o standard opieki i warunki pobytu pacjentów</li>
+        <li>pozostaję w kontakcie z pacjentami i ich bliskimi na różnych etapach leczenia</li>
+        <li>rozwijam kolejne formy terapii i wsparcia oferowane przez Insieme</li>
       </ul>
-      <h3>Jak pracuję</h3>
-      <p>Nie zaczynam od diagnozy ani od listy zakazów. Zaczynam od pytania, co się działo w ostatnim tygodniu — bo to zwykle wystarczy, żeby zobaczyć, gdzie jesteśmy. <strong>Nie oceniam i nie moralizuję.</strong> Jeśli ktoś nie jest gotowy na terapię stacjonarną, mówię to wprost i proponuję coś innego.</p>
-      <blockquote>Terapia nie polega na tym, żeby przekonać kogoś, że ma problem. Polega na tym, żeby był gdzie przyjść, kiedy sam to zobaczy.</blockquote>
+      <h3>Co jest dla mnie ważne</h3>
+      <p>Wiem, jak dużo odwagi wymaga przyznanie przed sobą, że dotychczasowy sposób życia przestał działać. Własne doświadczenie pracy nad sobą nauczyło mnie, że uzależnienie może stać się punktem wyjścia do znacznie głębszej zmiany.</p>
+      <p>Chcę, żeby Insieme było miejscem stabilnym, bezpiecznym i ludzkim — takim, w którym pacjent jest traktowany podmiotowo, ale jednocześnie otrzymuje jasne zasady, strukturę i profesjonalną pomoc potrzebną do rozpoczęcia zmiany.</p>
     `,
-    sortOrder: 0,
   },
   {
-    name: "Tomasz Wieczorek",
-    slug: "tomasz-wieczorek",
-    role: "terapeuta uzależnień",
+    name: "Leszek Kapler",
+    slug: "leszek-kapler",
+    role: "superwizor ośrodka · psychoterapeuta · specjalista terapii uzależnień · trener",
     qualifications:
-      "Specjalista psychoterapii uzależnień, Szkoła Psychoterapii Poznawczo-Behawioralnej, 11 lat praktyki",
+      "Ponad 30 lat doświadczenia w pomocy psychologicznej · psychoterapia osób dorosłych i rodzin · szkolenie i superwizja psychoterapeutów · członek Polskiego Towarzystwa Psychologicznego",
     shortBio:
-      "Prowadzi sesje indywidualne i warsztat o nawrotach. Sam był po drugiej stronie tej rozmowy dwadzieścia lat temu.",
+      "Od ponad 30 lat zajmuje się psychoterapią, pomocą psychologiczną oraz prowadzeniem treningów i warsztatów. W Insieme odpowiada za superwizję pracy zespołu i wspiera terapeutów w przyglądaniu się procesom leczenia pacjentów.",
     longBio: `
-      <p>Do terapii trafiłem najpierw jako pacjent — w 2004 roku, po ośmiu latach picia i trzech nieudanych próbach odstawienia na własną rękę. Nie mówię o tym każdemu i nie robię z tego wykładu, ale kiedy ktoś pyta, czy ja to rozumiem, odpowiadam zgodnie z prawdą.</p>
-      <h3>Czym się zajmuję</h3>
+      <h3>Czym się zajmuje</h3>
       <ul>
-        <li>sesje indywidualne — dwie w tygodniu na pacjenta</li>
-        <li>warsztat o mechanizmie nawrotu i planie na pierwsze trzy miesiące po wyjeździe</li>
-        <li>grupa wsparcia dla absolwentów programu, w czwartki</li>
+        <li>superwizuje pracę zespołu terapeutycznego Insieme</li>
+        <li>wspiera terapeutów w analizie procesu leczenia</li>
+        <li>prowadzi psychoterapię osób dorosłych i rodzin</li>
+        <li>prowadzi treningi i warsztaty psychologiczne</li>
+        <li>tworzy i prowadzi Program Rozwoju Osobistego PRO na Mazurach</li>
       </ul>
-      <h3>Jak pracuję</h3>
-      <p>Pracuję głównie poznawczo-behawioralnie: konkretne sytuacje, konkretne reakcje, konkretny plan. Mniej interesuje mnie, dlaczego ktoś zaczął pić piętnaście lat temu, bardziej — co zrobi w piątek o dziewiętnastej, kiedy wszyscy w pracy idą na piwo.</p>
+      <h3>Jak pracuje</h3>
+      <p>Pracuje integracyjnie — dobiera sposób pomocy do konkretnej osoby i problemu, korzystając z różnych podejść psychoterapeutycznych.</p>
+      <p>Ważne są dla niego uważność, współczucie i konstruktywna zmiana. Superwizja pozwala zespołowi spojrzeć na proces pacjenta z szerszej perspektywy i wspólnie szukać najlepszych kierunków dalszej pracy.</p>
     `,
-    sortOrder: 1,
   },
   {
-    name: "Katarzyna Rembiszewska",
-    slug: "katarzyna-rembiszewska",
+    name: "Szymon Korzeniowski",
+    slug: "szymon-korzeniowski",
+    role: "lekarz psychiatra",
+    qualifications:
+      "I Wydział Lekarski Warszawskiego Uniwersytetu Medycznego · doświadczenie w psychiatrii dorosłych · praca z uzależnieniami od substancji i uzależnieniami behawioralnymi",
+    shortBio:
+      "Pracuje również w Mazowieckim Specjalistycznym Centrum Zdrowia w Tworkach oraz w Centrum Zdrowia Psychicznego. Zajmuje się diagnostyką i leczeniem zaburzeń psychicznych osób dorosłych.",
+    longBio: `
+      <h3>Czym się zajmuje</h3>
+      <ul>
+        <li>kwalifikacją medyczną do rozpoczęcia leczenia</li>
+        <li>konsultacjami psychiatrycznymi podczas pobytu</li>
+        <li>oceną stanu psychicznego pacjenta</li>
+        <li>diagnostyką współwystępujących trudności psychicznych</li>
+        <li>doborem farmakoterapii, jeśli istnieją do niej wskazania</li>
+      </ul>
+      <h3>Jak pracuje</h3>
+      <p>Każdy problem traktuje w kontekście indywidualnej historii pacjenta. Podczas konsultacji ważne jest dla niego uważne wysłuchanie osoby, poznanie jej aktualnej sytuacji i dopiero na tej podstawie dobranie odpowiedniego postępowania.</p>
+      <p>Konsultacja psychiatryczna jest w Insieme częścią szerszego procesu — opieka medyczna i psychoterapia uzupełniają się, zamiast funkcjonować osobno.</p>
+    `,
+  },
+  {
+    name: "Aleksandra Latosiewicz-Kordek",
+    slug: "aleksandra-latosiewicz-kordek",
     role: "lekarka psychiatra",
     qualifications:
-      "Specjalizacja z psychiatrii, Warszawski Uniwersytet Medyczny, 14 lat praktyki klinicznej",
+      "Uniwersytet Medyczny w Lublinie · specjalizacja z psychiatrii dorosłych · doświadczenie na oddziałach ogólnopsychiatrycznych, detoksykacyjnych i w Poradni Zdrowia Psychicznego",
     shortBio:
-      "Prowadzi detoks i konsultacje psychiatryczne. Decyduje o farmakoterapii i o tym, czy pobyt jest bezpieczny.",
+      "Na co dzień pracuje w Mazowieckim Specjalistycznym Centrum Zdrowia w Pruszkowie i stale rozwija kwalifikacje podczas szkoleń oraz konferencji psychiatrycznych.",
     longBio: `
-      <p>Odpowiadam za medyczną stronę pobytu: kwalifikację do detoksu, prowadzenie odstawienia i leczenie tego, co bardzo często towarzyszy uzależnieniu — depresji, zaburzeń lękowych, bezsenności.</p>
-      <h3>Czym się zajmuję</h3>
+      <h3>Czym się zajmuje</h3>
       <ul>
-        <li>ocena stanu zdrowia przed przyjęciem — zwykle jeszcze przez telefon</li>
-        <li>detoks alkoholowy i od benzodiazepin, 7–10 dni pod nadzorem</li>
-        <li>konsultacje psychiatryczne w trakcie pobytu i ustalenie leczenia na później</li>
+        <li>konsultacjami psychiatrycznymi pacjentów</li>
+        <li>oceną aktualnego stanu psychicznego</li>
+        <li>diagnostyką współwystępujących zaburzeń</li>
+        <li>oceną wskazań do leczenia farmakologicznego</li>
+        <li>monitorowaniem leczenia psychiatrycznego podczas pobytu</li>
       </ul>
-      <h3>O czym warto wiedzieć</h3>
-      <p>Odstawienie alkoholu po wieloletnim ciągu <strong>nie jest bezpieczne w domu</strong> — może skończyć się drgawkami albo majaczeniem. Jeśli dzwonisz i opisujesz taką sytuację, powiem to wprost, nawet jeśli akurat nie mamy miejsca; wtedy kierujemy gdzie indziej.</p>
-      <p>Leki, które przyjmujesz na co dzień, przywieź ze sobą razem z opakowaniami. To skraca pierwszą konsultację o dobre pół godziny.</p>
+      <h3>Jak pracuje</h3>
+      <p>Patrzy na uzależnienie również z perspektywy medycznej i psychiatrycznej. Pozwala to uwzględnić w procesie leczenia objawy i trudności, które mogą współwystępować z samym uzależnieniem.</p>
+      <p>Jej doświadczenie obejmuje zarówno psychiatrię ogólną, jak i pracę na oddziałach detoksykacyjnych, dzięki czemu może szerzej oceniać sytuację zdrowotną pacjenta.</p>
     `,
-    sortOrder: 2,
   },
   {
-    name: "Paweł Lisiecki",
-    slug: "pawel-lisiecki",
-    role: "psycholog, terapeuta rodzinny",
+    name: "Aleksandra Bieniasz",
+    slug: "aleksandra-bieniasz",
+    role: "specjalistka terapii uzależnień · terapeutka",
     qualifications:
-      "Psychologia kliniczna UW, całościowy kurs psychoterapii systemowej, 9 lat praktyki",
+      "Ponad 17 lat doświadczenia · Specjalistka Terapii Uzależnień · magister pedagogiki, specjalizacja resocjalizacja · terapia indywidualna i grupowa",
     shortBio:
-      "Pracuje z rodzinami — także wtedy, gdy osoba uzależniona jeszcze nie chce o niczym słyszeć.",
+      "Od 2007 roku pracuje z osobami uzależnionymi i współuzależnionymi. Doświadczenie zdobywała między innymi w ośrodku terapii uzależnień oraz współprowadząc grupę terapeutyczną w poradni MONAR.",
     longBio: `
-      <p>Bardzo często pierwszy telefon do ośrodka wykonuje nie pacjent, tylko żona, mąż, matka albo dorosłe dziecko. Ta rozmowa też jest terapią i nie jest gorszym początkiem niż każdy inny.</p>
-      <h3>Czym się zajmuję</h3>
+      <h3>Czym się zajmuje</h3>
       <ul>
-        <li>konsultacje dla rodzin — również bez wiedzy osoby uzależnionej</li>
-        <li>sesje rodzinne w trakcie pobytu, zwykle od drugiego tygodnia</li>
-        <li>przygotowanie domu na powrót: co się zmieni, a co nie</li>
+        <li>terapią indywidualną i grupową</li>
+        <li>pracą nad mechanizmami uzależnienia</li>
+        <li>rozpoznawaniem i regulowaniem emocji</li>
+        <li>pracą nad relacjami i schematami funkcjonowania</li>
+        <li>wzmacnianiem zasobów potrzebnych do dalszego zdrowienia</li>
       </ul>
-      <h3>Jak pracuję</h3>
-      <p>Zaczynam od tego, co bliscy już próbowali — bo zwykle próbowali dużo i są wyczerpani. Część z tych rzeczy pomagała, część nieświadomie podtrzymywała picie. Rozdzielenie jednego od drugiego jest zwykle pierwszą realną ulgą.</p>
+      <h3>Jak pracuje</h3>
+      <p>Łączy klasyczną terapię uzależnień z pracą nad emocjami i elementami podejścia coachingowego. Szczególnie ważne są dla niej zrozumienie, uważność i autentyczna relacja z pacjentem.</p>
+      <p>Wierzy, że zmiana wymaga jednocześnie łagodności wobec siebie, konsekwencji i gotowości do uczciwego przyglądania się własnym sposobom funkcjonowania.</p>
     `,
-    sortOrder: 3,
   },
   {
-    name: "Grażyna Sobczak",
-    slug: "grazyna-sobczak",
-    role: "pielęgniarka koordynująca",
+    name: "Robert Sławiński",
+    slug: "robert-slawinski",
+    role: "instruktor terapii uzależnień · terapeuta",
     qualifications:
-      "Licencjat pielęgniarstwa, kurs kwalifikacyjny w opiece psychiatrycznej, 22 lata w zawodzie",
+      "Studium Pomocy Psychologicznej · Studium Terapii Uzależnień i Współuzależnienia IPZ · od 2008 roku w pracy z osobami uzależnionymi",
     shortBio:
-      "Jest w ośrodku codziennie. Wydaje leki, mierzy parametry i zwykle pierwsza zauważa, że ktoś ma gorszy dzień.",
+      "Doświadczenie zdobywał zarówno w ośrodkach stacjonarnych, jak i ambulatoryjnych. Prowadzi terapię osób uzależnionych od alkoholu i innych substancji psychoaktywnych oraz pracuje z ich rodzinami.",
     longBio: `
-      <p>W pielęgniarstwie jestem od dwudziestu dwóch lat, z czego siedemnaście w opiece psychiatrycznej. W Insieme odpowiadam za codzienną opiekę — najbardziej intensywną w pierwszym tygodniu, kiedy organizm dopiero się uspokaja.</p>
-      <h3>Czym się zajmuję</h3>
+      <h3>Czym się zajmuje</h3>
       <ul>
-        <li>opieka w trakcie detoksu — pomiary, leki, obserwacja przez całą dobę</li>
-        <li>przyjęcie nowych osób i przejście przez pierwszy dzień</li>
-        <li>kontakt z lekarzem, kiedy coś odbiega od normy</li>
+        <li>terapią indywidualną</li>
+        <li>terapią grupową</li>
+        <li>pracą nad motywacją do zmiany</li>
+        <li>pomocą osobom uzależnionym od alkoholu i innych substancji</li>
+        <li>wsparciem członków rodzin osób uzależnionych</li>
       </ul>
-      <p>Pierwsze dwie doby są najtrudniejsze i nikt nie zostaje z nimi sam. To jedyny moment pobytu, w którym pukamy do pokoju także w nocy.</p>
+      <h3>Jak pracuje</h3>
+      <p>Najbardziej interesuje go człowiek i to, co może uruchomić jego rzeczywistą motywację do zmiany.</p>
+      <p>Łączy doświadczenie pracy stacjonarnej i ambulatoryjnej, dzięki czemu patrzy na terapię nie tylko przez pryzmat samego pobytu w ośrodku, ale całego procesu zdrowienia. Swoją pracę regularnie poddaje superwizji.</p>
     `,
-    sortOrder: 4,
   },
   {
-    name: "Igor Mazurkiewicz",
-    slug: "igor-mazurkiewicz",
-    role: "instruktor terapii uzależnień",
+    name: "Katarzyna Stefanowicz",
+    slug: "katarzyna-stefanowicz",
+    role: "instruktorka terapii uzależnień · terapeutka · trenerka pracy z ciałem",
     qualifications:
-      "Studium Terapii Uzależnień w trakcie certyfikacji, instruktor pracy z ciałem, 6 lat praktyki",
+      "Od 2010 roku w pracy z osobami uzależnionymi · Szkoła Psychoterapii Uzależnień CEDR · Studium Umiejętności Psychologicznych · szkolenia z pracy z ciałem, ruchem i uważnością",
     shortBio:
-      "Prowadzi zajęcia ruchowe, psychoedukację i weekendowe wyjścia do lasu. Odpowiada za to, żeby dzień miał kształt.",
+      "Doświadczenie zdobywała przez kilkanaście lat w placówkach stacjonarnych i ambulatoryjnych, pracując z osobami uzależnionymi od alkoholu i innych substancji psychoaktywnych.",
     longBio: `
-      <p>Odpowiadam za tę część programu, która nie odbywa się w fotelu. Sen, ruch, jedzenie i rytm dnia brzmią banalnie obok terapii, ale przy odstawieniu to one najszybciej zaczynają działać.</p>
-      <h3>Czym się zajmuję</h3>
+      <h3>Czym się zajmuje</h3>
       <ul>
-        <li>poranne zajęcia ruchowe i praca z oddechem</li>
-        <li>psychoedukacja: co dzieje się z organizmem w pierwszych tygodniach</li>
-        <li>wyjścia do lasu i sobotnie zajęcia w ogrodzie</li>
+        <li>terapią osób uzależnionych</li>
+        <li>pracą nad emocjami i potrzebami</li>
+        <li>rozwijaniem świadomości ciała</li>
+        <li>technikami uważności i regulowania napięcia</li>
+        <li>wzmacnianiem osobistych zasobów pacjenta</li>
       </ul>
-      <p>Nikogo nie zmuszam do porannej gimnastyki. Ale po tygodniu przychodzą prawie wszyscy, głównie dlatego, że wreszcie zaczynają spać.</p>
+      <h3>Jak pracuje</h3>
+      <p>Szczególnie bliska jest jej praca poprzez ciało i ruch. Zwraca uwagę na to, jak emocje przejawiają się nie tylko w myślach, ale również w napięciu, gestach i sposobie funkcjonowania ciała.</p>
+      <p>W relacji terapeutycznej najważniejsze są dla niej bezpieczeństwo, uważność i zaufanie. Pomaga pacjentom odzyskiwać kontakt ze sobą, a jednocześnie uczciwie przyglądać się konsekwencjom dotychczasowych wyborów.</p>
     `,
-    sortOrder: 5,
+  },
+  {
+    name: "Paweł Częstochowski",
+    slug: "pawel-czestochowski",
+    role: "specjalista terapii uzależnień · pedagog · terapeuta",
+    qualifications:
+      "Pedagog · specjalista terapii uzależnień · doświadczenie w pracy stacjonarnej i ambulatoryjnej",
+    shortBio:
+      "Doświadczenie zdobywał, prowadząc zarówno grupy terapeutyczne, jak i terapię indywidualną w różnych formach leczenia uzależnień.",
+    longBio: `
+      <h3>Czym się zajmuje</h3>
+      <ul>
+        <li>terapią grupową i indywidualną</li>
+        <li>pracą nad mechanizmami uzależnienia</li>
+        <li>rozwijaniem samoświadomości</li>
+        <li>rozpoznawaniem własnych zasobów i ograniczeń</li>
+        <li>przygotowaniem do dalszego procesu zdrowienia</li>
+      </ul>
+      <h3>Jak pracuje</h3>
+      <p>Trzeźwienie traktuje jako proces poznawania siebie — nie tylko swoich trudności, ale również możliwości i zasobów.</p>
+      <p>Pomaga pacjentom przyglądać się temu, co dotychczas utrudniało zmianę, oraz budować większą akceptację siebie i odpowiedzialność za dalsze decyzje.</p>
+    `,
+  },
+  {
+    name: "Łukasz Drężek",
+    slug: "lukasz-drezek",
+    role: "specjalista terapii uzależnień · teolog · terapeuta",
+    qualifications:
+      "Studium Terapii Uzależnień IPZ PTP · dialog motywujący · praca z ciałem · techniki uważności · przygotowanie do uwzględniania aspektu duchowego w terapii",
+    shortBio:
+      "Z osobami uzależnionymi pracuje od 2021 roku. Swoje przygotowanie rozwija poprzez specjalistyczne szkolenia z dialogu motywującego, pracy z ciałem i regulacji emocji.",
+    longBio: `
+      <h3>Czym się zajmuje</h3>
+      <ul>
+        <li>terapią osób uzależnionych</li>
+        <li>wzmacnianiem motywacji do zmiany</li>
+        <li>pracą nad emocjami i napięciem</li>
+        <li>rozwijaniem uważności i samoświadomości</li>
+        <li>poszukiwaniem indywidualnych zasobów wspierających zdrowienie</li>
+      </ul>
+      <h3>Jak pracuje</h3>
+      <p>Chętnie korzysta z technik uważności, które pomagają zatrzymać automatyczne reakcje, lepiej rozpoznawać emocje i obniżać napięcie.</p>
+      <p>Jeśli jest to ważne dla pacjenta, w procesie może również uwzględniać wymiar duchowy jako jeden z osobistych zasobów zdrowienia — bez narzucania konkretnego światopoglądu.</p>
+    `,
+  },
+  {
+    name: "Małgorzata Duda",
+    slug: "malgorzata-duda",
+    role: "terapeutka · trenerka rozwoju osobistego",
+    qualifications:
+      "Od 2017 roku w pracy z osobami uzależnionymi i współuzależnionymi · Akademia Psychologii Terapeutycznej · Szkoła Trenerów i Menadżerów · Wyższa Szkoła Biznesu i Nauk o Zdrowiu",
+    shortBio:
+      "Pracuje z osobami uzależnionymi i współuzależnionymi, wspierając je zarówno w procesie zmiany, jak i w szerszej pracy nad funkcjonowaniem w życiu.",
+    longBio: `
+      <h3>Czym się zajmuje</h3>
+      <ul>
+        <li>pracą terapeutyczną z osobami uzależnionymi</li>
+        <li>wsparciem osób współuzależnionych</li>
+        <li>wzmacnianiem poczucia własnej wartości</li>
+        <li>pracą nad relacją z samym sobą</li>
+        <li>rozwijaniem osobistych zasobów i równowagi</li>
+      </ul>
+      <h3>Jak pracuje</h3>
+      <p>Opiera relację na wzajemnym zaufaniu i indywidualnym podejściu. Zwraca uwagę nie tylko na samo uzależnienie, ale również na inne obszary życia, które wymagają odbudowania.</p>
+      <p>Ważne są dla niej akceptacja siebie, wzmacnianie wewnętrznych zasobów i stopniowe odzyskiwanie równowagi w relacjach i codziennym funkcjonowaniu.</p>
+    `,
   },
 ];
 
