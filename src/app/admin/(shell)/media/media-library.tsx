@@ -1,19 +1,40 @@
 "use client";
 
-import { Loader2, Upload } from "lucide-react";
+import { FileText, Upload } from "lucide-react";
 import Image from "next/image";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { deleteMedia, updateMediaAltText } from "@/app/admin/(shell)/media/actions";
-import { supportsEdgeResize } from "@/lib/image-host";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
-import { Button } from "@/components/ui/button";
+import {
+  EmptyPhotos,
+  PhotoCard,
+  PhotoGrid,
+  PhotoSummary,
+  StorageNotice,
+  UploadDropzone,
+} from "@/components/admin/photo-admin";
 import { Input } from "@/components/ui/input";
+import { formatBytes } from "@/lib/gallery-upload";
+import { supportsEdgeResize } from "@/lib/image-host";
+import { hasVariants } from "@/lib/image-variants";
 import type { MediaSummary } from "@/lib/media-types";
 import { uploadMediaFile } from "@/lib/media-upload";
 import { ALLOWED_UPLOAD_TYPES_CLIENT } from "@/lib/upload-limits";
 
+/** "image/jpeg" → "JPG", "application/pdf" → "PDF". */
+function typeLabel(mimeType: string): string {
+  const sub = mimeType.split("/")[1] ?? mimeType;
+  return { jpeg: "JPG", "svg+xml": "SVG" }[sub] ?? sub.toUpperCase();
+}
+
+/**
+ * The library, laid out like Galeria (`photo-admin.tsx`): the same upload
+ * area, summary line, grid and cards. What differs is only the content — a
+ * library file has an alt text but no caption or publishing, and may be a PDF
+ * or an SVG rather than a photo.
+ */
 export function MediaLibrary({
   initialItems,
   storageConfigured,
@@ -22,90 +43,104 @@ export function MediaLibrary({
   storageConfigured: boolean;
 }) {
   const [items, setItems] = useState(initialItems);
-  const [isUploading, setIsUploading] = useState(false);
+  const [pending, setPending] = useState<{ name: string; left: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  async function uploadFile(file: File) {
-    const result = await uploadMediaFile(file);
-    if (!result.ok) {
-      toast.error(result.error);
-      return;
-    }
-    setItems((current) => [result.data, ...current]);
-    toast.success(`Dodano ${file.name}.`);
-  }
+  const missingAlt = items.filter((item) => item.mimeType.startsWith("image/") && !item.altText?.trim());
+  const stored = items.reduce((sum, item) => sum + item.size, 0);
 
-  async function handleFiles(fileList: FileList | null) {
-    if (!fileList?.length) return;
-    setIsUploading(true);
+  async function handleFiles(files: File[]) {
+    if (!files.length) return;
     try {
-      for (const file of Array.from(fileList)) {
-        await uploadFile(file);
+      for (const [index, file] of files.entries()) {
+        setPending({ name: file.name, left: files.length - index });
+        const result = await uploadMediaFile(file);
+        if (!result.ok) {
+          toast.error(result.error);
+          continue;
+        }
+        setItems((current) => [result.data, ...current]);
+        toast.success(`Dodano ${file.name}.`);
       }
     } finally {
-      setIsUploading(false);
+      setPending(null);
       if (inputRef.current) inputRef.current.value = "";
     }
   }
 
   return (
     <div className="flex flex-col gap-6">
-      {!storageConfigured ? (
-        <p className="rounded-md border border-dashed px-4 py-3 text-sm text-muted-foreground">
-          Magazyn plików (Cloudflare R2) nie jest jeszcze skonfigurowany — uzupełnij zmienne
-          <code className="mx-1 rounded bg-muted px-1 py-0.5 text-xs">R2_*</code>
-          w pliku <code className="rounded bg-muted px-1 py-0.5 text-xs">.env.local</code>,
-          aby włączyć przesyłanie plików.
-        </p>
+      {!storageConfigured ? <StorageNotice what="włączyć przesyłanie plików" /> : null}
+
+      <UploadDropzone
+        accept={ALLOWED_UPLOAD_TYPES_CLIENT.join(",")}
+        disabled={!storageConfigured}
+        busyLabel={pending ? "Przesyłanie…" : null}
+        icon={<Upload className="size-4" aria-hidden />}
+        label="Dodaj pliki"
+        status={
+          pending ? (
+            <>
+              {pending.name}
+              {pending.left > 1 ? ` — pozostało ${pending.left}` : null}
+            </>
+          ) : undefined
+        }
+        hint={
+          <>
+            Upuść pliki tutaj albo wybierz je z dysku: zdjęcia (JPG, PNG, WebP, AVIF), SVG lub
+            PDF. Do każdego zdjęcia powstają w przeglądarce mniejsze kopie, żeby telefony
+            pobierały tylko tyle, ile potrzebują.
+          </>
+        }
+        acceptDrop={(file) => (ALLOWED_UPLOAD_TYPES_CLIENT as readonly string[]).includes(file.type)}
+        onFiles={(files) => void handleFiles(files)}
+        inputRef={inputRef}
+      />
+
+      {items.length > 0 ? (
+        <PhotoSummary>
+          {items.length} {items.length === 1 ? "plik" : "plików"}
+          {missingAlt.length > 0 ? ` · ${missingAlt.length} bez opisu (alt)` : ""} ·{" "}
+          {formatBytes(stored)} w magazynie
+        </PhotoSummary>
       ) : null}
 
-      <div>
-        <input
-          ref={inputRef}
-          type="file"
-          multiple
-          accept={ALLOWED_UPLOAD_TYPES_CLIENT.join(",")}
-          className="hidden"
-          onChange={(event) => void handleFiles(event.target.files)}
-        />
-        <Button
-          type="button"
-          disabled={!storageConfigured || isUploading}
-          onClick={() => inputRef.current?.click()}
-        >
-          {isUploading ? (
-            <Loader2 className="size-4 animate-spin" aria-hidden />
-          ) : (
-            <Upload className="size-4" aria-hidden />
-          )}
-          {isUploading ? "Przesyłanie…" : "Dodaj pliki"}
-        </Button>
-      </div>
-
       {items.length === 0 ? (
-        <p className="rounded-md border border-dashed px-4 py-12 text-center text-sm text-muted-foreground">
-          Biblioteka jest pusta.
-        </p>
+        <EmptyPhotos>Biblioteka jest pusta. Dodaj pierwsze pliki.</EmptyPhotos>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <PhotoGrid>
           {items.map((item) => (
             <MediaCard
               key={item.id}
               item={item}
+              onChanged={(altText) =>
+                setItems((current) => current.map((row) => (row.id === item.id ? { ...row, altText } : row)))
+              }
               onDeleted={() => setItems((current) => current.filter((row) => row.id !== item.id))}
             />
           ))}
-        </ul>
+        </PhotoGrid>
       )}
     </div>
   );
 }
 
-function MediaCard({ item, onDeleted }: { item: MediaSummary; onDeleted: () => void }) {
+function MediaCard({
+  item,
+  onChanged,
+  onDeleted,
+}: {
+  item: MediaSummary;
+  onChanged: (altText: string | null) => void;
+  onDeleted: () => void;
+}) {
   const [altText, setAltText] = useState(item.altText ?? "");
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const isImage = item.mimeType.startsWith("image/");
 
+  // Autosaves on blur, like the gallery's captions — and like them, the field
+  // stays enabled while saving, so tabbing on never swallows keystrokes.
   function saveAltText() {
     if (altText === (item.altText ?? "")) return;
     startTransition(async () => {
@@ -114,64 +149,77 @@ function MediaCard({ item, onDeleted }: { item: MediaSummary; onDeleted: () => v
         toast.error(result.error);
         return;
       }
+      onChanged(altText.trim() || null);
       toast.success("Zapisano opis.");
     });
   }
 
   return (
-    <li className="flex flex-col gap-3 rounded-lg border p-3">
-      <div className="relative aspect-video overflow-hidden rounded-md bg-muted">
-        {isImage ? (
+    <PhotoCard
+      media={
+        isImage ? (
           <Image
             src={item.url}
             alt={item.altText ?? ""}
             fill
-            sizes="(min-width: 1024px) 300px, (min-width: 640px) 45vw, 90vw"
-            unoptimized={!supportsEdgeResize(item.url)}
+            sizes="(min-width: 1280px) 280px, (min-width: 640px) 45vw, 90vw"
+            unoptimized={!(hasVariants(item.url) || supportsEdgeResize(item.url))}
+            loading="lazy"
             className="object-cover"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-            {item.mimeType}
+          <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+            <FileText className="size-8" aria-hidden />
+            <span className="text-xs">{item.mimeType}</span>
           </div>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-2">
+        )
+      }
+      topLeft={typeLabel(item.mimeType)}
+      topRight={
+        isImage && !item.altText?.trim() ? (
+          <span className="rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+            Brak opisu
+          </span>
+        ) : null
+      }
+      fields={
         <Input
           value={altText}
           onChange={(event) => setAltText(event.target.value)}
           onBlur={saveAltText}
           placeholder="Opis alternatywny (alt)"
-          aria-label={`Opis alternatywny pliku ${item.id}`}
-          disabled={isPending}
+          aria-label={`Opis alternatywny pliku ${typeLabel(item.mimeType)}`}
         />
-        <p className="text-xs text-muted-foreground">
-          {item.width && item.height ? `${item.width}×${item.height} · ` : ""}
-          {(item.size / 1024).toFixed(0)} kB
-        </p>
-      </div>
-
-      <div className="flex items-center justify-between">
+      }
+      meta={[
+        item.width && item.height ? `${item.width}×${item.height}` : null,
+        formatBytes(item.size),
+        typeLabel(item.mimeType),
+      ]
+        .filter(Boolean)
+        .join(" · ")}
+      actionsStart={
         <a
           href={item.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs underline underline-offset-4"
+          className="px-1 text-xs underline underline-offset-4"
         >
           Otwórz plik
         </a>
+      }
+      actionsEnd={
         <ConfirmDelete
+          iconOnly
           onConfirm={async () => {
             const result = await deleteMedia(item.id);
             if (result.ok) onDeleted();
             return result;
           }}
           title="Usunąć plik?"
-          description="Plik zniknie z biblioteki i z magazynu R2. Miejsca, w których był użyty, zostaną puste."
-          iconOnly
+          description="Plik zniknie z biblioteki i z magazynu R2 (razem z jego mniejszymi kopiami). Miejsca, w których był użyty, zostaną puste."
         />
-      </div>
-    </li>
+      }
+    />
   );
 }

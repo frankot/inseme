@@ -16,14 +16,18 @@ export default async function AdminShellLayout({ children }: { children: ReactNo
     <div className="flex min-h-svh flex-col">
       <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background px-4">
         <MobileNav />
-        <SiteImage
-          src="/placeholder/logo-insieme.png"
-          alt="Insieme"
-          width={244}
-          height={72}
-          priority
-          className="h-6 w-auto"
-        />
+        {/* On desktop the logo box spans exactly the sidebar (w-64, cancelling
+            the header's padding), so the mark sits centred over the menu. */}
+        <div className="flex lg:-ml-4 lg:w-64 lg:shrink-0 lg:justify-center">
+          <SiteImage
+            src="/brand/logo-insieme.svg"
+            alt="Insieme"
+            width={930}
+            height={253}
+            priority
+            className="h-6 w-auto"
+          />
+        </div>
         <div className="ml-auto">
           <UserMenu name={session?.user?.name} email={session?.user?.email} />
         </div>

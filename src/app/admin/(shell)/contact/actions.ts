@@ -32,6 +32,8 @@ export async function deleteContactSubmission(id: string): Promise<ActionResult>
       .set({ deletedAt: new Date() })
       .where(eq(contactSubmissions.id, id));
     revalidatePath("/admin/contact");
+    // The message's address is listed under Adresy too.
+    revalidatePath("/admin/leads");
     revalidatePath("/admin");
     return { ok: true };
   } catch (error) {

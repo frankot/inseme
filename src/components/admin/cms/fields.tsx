@@ -178,9 +178,16 @@ function ImageField({ spec, name }: { spec: Extract<FieldSpec, { kind: "image" }
           if (!media) return;
           set({ src: media.url, mediaId: media.id, alt: media.altText || image.alt });
         }}
+        // The alt below is this page's own; the picker's library-alt box would
+        // be a second field saving somewhere else.
+        libraryAlt={false}
       />
       {spec.hint && <p className="text-xs text-muted-foreground">{spec.hint}</p>}
-      <Shell label="Opis zdjęcia (alt)" htmlFor={altId}>
+      <Shell
+        label="Opis zdjęcia (alt)"
+        htmlFor={altId}
+        hint="Dla tej strony. Po wybraniu zdjęcia wstawia się opis z biblioteki — możesz go tu zmienić."
+      >
         <Input id={altId} value={image.alt ?? ""} onChange={(e) => set({ alt: e.target.value })} />
       </Shell>
       {spec.caption && (

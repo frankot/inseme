@@ -5,6 +5,7 @@ import { deleteContactSubmission } from "@/app/admin/(shell)/contact/actions";
 import { StatusToggle } from "@/app/admin/(shell)/contact/status-toggle";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
+import { INBOX_TABS, SectionTabs } from "@/components/admin/section-tabs";
 import { Badge } from "@/components/ui/badge";
 import { db } from "@/db";
 import { contactSubmissions } from "@/db/schema";
@@ -24,6 +25,7 @@ export default async function ContactInboxPage() {
 
   return (
     <>
+      <SectionTabs tabs={INBOX_TABS(unhandled)} current="/admin/contact" />
       <PageHeader
         title="Wiadomości"
         description={`${unhandled} nowych. Dane starsze niż ${env.DATA_RETENTION_MONTHS} miesięcy usuwa automat.`}

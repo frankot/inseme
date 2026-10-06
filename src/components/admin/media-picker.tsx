@@ -1,11 +1,11 @@
 "use client";
 
 import { ImageIcon, Loader2, Upload, X } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { listMedia, updateMediaAltText } from "@/app/admin/(shell)/media/actions";
+import { SiteImage } from "@/components/site/ui/site-image";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,10 +25,17 @@ export function MediaPicker({
   value,
   onChange,
   label = "Wybierz zdjęcie",
+  libraryAlt = true,
 }: {
   value: MediaSummary | null;
   onChange: (media: MediaSummary | null) => void;
   label?: string;
+  /**
+   * Show the field that edits the file's alt text in the library. Off where
+   * the form keeps its own alt for this placement (CMS image fields) — two alt
+   * boxes saving to different places is a trap.
+   */
+  libraryAlt?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<MediaSummary[] | null>(null);
@@ -73,7 +80,7 @@ export function MediaPicker({
     <div className="flex items-start gap-3">
       {value ? (
         <div className="relative size-24 shrink-0 overflow-hidden rounded-md border bg-muted">
-          <Image
+          <SiteImage
             src={value.url}
             alt={value.altText ?? ""}
             fill
@@ -160,7 +167,7 @@ export function MediaPicker({
                           value?.id === item.id && "border-primary ring-2 ring-primary/30",
                         )}
                       >
-                        <Image
+                        <SiteImage
                           src={item.url}
                           alt={item.altText ?? ""}
                           fill
@@ -187,7 +194,7 @@ export function MediaPicker({
           ) : null}
         </div>
 
-        {value ? <AltTextField key={value.id} media={value} onChange={onChange} /> : null}
+        {value && libraryAlt ? <AltTextField key={value.id} media={value} onChange={onChange} /> : null}
       </div>
     </div>
   );

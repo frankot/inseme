@@ -45,7 +45,9 @@ export function NavLinks({
       {adminNav.map((item) => {
         const Icon = item.icon;
         const isActive =
-          item.href === "/admin" ? pathname === "/admin" : pathname.startsWith(item.href);
+          item.href === "/admin"
+            ? pathname === "/admin"
+            : [item.href, ...(item.also ?? [])].some((href) => pathname.startsWith(href));
         const label = <span className={cn("truncate", collapsed && "sr-only")}>{item.label}</span>;
 
         if (!item.available) {

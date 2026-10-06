@@ -1,17 +1,24 @@
 import "server-only";
 
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, isNotNull, isNull, ne, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { contactSubmissions, leadSignups, screeningTestSubmissions, screeningTests } from "@/db/schema";
 
 /**
  * The brief asks for "one shared base" of every collected e-mail. Rather than
- * copying addresses into a third table, the export unions the two places they
- * legitimately live — the signup widget and screening-test requests — at query
- * time. One address, one row, no synchronisation to get wrong.
+ * copying addresses into another table, the list unions the three places they
+ * legitimately live — the signup widget, screening-test requests and the
+ * contact form (when the person left an address) — at query time. No
+ * synchronisation to get wrong.
+ *
+ * The consents differ: a contact-form address was given to get a reply, not
+ * to join a mailing list. `source` says which, and the export carries it.
  */
 export type LeadRow = {
+  /** Where the row lives, and so where it is deleted. */
+  kind: "signup" | "test" | "contact";
+  id: string;
   email: string;
   source: string;
   detail: string | null;
@@ -19,10 +26,18 @@ export type LeadRow = {
   createdAt: Date;
 };
 
+/** Contact messages that left an address (it is optional there). */
+const withEmail = and(
+  isNull(contactSubmissions.deletedAt),
+  isNotNull(contactSubmissions.email),
+  ne(contactSubmissions.email, ""),
+);
+
 export async function getLeadRows(): Promise<LeadRow[]> {
-  const [signups, tests] = await Promise.all([
+  const [signups, tests, messages] = await Promise.all([
     db
       .select({
+        id: leadSignups.id,
         email: leadSignups.email,
         source: leadSignups.source,
         consentAt: leadSignups.consentAt,
@@ -34,6 +49,7 @@ export async function getLeadRows(): Promise<LeadRow[]> {
 
     db
       .select({
+        id: screeningTestSubmissions.id,
         email: screeningTestSubmissions.email,
         title: screeningTests.title,
         score: screeningTestSubmissions.totalScore,
@@ -45,10 +61,25 @@ export async function getLeadRows(): Promise<LeadRow[]> {
       .leftJoin(screeningTests, eq(screeningTestSubmissions.testId, screeningTests.id))
       .where(isNull(screeningTestSubmissions.deletedAt))
       .orderBy(desc(screeningTestSubmissions.createdAt)),
+
+    db
+      .select({
+        id: contactSubmissions.id,
+        email: contactSubmissions.email,
+        name: contactSubmissions.name,
+        preferred: contactSubmissions.preferredContactMethod,
+        consentAt: contactSubmissions.consentAt,
+        createdAt: contactSubmissions.createdAt,
+      })
+      .from(contactSubmissions)
+      .where(withEmail)
+      .orderBy(desc(contactSubmissions.createdAt)),
   ]);
 
   const rows: LeadRow[] = [
     ...signups.map((row) => ({
+      kind: "signup" as const,
+      id: row.id,
       email: row.email,
       source: "zapis na stronie",
       detail: row.source,
@@ -56,9 +87,25 @@ export async function getLeadRows(): Promise<LeadRow[]> {
       createdAt: row.createdAt,
     })),
     ...tests.map((row) => ({
+      kind: "test" as const,
+      id: row.id,
       email: row.email,
       source: "test przesiewowy",
       detail: row.title ? `${row.title} — ${row.score}/${row.maxScore} pkt` : null,
+      consentAt: row.consentAt,
+      createdAt: row.createdAt,
+    })),
+    ...messages.map((row) => ({
+      kind: "contact" as const,
+      id: row.id,
+      email: row.email!,
+      source: "formularz kontaktowy",
+      detail: [
+        row.name?.trim(),
+        `woli kontakt ${row.preferred === "phone" ? "telefoniczny" : "e-mailowy"}`,
+      ]
+        .filter(Boolean)
+        .join(" · "),
       consentAt: row.consentAt,
       createdAt: row.createdAt,
     })),
@@ -67,7 +114,7 @@ export async function getLeadRows(): Promise<LeadRow[]> {
   return rows.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 }
 
-/** Distinct addresses across both sources — what the "ile osób" tile counts. */
+/** Distinct addresses across all three sources — what the "ile osób" tile counts. */
 export async function getLeadStats() {
   const [signups] = await db
     .select({ value: sql<number>`count(*)`.mapWith(Number) })
@@ -79,21 +126,32 @@ export async function getLeadStats() {
     .from(screeningTestSubmissions)
     .where(isNull(screeningTestSubmissions.deletedAt));
 
-  // A UNION of two tables is past what the query builder expresses cleanly, and
-  // the point of the union is exactly that one address in both places counts once.
+  const [messages] = await db
+    .select({ value: sql<number>`count(*)`.mapWith(Number) })
+    .from(contactSubmissions)
+    .where(withEmail);
+
+  // A UNION of three tables is past what the query builder expresses cleanly, and
+  // the point of the union is exactly that one address in several places counts
+  // once — case-insensitively, as mail servers treat it.
   const unique = await db.execute<{ value: number }>(sql`
     select count(*)::int as value from (
-      select ${leadSignups.email} as email
+      select lower(${leadSignups.email}) as email
         from ${leadSignups} where ${leadSignups.deletedAt} is null
       union
-      select ${screeningTestSubmissions.email} as email
+      select lower(${screeningTestSubmissions.email}) as email
         from ${screeningTestSubmissions} where ${screeningTestSubmissions.deletedAt} is null
+      union
+      select lower(${contactSubmissions.email}) as email
+        from ${contactSubmissions}
+        where ${contactSubmissions.deletedAt} is null and coalesce(${contactSubmissions.email}, '') <> ''
     ) as combined
   `);
 
   return {
     signups: signups?.value ?? 0,
     tests: tests?.value ?? 0,
+    messages: messages?.value ?? 0,
     unique: Number(unique.rows?.[0]?.value ?? 0),
   };
 }
