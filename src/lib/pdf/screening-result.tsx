@@ -4,12 +4,16 @@ import {
   Document,
   Font,
   Page,
+  Path,
   StyleSheet,
+  Svg,
   Text,
   View,
   renderToBuffer,
 } from "@react-pdf/renderer";
 import path from "node:path";
+
+import { LOGO_PATHS, LOGO_VIEWBOX } from "@/lib/brand/logo";
 
 /**
  * The PDF a visitor asks to be sent after finishing a screening test.
@@ -53,7 +57,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
   },
   eyebrow: { fontSize: 8, letterSpacing: 2, color: CLAY, textTransform: "uppercase" },
-  brand: { fontSize: 15, fontWeight: 600, color: INK, marginTop: 6 },
+  /** Drawn as vectors, so it stays sharp when the result is printed. */
+  logo: { width: 120, height: (120 * LOGO_VIEWBOX.height) / LOGO_VIEWBOX.width, marginBottom: 12 },
   rule: { borderBottomWidth: 1, borderBottomColor: LINE, marginTop: 18, marginBottom: 22 },
   h1: { fontSize: 19, fontWeight: 600, color: INK, lineHeight: 1.25, marginBottom: 10 },
   scoreRow: {
@@ -121,8 +126,12 @@ function ScreeningResultDocument({ data }: { data: ScreeningResultPdfData }) {
       language="pl"
     >
       <Page size="A4" style={styles.page}>
+        <Svg style={styles.logo} viewBox={`0 0 ${LOGO_VIEWBOX.width} ${LOGO_VIEWBOX.height}`}>
+          {LOGO_PATHS.map((logoPath) => (
+            <Path key={logoPath.fill} d={logoPath.d} fill={logoPath.fill} fillRule={logoPath.fillRule} />
+          ))}
+        </Svg>
         <Text style={styles.eyebrow}>Ośrodek terapii uzależnień</Text>
-        <Text style={styles.brand}>Insieme</Text>
         <View style={styles.rule} />
 
         <Text style={styles.sectionTitle}>{data.testTitle}</Text>

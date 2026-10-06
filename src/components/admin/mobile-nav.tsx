@@ -24,10 +24,10 @@ export function MobileNav() {
               what the wordmark used to say out loud. */}
           <SheetTitle className="text-left">
             <SiteImage
-              src="/placeholder/logo-insieme.png"
+              src="/brand/logo-insieme.svg"
               alt="Insieme"
-              width={244}
-              height={72}
+              width={930}
+              height={253}
               className="h-6 w-auto"
             />
           </SheetTitle>

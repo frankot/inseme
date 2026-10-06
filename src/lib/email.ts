@@ -2,6 +2,7 @@ import "server-only";
 
 import { Resend } from "resend";
 
+import { LOGO_EMAIL } from "@/lib/brand/logo";
 import { env } from "@/lib/env";
 
 /**
@@ -17,6 +18,18 @@ export function emailConfigured(): boolean {
 }
 
 export type Attachment = { filename: string; content: Buffer };
+
+/**
+ * The header logo travels with each message as an inline attachment rather
+ * than a hosted URL: it shows even before the domain points at this site, and
+ * Outlook doesn't hold it back as a "remote image".
+ */
+const LOGO_CID = "insieme-logo";
+const logoAttachment = {
+  filename: "insieme.png",
+  content: Buffer.from(LOGO_EMAIL.png, "base64"),
+  contentId: LOGO_CID,
+};
 
 export async function sendEmail(options: {
   to: string;
@@ -39,10 +52,13 @@ export async function sendEmail(options: {
       html: options.html,
       text: options.text,
       replyTo: options.replyTo,
-      attachments: options.attachments?.map((file) => ({
-        filename: file.filename,
-        content: file.content,
-      })),
+      attachments: [
+        ...(options.html.includes(`cid:${LOGO_CID}`) ? [logoAttachment] : []),
+        ...(options.attachments ?? []).map((file) => ({
+          filename: file.filename,
+          content: file.content,
+        })),
+      ],
     });
     if (error) {
       console.error("Resend rejected the message", error);
@@ -68,7 +84,7 @@ export function emailLayout(options: {
 <html lang="pl"><body style="margin:0;padding:24px;background:#F7F5EF;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#2E3330;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#FBFAF6;border:1px solid #E8E4DA;">
     <tr><td style="padding:28px 28px 8px;">
-      <p style="margin:0 0 4px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#6E5E4C;">Insieme</p>
+      <img src="cid:${LOGO_CID}" width="${LOGO_EMAIL.width}" height="${LOGO_EMAIL.height}" alt="Insieme" style="display:block;border:0;margin:0 0 22px;">
       <h1 style="margin:0;font-size:21px;line-height:1.25;font-weight:600;color:#232823;">${escapeHtml(options.heading)}</h1>
     </td></tr>
     <tr><td style="padding:12px 28px 24px;font-size:15px;line-height:1.7;color:#4E544C;">${options.body}</td></tr>

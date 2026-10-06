@@ -16,7 +16,7 @@ import {
 } from "@/content/nav";
 import { cn } from "@/lib/utils";
 
-const LOGO = "/placeholder/logo-insieme.png";
+const LOGO = "/brand/logo-insieme.svg";
 
 /**
  * How far down the page the compact bar slides in, as a fraction of the
@@ -524,9 +524,11 @@ function Logo({
     <SiteImage
       src={LOGO}
       alt="Insieme"
-      width={244}
-      height={72}
-      priority
+      width={930}
+      height={253}
+      // Eager, not preloaded: a head preload would compete with the hero
+      // photo (the LCP) for the first connections, and the SVG is tiny.
+      loading="eager"
       className={cn(
         "h-auto",
         className,

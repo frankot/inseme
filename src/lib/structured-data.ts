@@ -30,7 +30,7 @@ export function clinicJsonLd(
     "@id": CLINIC_ID,
     name: SITE_NAME,
     url: SITE_URL,
-    logo: absoluteUrl("/placeholder/logo-insieme.png"),
+    logo: absoluteUrl("/brand/logo-insieme.png"),
     image: absoluteUrl(heroDefaults.image.src),
     telephone: contact.phoneHref,
     email: contact.email,
