@@ -4,14 +4,11 @@ import { notFound } from "next/navigation";
 
 import {
   deleteArticle,
-  publishArticle,
-  unpublishArticle,
 } from "@/app/admin/(shell)/articles/actions";
 import { ArticleForm } from "@/app/admin/(shell)/articles/article-form";
 import { getReviewerOptions } from "@/app/admin/(shell)/articles/reviewers";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
-import { PublishControls } from "@/components/admin/publish-controls";
 import { db } from "@/db";
 import { articles, media } from "@/db/schema";
 import { toMediaSummary } from "@/lib/media-summary";
@@ -54,17 +51,10 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
         </p>
       )}
 
-      <div className="mb-6 rounded-lg border px-4 py-3">
-        <PublishControls
-          status={row.status}
-          publishedAt={row.publishedAt?.toISOString() ?? null}
-          onPublish={publishArticle.bind(null, row.id)}
-          onUnpublish={locked ? undefined : unpublishArticle.bind(null, row.id)}
-        />
-      </div>
-
       <ArticleForm
         id={row.id}
+        status={row.status}
+        publishedAt={row.publishedAt?.toISOString() ?? null}
         defaultCoverImage={coverImage ? toMediaSummary(coverImage) : null}
         mediaLibrary={mediaRows.map(toMediaSummary)}
         team={team}

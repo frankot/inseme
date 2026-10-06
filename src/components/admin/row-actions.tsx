@@ -136,9 +136,9 @@ export function RowActions({
             onUnpublish && (
               <DropdownMenuItem
                 disabled={isPending}
-                onClick={() => run(onUnpublish, "Cofnięto publikację.")}
+                onClick={() => run(onUnpublish, "Zmieniono na szkic — ukryte na stronie.")}
               >
-                <EyeOff aria-hidden /> Cofnij publikację
+                <EyeOff aria-hidden /> Zmień na szkic (ukryj)
               </DropdownMenuItem>
             )
           ) : (

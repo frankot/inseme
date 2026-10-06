@@ -4,14 +4,11 @@ import { notFound } from "next/navigation";
 
 import {
   deleteFaqItem,
-  publishFaqItem,
-  unpublishFaqItem,
 } from "@/app/admin/(shell)/faq/actions";
 import { FaqForm } from "@/app/admin/(shell)/faq/faq-form";
 import { getFaqCategories } from "@/app/admin/(shell)/faq/queries";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
-import { PublishControls } from "@/components/admin/publish-controls";
 import { db } from "@/db";
 import { faqItems } from "@/db/schema";
 
@@ -38,17 +35,10 @@ export default async function EditFaqItemPage({ params }: { params: Promise<{ id
         }
       />
 
-      <div className="mb-6 rounded-lg border px-4 py-3">
-        <PublishControls
-          status={row.status}
-          publishedAt={row.publishedAt?.toISOString() ?? null}
-          onPublish={publishFaqItem.bind(null, row.id)}
-          onUnpublish={unpublishFaqItem.bind(null, row.id)}
-        />
-      </div>
-
       <FaqForm
         id={row.id}
+        status={row.status}
+        publishedAt={row.publishedAt?.toISOString() ?? null}
         categories={categories}
         defaultValues={{
           question: row.question,

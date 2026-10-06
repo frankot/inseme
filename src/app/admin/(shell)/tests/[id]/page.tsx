@@ -6,14 +6,11 @@ import { notFound } from "next/navigation";
 import { BandEditor } from "@/app/admin/(shell)/tests/band-editor";
 import {
   deleteScreeningTest,
-  publishScreeningTest,
-  unpublishScreeningTest,
 } from "@/app/admin/(shell)/tests/actions";
 import { QuestionEditor } from "@/app/admin/(shell)/tests/question-editor";
 import { TestForm } from "@/app/admin/(shell)/tests/test-form";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
-import { PublishControls } from "@/components/admin/publish-controls";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
 import { screeningTests } from "@/db/schema";
@@ -62,17 +59,10 @@ export default async function EditTestPage({ params }: { params: Promise<{ id: s
         }
       />
 
-      <div className="rounded-lg border px-4 py-3">
-        <PublishControls
-          status={row.status}
-          publishedAt={row.publishedAt?.toISOString() ?? null}
-          onPublish={publishScreeningTest.bind(null, row.id)}
-          onUnpublish={unpublishScreeningTest.bind(null, row.id)}
-        />
-      </div>
-
       <TestForm
         id={row.id}
+        status={row.status}
+        publishedAt={row.publishedAt?.toISOString() ?? null}
         defaultValues={{
           title: row.title,
           slug: row.slug,

@@ -13,6 +13,7 @@ import {
 } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
+import { publishState } from "@/lib/publish-state";
 import { emptyToNull } from "@/lib/validations/content";
 import {
   answerOptionSchema,
@@ -45,10 +46,15 @@ function isSlugClash(error: unknown): boolean {
   );
 }
 
-/** The test's own fields. Questions and bands are edited separately. */
+/**
+ * The test's own fields and its state. Questions and bands are edited
+ * separately, so a brand-new test can only start as a draft — it has nothing
+ * to answer yet.
+ */
 export async function saveScreeningTest(
   id: string | null,
   input: ScreeningTestInput,
+  publish: boolean,
 ): Promise<DataResult<{ id: string }>> {
   try {
     await requireAdmin();
@@ -57,7 +63,22 @@ export async function saveScreeningTest(
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
     }
 
+    if (publish) {
+      const problem = id
+        ? await describeIncompleteness(id)
+        : "Zapisz najpierw szkic, a potem dodaj pytania i przedziały wyniku.";
+      if (problem) return { ok: false, error: problem };
+    }
+
+    const previous = id
+      ? await db.query.screeningTests.findFirst({
+          where: eq(screeningTests.id, id),
+          columns: { slug: true, publishedAt: true },
+        })
+      : null;
+
     const values = {
+      ...publishState(publish, previous?.publishedAt),
       title: parsed.data.title,
       slug: parsed.data.slug,
       description: emptyToNull(parsed.data.description),
@@ -70,10 +91,6 @@ export async function saveScreeningTest(
     };
 
     if (id) {
-      const previous = await db.query.screeningTests.findFirst({
-        where: eq(screeningTests.id, id),
-        columns: { slug: true },
-      });
       await db.update(screeningTests).set(values).where(eq(screeningTests.id, id));
       revalidateTest(id, values.slug);
       if (previous?.slug && previous.slug !== values.slug) {

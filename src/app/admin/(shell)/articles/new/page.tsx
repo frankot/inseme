@@ -21,6 +21,8 @@ export default async function NewArticlePage() {
       <PageHeader title="Nowy artykuł" backHref="/admin/articles" />
       <ArticleForm
         id={null}
+        status={null}
+        publishedAt={null}
         defaultCoverImage={null}
         mediaLibrary={mediaRows.map(toMediaSummary)}
         team={team}

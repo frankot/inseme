@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { articles } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
+import { publishState } from "@/lib/publish-state";
 import { isProtectedArticle } from "@/lib/protected-articles";
 import { sanitizeBlocks } from "@/lib/sanitize-blocks";
 import { articleSchema, emptyToNull, type ArticleInput } from "@/lib/validations/content";
@@ -25,6 +26,7 @@ function revalidatePublic(slug?: string) {
 export async function saveArticle(
   id: string | null,
   input: ArticleInput,
+  publish: boolean,
 ): Promise<DataResult<{ id: string }>> {
   try {
     await requireAdmin();
@@ -33,14 +35,26 @@ export async function saveArticle(
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
     }
 
-    if (id) {
-      const current = await db.query.articles.findFirst({
-        columns: { slug: true },
-        where: eq(articles.id, id),
-      });
-      if (isProtectedArticle(current?.slug) && current?.slug !== parsed.data.slug) {
+    const current = id
+      ? await db.query.articles.findFirst({
+          columns: { slug: true, publishedAt: true },
+          where: eq(articles.id, id),
+        })
+      : null;
+    if (isProtectedArticle(current?.slug)) {
+      if (current?.slug !== parsed.data.slug) {
         return { ok: false, error: "To stały artykuł — jego adresu (slug) nie można zmienić." };
       }
+      if (!publish) {
+        return { ok: false, error: "To stały artykuł — musi pozostać opublikowany." };
+      }
+    }
+    // Publishing is the review gate for medical/factual copy.
+    if (publish && !parsed.data.reviewerId && !parsed.data.authorReviewer?.trim()) {
+      return {
+        ok: false,
+        error: "Wskaż osobę weryfikującą (z zespołu albo spoza niego) przed publikacją.",
+      };
     }
 
     const clash = await db.query.articles.findFirst({
@@ -54,6 +68,7 @@ export async function saveArticle(
     }
 
     const values = {
+      ...publishState(publish, current?.publishedAt),
       title: parsed.data.title,
       slug: parsed.data.slug,
       excerpt: emptyToNull(parsed.data.excerpt),

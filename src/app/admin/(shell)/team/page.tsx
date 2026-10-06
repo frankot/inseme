@@ -50,7 +50,6 @@ export default async function TeamListPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Imię i nazwisko</TableHead>
-              <TableHead>Rola</TableHead>
               <TableHead>Adres</TableHead>
               <TableHead className="w-24">Kolejność</TableHead>
               <TableHead className="w-36">Status</TableHead>
@@ -66,7 +65,6 @@ export default async function TeamListPage() {
                     <span className="ml-2 text-xs text-amber-700" title="Na stronie głównej">★</span>
                   )}
                 </TableCell>
-                <TableCell className="text-muted-foreground">{row.role ?? "—"}</TableCell>
                 <TableCell className="text-muted-foreground">
                   {row.status === "published" ? (
                     <a

@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { teamMembers } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
+import { publishState } from "@/lib/publish-state";
 import { sanitizeRichText } from "@/lib/sanitize";
 import { emptyToNull, teamMemberSchema, type TeamMemberInput } from "@/lib/validations/content";
 
@@ -37,6 +38,7 @@ function isSlugClash(error: unknown): boolean {
 export async function saveTeamMember(
   id: string | null,
   input: TeamMemberInput,
+  publish: boolean,
 ): Promise<DataResult<{ id: string }>> {
   try {
     await requireAdmin();
@@ -45,11 +47,24 @@ export async function saveTeamMember(
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
     }
 
+    // A renamed slug leaves the old URL behind, so both have to be purged.
+    const previous = id
+      ? await db.query.teamMembers.findFirst({
+          where: eq(teamMembers.id, id),
+          columns: { slug: true, publishedAt: true },
+        })
+      : null;
+
     const values = {
+      ...publishState(publish, previous?.publishedAt),
       name: parsed.data.name,
       slug: parsed.data.slug,
       role: emptyToNull(parsed.data.role),
       qualifications: emptyToNull(parsed.data.qualifications),
+      licenses: parsed.data.licenses.map((license) => ({
+        name: license.name,
+        number: license.number,
+      })),
       shortBio: emptyToNull(parsed.data.shortBio),
       longBio: parsed.data.longBio ? sanitizeRichText(parsed.data.longBio) : null,
       photoId: parsed.data.photoId,
@@ -58,12 +73,6 @@ export async function saveTeamMember(
     };
 
     if (id) {
-      // A renamed slug leaves the old URL behind, so both have to be purged.
-      const previous = await db.query.teamMembers.findFirst({
-        where: eq(teamMembers.id, id),
-        columns: { slug: true },
-      });
-      // Saving never changes status — publishing is a separate, explicit action.
       await db.update(teamMembers).set(values).where(eq(teamMembers.id, id));
       revalidateTeam(id, values.slug, previous?.slug);
       return { ok: true, data: { id } };

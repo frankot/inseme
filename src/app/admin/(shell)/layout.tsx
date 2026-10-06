@@ -37,7 +37,7 @@ export default async function AdminShellLayout({ children }: { children: ReactNo
         </main>
       </div>
 
-      <Toaster />
+      <Toaster position="bottom-left" />
     </div>
   );
 }

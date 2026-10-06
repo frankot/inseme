@@ -7,12 +7,14 @@ import { db } from "@/db";
 import { faqItems } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
+import { publishState } from "@/lib/publish-state";
 import { sanitizeRichText } from "@/lib/sanitize";
 import { emptyToNull, faqItemSchema, type FaqItemInput } from "@/lib/validations/content";
 
 export async function saveFaqItem(
   id: string | null,
   input: FaqItemInput,
+  publish: boolean,
 ): Promise<DataResult<{ id: string }>> {
   try {
     await requireAdmin();
@@ -21,7 +23,15 @@ export async function saveFaqItem(
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
     }
 
+    const previous = id
+      ? await db.query.faqItems.findFirst({
+          where: eq(faqItems.id, id),
+          columns: { publishedAt: true },
+        })
+      : null;
+
     const values = {
+      ...publishState(publish, previous?.publishedAt),
       question: parsed.data.question,
       answer: sanitizeRichText(parsed.data.answer),
       category: emptyToNull(parsed.data.category),

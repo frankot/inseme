@@ -15,3 +15,18 @@ export function slugify(input: string): string {
 }
 
 export const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/**
+ * A starting alt text from an uploaded file's name:
+ * "terapia_grupowa-sala-2.webp" → "Terapia grupowa sala 2". Only a default —
+ * the admin edits it next to the image.
+ */
+export function altFromFileName(fileName: string): string {
+  const words = fileName
+    .replace(/\.[a-z0-9]{2,5}$/i, "")
+    .replace(/[-_.+~]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 300);
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}

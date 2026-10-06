@@ -15,12 +15,15 @@ export default function NewTeamMemberPage() {
       />
       <TeamForm
         id={null}
+        status={null}
+        publishedAt={null}
         defaultPhoto={null}
         defaultValues={{
           name: "",
           slug: "",
           role: "",
           qualifications: "",
+          licenses: [],
           shortBio: "",
           longBio: "",
           photoId: null,

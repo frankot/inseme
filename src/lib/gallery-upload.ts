@@ -11,6 +11,7 @@ import {
   renderGalleryVariants,
 } from "@/lib/gallery-image";
 import type { GalleryPhotoAdmin } from "@/lib/gallery-types";
+import { altFromFileName } from "@/lib/slug";
 
 /**
  * One photo, end to end: resize + encode in the browser, two presigned PUTs to
@@ -85,6 +86,7 @@ export async function uploadGalleryPhoto(
       height: rendered.thumb.height,
       size: rendered.thumb.blob.size,
     },
+    altText: altFromFileName(file.name),
   });
 }
 

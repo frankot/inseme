@@ -14,6 +14,8 @@ export default async function NewFaqItemPage() {
       <PageHeader title="Nowe pytanie" backHref="/admin/faq" />
       <FaqForm
         id={null}
+        status={null}
+        publishedAt={null}
         categories={categories}
         defaultValues={{ question: "", answer: "", category: "", sortOrder: 0 }}
       />

@@ -7,45 +7,57 @@ import { toast } from "sonner";
 
 import { saveFaqItem } from "@/app/admin/(shell)/faq/actions";
 import { Field } from "@/components/admin/field";
+import { RecoveryNotice, useFormRecovery } from "@/components/admin/form-recovery";
+import { SaveActions, SAVED_MESSAGE, type SaveMode } from "@/components/admin/save-actions";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { faqItemSchema, type FaqItemInput } from "@/lib/validations/content";
 
 export function FaqForm({
   id,
+  status,
+  publishedAt,
   defaultValues,
   categories,
 }: {
   id: string | null;
   defaultValues: FaqItemInput;
   categories: string[];
+  status: "draft" | "published" | null;
+  publishedAt: string | null;
 }) {
   const router = useRouter();
+  const form = useForm<FaqItemInput>({
+    resolver: zodResolver(faqItemSchema),
+    defaultValues,
+  });
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<FaqItemInput>({
-    resolver: zodResolver(faqItemSchema),
-    defaultValues,
+  } = form;
+  const recovery = useFormRecovery({
+    form,
+    storageKey: `faq:${id ?? "new"}`,
   });
 
-  async function onSubmit(values: FaqItemInput) {
-    const result = await saveFaqItem(id, values);
+  async function onSubmit(values: FaqItemInput, mode: SaveMode) {
+    const result = await saveFaqItem(id, values, mode === "publish");
     if (!result.ok) {
       toast.error(result.error);
       return;
     }
-    toast.success("Zapisano szkic.");
-    if (!id) router.push(`/admin/faq/${result.data.id}`);
-    else router.refresh();
+    recovery.markSaved(values);
+    toast.success(SAVED_MESSAGE[mode]);
+    router.push("/admin/faq");
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={(event) => event.preventDefault()} className="flex flex-col gap-6" noValidate>
+      <RecoveryNotice recovery={recovery} />
+
       <Card>
         <CardContent className="flex flex-col gap-4 pt-6">
           <Field label="Pytanie" htmlFor="question" error={errors.question?.message}>
@@ -94,11 +106,12 @@ export function FaqForm({
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Zapisywanie…" : "Zapisz szkic"}
-        </Button>
-      </div>
+      <SaveActions
+        status={status}
+        publishedAt={publishedAt}
+        submitting={isSubmitting}
+        onSave={(mode) => void handleSubmit((values) => onSubmit(values, mode))()}
+      />
     </form>
   );
 }

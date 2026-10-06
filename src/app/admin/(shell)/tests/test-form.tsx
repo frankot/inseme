@@ -7,7 +7,8 @@ import { toast } from "sonner";
 
 import { saveScreeningTest } from "@/app/admin/(shell)/tests/actions";
 import { Field } from "@/components/admin/field";
-import { Button } from "@/components/ui/button";
+import { RecoveryNotice, useFormRecovery } from "@/components/admin/form-recovery";
+import { SaveActions, SAVED_MESSAGE, type SaveMode } from "@/components/admin/save-actions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,38 +17,53 @@ import { screeningTestSchema, type ScreeningTestInput } from "@/lib/validations/
 
 export function TestForm({
   id,
+  status,
+  publishedAt,
   defaultValues,
 }: {
   id: string | null;
+  status: "draft" | "published" | null;
+  publishedAt: string | null;
   defaultValues: ScreeningTestInput;
 }) {
   const router = useRouter();
+  const form = useForm<ScreeningTestInput>({
+    resolver: zodResolver(screeningTestSchema),
+    defaultValues,
+  });
   const {
     register,
     handleSubmit,
     getValues,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<ScreeningTestInput>({
-    resolver: zodResolver(screeningTestSchema),
-    defaultValues,
+  } = form;
+  const recovery = useFormRecovery({
+    form,
+    storageKey: `test:${id ?? "new"}`,
   });
+
+  async function onSubmit(values: ScreeningTestInput, mode: SaveMode) {
+    const result = await saveScreeningTest(id, values, mode === "publish");
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    recovery.markSaved(values);
+    toast.success(SAVED_MESSAGE[mode]);
+    // A new test has no questions yet, and they can only be added on its own
+    // page — so the first save goes there instead of back to the list.
+    router.push(id ? "/admin/tests" : `/admin/tests/${result.data.id}`);
+  }
 
   return (
     <form
       noValidate
       className="flex flex-col gap-6"
-      onSubmit={handleSubmit(async (values) => {
-        const result = await saveScreeningTest(id, values);
-        if (!result.ok) {
-          toast.error(result.error);
-          return;
-        }
-        toast.success("Zapisano.");
-        if (!id) router.push(`/admin/tests/${result.data.id}`);
-        else router.refresh();
-      })}
+      onSubmit={(event) => event.preventDefault()}
     >
+      <RecoveryNotice recovery={recovery} />
+
       <Card>
         <CardHeader>
           <CardTitle>Test</CardTitle>
@@ -132,11 +148,12 @@ export function TestForm({
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Zapisywanie…" : "Zapisz"}
-        </Button>
-      </div>
+      <SaveActions
+        status={status}
+        publishedAt={publishedAt}
+        submitting={isSubmitting}
+        onSave={(mode) => void handleSubmit((values) => onSubmit(values, mode))()}
+      />
     </form>
   );
 }

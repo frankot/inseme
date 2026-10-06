@@ -15,6 +15,8 @@ export default function NewTestPage() {
       />
       <TestForm
         id={null}
+        status={null}
+        publishedAt={null}
         defaultValues={{
           title: "",
           slug: "",

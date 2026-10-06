@@ -9,8 +9,9 @@ import { toast } from "sonner";
 import { saveArticle } from "@/app/admin/(shell)/articles/actions";
 import { BlockEditor } from "@/components/admin/block-editor";
 import { Field } from "@/components/admin/field";
+import { RecoveryNotice, useFormRecovery } from "@/components/admin/form-recovery";
+import { SaveActions, SAVED_MESSAGE, type SaveMode } from "@/components/admin/save-actions";
 import { MediaPicker } from "@/components/admin/media-picker";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -33,6 +34,8 @@ const NO_REVIEWER = "none";
 
 export function ArticleForm({
   id,
+  status,
+  publishedAt,
   defaultValues,
   defaultCoverImage,
   mediaLibrary,
@@ -46,9 +49,15 @@ export function ArticleForm({
   team: ReviewerOption[];
   /** A protected article (`lib/protected-articles.ts`) keeps its address. */
   slugLocked?: boolean;
+  status: "draft" | "published" | null;
+  publishedAt: string | null;
 }) {
   const router = useRouter();
   const [coverImage, setCoverImage] = useState<MediaSummary | null>(defaultCoverImage);
+  const form = useForm<ArticleInput>({
+    resolver: zodResolver(articleSchema),
+    defaultValues,
+  });
   const {
     register,
     handleSubmit,
@@ -56,24 +65,29 @@ export function ArticleForm({
     setValue,
     getValues,
     formState: { errors, isSubmitting },
-  } = useForm<ArticleInput>({
-    resolver: zodResolver(articleSchema),
-    defaultValues,
+  } = form;
+  const recovery = useFormRecovery({
+    form,
+    storageKey: `article:${id ?? "new"}`,
+    onRestore: (values) =>
+      setCoverImage(mediaLibrary.find((item) => item.id === values.coverImageId) ?? null),
   });
 
-  async function onSubmit(values: ArticleInput) {
-    const result = await saveArticle(id, values);
+  async function onSubmit(values: ArticleInput, mode: SaveMode) {
+    const result = await saveArticle(id, values, mode === "publish");
     if (!result.ok) {
       toast.error(result.error);
       return;
     }
-    toast.success("Zapisano szkic.");
-    if (!id) router.push(`/admin/articles/${result.data.id}`);
-    else router.refresh();
+    recovery.markSaved(values);
+    toast.success(SAVED_MESSAGE[mode]);
+    router.push("/admin/articles");
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+    <form onSubmit={(event) => event.preventDefault()} className="flex flex-col gap-6" noValidate>
+      <RecoveryNotice recovery={recovery} />
+
       <Card>
         <CardHeader>
           <CardTitle>Podstawy</CardTitle>
@@ -207,11 +221,13 @@ export function ArticleForm({
         </CardContent>
       </Card>
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Zapisywanie…" : "Zapisz szkic"}
-        </Button>
-      </div>
+      <SaveActions
+        status={status}
+        publishedAt={publishedAt}
+        submitting={isSubmitting}
+        canDraft={!slugLocked}
+        onSave={(mode) => void handleSubmit((values) => onSubmit(values, mode))()}
+      />
     </form>
   );
 }

@@ -1,6 +1,7 @@
 import { createUploadUrl, registerMedia } from "@/app/admin/(shell)/media/actions";
 import type { DataResult } from "@/lib/action-result";
 import type { MediaSummary } from "@/lib/media-types";
+import { altFromFileName } from "@/lib/slug";
 import { ALLOWED_UPLOAD_TYPES_CLIENT, MAX_UPLOAD_BYTES_CLIENT } from "@/lib/upload-limits";
 
 /** Images get their intrinsic size read in the browser so the DB has real dimensions. */
@@ -57,5 +58,6 @@ export async function uploadMediaFile(file: File): Promise<DataResult<MediaSumma
     size: file.size,
     width: dimensions?.width ?? null,
     height: dimensions?.height ?? null,
+    altText: altFromFileName(file.name),
   });
 }

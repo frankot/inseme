@@ -9,6 +9,7 @@ import type { PageDoc, RefKind } from "@/cms/types";
 import { db } from "@/db";
 import { cmsPages } from "@/db/schema";
 import { actionError, type DataResult } from "@/lib/action-result";
+import { existingIds } from "@/lib/cms/featured";
 import { requireAdmin } from "@/lib/auth-guard";
 
 /**
@@ -161,12 +162,26 @@ export async function setFeatured(
     const def = pageOrThrow(target.pageKey);
     const row = await db.query.cmsPages.findFirst({ where: eq(cmsPages.key, def.key) });
 
+    // Ids of deleted records linger in the doc; they are pruned here so they
+    // stop counting toward the limit.
+    const fieldIds = (doc: PageDoc | null | undefined): string[] => {
+      const value = (
+        normalizeDoc(def, doc).sections[target.sectionId]?.data as Record<string, unknown>
+      )?.[target.field];
+      return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+    };
+    const alive = await existingIds(target.spec.ref, [
+      ...new Set([...fieldIds(row?.published), ...fieldIds(row?.draft)]),
+    ]);
+
     const apply = (doc: PageDoc): PageDoc | string => {
       const section = doc.sections[target.sectionId];
       const data = { ...(section.data as Record<string, unknown>) };
       const current = data[target.field];
       if (target.spec.multiple) {
-        const list = Array.isArray(current) ? current.filter((v) => v !== entityId) : [];
+        const list = Array.isArray(current)
+          ? current.filter((v) => v !== entityId && alive.has(v))
+          : [];
         if (on) {
           if (list.length >= target.spec.max) {
             return `Limit ${target.spec.max} osiągnięty w sekcji „${target.sectionLabel}” — najpierw odznacz inną pozycję.`;

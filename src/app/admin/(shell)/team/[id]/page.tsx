@@ -4,13 +4,10 @@ import { notFound } from "next/navigation";
 
 import {
   deleteTeamMember,
-  publishTeamMember,
-  unpublishTeamMember,
 } from "@/app/admin/(shell)/team/actions";
 import { TeamForm } from "@/app/admin/(shell)/team/team-form";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
-import { PublishControls } from "@/components/admin/publish-controls";
 import { db } from "@/db";
 import { media, teamMembers } from "@/db/schema";
 import { toMediaSummary } from "@/lib/media-summary";
@@ -44,23 +41,17 @@ export default async function EditTeamMemberPage({
         }
       />
 
-      <div className="mb-6 rounded-lg border px-4 py-3">
-        <PublishControls
-          status={row.status}
-          publishedAt={row.publishedAt?.toISOString() ?? null}
-          onPublish={publishTeamMember.bind(null, row.id)}
-          onUnpublish={unpublishTeamMember.bind(null, row.id)}
-        />
-      </div>
-
       <TeamForm
         id={row.id}
+        status={row.status}
+        publishedAt={row.publishedAt?.toISOString() ?? null}
         defaultPhoto={photo ? toMediaSummary(photo) : null}
         defaultValues={{
           name: row.name,
           slug: row.slug,
           role: row.role ?? "",
           qualifications: row.qualifications ?? "",
+          licenses: row.licenses,
           shortBio: row.shortBio ?? "",
           longBio: row.longBio ?? "",
           photoId: row.photoId,
