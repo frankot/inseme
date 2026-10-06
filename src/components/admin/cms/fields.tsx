@@ -4,6 +4,15 @@ import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, Plus, X } from "lucide-r
 import { createContext, useContext, useId, useState } from "react";
 import { useController, useFormContext, useWatch } from "react-hook-form";
 
+import {
+  beforeText,
+  ChangedDot,
+  changedClass,
+  ChangedNote,
+  useItemState,
+  usePublishedDiff,
+  type Diff,
+} from "@/components/admin/cms/diff";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { emptyValue, type FieldSpec, type ListSpec, type RefSpec } from "@/cms/fields";
 import type { CmsImage, RefKind } from "@/cms/types";
@@ -66,24 +75,36 @@ function Shell({
   hint,
   htmlFor,
   aside,
+  diff,
+  before = null,
   children,
 }: {
   label: string;
   hint?: string;
   htmlFor?: string;
   aside?: React.ReactNode;
+  /** Marks the field when the draft differs from the published page. */
+  diff?: Diff;
+  /** The published value, rendered for the "pokaż opublikowaną" box. */
+  before?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={cn("flex flex-col gap-1.5", changedClass(Boolean(diff?.changed)))}>
       <div className="flex items-baseline justify-between gap-3">
         <Label htmlFor={htmlFor}>{label}</Label>
         {aside}
       </div>
       {children}
+      {diff && <ChangedNote diff={diff} before={before} />}
       {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
     </div>
   );
+}
+
+/** A bordered group (image, link): the rule goes on the border itself. */
+function fieldsetClass(changed: boolean) {
+  return cn("flex flex-col gap-3 rounded-md border p-3", changed && "border-amber-500");
 }
 
 function Counter({ length, max }: { length: number; max?: number }) {
@@ -99,6 +120,7 @@ function TextField({ spec, name }: { spec: Extract<FieldSpec, { kind: "text" }>;
   const id = useId();
   const { field } = useController({ name });
   const value = typeof field.value === "string" ? field.value : "";
+  const diff = usePublishedDiff(name, field.value);
   const props = {
     id,
     value,
@@ -112,6 +134,8 @@ function TextField({ spec, name }: { spec: Extract<FieldSpec, { kind: "text" }>;
       hint={spec.hint}
       htmlFor={id}
       aside={<Counter length={value.length} max={spec.max} />}
+      diff={diff}
+      before={beforeText(diff.before)}
     >
       {spec.multiline ? (
         <Textarea rows={Math.min(8, Math.max(2, Math.ceil(value.length / 70)))} {...props} />
@@ -128,9 +152,11 @@ function ImageField({ spec, name }: { spec: Extract<FieldSpec, { kind: "image" }
   const altId = useId();
   const captionId = useId();
   const set = (patch: Partial<CmsImage>) => field.onChange({ ...image, ...patch });
+  const diff = usePublishedDiff(name, field.value);
+  const was = diff.before as CmsImage | undefined;
 
   return (
-    <fieldset className="flex flex-col gap-3 rounded-md border p-3">
+    <fieldset className={fieldsetClass(diff.changed)}>
       <legend className="px-1 text-sm font-medium">{spec.label}</legend>
       <MediaPicker
         value={
@@ -166,6 +192,23 @@ function ImageField({ spec, name }: { spec: Extract<FieldSpec, { kind: "image" }
           />
         </Shell>
       )}
+      <ChangedNote
+        diff={diff}
+        before={
+          was?.src ? (
+            <span className="flex items-start gap-2.5">
+              {/* eslint-disable-next-line @next/next/no-img-element -- a thumbnail of an R2 URL, sized here */}
+              <img src={was.src} alt="" className="size-16 shrink-0 rounded object-cover" />
+              <span>
+                alt: {beforeText(was.alt)}
+                {was.caption ? <><br />podpis: {was.caption}</> : null}
+              </span>
+            </span>
+          ) : (
+            beforeText(undefined)
+          )
+        }
+      />
     </fieldset>
   );
 }
@@ -185,23 +228,34 @@ function LinkField({
   const link = field.value as { label: string; href: string } | undefined;
   const labelId = useId();
   const hrefId = useId();
+  const diff = usePublishedDiff(name, field.value);
+  const was = diff.before as { label: string; href: string } | undefined;
+  const note = (
+    <ChangedNote
+      diff={diff}
+      before={was ? `${was.label || "(bez tekstu)"} → ${was.href || "(bez adresu)"}` : "(brak linku)"}
+    />
+  );
 
   if (!link) {
     return (
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        className="self-start"
-        onClick={() => field.onChange({ label: "", href: "" })}
-      >
-        <Plus aria-hidden /> {label}
-      </Button>
+      <div className={cn("flex flex-col gap-1.5", changedClass(diff.changed))}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="self-start"
+          onClick={() => field.onChange({ label: "", href: "" })}
+        >
+          <Plus aria-hidden /> {label}
+        </Button>
+        {note}
+      </div>
     );
   }
 
   return (
-    <fieldset className="flex flex-col gap-3 rounded-md border p-3">
+    <fieldset className={fieldsetClass(diff.changed)}>
       <legend className="flex items-center gap-2 px-1 text-sm font-medium">
         {label}
         {optional && (
@@ -230,14 +284,21 @@ function LinkField({
           />
         </Shell>
       </div>
+      {note}
     </fieldset>
   );
 }
 
 function SelectField({ spec, name }: { spec: Extract<FieldSpec, { kind: "select" }>; name: string }) {
   const { field } = useController({ name });
+  const diff = usePublishedDiff(name, field.value);
   return (
-    <Shell label={spec.label} hint={spec.hint}>
+    <Shell
+      label={spec.label}
+      hint={spec.hint}
+      diff={diff}
+      before={spec.options.find((o) => o.value === diff.before)?.label ?? beforeText(diff.before)}
+    >
       <Select value={field.value ?? ""} onValueChange={(next) => field.onChange(next)}>
         <SelectTrigger className="w-full">
           <SelectValue>
@@ -259,12 +320,14 @@ function SelectField({ spec, name }: { spec: Extract<FieldSpec, { kind: "select"
 function ToggleField({ label, hint, name }: { label: string; hint?: string; name: string }) {
   const { field } = useController({ name });
   const id = useId();
+  const diff = usePublishedDiff(name, field.value);
   return (
-    <div className="flex items-start gap-3">
+    <div className={cn("flex items-start gap-3", changedClass(diff.changed))}>
       <Switch id={id} checked={Boolean(field.value)} onCheckedChange={(v) => field.onChange(v)} />
-      <div>
+      <div className="flex flex-col gap-1">
         <Label htmlFor={id}>{label}</Label>
-        {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+        {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+        <ChangedNote diff={diff} before={diff.before ? "włączone" : "wyłączone"} />
       </div>
     </div>
   );
@@ -283,11 +346,13 @@ function RefField({ spec, name }: { spec: RefSpec; name: string }) {
   const options = useContext(RefOptionsContext)[spec.ref];
   const { field } = useController({ name });
   const byId = new Map(options.map((option) => [option.id, option]));
+  const diff = usePublishedDiff(name, field.value);
+  const refLabel = (id: unknown) => (typeof id === "string" ? optionLabel(byId.get(id)) : "Automatycznie");
 
   if (!spec.multiple) {
     const value = typeof field.value === "string" ? field.value : AUTO;
     return (
-      <Shell label={spec.label} hint={spec.hint}>
+      <Shell label={spec.label} hint={spec.hint} diff={diff} before={refLabel(diff.before)}>
         <Select value={value} onValueChange={(next) => field.onChange(next === AUTO ? null : next)}>
           <SelectTrigger className="w-full">
             <SelectValue>
@@ -316,6 +381,7 @@ function RefField({ spec, name }: { spec: RefSpec; name: string }) {
     field.onChange(next);
   };
 
+  const pickedBefore: unknown[] = Array.isArray(diff.before) ? diff.before : [];
   return (
     <Shell
       label={spec.label}
@@ -324,6 +390,18 @@ function RefField({ spec, name }: { spec: RefSpec; name: string }) {
         <span className="text-xs tabular-nums text-muted-foreground">
           {picked.length} / {spec.max}
         </span>
+      }
+      diff={diff}
+      before={
+        pickedBefore.length > 0 ? (
+          <ol className="list-decimal pl-4">
+            {pickedBefore.map((id, i) => (
+              <li key={i}>{refLabel(id)}</li>
+            ))}
+          </ol>
+        ) : (
+          "(nic nie wybrano)"
+        )
       }
     >
       {picked.length > 0 && (
@@ -404,8 +482,10 @@ function ListField({ spec, name }: { spec: ListSpec; name: string }) {
   const watched = useWatch({ name });
   const items: unknown[] = Array.isArray(watched) ? watched : [];
   const write = (next: unknown[]) => setValue(name, next, { shouldDirty: true });
+  const diff = usePublishedDiff(name, watched);
 
   if (spec.fixedLabels) {
+    // Fixed tabs: each field inside marks its own change; nothing to add here.
     return (
       <Shell label={spec.label} hint={spec.hint}>
         <Tabs defaultValue="0">
@@ -437,6 +517,7 @@ function ListField({ spec, name }: { spec: ListSpec; name: string }) {
   const add = () => write([...((getValues(name) as unknown[]) ?? []), emptyValue(spec.item)]);
   const simple = spec.item.kind === "text";
 
+  const itemsBefore: unknown[] = Array.isArray(diff.before) ? diff.before : [];
   return (
     <Shell
       label={spec.label}
@@ -445,6 +526,22 @@ function ListField({ spec, name }: { spec: ListSpec; name: string }) {
         <span className="text-xs tabular-nums text-muted-foreground">
           {items.length} / {spec.max}
         </span>
+      }
+      diff={diff}
+      before={
+        simple ? (
+          <ol className="list-decimal pl-4">
+            {itemsBefore.map((item, i) => (
+              <li key={i}>{beforeText(item)}</li>
+            ))}
+          </ol>
+        ) : (
+          <ol className="list-decimal pl-4">
+            {itemsBefore.map((item, i) => (
+              <li key={i}>{itemTitle(spec, item) || "(bez tytułu)"}</li>
+            ))}
+          </ol>
+        )
       }
     >
       <div className="flex flex-col gap-2">
@@ -463,6 +560,8 @@ function ListField({ spec, name }: { spec: ListSpec; name: string }) {
           ) : (
             <ListItem
               key={i}
+              listName={name}
+              item={item}
               index={i}
               title={itemTitle(spec, item)}
               onUp={i > 0 ? () => move(i, i - 1) : undefined}
@@ -494,6 +593,8 @@ function itemTitle(spec: ListSpec, item: unknown): string {
 }
 
 function ListItem({
+  listName,
+  item,
   index,
   title,
   onUp,
@@ -501,6 +602,8 @@ function ListItem({
   onRemove,
   children,
 }: {
+  listName: string;
+  item: unknown;
   index: number;
   title: string;
   onUp?: () => void;
@@ -510,8 +613,10 @@ function ListItem({
 }) {
   const [open, setOpen] = useState(false);
   const Chevron = open ? ChevronDown : ChevronRight;
+  // By position: a moved item reads as changed, which is what the page shows too.
+  const state = useItemState(listName, index, item);
   return (
-    <div className="rounded-md border">
+    <div className={cn("rounded-md border", state && "border-amber-500")}>
       <div className="flex items-center gap-2 px-2 py-1.5">
         <button
           type="button"
@@ -522,6 +627,13 @@ function ListItem({
           <Chevron className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <span className="w-5 shrink-0 text-xs tabular-nums text-muted-foreground">{index + 1}.</span>
           <span className="truncate">{title || <span className="text-muted-foreground">(bez tytułu)</span>}</span>
+          {state === "new" ? (
+            <span className="shrink-0 rounded bg-amber-100 px-1.5 text-[10px] font-medium uppercase tracking-wide text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+              nowa
+            </span>
+          ) : state === "changed" ? (
+            <ChangedDot />
+          ) : null}
         </button>
         <RowButtons onUp={onUp} onDown={onDown} onRemove={onRemove} />
       </div>

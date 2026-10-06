@@ -18,6 +18,15 @@ import { FormProvider, useController, useForm, useFormContext, useWatch } from "
 import { toast } from "sonner";
 
 import { discardDraft, publishDraft, saveDraft } from "@/app/admin/(shell)/cms/actions";
+import {
+  beforeText,
+  ChangedDot,
+  changedClass,
+  ChangedNote,
+  PublishedProvider,
+  sameValue,
+  usePublishedDiff,
+} from "@/components/admin/cms/diff";
 import { FieldControl, RefOptionsProvider, type RefOptions } from "@/components/admin/cms/fields";
 import { CmsPreview, type PreviewHandle } from "@/components/admin/cms/preview";
 import {
@@ -98,8 +107,9 @@ export function CmsEditor({
   const again = useRef(false);
   const suppress = useRef(false);
   const preview = useRef<PreviewHandle>(null);
-  // What "Odrzuć szkic" and "Przywróć opublikowaną" go back to; moves on publish.
-  const published = useRef(publishedDoc);
+  // What the change marks compare against, and what "Odrzuć szkic" and
+  // "Przywróć" go back to. Moves on publish.
+  const [published, setPublished] = useState(publishedDoc);
 
   /**
    * Sends the current form to the draft. Resolves false on failure. A change
@@ -190,7 +200,7 @@ export function CmsEditor({
         return;
       }
       version.current = result.data.version;
-      published.current = structuredClone(form.getValues());
+      setPublished(structuredClone(form.getValues()));
       setHasDraft(false);
       toast.success("Opublikowano — strona odświeży się w ciągu kilku sekund.");
       router.refresh();
@@ -214,7 +224,7 @@ export function CmsEditor({
       }
       version.current = result.data.version;
       suppress.current = true;
-      form.reset(published.current);
+      form.reset(published);
       queueMicrotask(() => {
         suppress.current = false;
       });
@@ -234,132 +244,140 @@ export function CmsEditor({
 
   return (
     <FormProvider {...form}>
-      <RefOptionsProvider value={refOptions}>
-        <div className="-mx-4 -my-6 flex h-[calc(100svh-3.5rem)] flex-col overflow-hidden lg:-mx-8">
-          {/* Header */}
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2.5">
-            <div className="min-w-0">
-              <Link href="/admin/cms" className="text-xs text-muted-foreground hover:underline">
-                CMS
-              </Link>
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  className="-ml-1 flex items-center gap-1 rounded-md px-1 text-lg font-semibold leading-tight outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring/50"
-                  aria-label={`${def.label} — przełącz stronę CMS`}
+      <PublishedProvider value={published}>
+        <RefOptionsProvider value={refOptions}>
+          <div className="-mx-4 -my-6 flex h-[calc(100svh-3.5rem)] flex-col overflow-hidden lg:-mx-8">
+            {/* Header */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-4 py-2.5">
+              <div className="min-w-0">
+                <Link href="/admin/cms" className="text-xs text-muted-foreground hover:underline">
+                  CMS
+                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    className="-ml-1 flex items-center gap-1 rounded-md px-1 text-lg font-semibold leading-tight outline-none hover:bg-accent/50 focus-visible:ring-2 focus-visible:ring-ring/50"
+                    aria-label={`${def.label} — przełącz stronę CMS`}
+                  >
+                    <h1 className="truncate">{def.label}</h1>
+                    <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-60">
+                    {cmsPageList.map((page) => (
+                      <DropdownMenuItem
+                        key={page.key}
+                        onClick={() => void goTo(`/admin/cms/${page.adminSlug}`)}
+                      >
+                        {page.key === def.key ? <Check aria-hidden /> : <span className="size-4" />}
+                        {page.label}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <SaveStatus status={status} hasDraft={hasDraft} publishedLabel={publishedLabel} />
+              <div className="ml-auto flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  render={<a href={`/admin/preview/${def.key}`} target="_blank" rel="noopener" />}
                 >
-                  <h1 className="truncate">{def.label}</h1>
-                  <ChevronDown className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="w-60">
-                  {cmsPageList.map((page) => (
-                    <DropdownMenuItem
-                      key={page.key}
-                      onClick={() => void goTo(`/admin/cms/${page.adminSlug}`)}
-                    >
-                      {page.key === def.key ? <Check aria-hidden /> : <span className="size-4" />}
-                      {page.label}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  <ExternalLink aria-hidden /> Podgląd
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!hasDraft || busy}
+                  onClick={() => setConfirm("discard")}
+                >
+                  Odrzuć szkic
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={!hasDraft || hasErrors || busy || status.kind === "conflict"}
+                  title={hasErrors ? "Popraw błędy oznaczone w konspekcie." : undefined}
+                  onClick={() => setConfirm("publish")}
+                >
+                  Opublikuj
+                </Button>
+              </div>
             </div>
-            <SaveStatus status={status} hasDraft={hasDraft} publishedLabel={publishedLabel} />
-            <div className="ml-auto flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                render={<a href={`/admin/preview/${def.key}`} target="_blank" rel="noopener" />}
-              >
-                <ExternalLink aria-hidden /> Podgląd
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!hasDraft || busy}
-                onClick={() => setConfirm("discard")}
-              >
-                Odrzuć szkic
-              </Button>
-              <Button
-                size="sm"
-                disabled={!hasDraft || hasErrors || busy || status.kind === "conflict"}
-                title={hasErrors ? "Popraw błędy oznaczone w konspekcie." : undefined}
-                onClick={() => setConfirm("publish")}
-              >
-                Opublikuj
-              </Button>
-            </div>
-          </div>
 
-          {/*
-            One row pinned to the space left under the header. Without the
-            explicit `minmax(0,1fr)` row the grid's implicit row grows to the
-            tallest column, the editor outgrows the viewport and the whole
-            admin page scrolls past its end. Each column scrolls on its own.
-          */}
-          <div className="grid min-h-0 flex-1 grid-cols-[12rem_minmax(20rem,28rem)_minmax(0,1fr)] grid-rows-[minmax(0,1fr)] overflow-hidden">
-            {/* Outline */}
-            <nav aria-label="Sekcje strony" className="overflow-y-auto border-r p-2">
-              <p className="px-2 pt-1 pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Sekcje
-              </p>
-              <OutlineRow
-                active={selected === SEO}
-                onClick={() => select(SEO)}
-                icon={<Search className="size-3.5" aria-hidden />}
-                label="SEO"
-                error={Boolean(errors.seo)}
-              />
-              <Outline def={def.sections} selected={selected} errors={errors} onSelect={select} />
-            </nav>
-
-            {/* Form */}
-            <div className="overflow-y-auto border-r p-4">
-              {selected === SEO ? (
-                <SeoForm />
-              ) : section ? (
-                <SectionForm
-                  key={section.id}
-                  section={section}
-                  errors={errors[section.id] ?? []}
-                  onRestore={() =>
-                    form.setValue(`sections.${section.id}`, published.current.sections[section.id], {
-                      shouldDirty: true,
-                    })
-                  }
+            {/*
+              One row pinned to the space left under the header. Without the
+              explicit `minmax(0,1fr)` row the grid's implicit row grows to the
+              tallest column, the editor outgrows the viewport and the whole
+              admin page scrolls past its end. Each column scrolls on its own.
+            */}
+            <div className="grid min-h-0 flex-1 grid-cols-[12rem_minmax(20rem,28rem)_minmax(0,1fr)] grid-rows-[minmax(0,1fr)] overflow-hidden">
+              {/* Outline */}
+              <nav aria-label="Sekcje strony" className="overflow-y-auto border-r p-2">
+                <p className="px-2 pt-1 pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Sekcje
+                </p>
+                <SeoOutlineRow
+                  active={selected === SEO}
+                  onClick={() => select(SEO)}
+                  error={Boolean(errors.seo)}
+                  published={published}
                 />
-              ) : null}
+                <Outline
+                  def={def.sections}
+                  selected={selected}
+                  errors={errors}
+                  onSelect={select}
+                  published={published}
+                />
+              </nav>
+
+              {/* Form */}
+              <div className="overflow-y-auto border-r p-4">
+                {selected === SEO ? (
+                  <SeoForm />
+                ) : section ? (
+                  <SectionForm
+                    key={section.id}
+                    section={section}
+                    errors={errors[section.id] ?? []}
+                    published={published}
+                    onRestore={() =>
+                      form.setValue(`sections.${section.id}`, structuredClone(published.sections[section.id]), {
+                        shouldDirty: true,
+                      })
+                    }
+                  />
+                ) : null}
+              </div>
+
+              {/* Preview */}
+              <CmsPreview ref={preview} pageKey={def.key} />
             </div>
-
-            {/* Preview */}
-            <CmsPreview ref={preview} pageKey={def.key} />
           </div>
-        </div>
 
-        <AlertDialog open={confirm !== null} onOpenChange={(open) => !open && setConfirm(null)}>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {confirm === "publish" ? "Opublikować zmiany?" : "Odrzucić szkic?"}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {confirm === "publish"
-                  ? "Szkic zastąpi treść widoczną na stronie."
-                  : "Zmiany w szkicu zostaną usunięte, a formularz wróci do wersji opublikowanej."}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel disabled={busy}>Anuluj</AlertDialogCancel>
-              <AlertDialogAction
-                disabled={busy}
-                onClick={() => void (confirm === "publish" ? publish() : discard())}
-              >
-                {confirm === "publish" ? "Opublikuj" : "Odrzuć szkic"}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      </RefOptionsProvider>
+          <AlertDialog open={confirm !== null} onOpenChange={(open) => !open && setConfirm(null)}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  {confirm === "publish" ? "Opublikować zmiany?" : "Odrzucić szkic?"}
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  {confirm === "publish"
+                    ? "Szkic zastąpi treść widoczną na stronie."
+                    : "Zmiany w szkicu zostaną usunięte, a formularz wróci do wersji opublikowanej."}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel disabled={busy}>Anuluj</AlertDialogCancel>
+                <AlertDialogAction
+                  disabled={busy}
+                  onClick={() => void (confirm === "publish" ? publish() : discard())}
+                >
+                  {confirm === "publish" ? "Opublikuj" : "Odrzuć szkic"}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </RefOptionsProvider>
+      </PublishedProvider>
     </FormProvider>
   );
 }
@@ -400,16 +418,42 @@ function SaveStatus({
   );
 }
 
+function SeoOutlineRow({
+  active,
+  onClick,
+  error,
+  published,
+}: {
+  active: boolean;
+  onClick: () => void;
+  error: boolean;
+  published: PageDoc;
+}) {
+  const seo = useWatch({ name: SEO });
+  return (
+    <OutlineRow
+      active={active}
+      onClick={onClick}
+      icon={<Search className="size-3.5" aria-hidden />}
+      label="SEO"
+      error={error}
+      changed={!sameValue(seo, published.seo)}
+    />
+  );
+}
+
 function Outline({
   def,
   selected,
   errors,
   onSelect,
+  published,
 }: {
   def: SectionDef[];
   selected: string;
   errors: Record<string, string[]>;
   onSelect: (id: string) => void;
+  published: PageDoc;
 }) {
   const { setValue } = useFormContext<PageDoc>();
   const sections = useWatch({ name: "sections" }) as PageDoc["sections"] | undefined;
@@ -454,6 +498,7 @@ function Outline({
         number={number}
         dim={!enabled || Boolean(section.locked)}
         error={Boolean(errors[section.id])}
+        changed={!sameValue(sections?.[section.id], published.sections[section.id])}
       />
     );
   });
@@ -469,6 +514,7 @@ function OutlineRow({
   number,
   dim,
   error,
+  changed,
 }: {
   active: boolean;
   onClick: () => void;
@@ -480,6 +526,8 @@ function OutlineRow({
   number?: string | null;
   dim?: boolean;
   error?: boolean;
+  /** Differs from the published page. */
+  changed?: boolean;
 }) {
   return (
     <div
@@ -512,6 +560,7 @@ function OutlineRow({
       >
         <span className="w-5 shrink-0 text-xs tabular-nums text-muted-foreground">{number}</span>
         <span className="min-w-0 flex-1 truncate">{label}</span>
+        {changed && !error && <ChangedDot />}
         {error && <AlertTriangle className="size-3.5 shrink-0 text-destructive" aria-label="Błędy" />}
       </button>
     </div>
@@ -521,26 +570,39 @@ function OutlineRow({
 function SectionForm({
   section,
   errors,
+  published,
   onRestore,
 }: {
   section: SectionDef;
   errors: string[];
+  published: PageDoc;
   onRestore: () => void;
 }) {
   const { field } = useController({ name: `sections.${section.id}.enabled` });
   const canDisable = section.canDisable !== false && !section.locked;
+  const visibility = usePublishedDiff(`sections.${section.id}.enabled`, field.value);
+  const current = useWatch({ name: `sections.${section.id}` });
+  const changed = !sameValue(current, published.sections[section.id]);
 
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <h2 className="text-base font-semibold">{section.label}</h2>
+        <div className="flex flex-col gap-0.5">
+          <h2 className="text-base font-semibold">{section.label}</h2>
+          {changed && (
+            <p className="flex items-center gap-1.5 text-xs text-amber-700 dark:text-amber-400">
+              <ChangedDot /> Zmiany względem opublikowanej strony są oznaczone
+            </p>
+          )}
+        </div>
         {!section.locked && (
           <button
             type="button"
-            className="text-xs text-muted-foreground underline-offset-2 hover:underline"
+            className="text-xs text-muted-foreground underline-offset-2 hover:underline disabled:pointer-events-none disabled:opacity-50"
+            disabled={!changed}
             onClick={onRestore}
           >
-            Przywróć opublikowaną
+            Przywróć całą sekcję
           </button>
         )}
       </div>
@@ -548,13 +610,24 @@ function SectionForm({
       {canDisable && (
         // Not a wrapping <label>: the switch renders a button plus a hidden
         // input, and a label around both toggles it twice per click.
-        <div className="flex items-center gap-3 rounded-md border px-3 py-2 text-sm">
-          <Switch
-            id={`visible-${section.id}`}
-            checked={Boolean(field.value)}
-            onCheckedChange={(v) => field.onChange(v)}
+        <div
+          className={cn(
+            "flex flex-col gap-1.5 rounded-md border px-3 py-2 text-sm",
+            visibility.changed && "border-amber-500",
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <Switch
+              id={`visible-${section.id}`}
+              checked={Boolean(field.value)}
+              onCheckedChange={(v) => field.onChange(v)}
+            />
+            <Label htmlFor={`visible-${section.id}`}>Widoczna na stronie</Label>
+          </div>
+          <ChangedNote
+            diff={visibility}
+            before={visibility.before ? "widoczna" : "ukryta"}
           />
-          <Label htmlFor={`visible-${section.id}`}>Widoczna na stronie</Label>
         </div>
       )}
 
@@ -581,6 +654,8 @@ function SeoForm() {
   const title = useController({ name: "seo.title" }).field;
   const description = useController({ name: "seo.description" }).field;
   const count = (value: unknown) => (typeof value === "string" ? value.length : 0);
+  const titleDiff = usePublishedDiff("seo.title", title.value);
+  const descriptionDiff = usePublishedDiff("seo.description", description.value);
   return (
     <div className="flex flex-col gap-5">
       <h2 className="text-base font-semibold">SEO</h2>
@@ -589,14 +664,15 @@ function SeoForm() {
         {seoLimits.recommended.title} znaków tytułu i {seoLimits.recommended.description} znaków
         opisu — dłuższe są ucinane.
       </p>
-      <div className="flex flex-col gap-1.5">
+      <div className={cn("flex flex-col gap-1.5", changedClass(titleDiff.changed))}>
         <div className="flex justify-between">
           <Label htmlFor="seo-title">Tytuł strony</Label>
           <Len n={count(title.value)} rec={seoLimits.recommended.title} />
         </div>
         <Input id="seo-title" value={title.value ?? ""} onChange={(e) => title.onChange(e.target.value)} />
+        <ChangedNote diff={titleDiff} before={beforeText(titleDiff.before)} />
       </div>
-      <div className="flex flex-col gap-1.5">
+      <div className={cn("flex flex-col gap-1.5", changedClass(descriptionDiff.changed))}>
         <div className="flex justify-between">
           <Label htmlFor="seo-description">Opis</Label>
           <Len n={count(description.value)} rec={seoLimits.recommended.description} />
@@ -607,6 +683,7 @@ function SeoForm() {
           value={description.value ?? ""}
           onChange={(e) => description.onChange(e.target.value)}
         />
+        <ChangedNote diff={descriptionDiff} before={beforeText(descriptionDiff.before)} />
       </div>
     </div>
   );
