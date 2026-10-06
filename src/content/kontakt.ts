@@ -8,7 +8,7 @@ export const kontaktPageDefaults = {
     "Nie musisz podawać nazwiska ani opisywać wszystkiego. Wystarczy zdanie o tym, co się dzieje, i sposób kontaktu.",
   breadcrumbHome: "Strona główna",
   breadcrumbKontakt: "Kontakt",
-  metaTitle: "Kontakt — Insieme, ośrodek terapii uzależnień w Magdalence",
+  metaTitle: "Kontakt — Magdalenka, ul. Świerkowa 13, pod Warszawą | Insieme",
   metaDescription:
     "Telefon, formularz kontaktowy i dojazd do ośrodka Insieme w Magdalence pod Warszawą. Rozmowa nie zobowiązuje do przyjazdu.",
 } as const;

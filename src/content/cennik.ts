@@ -127,7 +127,7 @@ export const cennikTeaserDefaults: CennikContent = {
 
 /** The /cennik page — the client's copy. */
 export const cennikPageDefaults = {
-  metaTitle: "Cennik — prywatny ośrodek leczenia uzależnień Insieme, Magdalenka",
+  metaTitle: "Prywatny ośrodek leczenia uzależnień — cennik | Insieme",
   metaDescription:
     "Ile kosztuje leczenie w ośrodku Insieme pod Warszawą i co obejmuje cena. Program stacjonarny trwa minimum 28 dni. Pierwsza rozmowa telefoniczna jest bezpłatna.",
   eyebrow: "Cennik",

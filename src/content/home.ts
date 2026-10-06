@@ -571,6 +571,7 @@ export const footerDefaults: FooterContent = {
   helpColumnTitle: "Leczenie i pomoc",
   helpLinks: [
     { label: "Leczenie alkoholizmu", href: "/leczenie-alkoholizmu" },
+    { label: "Leczenie narkomanii", href: "/leczenie-narkomanii" },
     { label: "Dla rodziny", href: "/dla-rodziny" },
     { label: "Detoks i kwalifikacja", href: "/detoks-i-kwalifikacja" },
     { label: "Odwyk na NFZ", href: NFZ_ARTICLE_HREF },

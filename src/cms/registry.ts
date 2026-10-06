@@ -3,6 +3,7 @@ import {
   detoksIKwalifikacjaPage,
   dlaRodzinyPage,
   leczenieAlkoholizmuPage,
+  leczenieNarkomaniiPage,
 } from "./pages/intent";
 import { landingPage } from "./pages/landing";
 import { osrodekPage } from "./pages/osrodek";
@@ -18,6 +19,7 @@ export const cmsPageList: PageDef[] = [
   programPage,
   osrodekPage,
   leczenieAlkoholizmuPage,
+  leczenieNarkomaniiPage,
   dlaRodzinyPage,
   detoksIKwalifikacjaPage,
 ];

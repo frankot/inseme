@@ -45,7 +45,7 @@ export const teamPageDefaults: TeamPageContent = {
   title: "Różni ludzie, wspólny cel.",
   lead: TEAM_INTRO,
   emptyNote: "Przygotowujemy tę stronę. Zadzwoń — powiemy przez telefon, kto poprowadzi terapię.",
-  metaTitle: "Zespół — terapeuci ośrodka Insieme w Magdalence",
+  metaTitle: "Terapeuci uzależnień — zespół ośrodka pod Warszawą | Insieme",
   metaDescription:
     "Terapeuci uzależnień, psychiatra i psycholog ośrodka Insieme. Ta sama kadra przez cały pobyt — poznaj zespół przed przyjazdem.",
 };

@@ -3,13 +3,14 @@ import { f, paragraphs, points } from "@/cms/fields";
 import { detoksIKwalifikacjaDefaults } from "@/content/intent/detoks-i-kwalifikacja";
 import { dlaRodzinyDefaults } from "@/content/intent/dla-rodziny";
 import { leczenieAlkoholizmuDefaults } from "@/content/intent/leczenie-alkoholizmu";
+import { leczenieNarkomaniiDefaults } from "@/content/intent/leczenie-narkomanii";
 import type { IntentPageContent } from "@/content/intent/types";
 
 import { stageBandData, stageBandFields } from "./shared";
 
 /**
- * The three SEO intent pages (plans/CMS_PLAN.md §11.1). One definition, three
- * pages: the same eight sections, each page seeded from its own content file.
+ * The SEO intent pages (plans/CMS_PLAN.md §11.1). One definition, one page per
+ * search intent: the same eight sections, each page seeded from its own content file.
  * Section `id`s inside the content (the anchors) stay in code.
  */
 
@@ -113,6 +114,7 @@ const sections = [
         "Kategoria pytań",
         [
           { value: "alkohol", label: "alkohol" },
+          { value: "narkotyki", label: "narkotyki" },
           { value: "rodzina", label: "rodzina" },
           { value: "detoks", label: "detoks" },
           { value: "nfz", label: "nfz" },
@@ -190,6 +192,11 @@ export const leczenieAlkoholizmuPage = intentPage(
   "leczenie-alkoholizmu",
   "Leczenie alkoholizmu",
   leczenieAlkoholizmuDefaults,
+);
+export const leczenieNarkomaniiPage = intentPage(
+  "leczenie-narkomanii",
+  "Leczenie narkomanii",
+  leczenieNarkomaniiDefaults,
 );
 export const dlaRodzinyPage = intentPage("dla-rodziny", "Dla rodziny", dlaRodzinyDefaults);
 export const detoksIKwalifikacjaPage = intentPage(

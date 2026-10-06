@@ -70,7 +70,7 @@ export type OsrodekPageContent = {
 };
 
 export const osrodekPageDefaults: OsrodekPageContent = {
-  metaTitle: "Ośrodek w Magdalence — jak wygląda, jak dojechać | Insieme",
+  metaTitle: "Prywatny ośrodek terapii uzależnień pod Warszawą | Insieme",
   metaDescription:
     "Kameralny ośrodek terapii uzależnień w Magdalence, 15 km od Warszawy: pokoje, salon terapeutyczny, ogród, sauna i siłownia. Jak dojechać, co zabrać, jak wygląda przyjazd.",
   eyebrow: "Ośrodek",

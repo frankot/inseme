@@ -15,7 +15,7 @@ import { FAQ_FEATURED_MAX } from "@/lib/validations/content";
  * hardcoded verbatim quotes and are not editable here yet.
  */
 
-export const LANDING_TITLE = "Insieme — ośrodek terapii uzależnień w Magdalence pod Warszawą";
+export const LANDING_TITLE = "Ośrodek leczenia uzależnień Warszawa – Magdalenka | Insieme";
 export const LANDING_DESCRIPTION =
   "Prywatny ośrodek leczenia uzależnień w Magdalence. Detoks, terapia stacjonarna, wsparcie dla rodziny. Rozmowa nie zobowiązuje do przyjazdu.";
 

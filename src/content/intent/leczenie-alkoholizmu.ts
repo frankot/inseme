@@ -18,7 +18,7 @@ import type { IntentPageContent } from "./types";
  */
 export const leczenieAlkoholizmuDefaults: IntentPageContent = {
   path: "/leczenie-alkoholizmu",
-  metaTitle: "Leczenie alkoholizmu pod Warszawą — objawy, terapia, leki | Insieme",
+  metaTitle: "Odwyk alkoholowy pod Warszawą — leczenie alkoholizmu | Insieme",
   metaDescription:
     "Po czym poznać uzależnienie od alkoholu, z czego składa się leczenie, co mogą leki i Esperal, jak wybrać ośrodek. Terapia stacjonarna w Magdalence.",
   breadcrumbHome: "Strona główna",
@@ -28,7 +28,7 @@ export const leczenieAlkoholizmuDefaults: IntentPageContent = {
     title: "Leczenie alkoholizmu — jak rozpoznać problem i jak wygląda terapia",
     lead: [
       "Uzależnienie od alkoholu to choroba, a nie brak silnej woli. Ma swoje objawy, przebieg i metody leczenia — podstawą jest psychoterapia uzależnień, czasem wspierana leczeniem farmakologicznym.",
-      "Wyjaśniamy, po czym poznać, że picie przestało być wyborem, z czego składa się leczenie i o co zapytać, zanim wybierzesz miejsce terapii.",
+      "Wyjaśniamy, po czym poznać, że picie przestało być wyborem, z czego składa się leczenie, jak wygląda odwyk alkoholowy w ośrodku pod Warszawą i o co zapytać, zanim wybierzesz miejsce terapii.",
     ],
     summaryTitle: "W skrócie",
     summary: [
@@ -81,7 +81,7 @@ export const leczenieAlkoholizmuDefaults: IntentPageContent = {
     closing: [
       "Nie musisz samodzielnie stawiać sobie diagnozy. Test przesiewowy pomoże ocenić ryzyko, a rozmowa ze specjalistą — ustalić, co się dzieje.",
     ],
-    link: { label: "Wypełnij test przesiewowy AUDIT", href: "/testy" },
+    link: { label: "Wypełnij test przesiewowy", href: "/testy" },
   },
 
   steps: {
@@ -213,6 +213,11 @@ export const leczenieAlkoholizmuDefaults: IntentPageContent = {
         title: "Odwyk na NFZ",
         body: "Skierowanie, czas oczekiwania i różnice wobec leczenia prywatnego.",
         href: NFZ_ARTICLE_HREF,
+      },
+      {
+        title: "Leczenie narkomanii",
+        body: "Uzależnienie od narkotyków, dopalaczy i leków — objawy, detoks i terapia.",
+        href: "/leczenie-narkomanii",
       },
     ],
   },

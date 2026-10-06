@@ -5,6 +5,7 @@ import { ProgramView } from "@/components/site/cms/program-view";
 import { detoksIKwalifikacjaDefaults } from "@/content/intent/detoks-i-kwalifikacja";
 import { dlaRodzinyDefaults } from "@/content/intent/dla-rodziny";
 import { leczenieAlkoholizmuDefaults } from "@/content/intent/leczenie-alkoholizmu";
+import { leczenieNarkomaniiDefaults } from "@/content/intent/leczenie-narkomanii";
 import type { CmsPage } from "@/lib/cms/get-page";
 
 /**
@@ -22,6 +23,8 @@ export function renderCmsPage(page: CmsPage) {
       return <OsrodekView page={page} />;
     case "leczenie-alkoholizmu":
       return <IntentView page={page} defaults={leczenieAlkoholizmuDefaults} />;
+    case "leczenie-narkomanii":
+      return <IntentView page={page} defaults={leczenieNarkomaniiDefaults} />;
     case "dla-rodziny":
       return <IntentView page={page} defaults={dlaRodzinyDefaults} />;
     case "detoks-i-kwalifikacja":

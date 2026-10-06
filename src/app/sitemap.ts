@@ -15,6 +15,7 @@ const STATIC_ROUTES = [
   "/program",
   "/cennik",
   "/leczenie-alkoholizmu",
+  "/leczenie-narkomanii",
   "/dla-rodziny",
   "/detoks-i-kwalifikacja",
   "/zespol",

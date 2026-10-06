@@ -17,7 +17,7 @@ import type { IntentPageContent } from "./types";
  */
 export const dlaRodzinyDefaults: IntentPageContent = {
   path: "/dla-rodziny",
-  metaTitle: "Jak pomóc osobie uzależnionej — wsparcie dla rodziny | Insieme",
+  metaTitle: "Wsparcie dla rodziny osoby uzależnionej — co robić | Insieme",
   metaDescription:
     "Co zrobić, gdy bliska osoba pije lub bierze i nie chce się leczyć: jak rozmawiać, gdzie są granice pomocy, kiedy możliwy jest sądowy obowiązek leczenia.",
   breadcrumbHome: "Strona główna",

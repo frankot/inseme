@@ -56,8 +56,7 @@ export type ProgramPageContent = {
 };
 
 export const programPageDefaults: ProgramPageContent = {
-  metaTitle:
-    "Program leczenia — terapia stacjonarna, ambulatoryjna, wsparcie dla bliskich | Insieme",
+  metaTitle: "Terapia uzależnień — program leczenia pod Warszawą | Insieme",
   metaDescription:
     "Etapy leczenia w Insieme: minimum 28 dni terapii stacjonarnej, ok. 12–13 miesięcy programu ambulatoryjnego, wsparcie dla rodziny i Program Rozwoju Osobistego PRO. Plan dnia w ośrodku.",
   breadcrumbHome: "Strona główna",

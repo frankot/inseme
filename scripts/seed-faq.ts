@@ -4,7 +4,8 @@
  * `seed:cms` starts it with the first six by order.
  *
  * Questions with a `category` are also embedded on the page that reads that
- * category — `alkohol` on /leczenie-alkoholizmu, `rodzina` on /dla-rodziny,
+ * category — `alkohol` on /leczenie-alkoholizmu, `narkotyki` on
+ * /leczenie-narkomanii, `rodzina` on /dla-rodziny,
  * `detoks` on /detoks-i-kwalifikacja, `nfz` in the NFZ article. They appear on
  * /faq as well.
  *
@@ -171,6 +172,32 @@ const QUESTIONS: Question[] = [
     question: "Czy po terapii można pić okazjonalnie?",
     answer:
       "W przypadku uzależnienia celem leczenia jest abstynencja. Próby „kontrolowanego picia” u osób uzależnionych zwykle prowadzą do powrotu dawnego wzorca. Inaczej bywa przy piciu szkodliwym bez uzależnienia — dlatego tak ważna jest rzetelna diagnoza.",
+  },
+
+  /* ------------------------------------------- narkotyki: /leczenie-narkomanii */
+  {
+    category: "narkotyki",
+    question: "Czy leczycie uzależnienie od marihuany?",
+    answer:
+      "Tak. Uzależnienie od marihuany bywa bagatelizowane, ale mechanizm jest taki sam jak przy innych substancjach: utrata kontroli, głód, objawy odstawienia i branie mimo szkód. O tym, czy to już uzależnienie, rozmawiamy w kwalifikacji.",
+  },
+  {
+    category: "narkotyki",
+    question: "Czy przed terapią potrzebny jest detoks?",
+    answer:
+      "Nie zawsze. Zależy to od substancji, czasu i sposobu przyjmowania oraz stanu zdrowia. Przy opioidach i lekach uspokajających detoks pod opieką lekarza jest zwykle konieczny. Decyzję podejmuje lekarz w kwalifikacji, a jeśli detoks jest potrzebny, pomagamy go zorganizować.",
+  },
+  {
+    category: "narkotyki",
+    question: "Biorę kilka substancji naraz. Czy mogę się u Was leczyć?",
+    answer:
+      "Tak — przyjmowanie kilku substancji, także z alkoholem lub lekami, jest częste. Powiedz o wszystkich w pierwszej rozmowie, bez obaw: od tego zależy, czy potrzebny jest detoks i jak zaplanować leczenie.",
+  },
+  {
+    category: "narkotyki",
+    question: "Leczyłem się już i wróciłem do brania. Czy mogę zacząć jeszcze raz?",
+    answer:
+      "Tak. Nawrót nie przekreśla leczenia i nie jest powodem do wstydu — uzależnienie jest chorobą przewlekłą. W kwalifikacji rozmawiamy o tym, co wtedy pomogło, a co nie, i od tego zaczynamy.",
   },
 
   /* --------------------------------------------------- rodzina: /dla-rodziny */
