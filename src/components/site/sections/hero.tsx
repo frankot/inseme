@@ -21,7 +21,10 @@ export function Hero({
   return (
     <section
       id="gora"
-      className="relative h-[var(--hero-h)] overflow-hidden bg-ink-950 tab:h-auto tab:min-h-[min(100svh,var(--hero-max))]"
+      // A minimum, not a fixed height: on a phone the title, lead, button and
+      // trust list run taller than 600px, and with a fixed height the overflow
+      // was pushed up under the navbar. Now the hero grows instead.
+      className="relative min-h-[var(--hero-h)] overflow-hidden bg-ink-950 tab:min-h-[min(100svh,var(--hero-max))]"
     >
       <div className="absolute inset-0 animate-slow-zoom">
         <SiteImage
@@ -40,7 +43,7 @@ export function Hero({
       <div
         id="tresc"
         tabIndex={-1}
-        className="relative mx-auto flex h-full max-w-[1440px] flex-col justify-end tab:h-auto tab:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[calc(clamp(40px,5vw,72px)+var(--spacing-slab))] outline-none"
+        className="relative mx-auto flex min-h-[var(--hero-h)] max-w-[1440px] flex-col justify-end tab:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[calc(clamp(40px,5vw,72px)+var(--spacing-slab))] outline-none"
       >
         <div>
           <p className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 text-eyebrow uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
