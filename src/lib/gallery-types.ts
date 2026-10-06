@@ -26,9 +26,17 @@ export type GalleryPhotoAdmin = GalleryPhotoView & {
   status: "draft" | "published";
   publishedAt: string | null;
   sortOrder: number;
+  /** Picked for the homepage's Ośrodek section. */
+  featuredOnHome: boolean;
   /** Thumb + full, in bytes — what this photo actually costs the bucket. */
   totalSize: number;
 };
+
+/**
+ * How many gallery photos the homepage's Ośrodek section shows — its mosaic
+ * has exactly four tiles. The admin refuses a fifth.
+ */
+export const HOME_GALLERY_MAX = 4;
 
 /** Photos per page on /galeria. Also the page size the admin list mirrors. */
 export const GALLERY_PAGE_SIZE = 24;

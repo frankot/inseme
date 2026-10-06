@@ -78,6 +78,13 @@
       "when": 1791273747998,
       "tag": "0010_team_licenses",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791283157434,
+      "tag": "0011_gallery_featured_home",
+      "breakpoints": true
     }
   ]
 }

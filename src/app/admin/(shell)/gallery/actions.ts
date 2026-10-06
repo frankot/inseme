@@ -2,7 +2,7 @@
 
 import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { asc, desc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, ne, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -10,7 +10,7 @@ import { db } from "@/db";
 import { galleryPhotos } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
-import { galleryAlt, type GalleryPhotoAdmin } from "@/lib/gallery-types";
+import { galleryAlt, HOME_GALLERY_MAX, type GalleryPhotoAdmin } from "@/lib/gallery-types";
 import {
   buildGalleryKey,
   createR2Client,
@@ -39,6 +39,8 @@ const R2_MISSING =
 function refreshGallery() {
   revalidatePath("/admin/gallery");
   revalidatePath("/osrodek");
+  // The homepage's Ośrodek section shows the featured photos.
+  revalidatePath("/");
 }
 
 type Row = typeof galleryPhotos.$inferSelect;
@@ -54,6 +56,7 @@ function toAdminView(row: Row): GalleryPhotoAdmin {
     status: row.status,
     publishedAt: row.publishedAt?.toISOString() ?? null,
     sortOrder: row.sortOrder,
+    featuredOnHome: row.featuredOnHome,
     totalSize: row.thumbSize + row.fullSize,
   };
 }
@@ -239,6 +242,37 @@ export async function unpublishGalleryPhoto(id: string): Promise<ActionResult> {
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się cofnąć publikacji.");
+  }
+}
+
+/**
+ * Picks a photo for the homepage's Ośrodek section, or takes it off. The
+ * mosaic has exactly `HOME_GALLERY_MAX` tiles, so a fifth is refused rather
+ * than silently left out.
+ */
+export async function setGalleryFeatured(id: string, featured: boolean): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    if (featured) {
+      const [{ others }] = await db
+        .select({ others: sql<number>`count(*)::int` })
+        .from(galleryPhotos)
+        .where(and(eq(galleryPhotos.featuredOnHome, true), ne(galleryPhotos.id, id)));
+      if (others >= HOME_GALLERY_MAX) {
+        return {
+          ok: false,
+          error: `Na stronie głównej mieści się ${HOME_GALLERY_MAX} zdjęcia. Najpierw odznacz jedno z wybranych.`,
+        };
+      }
+    }
+    await db
+      .update(galleryPhotos)
+      .set({ featuredOnHome: featured, updatedAt: new Date() })
+      .where(eq(galleryPhotos.id, id));
+    refreshGallery();
+    return { ok: true };
+  } catch (error) {
+    return actionError(error, "Nie udało się zmienić wyboru na stronę główną.");
   }
 }
 

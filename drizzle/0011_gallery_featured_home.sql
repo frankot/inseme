@@ -1,0 +1,1 @@
+ALTER TABLE "gallery_photos" ADD COLUMN "featured_on_home" boolean DEFAULT false NOT NULL;

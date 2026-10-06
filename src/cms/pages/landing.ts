@@ -108,11 +108,9 @@ export const landingPage = definePage({
           }),
           { max: 4, titleKey: "value" },
         ),
-        figures: f.list("Zdjęcia", f.image("Zdjęcie", { caption: true }), {
-          min: 4,
-          max: 4,
-          hint: "Dokładnie cztery — układ strony to siatka 2×2.",
-        }),
+        // No photo fields: the mosaic shows the gallery photos starred in
+        // /admin/gallery (up to four, in gallery order), with the figures in
+        // `osrodekDefaults` as the fallback while none are.
       }),
     }),
     defineSection({

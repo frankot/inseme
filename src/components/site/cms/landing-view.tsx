@@ -27,6 +27,7 @@ import { opinieDefaults } from "@/content/opinie";
 import { teamTeaserDefaults } from "@/content/team";
 import { numberSections, type CmsPage } from "@/lib/cms/get-page";
 import { resolveArticle, resolveFaq, resolveTeam, resolveTest } from "@/lib/cms/resolve";
+import { getHomeGalleryPhotos } from "@/lib/queries/gallery";
 import { getSiteContact } from "@/lib/queries/settings";
 import { FAQ_FEATURED_MAX } from "@/lib/validations/content";
 
@@ -55,12 +56,17 @@ export async function LandingView({ page }: { page: CmsPage }) {
   const numbers = numberSections(page);
   const data = <T,>(id: string) => s[id].data as T;
 
-  const [test, article, team, faq, contact] = await Promise.all([
+  const [test, article, team, faq, contact, homePhotos] = await Promise.all([
     resolveTest(s.test.data.testId),
     resolveArticle(s.poradnik.data.articleId),
     resolveTeam(s.zespol.data.teamIds, 4),
     resolveFaq(s.faq.data.faqIds, FAQ_FEATURED_MAX),
     getSiteContact(),
+    // Like the resolvers: a DB error falls back (to the section's own figures).
+    getHomeGalleryPhotos().catch((error) => {
+      console.error("[home-gallery] falling back to the section's figures", error);
+      return [];
+    }),
   ]);
 
   const hero = data<HeroData>("hero");
@@ -112,6 +118,7 @@ export async function LandingView({ page }: { page: CmsPage }) {
       <CmsSlot page={page} id="osrodek">
         <Osrodek
           content={{ ...osrodekDefaults, ...data<OsrodekData>("osrodek"), index: numbers.osrodek ?? "" }}
+          photos={homePhotos}
         />
       </CmsSlot>
 

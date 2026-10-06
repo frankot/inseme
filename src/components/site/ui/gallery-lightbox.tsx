@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { galeriaPageDefaults as copy } from "@/content/galeria";
 import type { GalleryPhotoView } from "@/lib/gallery-types";
@@ -115,7 +116,10 @@ export function GalleryLightbox({
 
   if (!photo) return null;
 
-  return (
+  // Portalled to <body>: rendered inside a section with its own stacking
+  // context (the homepage's raised sheets), a fixed overlay can't rise above
+  // the site header however high its z-index.
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -205,7 +209,8 @@ export function GalleryLightbox({
       ) : (
         <div className="h-[clamp(20px,3vw,36px)] shrink-0" />
       )}
-    </div>
+    </div>,
+    document.body,
   );
 }
 

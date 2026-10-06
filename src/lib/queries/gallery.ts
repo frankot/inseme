@@ -1,12 +1,13 @@
 import "server-only";
 
-import { asc, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { galleryPhotos } from "@/db/schema";
 import {
   GALLERY_PAGE_SIZE,
   galleryAlt,
+  HOME_GALLERY_MAX,
   type GalleryPhotoView,
 } from "@/lib/gallery-types";
 
@@ -84,6 +85,20 @@ async function readTeaser(limit: number): Promise<GalleryPhotoView[]> {
 
 /** The first few photos, for the band on /osrodek that links into /galeria. */
 export const getGalleryTeaser = readTeaser;
+
+/**
+ * The photos picked for the homepage's Ośrodek section, in gallery order. Only
+ * published ones: a featured draft waits until it is published.
+ */
+export async function getHomeGalleryPhotos(): Promise<GalleryPhotoView[]> {
+  const rows = await db
+    .select()
+    .from(galleryPhotos)
+    .where(and(published, eq(galleryPhotos.featuredOnHome, true)))
+    .orderBy(...galleryOrder)
+    .limit(HOME_GALLERY_MAX);
+  return rows.map(toView);
+}
 
 /** Parses `?page=` defensively — anything unusable is page 1. */
 export function parsePageParam(value: string | string[] | undefined): number {

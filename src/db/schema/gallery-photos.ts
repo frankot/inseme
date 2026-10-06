@@ -1,4 +1,4 @@
-import { index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { boolean, index, integer, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import { contentStatus } from "./enums";
 
@@ -44,6 +44,11 @@ export const galleryPhotos = pgTable(
     /** Hand-set order. Everything defaults to 0, which leaves newest first. */
     sortOrder: integer("sort_order").notNull().default(0),
     status: contentStatus("status").notNull().default("draft"),
+    /**
+     * Shown in the homepage's Ośrodek section (at most `HOME_GALLERY_MAX`, in
+     * gallery order). A draft can be marked; it appears once published.
+     */
+    featuredOnHome: boolean("featured_on_home").notNull().default(false),
     publishedAt: timestamp("published_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),

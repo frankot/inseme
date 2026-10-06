@@ -4,9 +4,9 @@ import {
   GripVertical,
   Globe,
   ImagePlus,
-  Loader2,
   MoveLeft,
   MoveRight,
+  Star,
 } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useRef, useState, useTransition } from "react";
@@ -17,10 +17,19 @@ import {
   publishGalleryPhoto,
   publishGalleryPhotos,
   reorderGalleryPhotos,
+  setGalleryFeatured,
   unpublishGalleryPhoto,
   updateGalleryPhoto,
 } from "@/app/admin/(shell)/gallery/actions";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import {
+  EmptyPhotos,
+  PhotoCard,
+  PhotoGrid,
+  PhotoSummary,
+  StorageNotice,
+  UploadDropzone,
+} from "@/components/admin/photo-admin";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,7 +57,6 @@ export function GalleryManager({
   const [pending, setPending] = useState<Pending | null>(null);
   const [queued, setQueued] = useState(0);
   const [dragId, setDragId] = useState<string | null>(null);
-  const [isDropTarget, setIsDropTarget] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const drafts = photos.filter((photo) => photo.status === "draft");
@@ -114,77 +122,39 @@ export function GalleryManager({
 
   return (
     <div className="flex flex-col gap-6">
-      {!storageConfigured ? (
-        <p className="rounded-md border border-dashed px-4 py-3 text-sm text-muted-foreground">
-          Magazyn plików (Cloudflare R2) nie jest skonfigurowany — uzupełnij zmienne
-          <code className="mx-1 rounded bg-muted px-1 py-0.5 text-xs">R2_*</code>
-          w pliku <code className="rounded bg-muted px-1 py-0.5 text-xs">.env.local</code>,
-          aby dodawać zdjęcia.
-        </p>
-      ) : null}
+      {!storageConfigured ? <StorageNotice what="dodawać zdjęcia" /> : null}
 
-      <div
-        onDragOver={(event) => {
-          if (dragId) return;
-          event.preventDefault();
-          setIsDropTarget(true);
-        }}
-        onDragLeave={() => setIsDropTarget(false)}
-        onDrop={(event) => {
-          if (dragId) return;
-          event.preventDefault();
-          setIsDropTarget(false);
-          void handleFiles(Array.from(event.dataTransfer.files).filter((f) => f.type.startsWith("image/")));
-        }}
-        className={cn(
-          "flex flex-col items-center gap-3 rounded-lg border border-dashed px-6 py-8 text-center transition-colors",
-          isDropTarget ? "border-ring bg-muted/50" : "border-border",
-        )}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          multiple
-          accept={GALLERY_ACCEPT}
-          className="hidden"
-          onChange={(event) => void handleFiles(Array.from(event.target.files ?? []))}
-        />
-        <Button
-          type="button"
-          disabled={!storageConfigured || pending !== null}
-          onClick={() => inputRef.current?.click()}
-        >
-          {pending ? (
-            <Loader2 className="size-4 animate-spin" aria-hidden />
-          ) : (
-            <ImagePlus className="size-4" aria-hidden />
-          )}
-          {pending ? `${STAGE_LABEL[pending.stage]}…` : "Dodaj zdjęcia"}
-        </Button>
-
-        <p className="text-xs text-muted-foreground" aria-live="polite">
-          {pending ? (
+      <UploadDropzone
+        accept={GALLERY_ACCEPT}
+        disabled={!storageConfigured}
+        busyLabel={pending ? `${STAGE_LABEL[pending.stage]}…` : null}
+        icon={<ImagePlus className="size-4" aria-hidden />}
+        label="Dodaj zdjęcia"
+        status={
+          pending ? (
             <>
               {pending.name}
               {queued > 1 ? ` — pozostało ${queued}` : null}
             </>
-          ) : (
-            <>
-              Upuść zdjęcia tutaj albo wybierz je z dysku. Każde zostanie w przeglądarce
-              zmniejszone do {GALLERY_VARIANTS.full.maxEdge} px i zapisane jako WebP — oryginał
-              nie jest wysyłany.
-            </>
-          )}
-        </p>
-      </div>
+          ) : undefined
+        }
+        hint={
+          <>
+            Upuść zdjęcia tutaj albo wybierz je z dysku. Każde zostanie w przeglądarce
+            zmniejszone do {GALLERY_VARIANTS.full.maxEdge} px i zapisane jako WebP — oryginał
+            nie jest wysyłany.
+          </>
+        }
+        acceptDrop={(file) => file.type.startsWith("image/")}
+        ignoreDrop={dragId !== null}
+        onFiles={(files) => void handleFiles(files)}
+        inputRef={inputRef}
+      />
 
       {photos.length > 0 ? (
-        <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
-          <p>
-            {photos.length} {photos.length === 1 ? "zdjęcie" : "zdjęć"} · {drafts.length} w
-            wersji roboczej · {formatBytes(stored)} w magazynie
-          </p>
-          {drafts.length > 0 ? (
+        <PhotoSummary
+          action={
+            drafts.length > 0 ? (
             <BulkPublish
               ids={drafts.map((photo) => photo.id)}
               onDone={() =>
@@ -197,18 +167,20 @@ export function GalleryManager({
                 )
               }
             />
-          ) : null}
-        </div>
+            ) : null
+          }
+        >
+          {photos.length} {photos.length === 1 ? "zdjęcie" : "zdjęć"} · {drafts.length} w wersji
+          roboczej · {formatBytes(stored)} w magazynie
+        </PhotoSummary>
       ) : null}
 
       {photos.length === 0 ? (
-        <p className="rounded-md border border-dashed px-4 py-12 text-center text-sm text-muted-foreground">
-          Galeria jest pusta. Dodaj pierwsze zdjęcia — trafią tu jako wersje robocze.
-        </p>
+        <EmptyPhotos>Galeria jest pusta. Dodaj pierwsze zdjęcia — trafią tu jako wersje robocze.</EmptyPhotos>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <PhotoGrid>
           {photos.map((photo, index) => (
-            <PhotoCard
+            <GalleryCard
               key={photo.id}
               photo={photo}
               index={index}
@@ -228,7 +200,7 @@ export function GalleryManager({
               }
             />
           ))}
-        </ul>
+        </PhotoGrid>
       )}
     </div>
   );
@@ -259,7 +231,7 @@ function BulkPublish({ ids, onDone }: { ids: string[]; onDone: () => void }) {
   );
 }
 
-function PhotoCard({
+function GalleryCard({
   photo,
   index,
   count,
@@ -330,8 +302,27 @@ function PhotoCard({
     });
   }
 
+  function toggleFeatured() {
+    startTransition(async () => {
+      const next = !photo.featuredOnHome;
+      const result = await setGalleryFeatured(photo.id, next);
+      if (!result.ok) {
+        toast.error(result.error);
+        return;
+      }
+      onChanged({ featuredOnHome: next });
+      toast.success(
+        next
+          ? photo.status === "published"
+            ? "Zdjęcie jest na stronie głównej."
+            : "Wybrane na stronę główną — pojawi się po opublikowaniu."
+          : "Zdjęcie zdjęte ze strony głównej.",
+      );
+    });
+  }
+
   return (
-    <li
+    <PhotoCard
       draggable
       onDragStart={(event) => {
         event.dataTransfer.effectAllowed = "move";
@@ -353,12 +344,10 @@ function PhotoCard({
         onDropOn();
       }}
       className={cn(
-        "flex flex-col gap-3 rounded-lg border bg-card p-3 transition-opacity",
         isDragging && "opacity-40",
         isOver && !isDragging && "border-ring ring-2 ring-ring/25",
       )}
-    >
-      <div className="relative aspect-[4/3] overflow-hidden rounded-md bg-muted">
+      media={
         <Image
           src={photo.thumb.url}
           alt={photo.alt}
@@ -369,38 +358,46 @@ function PhotoCard({
           loading="lazy"
           className="object-cover"
         />
-        <span className="absolute left-2 top-2 flex items-center gap-1 rounded bg-background/85 px-1.5 py-0.5 text-xs font-medium tabular-nums backdrop-blur">
+      }
+      topLeft={
+        <>
           <GripVertical className="size-3 text-muted-foreground" aria-hidden />
           {index + 1}
-        </span>
-        <span className="absolute right-2 top-2">
+        </>
+      }
+      topRight={
+        <>
           <StatusBadge status={photo.status} />
-        </span>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <Input
-          value={description}
-          onChange={(event) => setDescription(event.target.value)}
-          onBlur={saveText}
-          placeholder="Opis pod zdjęciem"
-          aria-label={`Opis zdjęcia ${index + 1}`}
-        />
-        <Input
-          value={altText}
-          onChange={(event) => setAltText(event.target.value)}
-          onBlur={saveText}
-          placeholder="Opis alternatywny (alt)"
-          aria-label={`Opis alternatywny zdjęcia ${index + 1}`}
-        />
-        <p className="text-xs text-muted-foreground tabular-nums">
-          {photo.full.width}×{photo.full.height} · {formatBytes(photo.totalSize)} · WebP
-        </p>
-      </div>
-
-      <div className="flex items-center justify-between gap-1">
-        {/* Drag moves a photo a long way; these move it one place, from a keyboard. */}
-        <div className="flex items-center">
+          {photo.featuredOnHome ? (
+            <span className="flex items-center gap-1 rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-medium text-amber-900 dark:bg-amber-950 dark:text-amber-200">
+              <Star className="size-3 fill-current" aria-hidden />
+              Strona główna
+            </span>
+          ) : null}
+        </>
+      }
+      fields={
+        <>
+          <Input
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            onBlur={saveText}
+            placeholder="Opis pod zdjęciem"
+            aria-label={`Opis zdjęcia ${index + 1}`}
+          />
+          <Input
+            value={altText}
+            onChange={(event) => setAltText(event.target.value)}
+            onBlur={saveText}
+            placeholder="Opis alternatywny (alt)"
+            aria-label={`Opis alternatywny zdjęcia ${index + 1}`}
+          />
+        </>
+      }
+      meta={`${photo.full.width}×${photo.full.height} · ${formatBytes(photo.totalSize)} · WebP`}
+      actionsStart={
+        // Drag moves a photo a long way; these move it one place, from a keyboard.
+        <>
           <Button
             type="button"
             variant="ghost"
@@ -421,9 +418,27 @@ function PhotoCard({
           >
             <MoveRight className="size-4" aria-hidden />
           </Button>
-        </div>
-
-        <div className="flex items-center gap-1">
+        </>
+      }
+      actionsEnd={
+        <>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            disabled={isPending}
+            onClick={toggleFeatured}
+            aria-pressed={photo.featuredOnHome}
+            aria-label={
+              photo.featuredOnHome ? "Zdejmij ze strony głównej" : "Pokaż na stronie głównej"
+            }
+            title={photo.featuredOnHome ? "Zdejmij ze strony głównej" : "Pokaż na stronie głównej"}
+          >
+            <Star
+              className={cn("size-4", photo.featuredOnHome && "fill-amber-400 text-amber-500")}
+              aria-hidden
+            />
+          </Button>
           <Button type="button" variant="outline" size="sm" disabled={isPending} onClick={togglePublish}>
             {photo.status === "published" ? "Ukryj" : "Opublikuj"}
           </Button>
@@ -437,8 +452,8 @@ function PhotoCard({
             title="Usunąć zdjęcie?"
             description="Zdjęcie zniknie z galerii, a oba pliki (miniatura i wersja pełna) zostaną skasowane z magazynu R2."
           />
-        </div>
-      </div>
-    </li>
+        </>
+      }
+    />
   );
 }

@@ -102,6 +102,8 @@ export const osrodekDefaults: OsrodekContent = {
   linkLabel: "Zobacz ośrodek i dojazd",
   stats: [
     { label: "Program stacjonarny", value: "28 dni" },
+  galleryHref: string;
+  galleryLinkLabel: string;
     { label: "Miejsc", value: "12" },
     { label: "Opieka terapeutyczna", value: "24/7" },
     { label: "Od Warszawy/lotniska", value: "20 min" },
@@ -111,6 +113,8 @@ export const osrodekDefaults: OsrodekContent = {
       src: "/placeholder/dom-taras.webp",
       alt: "Taras ośrodka i porośnięta bluszczem elewacja domu",
       caption: "Taras od strony ogrodu — tu pije się kawę między zajęciami.",
+  galleryHref: "/galeria",
+  galleryLinkLabel: "Zobacz całą galerię",
     },
     {
       src: "/placeholder/pokoj.webp",

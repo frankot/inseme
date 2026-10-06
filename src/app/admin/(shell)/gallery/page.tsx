@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 
 import { GalleryManager } from "@/app/admin/(shell)/gallery/gallery-manager";
 import { PageHeader } from "@/components/admin/page-header";
+import { MEDIA_TABS, SectionTabs } from "@/components/admin/section-tabs";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
 import { galleryPhotos } from "@/db/schema";
@@ -29,14 +30,16 @@ export default async function GalleryAdminPage() {
     status: row.status,
     publishedAt: row.publishedAt?.toISOString() ?? null,
     sortOrder: row.sortOrder,
+    featuredOnHome: row.featuredOnHome,
     totalSize: row.thumbSize + row.fullSize,
   }));
 
   return (
     <>
+      <SectionTabs tabs={MEDIA_TABS} current="/admin/gallery" />
       <PageHeader
         title="Galeria"
-        description="Zdjęcia ośrodka na stronie /galeria. Kolejność ustawiasz przeciągając kafelki — pierwsze sześć opublikowanych trafia też na stronę Ośrodek. Nowe zdjęcia czekają jako wersje robocze, dopóki ich nie opublikujesz."
+        description="Zdjęcia ośrodka na stronie /galeria. Kolejność ustawiasz przeciągając kafelki — pierwsze sześć opublikowanych trafia też na stronę Ośrodek. Gwiazdką wybierasz cztery zdjęcia do sekcji Ośrodek na stronie głównej (w tej samej kolejności). Nowe zdjęcia czekają jako wersje robocze, dopóki ich nie opublikujesz."
         actions={
           <Button
             variant="outline"
