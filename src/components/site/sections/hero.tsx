@@ -69,7 +69,8 @@ export function Hero({
           )}
         </div>
 
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-t border-bone/20 pt-[clamp(20px,2.5vw,32px)] desk:pt-10">
+        {/* The rule spans half the width, from the left edge the text starts on. */}
+        <div className="relative flex flex-wrap items-end justify-between gap-x-10 gap-y-6 pt-[clamp(20px,2.5vw,32px)] before:absolute before:left-0 before:top-0 before:h-px before:w-1/2 before:bg-bone/20 desk:pt-10">
           <p className="max-w-[27em] text-lead text-on-dark-lead">
             {content.lead}
           </p>

@@ -12,6 +12,7 @@
  * An empty `reviews` array removes the whole section, the way Zespół and
  * Artykuły do — so shipping with nothing here is safe.
  */
+import { GOOGLE_BUSINESS_PROFILE_URL } from "./home";
 
 export type ReviewSourceId = "google" | "osrodkiterapii";
 
@@ -61,7 +62,7 @@ export const opinieDefaults: OpinieContent = {
     {
       id: "google",
       name: "Google",
-      url: "https://maps.app.goo.gl/Bv8u8d31G39Vf56P8",
+      url: GOOGLE_BUSINESS_PROFILE_URL,
     },
     {
       id: "osrodkiterapii",

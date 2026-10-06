@@ -43,8 +43,8 @@ export async function SiteFooter({
           <SiteImage
             src="/brand/logo-insieme.svg"
             alt="Insieme"
-            width={244}
-            height={72}
+            width={930}
+            height={253}
             // The mark is drawn for light grounds; on this one it is knocked
             // back to white, the same treatment the header gives it over the
             // hero photograph.
@@ -117,13 +117,6 @@ export async function SiteFooter({
           </div>
         </FooterColumn>
       </Container>
-
-      <div className="border-t border-white/12">
-        <Container className="flex flex-wrap justify-between gap-x-11 gap-y-2 py-6 text-[13px] text-on-dark-muted">
-          <span>{content.legalName}</span>
-          <span className="max-w-[46em]">{content.disclaimer}</span>
-        </Container>
-      </div>
     </footer>
   );
 }

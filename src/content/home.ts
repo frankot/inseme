@@ -24,6 +24,13 @@ export type SiteContact = {
 };
 
 /** Mirrors the `settings` singleton. */
+/**
+ * The ośrodek's Google Business Profile, in Google's stable `cid` form (the
+ * maps.app.goo.gl short link resolves to the same place: "Insieme",
+ * 52.0923845, 20.8945569). Linked from the reviews section and the JSON-LD.
+ */
+export const GOOGLE_BUSINESS_PROFILE_URL = "https://maps.google.com/?cid=16286945162235846674";
+
 export const contactDefaults: SiteContact = {
   phone: "669 916 005",
   phoneHref: "+48669916005",
@@ -90,7 +97,13 @@ export type OsrodekContent = {
   href: string;
   linkLabel: string;
   stats: Stat[];
+  /**
+   * Fallback only: the section shows the gallery photos starred in
+   * /admin/gallery, and these just while none are.
+   */
   figures: Figure[];
+  galleryHref: string;
+  galleryLinkLabel: string;
 };
 
 export const osrodekDefaults: OsrodekContent = {
@@ -100,10 +113,10 @@ export const osrodekDefaults: OsrodekContent = {
   body: "Insieme to ośrodek dla maksymalnie 12 osób — przestrzeń, w której możesz w pełni skupić się na sobie i na terapii. Pokoje z prywatnymi łazienkami i widokiem na las, wspólny salon, taras i ogród, a w czasie wolnym sauna i siłownia.",
   href: "/osrodek",
   linkLabel: "Zobacz ośrodek i dojazd",
+  galleryHref: "/galeria",
+  galleryLinkLabel: "Zobacz całą galerię",
   stats: [
     { label: "Program stacjonarny", value: "28 dni" },
-  galleryHref: string;
-  galleryLinkLabel: string;
     { label: "Miejsc", value: "12" },
     { label: "Opieka terapeutyczna", value: "24/7" },
     { label: "Od Warszawy/lotniska", value: "20 min" },
@@ -113,8 +126,6 @@ export const osrodekDefaults: OsrodekContent = {
       src: "/placeholder/dom-taras.webp",
       alt: "Taras ośrodka i porośnięta bluszczem elewacja domu",
       caption: "Taras od strony ogrodu — tu pije się kawę między zajęciami.",
-  galleryHref: "/galeria",
-  galleryLinkLabel: "Zobacz całą galerię",
     },
     {
       src: "/placeholder/pokoj.webp",
@@ -557,8 +568,6 @@ export type FooterContent = {
   emergencyNumber: string;
   helplineLabel: string;
   helplineNumber: string;
-  legalName: string;
-  disclaimer: string;
 };
 
 export const footerDefaults: FooterContent = {
@@ -587,7 +596,4 @@ export const footerDefaults: FooterContent = {
   emergencyNumber: "112",
   helplineLabel: "telefon zaufania",
   helplineNumber: "800 12 02 89",
-  legalName: "Insieme · ośrodek leczenia uzależnień",
-  disclaimer:
-    "Treści na stronie mają charakter informacyjny i nie stanowią reklamy świadczeń zdrowotnych.",
 };

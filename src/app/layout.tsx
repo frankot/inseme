@@ -35,7 +35,7 @@ const DEFAULT_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Insieme — ośrodek terapii uzależnień w Magdalence pod Warszawą",
+    default: "Ośrodek leczenia uzależnień Warszawa – Magdalenka | Insieme",
     template: "%s",
   },
   description: DEFAULT_DESCRIPTION,

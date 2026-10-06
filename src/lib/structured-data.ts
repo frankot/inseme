@@ -1,4 +1,10 @@
-import { contactDefaults, heroDefaults, kontaktDefaults, type SiteContact } from "@/content/home";
+import {
+  contactDefaults,
+  GOOGLE_BUSINESS_PROFILE_URL,
+  heroDefaults,
+  kontaktDefaults,
+  type SiteContact,
+} from "@/content/home";
 import type { SocialLinks } from "@/content/settings";
 import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site-url";
 
@@ -15,20 +21,33 @@ import { absoluteUrl, SITE_NAME, SITE_URL } from "@/lib/site-url";
 export const CLINIC_ID = `${SITE_URL}/#osrodek`;
 
 /**
- * `sameAs` comes from the social links in Ustawienia. Only official profiles
- * belong there — an unverified one merges the site with the wrong entity.
+ * `sameAs` is the Google Business Profile plus the social links in Ustawienia.
+ * Only official profiles belong there — an unverified one merges the site with
+ * the wrong entity.
+ *
+ * `name` is exactly the profile's name ("Insieme"): Google matches the site to
+ * the business by name, address and phone, so they must read the same
+ * everywhere. The descriptive name goes in `alternateName`.
+ *
+ * Open around the clock (confirmed by the client, Oct 6, 2026) — written the way
+ * Google documents 24/7: every day, 00:00–23:59. Keep it identical to the hours
+ * on the Business Profile; if one changes, change the other.
  */
 export function clinicJsonLd(
   contact: SiteContact = contactDefaults,
   socialLinks: SocialLinks = {},
 ) {
-  const sameAs = Object.values(socialLinks).filter((url): url is string => Boolean(url));
+  const sameAs = [
+    GOOGLE_BUSINESS_PROFILE_URL,
+    ...Object.values(socialLinks).filter((url): url is string => Boolean(url)),
+  ];
   const [postalCode, ...locality] = contact.addressLine2.split(" ");
 
   return {
     "@type": "MedicalClinic",
     "@id": CLINIC_ID,
-    name: SITE_NAME,
+    name: "Insieme",
+    alternateName: SITE_NAME,
     url: SITE_URL,
     logo: absoluteUrl("/brand/logo-insieme.png"),
     image: absoluteUrl(heroDefaults.image.src),
@@ -47,7 +66,22 @@ export function clinicJsonLd(
       latitude: kontaktDefaults.map.lat,
       longitude: kontaktDefaults.map.lon,
     },
-    ...(sameAs.length > 0 && { sameAs }),
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ],
+      opens: "00:00",
+      closes: "23:59",
+    },
+    hasMap: GOOGLE_BUSINESS_PROFILE_URL,
+    sameAs,
   };
 }
 
