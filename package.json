@@ -21,6 +21,7 @@
     "redirects:generate": "tsx scripts/generate-redirect-map.ts",
     "seed:cms": "tsx scripts/seed-cms.ts",
     "seed:settings": "tsx scripts/seed-settings.ts",
+    "redirects:check": "tsx scripts/check-redirects.ts",
     "cms:check": "tsx scripts/check-cms.ts"
   },
   "dependencies": {

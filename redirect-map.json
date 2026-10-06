@@ -1,10 +1,167 @@
 {
   "_comment": [
-    "One-time cutover redirects from the decommissioned old site (§9 of the backend plan).",
+    "One-time cutover redirects from the decommissioned old WordPress site (§9 of the backend plan).",
     "Not a CMS content type: the old site is being switched off, so this list is finite.",
-    "Generate a starting point with `npm run redirects:generate -- <old-sitemap-url>`,",
-    "then map each entry by hand — an automated guess at the new URL is worse than none.",
-    "Every entry is a permanent (308) redirect. Add new ones here and redeploy."
+    "Mapped by hand on Oct 6, 2026 from wp-sitemap.xml + the Wayback Machine index — see docs/SEO_LAUNCH_PLAN.md §3.",
+    "`from` is written without the trailing slash: Next strips it first, so `/kontakt/` → `/kontakt` → target.",
+    "Every entry is a permanent (308) redirect. Check them with `npm run redirects:check -- <base-url>`.",
+    "Add new ones here (e.g. 404s from Search Console after launch) and redeploy. Keep this file for good."
   ],
-  "redirects": []
+  "redirects": [
+    {
+      "from": "/osrodek-terapii-uzaleznien",
+      "to": "/osrodek",
+      "permanent": true
+    },
+    {
+      "from": "/pobyt-w-osrodku",
+      "to": "/osrodek",
+      "permanent": true
+    },
+    {
+      "from": "/o-nas",
+      "to": "/osrodek",
+      "permanent": true
+    },
+    {
+      "from": "/leczenie-uzaleznien",
+      "to": "/program",
+      "permanent": true
+    },
+    {
+      "from": "/jak-to-dziala",
+      "to": "/program",
+      "permanent": true
+    },
+    {
+      "from": "/wsparcie-po",
+      "to": "/program",
+      "permanent": true
+    },
+    {
+      "from": "/osrodek-leczenia-uzaleznien",
+      "to": "/",
+      "permanent": true
+    },
+    {
+      "from": "/odwyk-alkoholowy",
+      "to": "/leczenie-alkoholizmu",
+      "permanent": true
+    },
+    {
+      "from": "/odwyk-alkoholowy-warszawa",
+      "to": "/leczenie-alkoholizmu",
+      "permanent": true
+    },
+    {
+      "from": "/odwyk-narkotykowy",
+      "to": "/leczenie-narkomanii",
+      "permanent": true
+    },
+    {
+      "from": "/odwyk-narkotykowy-warszawa",
+      "to": "/leczenie-narkomanii",
+      "permanent": true
+    },
+    {
+      "from": "/prywatny-osrodek-uzaleznien-cennik",
+      "to": "/cennik",
+      "permanent": true
+    },
+    {
+      "from": "/praca",
+      "to": "/kontakt",
+      "permanent": true
+    },
+    {
+      "from": "/partnerstwo-keyclinic",
+      "to": "/zespol",
+      "permanent": true
+    },
+    {
+      "from": "/jak-przekonac-uzaleznionego-leczenia",
+      "to": "/porady/jak-przekonac-osobe-uzalezniona-do-leczenia",
+      "permanent": true
+    },
+    {
+      "from": "/jak-pomoc-uzaleznionemu",
+      "to": "/porady/jak-pomoc-osobie-uzaleznionej",
+      "permanent": true
+    },
+    {
+      "from": "/category/porady",
+      "to": "/porady",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-przekonac-alkoholika-do-leczenia",
+      "to": "/porady/jak-przekonac-osobe-uzalezniona-do-leczenia",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-namowic-alkoholika-na-leczenie",
+      "to": "/porady/jak-przekonac-osobe-uzalezniona-do-leczenia",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-zmusic-alkoholika-do-leczenia",
+      "to": "/porady/jak-przekonac-osobe-uzalezniona-do-leczenia",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-leczyc-alkoholika-bez-jego-zgody",
+      "to": "/porady/jak-przekonac-osobe-uzalezniona-do-leczenia",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-pomoc-alkoholikowi-ktory-nie-chce-sie-leczyc",
+      "to": "/porady/jak-przekonac-osobe-uzalezniona-do-leczenia",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-postepowac-z-alkoholikiem-ktory-nie-chce-sie-leczyc",
+      "to": "/porady/jak-przekonac-osobe-uzalezniona-do-leczenia",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-pomoc-uzaleznionemu",
+      "to": "/porady/jak-pomoc-osobie-uzaleznionej",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-pomoc-alkoholikowi",
+      "to": "/porady/jak-pomoc-osobie-uzaleznionej",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-pomoc-narkomanowi",
+      "to": "/porady/jak-pomoc-osobie-uzaleznionej",
+      "permanent": true
+    },
+    {
+      "from": "/tag/jak-postepowac-z-alkoholikiem",
+      "to": "/porady/jak-pomoc-osobie-uzaleznionej",
+      "permanent": true
+    },
+    {
+      "from": "/slide-types/:path*",
+      "to": "/galeria",
+      "permanent": true
+    },
+    {
+      "from": "/testimonial-types/:path*",
+      "to": "/",
+      "permanent": true
+    },
+    {
+      "from": "/author/:path*",
+      "to": "/zespol",
+      "permanent": true
+    },
+    {
+      "from": "/feed",
+      "to": "/porady",
+      "permanent": true
+    }
+  ]
 }

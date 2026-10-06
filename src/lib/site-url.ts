@@ -5,7 +5,7 @@
  * that do not exist in the browser.
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://osrodek-insieme.pl"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.osrodek-insieme.pl"
 ).replace(/\/+$/, "");
 
 export const SITE_NAME = "Insieme — ośrodek leczenia uzależnień";

@@ -3,6 +3,9 @@
  *
  *   npm run redirects:generate -- https://stara-domena.pl/sitemap.xml
  *
+ * A sitemap index (WordPress's `wp-sitemap.xml`) is followed into its
+ * sub-sitemaps, so the pages are listed rather than the sitemap files.
+ *
  * Every discovered URL is written with `to: ""`, deliberately: guessing the new
  * URL from an old slug produces confident nonsense, and a wrong 308 is worse
  * than a 404. Fill the blanks in by hand, then redeploy. Entries still empty are
@@ -18,16 +21,11 @@ async function main() {
     throw new Error("Podaj adres sitemapy, np. https://stara-domena.pl/sitemap.xml");
   }
 
-  const response = await fetch(source);
-  if (!response.ok) {
-    throw new Error(`Nie udało się pobrać ${source}: HTTP ${response.status}`);
-  }
-  const xml = await response.text();
-
-  const paths = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)]
-    .map((match) => {
+  const paths = (await collectLocs(source))
+    .map((loc) => {
       try {
-        return new URL(match[1]).pathname;
+        // Next strips the trailing slash before matching, so the map has none.
+        return new URL(loc).pathname.replace(/\/+$/, "") || "/";
       } catch {
         return null;
       }
@@ -60,6 +58,19 @@ async function main() {
   if (unmapped > 0) {
     console.log(`  ${unmapped} bez celu — uzupełnij pole "to" i wdróż ponownie.`);
   }
+}
+
+async function collectLocs(source: string): Promise<string[]> {
+  const response = await fetch(source);
+  if (!response.ok) {
+    throw new Error(`Nie udało się pobrać ${source}: HTTP ${response.status}`);
+  }
+  const xml = await response.text();
+  const locs = [...xml.matchAll(/<loc>\s*([^<\s]+)\s*<\/loc>/g)].map((match) => match[1]);
+  if (!/<sitemapindex[\s>]/.test(xml)) return locs;
+
+  const nested = await Promise.all(locs.map(collectLocs));
+  return nested.flat();
 }
 
 main().catch((error) => {

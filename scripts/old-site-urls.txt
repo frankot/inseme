@@ -1,0 +1,59 @@
+# Every URL the old WordPress site (www.osrodek-insieme.pl) is known to have served,
+# from wp-sitemap.xml and the Wayback Machine CDX index (Oct 6, 2026), with where it
+# must end up on the new site. Read by `npm run redirects:check`.
+#
+# Format: <old path> <expected final path | 404>
+# Paths are listed as WordPress served them (with the trailing slash); the check also
+# tries each one without it. Add rows here when Search Console reports new old URLs.
+
+# Unchanged paths
+/                                                              /
+/kontakt/                                                      /kontakt
+/zespol/                                                       /zespol
+/galeria/                                                      /galeria
+/porady/                                                       /porady
+/polityka-prywatnosci/                                         /polityka-prywatnosci
+
+# Moved (redirect-map.json)
+/osrodek-terapii-uzaleznien/                                   /osrodek
+/pobyt-w-osrodku/                                              /osrodek
+/o-nas/                                                        /osrodek
+/leczenie-uzaleznien/                                          /program
+/jak-to-dziala/                                                /program
+/wsparcie-po/                                                  /program
+/osrodek-leczenia-uzaleznien/                                  /
+/odwyk-alkoholowy/                                             /leczenie-alkoholizmu
+/odwyk-alkoholowy-warszawa/                                    /leczenie-alkoholizmu
+/odwyk-narkotykowy/                                            /leczenie-narkomanii
+/odwyk-narkotykowy-warszawa/                                   /leczenie-narkomanii
+/prywatny-osrodek-uzaleznien-cennik/                           /cennik
+/praca/                                                        /kontakt
+/partnerstwo-keyclinic/                                        /zespol
+/jak-przekonac-uzaleznionego-leczenia/                         /porady/jak-przekonac-osobe-uzalezniona-do-leczenia
+/jak-pomoc-uzaleznionemu/                                      /porady/jak-pomoc-osobie-uzaleznionej
+/category/porady/                                              /porady
+/tag/jak-przekonac-alkoholika-do-leczenia/                     /porady/jak-przekonac-osobe-uzalezniona-do-leczenia
+/tag/jak-namowic-alkoholika-na-leczenie/                       /porady/jak-przekonac-osobe-uzalezniona-do-leczenia
+/tag/jak-zmusic-alkoholika-do-leczenia/                        /porady/jak-przekonac-osobe-uzalezniona-do-leczenia
+/tag/jak-leczyc-alkoholika-bez-jego-zgody/                     /porady/jak-przekonac-osobe-uzalezniona-do-leczenia
+/tag/jak-pomoc-alkoholikowi-ktory-nie-chce-sie-leczyc/         /porady/jak-przekonac-osobe-uzalezniona-do-leczenia
+/tag/jak-postepowac-z-alkoholikiem-ktory-nie-chce-sie-leczyc/  /porady/jak-przekonac-osobe-uzalezniona-do-leczenia
+/tag/jak-pomoc-uzaleznionemu/                                  /porady/jak-pomoc-osobie-uzaleznionej
+/tag/jak-pomoc-alkoholikowi/                                   /porady/jak-pomoc-osobie-uzaleznionej
+/tag/jak-pomoc-narkomanowi/                                    /porady/jak-pomoc-osobie-uzaleznionej
+/tag/jak-postepowac-z-alkoholikiem/                            /porady/jak-pomoc-osobie-uzaleznionej
+/feed/                                                         /porady
+
+# WordPress taxonomies (wildcard rows in redirect-map.json)
+/slide-types/osrodek/                                          /galeria
+/slide-types/zima/                                             /galeria
+/slide-types/osrodek-warszawa/                                 /galeria
+/slide-types/zespol/                                           /galeria
+/testimonial-types/opinie-ranking/                             /
+/author/juzer/                                                 /zespol
+
+# Gone on purpose: no value, and a redirect to the home page would be a soft 404
+/2020/04/30/hello-world/                                       404
+/2021/12/09/witaj-swiecie/                                     404
+/category/bez-kategorii/                                       404
+/category/uncategorized/                                       404

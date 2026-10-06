@@ -37,7 +37,7 @@ const envSchema = z.object({
   DATA_RETENTION_MONTHS: z.coerce.number().int().min(1).max(120).default(24),
 
   /** Canonical origin, used for absolute links in e-mails and the PDF. */
-  NEXT_PUBLIC_SITE_URL: z.url().default("https://osrodek-insieme.pl"),
+  NEXT_PUBLIC_SITE_URL: z.url().default("https://www.osrodek-insieme.pl"),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Temporary (docs/SEO_LAUNCH_PLAN.md §6.2): the old site's URLs, submitted in Search
+     Console on launch day so Google recrawls them and picks up the 308s quickly.
+     Remove from Search Console and delete this file ~4 weeks after launch. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.osrodek-insieme.pl/kontakt/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/zespol/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/galeria/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/porady/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/polityka-prywatnosci/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/osrodek-terapii-uzaleznien/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/pobyt-w-osrodku/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/o-nas/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/leczenie-uzaleznien/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/jak-to-dziala/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/wsparcie-po/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/osrodek-leczenia-uzaleznien/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/odwyk-alkoholowy/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/odwyk-alkoholowy-warszawa/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/odwyk-narkotykowy/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/odwyk-narkotykowy-warszawa/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/prywatny-osrodek-uzaleznien-cennik/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/praca/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/partnerstwo-keyclinic/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/jak-przekonac-uzaleznionego-leczenia/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/jak-pomoc-uzaleznionemu/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/category/porady/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-przekonac-alkoholika-do-leczenia/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-namowic-alkoholika-na-leczenie/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-zmusic-alkoholika-do-leczenia/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-leczyc-alkoholika-bez-jego-zgody/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-pomoc-alkoholikowi-ktory-nie-chce-sie-leczyc/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-postepowac-z-alkoholikiem-ktory-nie-chce-sie-leczyc/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-pomoc-uzaleznionemu/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-pomoc-alkoholikowi/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-pomoc-narkomanowi/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/tag/jak-postepowac-z-alkoholikiem/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/feed/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/slide-types/osrodek/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/slide-types/zima/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/slide-types/osrodek-warszawa/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/slide-types/zespol/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/testimonial-types/opinie-ranking/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/author/juzer/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/2020/04/30/hello-world/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/2021/12/09/witaj-swiecie/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/category/bez-kategorii/</loc></url>
+  <url><loc>https://www.osrodek-insieme.pl/category/uncategorized/</loc></url>
+</urlset>
