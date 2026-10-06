@@ -10,6 +10,7 @@ import { db } from "@/db";
 import { media } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
+import { hasVariants, VARIANT_WIDTHS, variantOf, type VariantWidth } from "@/lib/image-variants";
 import { toMediaSummary } from "@/lib/media-summary";
 import type { MediaSummary } from "@/lib/media-types";
 import {
@@ -41,12 +42,21 @@ const uploadRequestSchema = z.object({
 });
 
 /**
- * Hands the browser a short-lived URL so the file goes straight to R2 — no
- * multi-megabyte body through a serverless function.
+ * Hands the browser short-lived URLs so the file goes straight to R2 — no
+ * multi-megabyte body through a serverless function. A photo also gets one URL
+ * per responsive copy (`image-variants.ts`), which the browser renders and
+ * uploads alongside the original.
  */
 export async function createUploadUrl(
   input: z.infer<typeof uploadRequestSchema>,
-): Promise<DataResult<{ uploadUrl: string; key: string; publicUrl: string }>> {
+): Promise<
+  DataResult<{
+    uploadUrl: string;
+    key: string;
+    publicUrl: string;
+    variants: { width: VariantWidth; uploadUrl: string }[];
+  }>
+> {
   try {
     await requireAdmin();
     const parsed = uploadRequestSchema.safeParse(input);
@@ -69,7 +79,25 @@ export async function createUploadUrl(
       { expiresIn: 300 },
     );
 
-    return { ok: true, data: { uploadUrl, key, publicUrl: publicUrlFor(config, key) } };
+    const publicUrl = publicUrlFor(config, key);
+    const variants = hasVariants(publicUrl)
+      ? await Promise.all(
+          VARIANT_WIDTHS.map(async (width) => ({
+            width,
+            uploadUrl: await getSignedUrl(
+              client,
+              new PutObjectCommand({
+                Bucket: config.bucket,
+                Key: variantOf(key, width),
+                ContentType: "image/webp",
+              }),
+              { expiresIn: 300 },
+            ),
+          })),
+        )
+      : [];
+
+    return { ok: true, data: { uploadUrl, key, publicUrl, variants } };
   } catch (error) {
     return actionError(error, "Nie udało się przygotować przesyłania pliku.");
   }
@@ -145,7 +173,14 @@ export async function deleteMedia(id: string): Promise<ActionResult> {
     const config = getR2Config();
     if (config) {
       const client = createR2Client(config);
-      await client.send(new DeleteObjectCommand({ Bucket: config.bucket, Key: row.r2Key }));
+      // The original and its responsive copies, if it has any.
+      const keys = [
+        row.r2Key,
+        ...(hasVariants(row.url) ? VARIANT_WIDTHS.map((width) => variantOf(row.r2Key, width)) : []),
+      ];
+      await Promise.all(
+        keys.map((key) => client.send(new DeleteObjectCommand({ Bucket: config.bucket, Key: key }))),
+      );
     }
 
     // FKs referencing this row are ON DELETE SET NULL, so pages/articles keep

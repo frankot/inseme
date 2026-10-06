@@ -151,7 +151,7 @@ export default async function ArticlePage(props: PageProps<"/porady/[slug]">) {
                 src={article.cover.url}
                 alt={article.cover.altText ?? ""}
                 fill
-                priority
+                preload
                 sizes="(max-width: 767px) 100vw, 40vw"
                 className="object-cover saturate-[.92]"
               />

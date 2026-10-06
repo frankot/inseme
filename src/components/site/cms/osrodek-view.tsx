@@ -141,7 +141,7 @@ export async function OsrodekView({ page }: { page: CmsPage }) {
                   src={heroImage.src}
                   alt={heroImage.alt}
                   fill
-                  priority
+                  preload
                   sizes="(max-width: 1440px) 100vw, 1440px"
                   className="object-cover saturate-[.92]"
                 />

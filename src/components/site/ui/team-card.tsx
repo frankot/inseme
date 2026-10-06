@@ -15,11 +15,14 @@ export function TeamCard({
   member,
   delay = 0,
   sizes = "(max-width: 1023px) 100vw, 33vw",
+  eager = false,
   className,
 }: {
   member: TeamCardData;
   delay?: number;
   sizes?: string;
+  /** Load the photo at once — for cards in the first visible row, where it is the LCP. */
+  eager?: boolean;
   className?: string;
 }) {
   return (
@@ -28,7 +31,7 @@ export function TeamCard({
         href={`/zespol/${member.slug}`}
         className="card-surface group flex h-full flex-col"
       >
-        <Portrait member={member} sizes={sizes} />
+        <Portrait member={member} sizes={sizes} eager={eager} />
 
         {/*
           Fixed shape: the role always reserves two lines and is clamped to
@@ -59,9 +62,11 @@ export function TeamCard({
 function Portrait({
   member,
   sizes,
+  eager,
 }: {
   member: TeamCardData;
   sizes: string;
+  eager: boolean;
 }) {
   return (
     <div
@@ -78,6 +83,7 @@ function Portrait({
           alt={member.photo.altText ?? member.name}
           fill
           sizes={sizes}
+          loading={eager ? "eager" : undefined}
           className="object-cover object-top saturate-[.85] brightness-[.9] transition-all duration-[400ms] ease-out group-hover:scale-[1.035] group-hover:saturate-100 group-hover:brightness-100"
         />
       ) : (

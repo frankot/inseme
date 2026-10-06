@@ -1,5 +1,7 @@
 import { createUploadUrl, registerMedia } from "@/app/admin/(shell)/media/actions";
 import type { DataResult } from "@/lib/action-result";
+import { describeImageError } from "@/lib/gallery-image";
+import { renderWidthVariants, type WidthVariant } from "@/lib/media-image";
 import type { MediaSummary } from "@/lib/media-types";
 import { altFromFileName } from "@/lib/slug";
 import { ALLOWED_UPLOAD_TYPES_CLIENT, MAX_UPLOAD_BYTES_CLIENT } from "@/lib/upload-limits";
@@ -18,7 +20,12 @@ async function readImageSize(file: File): Promise<{ width: number; height: numbe
 }
 
 /**
- * Browser → presigned URL → R2 → library row.
+ * Browser → presigned URLs → R2 → library row.
+ *
+ * A photo goes up with its responsive copies (`image-variants.ts`), rendered
+ * here first. The site's image loader assumes every copy exists, so the row is
+ * only written once all of them are in the bucket — a failure leaves orphaned
+ * objects, which are harmless, never a row whose copies are missing.
  *
  * Shared by the media library and the in-form picker, so uploading while
  * editing a record produces exactly the same library entry as uploading in
@@ -41,13 +48,26 @@ export async function uploadMediaFile(file: File): Promise<DataResult<MediaSumma
   });
   if (!prepared.ok) return prepared;
 
-  const response = await fetch(prepared.data.uploadUrl, {
-    method: "PUT",
-    body: file,
-    headers: { "Content-Type": file.type },
-  });
-  if (!response.ok) {
-    return { ok: false, error: `${file.name}: przesyłanie nie powiodło się (${response.status}).` };
+  let variants: WidthVariant[] = [];
+  if (prepared.data.variants.length > 0) {
+    try {
+      variants = await renderWidthVariants(file);
+    } catch (error) {
+      return { ok: false, error: describeImageError(error, file.name) };
+    }
+  }
+
+  const put = (url: string, body: Blob, type: string) =>
+    fetch(url, { method: "PUT", body, headers: { "Content-Type": type } });
+  const responses = await Promise.all([
+    put(prepared.data.uploadUrl, file, file.type),
+    ...prepared.data.variants.map(({ width, uploadUrl }) =>
+      put(uploadUrl, variants.find((variant) => variant.width === width)!.blob, "image/webp"),
+    ),
+  ]);
+  const failed = responses.find((response) => !response.ok);
+  if (failed) {
+    return { ok: false, error: `${file.name}: przesyłanie nie powiodło się (${failed.status}).` };
   }
 
   const dimensions = await readImageSize(file);

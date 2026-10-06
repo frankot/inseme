@@ -90,11 +90,13 @@ function makeCanvas(width: number, height: number): HTMLCanvasElement {
  * most of what this gallery holds, come out crawling with artefacts. Stepping
  * down in halves averages those pixels instead, and costs a few milliseconds.
  */
-function drawScaled(
+export function drawScaled(
   source: CanvasImageSource,
   sourceWidth: number,
   sourceHeight: number,
   target: { width: number; height: number },
+  /** Paint a white ground first. Photos: yes. Library images may be transparent PNGs. */
+  opaque = true,
 ): HTMLCanvasElement {
   let current: CanvasImageSource = source;
   let width = sourceWidth;
@@ -118,13 +120,15 @@ function drawScaled(
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
   // Photos are opaque; a white ground keeps any stray alpha from going black.
-  context.fillStyle = "#ffffff";
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  if (opaque) {
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  }
   context.drawImage(current, 0, 0, canvas.width, canvas.height);
   return canvas;
 }
 
-function toBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob> {
+export function toBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob> {
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {
