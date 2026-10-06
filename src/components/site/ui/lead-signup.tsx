@@ -1,9 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 
+import { FieldError } from "@/components/site/ui/field-error";
 import { submitLeadSignup } from "@/lib/contact";
 import { HONEYPOT_FIELD } from "@/lib/honeypot";
 import { leadSignupSchema, type LeadSignupInput } from "@/lib/validations/contact";
@@ -25,10 +26,12 @@ export function LeadSignup({
   className?: string;
 }) {
   const [sent, setSent] = useState(false);
+  const id = useId();
 
   const form = useForm<LeadSignupInput>({
     resolver: zodResolver(leadSignupSchema),
-    defaultValues: { email: "", consent: true, source, [HONEYPOT_FIELD]: "" },
+    // Consent starts unticked: under RODO it has to be an action, not a default.
+    defaultValues: { email: "", consent: false, source, [HONEYPOT_FIELD]: "" },
   });
 
   return (
@@ -52,7 +55,7 @@ export function LeadSignup({
               setSent(true);
               return;
             }
-            form.setError("email", { message: result.error });
+            form.setError("root.server", { message: result.error });
           })}
         >
           <input
@@ -72,7 +75,9 @@ export function LeadSignup({
               aria-label="Adres e-mail"
               placeholder="twój@email.pl"
               {...form.register("email")}
-              className="min-w-0 flex-auto border border-line bg-cream px-3.5 py-3 text-[15px] text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600"
+              aria-invalid={form.formState.errors.email ? true : undefined}
+              aria-describedby={form.formState.errors.email ? `${id}-email-error` : undefined}
+              className="min-w-0 flex-auto border border-line bg-cream px-3.5 py-3 text-[15px] text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600 aria-invalid:border-destructive"
             />
             <button
               type="submit"
@@ -83,11 +88,14 @@ export function LeadSignup({
               <span aria-hidden>→</span>
             </button>
           </div>
+          <FieldError id={`${id}-email-error`} message={form.formState.errors.email?.message} />
 
           <label className="flex cursor-pointer items-start gap-2.5 text-[13px] leading-[1.6] text-ink-300">
             <input
               type="checkbox"
               {...form.register("consent")}
+              aria-invalid={form.formState.errors.consent ? true : undefined}
+              aria-describedby={form.formState.errors.consent ? `${id}-consent-error` : undefined}
               className="mt-0.5 size-3.5 shrink-0 accent-[var(--sage-600)]"
             />
             <span>
@@ -98,11 +106,12 @@ export function LeadSignup({
             </span>
           </label>
 
-          {(form.formState.errors.email || form.formState.errors.consent) && (
-            <p role="alert" className="text-[13px] text-destructive">
-              {form.formState.errors.email?.message ?? form.formState.errors.consent?.message}
-            </p>
-          )}
+          <FieldError
+            id={`${id}-consent-error`}
+            message={form.formState.errors.consent?.message}
+            className="-mt-1.5 pl-6"
+          />
+          <FieldError id={`${id}-server-error`} message={form.formState.errors.root?.server?.message} />
         </form>
       )}
     </div>

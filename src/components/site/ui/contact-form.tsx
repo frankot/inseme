@@ -1,10 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { useSiteSettings } from "@/components/site/chrome/site-settings";
+import { FieldError } from "@/components/site/ui/field-error";
 import type { SiteContact } from "@/content/home";
 import { track } from "@/lib/analytics";
 import { submitContactForm } from "@/lib/contact";
@@ -13,7 +14,7 @@ import { contactFormSchema, type ContactFormInput } from "@/lib/validations/cont
 import { cn } from "@/lib/utils";
 
 const FIELD =
-  "w-full border border-line-strong bg-cream px-3.5 py-3 text-body text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600";
+  "w-full border border-line-strong bg-cream px-3.5 py-3 text-body text-ink-900 outline-none placeholder:text-ink-200 focus-visible:border-sage-600 aria-invalid:border-destructive";
 
 /**
  * Labels stay visible above each field. A placeholder alone disappears on the
@@ -42,6 +43,7 @@ export function ContactForm({
   // form_start fires once, on the first field someone actually enters.
   const started = useRef(false);
   const dark = tone === "dark";
+  const id = useId();
 
   const form = useForm<ContactFormInput>({
     resolver: zodResolver(contactFormSchema),
@@ -51,7 +53,8 @@ export function ContactForm({
       email: "",
       message: "",
       preferredContactMethod: "phone",
-      consent: true,
+      // Unticked: consent under RODO has to be an action, not a default.
+      consent: false,
       [HONEYPOT_FIELD]: "",
     },
   });
@@ -76,7 +79,14 @@ export function ContactForm({
   }
 
   const errors = form.formState.errors;
+  // Wires a field to its own error line for screen readers.
+  const invalid = (field: "phone" | "email" | "message" | "consent") =>
+    errors[field]
+      ? { "aria-invalid": true as const, "aria-describedby": `${id}-${field}-error` }
+      : {};
   const labelText = cn("text-meta", dark ? "text-on-dark-muted" : "text-ink-400");
+  // Red reads poorly on the ink-900 panel; the screening test uses clay there too.
+  const errorTone = dark ? "text-clay-300" : undefined;
 
   return (
     <form
@@ -94,7 +104,7 @@ export function ContactForm({
           setSent(true);
           return;
         }
-        form.setError("message", { message: result.error });
+        form.setError("root.server", { message: result.error });
       })}
     >
       {/* Honeypot: off-screen rather than display:none — some bots skip hidden fields. */}
@@ -120,7 +130,9 @@ export function ContactForm({
             type="tel"
             inputMode="tel"
             autoComplete="tel"
+            {...invalid("phone")}
           />
+          <FieldError id={`${id}-phone-error`} message={errors.phone?.message} className={errorTone} />
         </label>
       </div>
 
@@ -132,7 +144,9 @@ export function ContactForm({
           type="email"
           inputMode="email"
           autoComplete="email"
+          {...invalid("email")}
         />
+        <FieldError id={`${id}-email-error`} message={errors.email?.message} className={errorTone} />
       </label>
 
       <label className={LABEL}>
@@ -142,7 +156,9 @@ export function ContactForm({
           rows={4}
           className={cn(FIELD, "resize-y")}
           placeholder="Napisz, co się dzieje. Nie musisz podawać nazwiska."
+          {...invalid("message")}
         />
+        <FieldError id={`${id}-message-error`} message={errors.message?.message} className={errorTone} />
       </label>
 
       <fieldset className="flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -173,24 +189,28 @@ export function ContactForm({
         ))}
       </fieldset>
 
-      <label
-        className={cn(
-          "flex cursor-pointer items-start gap-2.5 text-meta",
-          dark ? "text-on-dark-muted" : "text-ink-300",
-        )}
-      >
-        <input
-          type="checkbox"
-          {...form.register("consent")}
-          className="mt-0.5 size-3.5 shrink-0 accent-[var(--sage-600)]"
-        />
-        <span>
-          {privacyNote}{" "}
-          <a href="/polityka-prywatnosci" className="underline underline-offset-2 hover:text-sage-600">
-            Polityka prywatności
-          </a>
-        </span>
-      </label>
+      <div className="flex flex-col gap-1.5">
+        <label
+          className={cn(
+            "flex cursor-pointer items-start gap-2.5 text-meta",
+            dark ? "text-on-dark-muted" : "text-ink-300",
+          )}
+        >
+          <input
+            type="checkbox"
+            {...form.register("consent")}
+            {...invalid("consent")}
+            className="mt-0.5 size-3.5 shrink-0 accent-[var(--sage-600)]"
+          />
+          <span>
+            {privacyNote}{" "}
+            <a href="/polityka-prywatnosci" className="underline underline-offset-2 hover:text-sage-600">
+              Polityka prywatności
+            </a>
+          </span>
+        </label>
+        <FieldError id={`${id}-consent-error`} message={errors.consent?.message} className={cn("pl-6", errorTone)} />
+      </div>
 
       <button
         type="submit"
@@ -206,14 +226,8 @@ export function ContactForm({
         <span aria-hidden>→</span>
       </button>
 
-      {(errors.message || errors.phone || errors.email || errors.consent) && (
-        <p role="alert" className="text-meta text-destructive">
-          {errors.message?.message ??
-            errors.phone?.message ??
-            errors.email?.message ??
-            errors.consent?.message}
-        </p>
-      )}
+      {/* The server's answer (rate limit, outage) — about the form, not one field. */}
+      <FieldError id={`${id}-server-error`} message={errors.root?.server?.message} className={errorTone} />
     </form>
   );
 }

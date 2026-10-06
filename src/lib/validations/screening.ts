@@ -63,7 +63,7 @@ export type ResultBandInput = z.infer<typeof resultBandSchema>;
 export const screeningResultSchema = z.object({
   testId: z.uuid(),
   email: z.email("Podaj poprawny adres e-mail."),
-  consent: z.literal(true, { message: "Bez zgody nie możemy wysłać wyniku." }),
+  consent: z.boolean().refine((v) => v, { message: "Bez zgody nie możemy wysłać wyniku." }),
   score: z.number().int().min(0).max(9999),
   /** Honeypot — see `src/lib/rate-limit.ts`. Humans never see this field. */
   company: z.string().max(200).optional(),

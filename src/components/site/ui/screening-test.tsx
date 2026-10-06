@@ -1,10 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { useSiteContact } from "@/components/site/chrome/site-settings";
+import { FieldError } from "@/components/site/ui/field-error";
 import { testDefaults, type SiteContact } from "@/content/home";
 import type { PublicScreeningTest } from "@/lib/queries/screening";
 import { sendScreeningResult } from "@/lib/screening";
@@ -224,10 +225,13 @@ function ResultDelivery({
   dark: boolean;
 }) {
   const [sent, setSent] = useState(false);
+  const errorId = useId();
+  const errorTone = dark ? "text-clay-300" : undefined;
 
   const form = useForm<ScreeningResultInput>({
     resolver: zodResolver(screeningResultSchema),
-    defaultValues: { testId, email: "", consent: true, score, [HONEYPOT_FIELD]: "" },
+    // Consent starts unticked: under RODO it has to be an action, not a default.
+    defaultValues: { testId, email: "", consent: false, score, [HONEYPOT_FIELD]: "" },
   });
 
   if (sent) {
@@ -247,7 +251,7 @@ function ResultDelivery({
           setSent(true);
           return;
         }
-        form.setError("email", { message: result.error });
+        form.setError("root.server", { message: result.error });
       })}
       className="flex flex-col gap-3"
     >
@@ -269,10 +273,11 @@ function ResultDelivery({
           inputMode="email"
           autoComplete="email"
           aria-label="Adres e-mail"
-          aria-invalid={!!form.formState.errors.email}
+          aria-invalid={form.formState.errors.email ? true : undefined}
+          aria-describedby={form.formState.errors.email ? `${errorId}-email` : undefined}
           placeholder={labels.emailPlaceholder}
           {...form.register("email")}
-          className={cn("min-w-0 flex-auto border px-3.5 py-3 text-body outline-none", dark ? "border-white/15 bg-white/[0.06] text-on-dark placeholder:text-on-dark-faint focus-visible:border-sage-300" : "border-line-strong bg-cream text-ink-900 placeholder:text-ink-200 focus-visible:border-sage-600")}
+          className={cn("min-w-0 flex-auto border px-3.5 py-3 text-body outline-none", dark ? "border-white/15 bg-white/[0.06] text-on-dark placeholder:text-on-dark-faint focus-visible:border-sage-300" : "border-line-strong bg-cream text-ink-900 placeholder:text-ink-200 focus-visible:border-sage-600", "aria-invalid:border-destructive")}
         />
         <button
           type="submit"
@@ -283,11 +288,14 @@ function ResultDelivery({
           <span aria-hidden>→</span>
         </button>
       </div>
+      <FieldError id={`${errorId}-email`} message={form.formState.errors.email?.message} className={errorTone} />
 
       <label className={cn("flex cursor-pointer items-start gap-2.5 text-meta", dark ? "text-on-dark-faint" : "text-ink-300")}>
         <input
           type="checkbox"
           {...form.register("consent")}
+          aria-invalid={form.formState.errors.consent ? true : undefined}
+          aria-describedby={form.formState.errors.consent ? `${errorId}-consent` : undefined}
           className={cn("mt-0.5 size-3.5 shrink-0", dark ? "accent-[var(--sage-300)]" : "accent-[var(--sage-600)]")}
         />
         <span>
@@ -298,11 +306,12 @@ function ResultDelivery({
         </span>
       </label>
 
-      {(form.formState.errors.email || form.formState.errors.consent) && (
-        <p role="alert" className={cn("text-meta", dark ? "text-clay-300" : "text-destructive")}>
-          {form.formState.errors.email?.message ?? form.formState.errors.consent?.message}
-        </p>
-      )}
+      <FieldError
+        id={`${errorId}-consent`}
+        message={form.formState.errors.consent?.message}
+        className={cn("-mt-1.5 pl-6", errorTone)}
+      />
+      <FieldError id={`${errorId}-server`} message={form.formState.errors.root?.server?.message} className={errorTone} />
     </form>
   );
 }
