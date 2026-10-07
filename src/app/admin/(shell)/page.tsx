@@ -7,7 +7,6 @@ import { StatusBadge } from "@/components/admin/status-badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
 import { articles, faqItems, media, teamMembers } from "@/db/schema";
-import { adminNav } from "@/lib/admin-nav";
 import { getLeadStats, getNewContactCount } from "@/lib/queries/leads";
 
 export const metadata: Metadata = {
@@ -58,8 +57,6 @@ export default async function AdminDashboardPage() {
     { href: "/admin/team", label: "Zespół", ...teamCounts },
     { href: "/admin/faq", label: "FAQ", ...faqCounts },
   ];
-
-  const upcoming = adminNav.filter((item) => !item.available);
 
   return (
     <div className="flex flex-col gap-6">
@@ -144,29 +141,6 @@ export default async function AdminDashboardPage() {
         </CardContent>
       </Card>
 
-      {upcoming.length > 0 && (
-      <Card>
-        <CardHeader>
-          <CardTitle>W kolejnych fazach</CardTitle>
-          <CardDescription>Moduły, które nie są jeszcze dostępne w panelu.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ul className="grid gap-2 sm:grid-cols-2">
-            {upcoming.map((item) => (
-              <li
-                key={item.href}
-                className="flex items-center justify-between rounded-md border px-3 py-2 text-sm"
-              >
-                <span className="text-muted-foreground">{item.label}</span>
-                <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground/70">
-                  {item.phase}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
-      )}
     </div>
   );
 }

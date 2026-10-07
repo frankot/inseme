@@ -117,9 +117,6 @@
   --text-nav--line-height: 1;
   --text-nav--letter-spacing: -0.012em;
 
-  --text-mob-link: clamp(30px, 8vw, 46px);
-  --text-mob-link--line-height: 1.22;
-  --text-mob-link--letter-spacing: -0.025em;
 
   --text-stat: clamp(30px, 3vw, 42px);
   --text-stat--line-height: 1;

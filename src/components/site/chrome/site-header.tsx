@@ -138,51 +138,7 @@ export function SiteHeader({
             : "translate-y-full duration-[340ms] ease-[cubic-bezier(.7,0,.84,0)]",
         )}
       >
-        <div className="mx-auto flex w-full max-w-[1440px] flex-auto flex-col justify-center gap-0.5 overflow-y-auto px-gutter pt-[clamp(16px,4vw,32px)] pb-[clamp(36px,7vw,56px)]">
-          {mobileNav.map((entry) =>
-            isNavGroup(entry) ? (
-              <div key={entry.label} className="py-2">
-                <p className="mb-2 text-eyebrow uppercase tracking-[0.2em] text-clay-600">
-                  {entry.label}
-                </p>
-                <div className="flex flex-col gap-0.5 pl-4">
-                  {entry.items.map((item) => (
-                    <NavAnchor
-                      key={item.href + item.label}
-                      href={item.href}
-                      onClick={close}
-                      className="font-heading text-[clamp(24px,6.5vw,38px)] leading-[1.22] tracking-[-0.025em] text-ink-900 transition-colors hover:text-sage-600"
-                    >
-                      {item.label}
-                    </NavAnchor>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <NavAnchor
-                key={entry.href + entry.label}
-                href={entry.href}
-                onClick={close}
-                className="font-heading text-mob-link text-ink-900 transition-colors hover:text-sage-600"
-              >
-                {entry.label}
-              </NavAnchor>
-            ),
-          )}
-          <a
-            href={`tel:${contact.phoneHref}`}
-            onClick={close}
-            className="mt-[26px] inline-flex items-center justify-between gap-4 bg-ink-900 px-6 py-[17px] font-heading text-[clamp(20px,4.6vw,25px)] leading-none tracking-[-0.02em] tabular-nums text-bone transition-colors hover:bg-ink-700"
-          >
-            <span>Zadzwoń: {contact.phone}</span>
-            <span aria-hidden className="text-[17px]">
-              →
-            </span>
-          </a>
-          <span className="mt-3.5 text-[13px] leading-[1.7] text-ink-200">
-            {contact.addressLine1}, Magdalenka
-          </span>
-        </div>
+        <MobileMenu nav={mobileNav} contact={contact} onNavigate={close} />
       </div>
 
       {/* Transparent bar on the hero photo; yields to the compact bar when the
@@ -247,6 +203,104 @@ function NavAnchor({
     <a href={href} onClick={onClick} className={className} data-active={state}>
       {children}
     </a>
+  );
+}
+
+/**
+ * The mobile panel, in the desktop bar's terms rather than as a poster: the
+ * same heading face at one modest size, links as plain rows on hairlines, and
+ * a group as its label with the bar's chevron — tapping it opens its links
+ * underneath, as hovering opens the dropdown above. The group holding the
+ * current page starts open, and the current page carries the bar's underline.
+ */
+function MobileMenu({
+  nav,
+  contact,
+  onNavigate,
+}: {
+  nav: NavEntry[];
+  contact: SiteContact;
+  onNavigate: () => void;
+}) {
+  const pathname = usePathname();
+  const [openGroup, setOpenGroup] = useState<string | null>(
+    () =>
+      nav.find(
+        (entry) => isNavGroup(entry) && entry.items.some((item) => isPathActive(pathname, item.href)),
+      )?.label ?? null,
+  );
+  const row = "nav-link font-heading text-[19px] leading-none tracking-[-0.01em] text-ink-900";
+
+  return (
+    <nav
+      aria-label="Menu"
+      className="mx-auto flex w-full max-w-[1440px] flex-auto flex-col overflow-y-auto px-gutter pt-2 pb-[clamp(28px,6vw,48px)]"
+    >
+      <ul className="flex flex-col">
+        {nav.map((entry) =>
+          isNavGroup(entry) ? (
+            <li key={entry.label} className="border-b border-line">
+              <button
+                type="button"
+                aria-expanded={openGroup === entry.label}
+                onClick={() => setOpenGroup((open) => (open === entry.label ? null : entry.label))}
+                className="flex w-full items-center justify-between py-3.5 text-left"
+              >
+                <span
+                  className={row}
+                  data-active={entry.items.some((item) => isPathActive(pathname, item.href)) ? "true" : undefined}
+                >
+                  {entry.label}
+                </span>
+                <Chevron open={openGroup === entry.label} />
+              </button>
+              {openGroup === entry.label ? (
+                <ul className="flex flex-col items-start gap-3.5 pb-5">
+                  {entry.items.map((item) => (
+                    <li key={item.href + item.label}>
+                      <NavAnchor
+                        href={item.href}
+                        onClick={onNavigate}
+                        active={isPathActive(pathname, item.href)}
+                        className="nav-link font-heading text-[16px] text-ink-600"
+                      >
+                        {item.label}
+                      </NavAnchor>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </li>
+          ) : (
+            <li key={entry.href + entry.label} className="border-b border-line">
+              {/* The whole row is the tap target; the underline stays under the words. */}
+              <NavAnchor href={entry.href} onClick={onNavigate} className="flex py-3.5">
+                <span
+                  className={row}
+                  data-active={isPathActive(pathname, entry.href) ? "true" : undefined}
+                >
+                  {entry.label}
+                </span>
+              </NavAnchor>
+            </li>
+          ),
+        )}
+      </ul>
+
+      <a
+        href={`tel:${contact.phoneHref}`}
+        onClick={onNavigate}
+        className="mt-7 inline-flex items-center justify-between gap-4 bg-ink-900 px-5 py-[15px] font-heading text-[18px] leading-none tracking-[-0.01em] tabular-nums text-bone transition-colors hover:bg-ink-700"
+      >
+        <span>Zadzwoń: {contact.phone}</span>
+        <span aria-hidden className="text-[16px]">
+          →
+        </span>
+      </a>
+      <span className="mt-3 text-[13px] leading-[1.7] text-ink-400">
+        {contact.addressLine1}, {contact.addressLine2}
+      </span>
+    </nav>
   );
 }
 

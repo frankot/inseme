@@ -50,22 +50,6 @@ export function NavLinks({
             : [item.href, ...(item.also ?? [])].some((href) => pathname.startsWith(href));
         const label = <span className={cn("truncate", collapsed && "sr-only")}>{item.label}</span>;
 
-        if (!item.available) {
-          return (
-            <span
-              key={item.href}
-              title={collapsed ? `${item.label} — faza ${item.phase}` : `Dostępne w fazie ${item.phase}`}
-              className={cn(row, "cursor-not-allowed text-muted-foreground/50", collapsed && "justify-center px-0")}
-            >
-              <Icon className="size-4 shrink-0" aria-hidden />
-              {label}
-              {!collapsed && (
-                <span className="ml-auto text-[10px] uppercase tracking-wide">{item.phase}</span>
-              )}
-            </span>
-          );
-        }
-
         // The group header is only "current" on its own index page; a child
         // page highlights the child instead (or the icon, when collapsed).
         const headerActive = collapsed ? isActive : pathname === item.href;

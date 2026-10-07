@@ -15,7 +15,6 @@ const FONT_SIZES = [
   "quote",
   "heading",
   "nav",
-  "mob-link",
   "stat",
   "lead",
   "body-lg",
