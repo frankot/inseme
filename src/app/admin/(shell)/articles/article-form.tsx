@@ -117,9 +117,9 @@ export function ArticleForm({
           </div>
 
           <Field
-            label="Zajawka"
+            label="Wstęp (zajawka)"
             htmlFor="excerpt"
-            hint="Krótkie streszczenie na listach artykułów. Do 400 znaków."
+            hint="Kilka zdań wprowadzenia pod tytułem artykułu, przed treścią. Ten sam tekst jest na liście artykułów, na stronie głównej i — gdy „Opis meta” jest pusty — w Google. Do 400 znaków."
             error={errors.excerpt?.message}
           >
             <Textarea id="excerpt" rows={3} {...register("excerpt")} />

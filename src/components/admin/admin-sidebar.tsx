@@ -4,6 +4,7 @@ import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+import { LogoutButton } from "@/components/admin/logout-button";
 import { NavLinks } from "@/components/admin/nav-links";
 import { cn } from "@/lib/utils";
 
@@ -60,6 +61,11 @@ export function AdminSidebar() {
       </div>
 
       <NavLinks collapsed={collapsed} />
+
+      {/* Pinned to the foot of the sidebar, under however long the menu runs. */}
+      <div className="mt-auto flex flex-col border-t pt-2">
+        <LogoutButton collapsed={collapsed} />
+      </div>
     </aside>
   );
 }

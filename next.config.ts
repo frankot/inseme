@@ -63,6 +63,11 @@ const securityHeaders = [
  * The loader applies to every `next/image`, and passes local assets through.
  */
 const nextConfig: NextConfig = {
+  // Read from disk at request time by `lib/admin-manual.ts`; listed so the
+  // file is bundled with the route's serverless function.
+  outputFileTracingIncludes: {
+    "/admin/instrukcja": ["./src/content/admin-manual.md"],
+  },
   images: {
     loader: "custom",
     loaderFile: "./src/lib/image-loader.ts",

@@ -1,3 +1,5 @@
+import { BookOpen } from "lucide-react";
+import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { auth } from "@/auth";
@@ -6,6 +8,7 @@ import { MobileNav } from "@/components/admin/mobile-nav";
 import { ShellContainer } from "@/components/admin/shell-container";
 import { UserMenu } from "@/components/admin/user-menu";
 import { SiteImage } from "@/components/site/ui/site-image";
+import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 
 export default async function AdminShellLayout({ children }: { children: ReactNode }) {
@@ -24,11 +27,16 @@ export default async function AdminShellLayout({ children }: { children: ReactNo
             alt="Insieme"
             width={930}
             height={253}
-            priority
+            loading="eager"
             className="h-6 w-auto"
           />
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex items-center gap-1">
+          {/* The client's manual for this panel (src/content/admin-manual.md). */}
+          <Button variant="ghost" size="sm" render={<Link href="/admin/instrukcja" />}>
+            <BookOpen aria-hidden />
+            Instrukcja
+          </Button>
           <UserMenu name={session?.user?.name} email={session?.user?.email} />
         </div>
       </header>

@@ -3,6 +3,7 @@
 import { Menu } from "lucide-react";
 import { useState } from "react";
 
+import { LogoutButton } from "@/components/admin/logout-button";
 import { NavLinks } from "@/components/admin/nav-links";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { Button } from "@/components/ui/button";
@@ -32,8 +33,11 @@ export function MobileNav() {
             />
           </SheetTitle>
         </SheetHeader>
-        <div className="px-2 py-3">
+        <div className="flex flex-1 flex-col overflow-y-auto px-2 py-3">
           <NavLinks onNavigate={() => setOpen(false)} />
+          <div className="mt-auto border-t pt-2">
+            <LogoutButton />
+          </div>
         </div>
       </SheetContent>
     </Sheet>
