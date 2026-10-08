@@ -161,6 +161,7 @@ export function SiteHeader({
             menuOpen={menuOpen}
             logoWidth="w-[clamp(100px,8.4vw,122px)]"
             tagline
+            phoneMenu={false}
           />
         </header>
       )}
@@ -437,6 +438,7 @@ function Bar({
   logoWidth,
   tagline = false,
   compact = false,
+  phoneMenu = true,
 }: {
   tone: Tone;
   height: string;
@@ -449,6 +451,11 @@ function Bar({
   tagline?: boolean;
   /** Tighter type and spacing, for the short bar that slides in on scroll. */
   compact?: boolean;
+  /**
+   * The menu button on phones. Off for the homepage's hero bar: on a phone the
+   * hero shows the logo alone, and the menu lives on the bar that slides in.
+   */
+  phoneMenu?: boolean;
 }) {
   const dark = tone === "dark";
 
@@ -518,7 +525,8 @@ function Bar({
           onClick={onBurger}
           aria-expanded={menuOpen}
           className={cn(
-            "flex items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase bar:hidden",
+            "items-center gap-[11px] px-0.5 py-[11px] text-eyebrow uppercase bar:hidden",
+            phoneMenu ? "flex" : "hidden tab:flex",
             dark ? "text-on-dark-2 text-shadow-nav" : "text-ink-900",
           )}
         >
