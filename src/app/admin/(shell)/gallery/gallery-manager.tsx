@@ -30,9 +30,9 @@ import {
   StorageNotice,
   UploadDropzone,
 } from "@/components/admin/photo-admin";
+import { ExpandingInput } from "@/components/admin/expanding-input";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { GALLERY_ACCEPT, GALLERY_VARIANTS } from "@/lib/gallery-image";
 import type { GalleryPhotoAdmin } from "@/lib/gallery-types";
 import { formatBytes, uploadGalleryPhoto } from "@/lib/gallery-upload";
@@ -378,16 +378,16 @@ function GalleryCard({
       }
       fields={
         <>
-          <Input
+          <ExpandingInput
             value={description}
-            onChange={(event) => setDescription(event.target.value)}
+            onChange={setDescription}
             onBlur={saveText}
             placeholder="Opis pod zdjęciem"
             aria-label={`Opis zdjęcia ${index + 1}`}
           />
-          <Input
+          <ExpandingInput
             value={altText}
-            onChange={(event) => setAltText(event.target.value)}
+            onChange={setAltText}
             onBlur={saveText}
             placeholder="Opis alternatywny (alt)"
             aria-label={`Opis alternatywny zdjęcia ${index + 1}`}

@@ -1,5 +1,6 @@
 import { definePage, defineSection } from "@/cms/define";
 import { f, paragraphs, points } from "@/cms/fields";
+import { FAQ_CATEGORIES } from "@/lib/faq-categories";
 import { detoksIKwalifikacjaDefaults } from "@/content/intent/detoks-i-kwalifikacja";
 import { dlaRodzinyDefaults } from "@/content/intent/dla-rodziny";
 import { leczenieAlkoholizmuDefaults } from "@/content/intent/leczenie-alkoholizmu";
@@ -112,13 +113,11 @@ const sections = [
       lead: f.textarea("Wstęp", { max: 300 }),
       category: f.select(
         "Kategoria pytań",
-        [
-          { value: "alkohol", label: "alkohol" },
-          { value: "narkotyki", label: "narkotyki" },
-          { value: "rodzina", label: "rodzina" },
-          { value: "detoks", label: "detoks" },
-          { value: "nfz", label: "nfz" },
-        ],
+        // The topic groups; "Ogólne" questions belong on /faq, not on a topic page.
+        FAQ_CATEGORIES.filter((category) => category.value !== "ogolne").map(({ value, label }) => ({
+          value,
+          label,
+        })),
         { hint: "Pytania z tą kategorią w FAQ. Sekcja znika, gdy nie ma żadnego." },
       ),
     }),

@@ -9,7 +9,7 @@ import { actionError, type ActionResult, type DataResult } from "@/lib/action-re
 import { requireAdmin } from "@/lib/auth-guard";
 import { publishState } from "@/lib/publish-state";
 import { sanitizeRichText } from "@/lib/sanitize";
-import { emptyToNull, faqItemSchema, type FaqItemInput } from "@/lib/validations/content";
+import { faqItemSchema, type FaqItemInput } from "@/lib/validations/content";
 
 export async function saveFaqItem(
   id: string | null,
@@ -34,7 +34,7 @@ export async function saveFaqItem(
       ...publishState(publish, previous?.publishedAt),
       question: parsed.data.question,
       answer: sanitizeRichText(parsed.data.answer),
-      category: emptyToNull(parsed.data.category),
+      category: parsed.data.category,
       sortOrder: parsed.data.sortOrder,
       updatedAt: new Date(),
     };

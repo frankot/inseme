@@ -13,6 +13,7 @@ import {
   usePublishedDiff,
   type Diff,
 } from "@/components/admin/cms/diff";
+import { ExpandingInput } from "@/components/admin/expanding-input";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { emptyValue, type FieldSpec, type ListSpec, type RefSpec } from "@/cms/fields";
 import type { CmsImage, RefKind } from "@/cms/types";
@@ -188,14 +189,14 @@ function ImageField({ spec, name }: { spec: Extract<FieldSpec, { kind: "image" }
         htmlFor={altId}
         hint="Dla tej strony. Po wybraniu zdjęcia wstawia się opis z biblioteki — możesz go tu zmienić."
       >
-        <Input id={altId} value={image.alt ?? ""} onChange={(e) => set({ alt: e.target.value })} />
+        <ExpandingInput id={altId} value={image.alt ?? ""} onChange={(alt) => set({ alt })} />
       </Shell>
       {spec.caption && (
         <Shell label="Podpis (opcjonalnie)" htmlFor={captionId}>
-          <Input
+          <ExpandingInput
             id={captionId}
             value={image.caption ?? ""}
-            onChange={(e) => set({ caption: e.target.value })}
+            onChange={(caption) => set({ caption })}
           />
         </Shell>
       )}

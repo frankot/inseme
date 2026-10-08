@@ -156,7 +156,7 @@ Na stronie głównej mieszczą się **najwyżej 4 osoby**. Wybierasz je gwiazdk�
 Najczęściej zadawane pytania. Wszystkie opublikowane są na stronie **/faq**.
 
 - **Pytanie** i **Odpowiedź** (odpowiedź może mieć pogrubienia, listy i linki).
-- **Kategoria** — dopisuje pytanie także do strony tematycznej: `alkohol` → Leczenie alkoholizmu, `narkotyki` → Leczenie narkomanii, `rodzina` → Dla rodziny, `detoks` → Detoks i kwalifikacja, `nfz` → artykuł o odwyku na NFZ. Puste pole — pytanie jest tylko na /faq (i na stronie głównej, jeśli je tam wybierzesz).
+- **Kategoria** — wybierasz z listy. **Ogólne** to pytania o przyjęcie, pobyt i koszty — są na /faq (i na stronie głównej, jeśli je tam wybierzesz). Kategorie tematyczne pokazują pytanie także na swojej stronie: **Alkohol** → Leczenie alkoholizmu, **Narkotyki** → Leczenie narkomanii, **Rodzina** → Dla rodziny, **Detoks** → Detoks i kwalifikacja, **NFZ** → artykuł o odwyku na NFZ. Gdy w kategorii nie ma żadnego opublikowanego pytania, sekcja na tej stronie się nie pokazuje.
 - **Kolejność** — niższa liczba = wyżej.
 - **Na stronie głównej** — najwyżej **6 pytań**, wybierasz gwiazdką w menu wiersza albo w CMS › Strona główna › Pytania.
 

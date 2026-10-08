@@ -12,6 +12,14 @@ import { SaveActions, SAVED_MESSAGE, type SaveMode } from "@/components/admin/sa
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { FAQ_CATEGORIES, faqCategoryLabel } from "@/lib/faq-categories";
 import { faqItemSchema, type FaqItemInput } from "@/lib/validations/content";
 
 export function FaqForm({
@@ -19,11 +27,9 @@ export function FaqForm({
   status,
   publishedAt,
   defaultValues,
-  categories,
 }: {
   id: string | null;
   defaultValues: FaqItemInput;
-  categories: string[];
   status: "draft" | "published" | null;
   publishedAt: string | null;
 }) {
@@ -78,15 +84,30 @@ export function FaqForm({
             <Field
               label="Kategoria"
               htmlFor="category"
-              hint="Grupuje pytania i pozwala osadzić wybraną grupę w sekcji FAQ na stronie."
+              hint="Każde opublikowane pytanie jest na /faq. Kategoria tematyczna pokazuje je także na swojej stronie."
               error={errors.category?.message}
             >
-              <Input id="category" list="faq-categories" {...register("category")} />
-              <datalist id="faq-categories">
-                {categories.map((category) => (
-                  <option key={category} value={category} />
-                ))}
-              </datalist>
+              <Controller
+                control={control}
+                name="category"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={(value) => field.onChange(value)}>
+                    <SelectTrigger id="category" className="w-full">
+                      <SelectValue>{(value: string) => faqCategoryLabel(value)}</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {FAQ_CATEGORIES.map((category) => (
+                        <SelectItem key={category.value} value={category.value}>
+                          <span className="flex flex-col">
+                            <span>{category.label}</span>
+                            <span className="text-xs text-muted-foreground">{category.where}</span>
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
             </Field>
             <Field
               label="Kolejność"

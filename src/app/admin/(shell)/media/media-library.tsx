@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { deleteMedia, updateMediaAltText } from "@/app/admin/(shell)/media/actions";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
+import { ExpandingInput } from "@/components/admin/expanding-input";
 import {
   EmptyPhotos,
   PhotoCard,
@@ -15,7 +16,6 @@ import {
   StorageNotice,
   UploadDropzone,
 } from "@/components/admin/photo-admin";
-import { Input } from "@/components/ui/input";
 import { formatBytes } from "@/lib/gallery-upload";
 import { supportsEdgeResize } from "@/lib/image-host";
 import { hasVariants } from "@/lib/image-variants";
@@ -183,9 +183,9 @@ function MediaCard({
         ) : null
       }
       fields={
-        <Input
+        <ExpandingInput
           value={altText}
-          onChange={(event) => setAltText(event.target.value)}
+          onChange={setAltText}
           onBlur={saveAltText}
           placeholder="Opis alternatywny (alt)"
           aria-label={`Opis alternatywny pliku ${typeLabel(item.mimeType)}`}

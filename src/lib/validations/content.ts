@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { blocksSchema } from "@/lib/blocks";
+import { FAQ_CATEGORY_VALUES } from "@/lib/faq-categories";
 import { slugPattern } from "@/lib/slug";
 
 /**
@@ -72,7 +73,7 @@ export const FAQ_FEATURED_MAX = 6;
 export const faqItemSchema = z.object({
   question: z.string().trim().min(1, "Podaj pytanie.").max(300),
   answer: z.string().trim().min(1, "Podaj odpowiedź.").max(20000),
-  category: optionalText,
+  category: z.enum(FAQ_CATEGORY_VALUES, { message: "Wybierz kategorię." }),
   sortOrder: z.number().int().min(0).max(9999),
 });
 

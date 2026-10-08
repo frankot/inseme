@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { listMedia, updateMediaAltText } from "@/app/admin/(shell)/media/actions";
+import { ExpandingInput } from "@/components/admin/expanding-input";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +16,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import type { MediaSummary } from "@/lib/media-types";
 import { uploadMediaFile } from "@/lib/media-upload";
 import { ALLOWED_UPLOAD_TYPES_CLIENT } from "@/lib/upload-limits";
@@ -231,9 +231,9 @@ function AltTextField({
   }
 
   return (
-    <Input
+    <ExpandingInput
       value={altText}
-      onChange={(event) => setAltText(event.target.value)}
+      onChange={setAltText}
       onBlur={save}
       disabled={isPending}
       placeholder="Opis alternatywny (alt)"

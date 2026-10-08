@@ -29,7 +29,11 @@ import {
   type Block,
   type BlockType,
 } from "@/lib/blocks";
+import { FAQ_CATEGORIES, faqCategoryLabel } from "@/lib/faq-categories";
 import type { MediaSummary } from "@/lib/media-types";
+
+/** The "every question" choice in the FAQ block — Select needs a non-empty value. */
+const ALL_FAQ = "__all";
 
 export function BlockEditor({
   value,
@@ -322,11 +326,25 @@ function BlockFields({
           </div>
           <div className="flex flex-col gap-2">
             <Label>Kategoria FAQ</Label>
-            <Input
-              value={block.category}
-              placeholder="Puste = wszystkie opublikowane pytania"
-              onChange={(event) => onChange({ ...block, category: event.target.value })}
-            />
+            {/* "" in the block means every published question. */}
+            <Select
+              value={block.category || ALL_FAQ}
+              onValueChange={(next) => onChange({ ...block, category: next === ALL_FAQ ? "" : String(next) })}
+            >
+              <SelectTrigger className="w-full sm:w-64">
+                <SelectValue>
+                  {(value: string) => (value === ALL_FAQ ? "Wszystkie pytania" : faqCategoryLabel(value))}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={ALL_FAQ}>Wszystkie pytania</SelectItem>
+                {FAQ_CATEGORIES.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    {category.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
         </>
       );

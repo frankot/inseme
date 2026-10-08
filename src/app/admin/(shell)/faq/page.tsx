@@ -18,6 +18,7 @@ import {
 import { db } from "@/db";
 import { faqItems } from "@/db/schema";
 import { getFeaturedSlots } from "@/lib/cms/featured";
+import { faqCategoryLabel } from "@/lib/faq-categories";
 
 export const metadata: Metadata = { title: "FAQ — panel Insieme" };
 
@@ -31,7 +32,7 @@ export default async function FaqListPage() {
     <>
       <PageHeader
         title="FAQ"
-        description="Najczęstsze pytania. Wszystkie opublikowane są na /faq. Które trafiają na stronę główną (najwyżej 6), wybierasz w menu wiersza albo w CMS › Strona główna › Pytania. Kategoria osadza pytanie na stronie tematycznej (alkohol, rodzina, detoks, nfz)."
+        description="Najczęstsze pytania. Wszystkie opublikowane są na /faq. Które trafiają na stronę główną (najwyżej 6), wybierasz w menu wiersza albo w CMS › Strona główna › Pytania. Kategoria tematyczna (Alkohol, Narkotyki, Rodzina, Detoks, NFZ) pokazuje pytanie także na swojej stronie; Ogólne są tylko na /faq."
         actions={<Button render={<Link href="/admin/faq/new" />}>Dodaj pytanie</Button>}
       />
 
@@ -62,7 +63,7 @@ export default async function FaqListPage() {
                   </Link>
                 </TableCell>
                 <TableCell className="text-muted-foreground">{isFeatured(featured, row.id) ? "★" : "—"}</TableCell>
-                <TableCell className="text-muted-foreground">{row.category ?? "—"}</TableCell>
+                <TableCell className="text-muted-foreground">{faqCategoryLabel(row.category)}</TableCell>
                 <TableCell className="text-muted-foreground">{row.sortOrder}</TableCell>
                 <TableCell>
                   <RowActions
