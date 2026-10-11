@@ -7,7 +7,9 @@ import type { SiteContact } from "@/content/home";
 import { cn } from "@/lib/utils";
 
 /** Hidden from `tab` up, where the header bar carries the number. */
-const BAR_H = 64;
+const BAR_H = 48;
+/** The bar plus the iPhone home-indicator strip, so the number is never under it. */
+const BAR_HEIGHT = `calc(${BAR_H}px + env(safe-area-inset-bottom))`;
 
 /**
  * The phone, permanently within thumb reach on a phone.
@@ -41,38 +43,28 @@ export function StickyCallBar({
   return (
     <>
       {/* Keeps the footer's last line clear of the bar. */}
-      <div aria-hidden style={{ height: BAR_H }} className="tab:hidden" />
+      <div aria-hidden style={{ height: BAR_HEIGHT }} className="tab:hidden" />
 
       <div
         data-track="sticky"
         inert={!shown}
         className={cn(
-          "fixed inset-x-0 bottom-0 z-50 border-t border-line-strong bg-cream tab:hidden",
+          "fixed inset-x-0 bottom-0 z-50 bg-ink-900 tab:hidden",
           "will-change-transform transition-transform motion-reduce:transition-none",
           shown
             ? "translate-y-0 duration-[420ms] ease-[cubic-bezier(.16,1,.3,1)]"
             : "translate-y-full duration-[280ms] ease-[cubic-bezier(.7,0,.84,0)]",
         )}
-        style={{ height: BAR_H }}
+        style={{ height: BAR_HEIGHT, paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="mx-auto flex h-full w-full max-w-[1440px] items-center gap-3 px-gutter">
-          <span className="min-w-0 flex-auto text-meta leading-[1.35] text-ink-300">
-            Odbiera terapeuta.
-            <br />
-            {contact.hours
-              ? contact.hours.charAt(0).toUpperCase() + contact.hours.slice(1)
-              : "Rozmowa bez zobowiązań."}
-          </span>
-          <a
-            href={`tel:${contact.phoneHref}`}
-            className="link-arrow shrink-0 bg-ink-900 px-5 py-3 text-body tabular-nums text-bone transition-colors hover:bg-ink-700"
-          >
-            <span>{contact.phone}</span>
-            <span aria-hidden className="text-[0.92em]">
-              →
-            </span>
-          </a>
-        </div>
+        {/* The whole dark strip is the link: the number, centred, nothing else. */}
+        <a
+          href={`tel:${contact.phoneHref}`}
+          aria-label={`Zadzwoń: ${contact.phone}`}
+          className="flex h-full w-full items-center justify-center font-heading text-[21px] font-medium tracking-[0.03em] tabular-nums text-bone transition-colors active:bg-ink-700"
+        >
+          {contact.phone}
+        </a>
       </div>
     </>
   );

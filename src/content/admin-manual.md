@@ -1,326 +1,370 @@
 # Instrukcja panelu Insieme
 
-Ten panel służy do zmieniania treści strony ośrodka — tekstów, zdjęć, zespołu, pytań, artykułów i testów — oraz do odbierania wiadomości wysłanych przez formularze. Nie trzeba niczego programować: wszystko robi się tu, w przeglądarce.
-
-Instrukcja jest ułożona tak jak menu po lewej stronie. Na początku są zasady wspólne dla całego panelu — warto przeczytać je raz, bo dalej się do nich odwołujemy.
+Panel służy do zarządzania treścią strony (teksty, zdjęcia, zespół, FAQ, artykuły, testy) i do obsługi zgłoszeń z formularzy. Dokument opisuje każdą sekcję panelu w kolejności menu.
 
 ---
 
-## Pierwsze kroki
+## Dostęp
 
-### Logowanie i wylogowanie
+| Element | Opis |
+|---|---|
+| Adres | `/admin` (np. `www.osrodek-insieme.pl/admin`) |
+| Logowanie | e-mail i hasło |
+| Wylogowanie | **Wyloguj** na dole menu albo inicjały w prawym górnym rogu › **Wyloguj się** |
+| Hasło, nowe konto | niedostępne w panelu — zmienia je osoba, która prowadzi stronę |
 
-- Panel jest pod adresem **/admin** (np. `www.osrodek-insieme.pl/admin`). Logujesz się adresem e-mail i hasłem.
-- Aby się wylogować, kliknij swoje inicjały w prawym górnym rogu i wybierz **Wyloguj się**.
-- Panel nie ma przycisku „Nie pamiętam hasła” ani zakładania nowych kont. Jeśli trzeba zmienić hasło albo dodać konto dla kolejnej osoby, napisz do osoby, która prowadzi stronę.
+### Układ panelu
 
-### Jak zbudowany jest panel
-
-- **Menu po lewej** prowadzi do wszystkich sekcji. Przyciskiem nad menu możesz je zwinąć do samych ikon, żeby zrobić więcej miejsca. W edytorze stron (CMS) zwija się samo.
-- **Pulpit** to strona startowa: liczba nowych wiadomości, zebranych adresów e-mail oraz szkiców i opublikowanych pozycji w Artykułach, Zespole i FAQ. Kafelki są klikalne.
-- **Instrukcja** — link w górnym pasku — otwiera ten dokument.
-- Na telefonie menu otwiera się przyciskiem z trzema kreskami w lewym górnym rogu.
+- **Menu** (po lewej) — wszystkie sekcje. Przycisk nad menu zwija je do ikon; w edytorze CMS zwija się automatycznie. Na telefonie: przycisk ☰ w lewym górnym rogu.
+- **Pulpit** — liczba nowych wiadomości i adresów e-mail oraz szkiców i opublikowanych pozycji w Artykułach, Zespole i FAQ.
+- **Instrukcja** (górny pasek) — ten dokument.
 
 ---
 
-## Najważniejsze zasady
+## Zasady ogólne
 
-### Szkic i publikacja
+### Statusy
 
-Każda pozycja w panelu — osoba z zespołu, pytanie, artykuł, test, zdjęcie w galerii — ma jeden z dwóch stanów:
+| Status | Na stronie |
+|---|---|
+| **Szkic** | niewidoczne |
+| **Opublikowane** | widoczne |
 
-- **Szkic** — zapisany w panelu, ale **niewidoczny** na stronie.
-- **Opublikowane** — widoczne dla wszystkich odwiedzających.
+Dotyczy: osób z zespołu, pytań FAQ, artykułów, testów, zdjęć w galerii.
 
-Na dole każdego formularza są dwa przyciski:
+### Zapisywanie formularzy
 
-- **Zapisz szkic** — zapisuje zmiany i zostawia pozycję niewidoczną. Dobre, gdy tekst jest niegotowy albo czeka na sprawdzenie.
-- **Zapisz i opublikuj** — zapisuje i od razu pokazuje na stronie.
+| Przycisk | Działanie |
+|---|---|
+| **Zapisz szkic** | zapisuje, pozycja niewidoczna; przy pozycji opublikowanej najpierw pyta, czy ją ukryć |
+| **Zapisz i opublikuj** | zapisuje i publikuje |
 
-Jeśli pozycja jest już opublikowana, a klikniesz **Zapisz szkic**, panel zapyta, czy ją ukryć — bo zapisanie jako szkic zdejmuje ją ze strony, dopóki znów nie klikniesz **Zapisz i opublikuj**.
+Treści medyczne publikować po akceptacji osoby merytorycznie odpowiedzialnej.
 
-> Treści medyczne powinna przed publikacją przeczytać osoba merytorycznie odpowiedzialna. Zapisuj je jako szkic, a publikuj po akceptacji.
+Wyjątki: **CMS** zapisuje szkic automatycznie (patrz [CMS](#cms)), **Ustawienia** zapisują się bez szkicu.
 
-### Menu wiersza (⋯)
+### Listy: status i menu wiersza
 
-Na listach (Zespół, FAQ, Artykuły, Testy) każdy wiersz ma po prawej przycisk z trzema kropkami. Znajdziesz w nim:
+Kolumna **Status** na listach Zespół, FAQ, Artykuły, Testy:
 
-- **Edytuj** — otwiera formularz.
-- **Zobacz na stronie** — otwiera opublikowaną pozycję w nowej karcie.
-- **Na stronie głównej** (gwiazdka) — dodaje pozycję do strony głównej albo ją stamtąd zdejmuje. Jeśli limit jest wyczerpany, opcja jest wyszarzona — najpierw odznacz inną pozycję.
-- **Opublikuj** albo **Zmień na szkic (ukryj)** — bez otwierania formularza.
-- **Usuń** — zawsze z pytaniem o potwierdzenie.
+- **Plakietka statusu** — kliknięcie przełącza status (Szkic → publikacja, Opublikowane → ukrycie). Potwierdzenie na dole ekranu ma przycisk **Cofnij**. Pozycje, których nie można ukryć, mają nieklikalną plakietkę.
+- **Przycisk ⋯** — menu wiersza:
 
-### Usuwanie jest ostateczne
+| Opcja | Działanie |
+|---|---|
+| **Edytuj** | otwiera formularz |
+| **Zobacz na stronie** | otwiera opublikowaną pozycję w nowej karcie |
+| **Na stronie głównej** ★ | dodaje do strony głównej / zdejmuje; wyszarzone po osiągnięciu limitu |
+| **Opublikuj** / **Zmień na szkic (ukryj)** | zmiana statusu |
+| **Usuń** | usunięcie, po potwierdzeniu |
 
-Usuniętej pozycji nie da się przywrócić. Jeśli nie masz pewności, zamiast usuwać — **zmień na szkic**. Zniknie ze strony, a w panelu zostanie.
+### Usuwanie
+
+Nieodwracalne. Alternatywa: **Zmień na szkic** — pozycja znika ze strony, zostaje w panelu.
 
 ### Niezapisane zmiany
 
-- Gdy w formularzu coś zmienisz i spróbujesz zamknąć kartę lub przejść gdzie indziej, przeglądarka zapyta, czy na pewno.
-- Jeśli mimo to zamkniesz kartę (albo wyłączy się komputer), przy następnym otwarciu tego samego formularza zobaczysz żółty pasek: **Masz niezapisane zmiany z …**. Kliknij **Przywróć**, żeby je odzyskać, albo **Odrzuć**. Ta kopia jest tylko w Twojej przeglądarce — na innym komputerze jej nie będzie.
+- Zamknięcie karty lub przejście dalej z niezapisanymi zmianami wymaga potwierdzenia.
+- Po zamknięciu karty z niezapisanymi zmianami formularz przy następnym otwarciu pokazuje pasek **Masz niezapisane zmiany z …** z przyciskami **Przywróć** / **Odrzuć**. Kopia jest przechowywana tylko w tej przeglądarce.
 
-### Kiedy zmiana pojawi się na stronie
+### Pola opisów zdjęć
 
-Po publikacji strona zwykle odświeża się w ciągu kilku sekund. W rzadkich przypadkach trwa to do **5 minut**. Jeśli nie widzisz zmiany, odczekaj chwilę i odśwież stronę w przeglądarce.
+Pola opisu i alt przy zdjęciach (Galeria, Biblioteka mediów, wybór zdjęcia, CMS) w spoczynku mają jedną linię. Po kliknięciu rozwijają się do pełnej długości tekstu. **Enter** kończy edycję — opisy są jednowierszowe.
+
+### Czas pojawienia się zmian
+
+Zwykle kilka sekund po publikacji, maksymalnie **5 minut**.
 
 ---
 
-## CMS — teksty i zdjęcia stron
+## CMS
 
-**CMS** to edytor stałych stron serwisu: **Strona główna, Program, Ośrodek, Leczenie alkoholizmu, Leczenie narkomanii, Dla rodziny, Detoks i kwalifikacja**. Zmieniasz tu ich treść — teksty, zdjęcia, listy. Kolejność sekcji na stronie jest stała i się jej tu nie zmienia.
+Edytor stałych stron: **Strona główna, Program, Ośrodek, Leczenie alkoholizmu, Leczenie narkomanii, Dla rodziny, Detoks i kwalifikacja**. Edytowalna jest treść (teksty, zdjęcia, listy); kolejność sekcji jest stała.
 
-Po kliknięciu **CMS** w menu zobaczysz listę stron. Napis **Szkic ma nieopublikowane zmiany** oznacza, że ktoś coś zmienił, ale jeszcze nie opublikował. Kliknij stronę, żeby otworzyć edytor.
+Lista stron oznacza napisem **Szkic ma nieopublikowane zmiany** strony z niepublikowanymi zmianami.
 
-### Edytor strony — trzy kolumny
+### Edytor
 
-1. **Konspekt** (po lewej) — lista sekcji strony od góry do dołu, a nad nimi **SEO**. Kliknij sekcję, żeby ją edytować.
-2. **Formularz** (środek) — pola wybranej sekcji.
-3. **Podgląd** (po prawej) — tak będzie wyglądała strona. Odświeża się po każdym zapisie i przewija do edytowanej sekcji.
+| Kolumna | Zawartość |
+|---|---|
+| Konspekt (lewa) | **SEO** i sekcje strony w kolejności |
+| Formularz (środek) | pola wybranej sekcji |
+| Podgląd (prawa) | strona po zmianach; odświeża się po zapisie |
 
-Przycisk **Podgląd** w górnym pasku otwiera ten podgląd w nowej karcie, na całym ekranie.
+**Podgląd** w górnym pasku — podgląd w nowej karcie.
 
-### Zapisywanie i publikacja w CMS
+### Zapis i publikacja
 
-CMS działa trochę inaczej niż reszta panelu:
+| Element | Działanie |
+|---|---|
+| Autozapis | każda zmiana zapisuje się w szkicu po chwili; stan obok tytułu („Szkic zapisany 14:02”) |
+| **Opublikuj** | szkic staje się wersją na stronie (z potwierdzeniem) |
+| **Odrzuć szkic** | usuwa niepublikowane zmiany, przywraca wersję ze strony |
+| Czerwony trójkąt w konspekcie | błąd w sekcji (np. puste wymagane pole); blokuje publikację |
+| **Ktoś inny zmienił tę stronę** | stronę edytowano równolegle — odświeżyć przeglądarkę przed dalszą edycją |
 
-- **Każda zmiana zapisuje się sama** do szkicu, chwilę po tym, jak przestaniesz pisać. Nie ma przycisku „Zapisz”. Stan widać obok tytułu strony („Szkic zapisany 14:02”).
-- Szkic **nie jest** widoczny na stronie. Aby pokazać zmiany odwiedzającym, kliknij **Opublikuj** (prawy górny róg) i potwierdź.
-- **Odrzuć szkic** kasuje wszystkie nieopublikowane zmiany i wraca do wersji, która jest teraz na stronie.
-- Jeśli przy sekcji w konspekcie pojawi się czerwony trójkąt, sekcja ma błąd (np. puste wymagane pole). Dopóki go nie poprawisz, **Opublikuj** jest nieaktywne.
-- Komunikat **Ktoś inny zmienił tę stronę** znaczy, że w międzyczasie ktoś edytował tę samą stronę. Odśwież przeglądarkę, żeby zobaczyć jego zmiany, zanim zaczniesz dalej pisać.
+### Oznaczenia zmian
 
-### Co zostało zmienione — pomarańczowe oznaczenia
+Gdy szkic różni się od wersji opublikowanej:
 
-Gdy szkic różni się od opublikowanej strony, panel to pokazuje:
+| Oznaczenie | Znaczenie |
+|---|---|
+| pomarańczowa kropka przy sekcji | sekcja ma zmiany |
+| pomarańczowa linia przy polu + **Zmienione od publikacji** | pole zmienione; **pokaż opublikowaną** — wartość na stronie, **przywróć** — cofa zmianę pola |
+| kropka / **NOWA** przy elemencie listy | element zmieniony / dodany |
+| **Przywróć całą sekcję** | cofa wszystkie zmiany w sekcji |
 
-- **pomarańczowa kropka** przy sekcji w konspekcie — w tej sekcji są zmiany,
-- **pomarańczowa linia** przy zmienionym polu, a pod nim napis **Zmienione od publikacji** z dwoma linkami:
-  - **pokaż opublikowaną** — co jest teraz na stronie,
-  - **przywróć** — cofa zmianę tylko w tym jednym polu,
-- przy elementach listy: kropka (zmieniony) albo napis **NOWA** (dodany),
-- **Przywróć całą sekcję** — u góry formularza — cofa wszystkie zmiany w sekcji.
+Oznaczenia znikają po publikacji.
 
-Po kliknięciu **Opublikuj** oznaczenia znikają.
+### Widoczność sekcji
 
-### Pokazywanie i ukrywanie sekcji
+Ikona oka w konspekcie albo przełącznik **Widoczna na stronie**. Przekreślone oko — sekcja ukryta (treść zachowana). Kłódka — sekcji nie można ukryć.
 
-Większość sekcji można ukryć, nie usuwając jej treści: kliknij **ikonę oka** przy sekcji w konspekcie albo wyłącz przełącznik **Widoczna na stronie** w formularzu. Ukryta sekcja ma przekreślone oko i szary napis. Kłódka oznacza sekcję, której nie da się ukryć.
+### Pola
 
-### Pola, listy i zdjęcia
-
-- Przy polach z limitem znaków pojawia się licznik — robi się czerwony po przekroczeniu.
-- **Listy** (np. kroki, karty, punkty): **Dodaj** dodaje element, strzałki zmieniają kolejność, **×** usuwa. Elementy z tytułem rozwijasz kliknięciem.
-- **Zdjęcia**: kliknij miejsce na zdjęcie, wybierz plik z biblioteki albo prześlij nowy. Pod spodem jest **Opis zdjęcia (alt)** — po wybraniu zdjęcia wstawia się opis z biblioteki, a tu możesz go zmienić tylko dla tej strony. Przy niektórych zdjęciach jest też **Podpis**.
-- **Wybór osób, pytań, testu, artykułu** (np. kto z zespołu jest na stronie głównej): wybierasz z listy pozycje, które już są w panelu. „Automatycznie” oznacza, że strona sama weźmie pierwsze/najnowsze. Pozycja w szkicu jest oznaczona i nie wyświetli się, dopóki jej nie opublikujesz.
+- **Licznik znaków** — przy polach z limitem; czerwony po przekroczeniu.
+- **Listy** — **Dodaj**, strzałki (kolejność), **×** (usunięcie); elementy z tytułem rozwija kliknięcie.
+- **Zdjęcia** — wybór z biblioteki lub przesłanie nowego. **Opis zdjęcia (alt)** dotyczy tylko tej strony; po wyborze zdjęcia wypełnia się opisem z biblioteki. Niektóre zdjęcia mają też **Podpis**.
+- **Wybór pozycji** (osoby, pytania, test, artykuł) — z listy pozycji w panelu. **Automatycznie** — strona bierze pierwsze/najnowsze. Pozycje w szkicu są oznaczone i nie wyświetlają się do czasu publikacji.
 
 ### SEO strony
 
-Pozycja **SEO** na górze konspektu: **Tytuł strony** i **Opis** — to, co pokazuje Google w wynikach wyszukiwania. Liczniki podpowiadają zalecaną długość. Więcej w [Dobre praktyki › SEO](#seo--jak-pisać-pod-google).
+Pozycja **SEO** w konspekcie: **Tytuł strony** i **Opis** — wyświetlane w wynikach Google. Patrz [SEO](#seo).
 
-### Uwagi o poszczególnych stronach
+### Sekcje sterowane z innych miejsc
 
-- **Strona główna › Ośrodek** — cztery zdjęcia w tej sekcji to zdjęcia z **Galerii** oznaczone gwiazdką (patrz [Galeria](#galeria)). Nie wybiera się ich w CMS.
-- **Strona główna › Opinie** — opinie to dosłowne cytaty z Google i portalu osrodkiterapii.pl. Na razie nie edytuje się ich w panelu (sekcja ma kłódkę). Zmianę zgłoś osobie, która prowadzi stronę.
-- **Strony tematyczne** (Leczenie alkoholizmu, Leczenie narkomanii, Dla rodziny, Detoks) — sekcja **Pytania** pokazuje pytania z **FAQ** z wybraną kategorią (np. „alkohol”). Gdy w tej kategorii nie ma żadnego opublikowanego pytania, sekcja znika sama.
+| Sekcja | Źródło |
+|---|---|
+| Strona główna › Ośrodek (4 zdjęcia) | zdjęcia z gwiazdką w [Galerii](#galeria) |
+| Strona główna › Opinie | cytaty z Google i osrodkiterapii.pl — nieedytowalne w panelu (kłódka) |
+| Strony tematyczne › Pytania | pytania FAQ z kategorią wybraną w sekcji (Alkohol, Narkotyki, Rodzina, Detoks, NFZ); bez opublikowanych pytań sekcja się nie wyświetla |
 
 ---
 
 ## Zespół
 
-Lista osób z zespołu. Na stronie są w zakładce **Zespół**, a każda osoba ma własną podstronę.
+Osoby na stronie **/zespol**; każda ma podstronę `/zespol/<adres>`.
 
-### Dodawanie i edycja osoby
+| Pole | Opis |
+|---|---|
+| **Imię i nazwisko** | |
+| **Rola** | np. „terapeutka uzależnień” |
+| **Adres (slug)** | końcówka adresu podstrony; tworzony z imienia; nie zmieniać po publikacji |
+| **Zdjęcie** | portret, najlepiej pionowy |
+| **Krótki opis** | 2–3 zdania na karcie |
+| **Pełny biogram** | tekst podstrony (pogrubienie, nagłówki, listy, linki) |
+| **Kwalifikacje** | wykształcenie, specjalizacje |
+| **Licencje i certyfikaty** | **Nazwa** + opcjonalnie **Numer**; widoczne na podstronie |
+| **Kolejność** | niższa liczba = wyżej |
 
-**Dodaj osobę** (albo **Edytuj** w menu wiersza) otwiera formularz:
-
-- **Imię i nazwisko**, **Rola** (np. „terapeutka uzależnień”).
-- **Adres (slug)** — końcówka adresu podstrony, np. `/zespol/anna-kowalska`. Tworzy się sam z imienia. **Nie zmieniaj go po publikacji** — stare linki przestaną działać.
-- **Zdjęcie** — portret. Najlepiej pionowy, twarz w górnej części kadru.
-- **Krótki opis** — 2–3 zdania na kartę na liście.
-- **Pełny biogram** — tekst na podstronie osoby (z prostym formatowaniem: pogrubienie, nagłówki, listy, linki).
-- **Kwalifikacje** — wykształcenie, specjalizacje.
-- **Licencje i certyfikaty** — **Nazwa** i opcjonalnie **Numer** (np. certyfikat specjalisty psychoterapii uzależnień). Pokazują się na podstronie osoby. **Usuń licencję** usuwa wiersz.
-- **Kolejność** — niższa liczba = wyżej na liście.
-
-Zapisz przyciskiem **Zapisz szkic** albo **Zapisz i opublikuj**.
-
-### Na stronie głównej
-
-Na stronie głównej mieszczą się **najwyżej 4 osoby**. Wybierasz je gwiazdką w menu wiersza (⋯ › **Na stronie głównej**) albo w CMS › Strona główna › Zespół.
+Strona główna: maks. **4 osoby** — ★ w menu wiersza albo CMS › Strona główna › Zespół.
 
 ---
 
 ## FAQ
 
-Najczęściej zadawane pytania. Wszystkie opublikowane są na stronie **/faq**.
+Wszystkie opublikowane pytania są na **/faq**.
 
-- **Pytanie** i **Odpowiedź** (odpowiedź może mieć pogrubienia, listy i linki).
-- **Kategoria** — wybierasz z listy. **Ogólne** to pytania o przyjęcie, pobyt i koszty — są na /faq (i na stronie głównej, jeśli je tam wybierzesz). Kategorie tematyczne pokazują pytanie także na swojej stronie: **Alkohol** → Leczenie alkoholizmu, **Narkotyki** → Leczenie narkomanii, **Rodzina** → Dla rodziny, **Detoks** → Detoks i kwalifikacja, **NFZ** → artykuł o odwyku na NFZ. Gdy w kategorii nie ma żadnego opublikowanego pytania, sekcja na tej stronie się nie pokazuje.
-- **Kolejność** — niższa liczba = wyżej.
-- **Na stronie głównej** — najwyżej **6 pytań**, wybierasz gwiazdką w menu wiersza albo w CMS › Strona główna › Pytania.
+| Pole | Opis |
+|---|---|
+| **Pytanie** | |
+| **Odpowiedź** | pogrubienia, listy, linki |
+| **Kategoria** | lista wyboru — patrz tabela niżej |
+| **Kolejność** | niższa liczba = wyżej |
+
+| Kategoria | Gdzie jeszcze, oprócz /faq |
+|---|---|
+| **Ogólne** | tylko /faq — pytania o przyjęcie, pobyt, koszty |
+| **Alkohol** | Leczenie alkoholizmu |
+| **Narkotyki** | Leczenie narkomanii |
+| **Rodzina** | Dla rodziny |
+| **Detoks** | Detoks i kwalifikacja |
+| **NFZ** | artykuł „Odwyk na NFZ” |
+
+Strona główna: maks. **6 pytań** dowolnej kategorii — ★ w menu wiersza albo CMS › Strona główna › Pytania.
 
 ---
 
 ## Artykuły
 
-Poradnik — artykuły na stronie **/porady**.
+Artykuły na stronie **/porady**.
 
-### Pola artykułu
+| Pole | Opis |
+|---|---|
+| **Tytuł** | |
+| **Adres (slug)** | `/porady/<adres>`; nie zmieniać po publikacji |
+| **Wstęp (zajawka)** | kilka zdań pod tytułem, przed treścią; także na karcie artykułu, w sekcji „Z poradnika” na stronie głównej i w Google, gdy **Opis meta** jest pusty; do 400 znaków |
+| **Osoba weryfikująca z zespołu** | **wymagana do publikacji** (albo pole niżej); artykuł pokazuje jej zdjęcie, funkcję i link do biogramu |
+| **Osoba spoza zespołu** | imię, nazwisko, funkcja — gdy weryfikował ktoś spoza zespołu |
+| **Zdjęcie główne** | na górze artykułu i przy udostępnianiu linku |
+| **Tytuł meta**, **Opis meta** | dla Google |
 
-- **Podstawy**: **Tytuł**, **Adres (slug)** (np. `/porady/odwyk-na-nfz` — nie zmieniaj po publikacji), **Wstęp (zajawka)** — kilka zdań wprowadzenia, które pokazują się pod tytułem artykułu, przed treścią. Ten sam tekst jest też na karcie artykułu na liście /porady, w sekcji „Z poradnika” na stronie głównej i — jeśli pole **Opis meta** jest puste — w wynikach Google. Do 400 znaków.
-- **Osoba weryfikująca** — **wymagana przed publikacją**. Wybierz osobę z zespołu (artykuł pokaże jej zdjęcie, funkcję i link do biogramu) albo, gdy sprawdzał ktoś spoza zespołu, wpisz go w polu **Osoba spoza zespołu** (imię, nazwisko i funkcja).
-- **Zdjęcie główne i SEO**: zdjęcie na górze artykułu i przy udostępnianiu linku, **Tytuł meta** i **Opis meta** dla Google.
+### Bloki treści
 
-### Treść — bloki
+| Blok | Zawartość |
+|---|---|
+| **Tekst** | pogrubienie, kursywa, nagłówek 2 i 3, listy, cytat, link |
+| **Zdjęcie + tekst** | zdjęcie **Po lewej** / **Po prawej** od tekstu |
+| **Wezwanie do działania** | ramka z przyciskiem; **Adres przycisku** np. `/kontakt` lub `tel:+48669916005` |
+| **Lista kroków** | numerowane kroki: tytuł + opis |
+| **Sekcja FAQ** | pytania z kategorii wybranej z listy (**Wszystkie pytania** albo jedna z kategorii FAQ) |
 
-Treść artykułu składa się z bloków, które dodajesz po kolei:
+Kolejność: **Przenieś wyżej / niżej**. Usunięcie: **Usuń sekcję**.
 
-- **Tekst** — zwykły tekst z paskiem narzędzi: pogrubienie, kursywa, nagłówek 2 i 3, lista punktowana i numerowana, cytat, link.
-- **Zdjęcie + tekst** — zdjęcie z tekstem obok; wybierasz, czy zdjęcie jest **Po lewej** czy **Po prawej**.
-- **Wezwanie do działania** — wyróżniona ramka z przyciskiem, np. „Zadzwoń”. **Adres przycisku** to np. `/kontakt` albo `tel:+48669916005`.
-- **Lista kroków** — ponumerowane kroki z tytułem i opisem.
-- **Sekcja FAQ** — pytania z FAQ z wybranej kategorii (puste = wszystkie opublikowane).
+### Uwagi
 
-Bloki przesuwasz strzałkami **Przenieś wyżej / niżej** i usuwasz przyciskiem **Usuń sekcję**.
-
-### Stałe artykuły i strona główna
-
-- Artykuł oznaczony na liście jako **stały artykuł** jest podlinkowany z innych miejsc strony, dlatego nie da się go ukryć ani zmienić jego adresu. Treść możesz edytować normalnie.
-- W sekcji **Z poradnika** na stronę główną trafia wybrany artykuł albo — jeśli nikogo nie wybrano — najnowszy opublikowany.
+- **Stały artykuł** (oznaczenie na liście) — podlinkowany z innych stron; nie można go ukryć ani zmienić adresu. Treść edytowalna.
+- **Z poradnika** na stronie głównej: wybrany artykuł, a bez wyboru — najnowszy opublikowany.
 
 ---
 
 ## Galeria i media
 
-Jedna pozycja w menu, dwie zakładki u góry: **Galeria** i **Biblioteka mediów**.
+Dwie zakładki: **Galeria** i **Biblioteka mediów**.
 
 ### Galeria
 
-Zdjęcia ośrodka na stronie **/galeria**.
+Zdjęcia na stronie **/galeria**.
 
-- **Dodawanie**: przeciągnij zdjęcia z komputera na ramkę albo kliknij **Dodaj zdjęcia**. Możesz dodać wiele naraz. Każde zdjęcie jest w przeglądarce automatycznie zmniejszane — nie musisz niczego przygotowywać.
-- Nowe zdjęcia trafiają jako **szkice**. Opublikuj każde przyciskiem **Opublikuj** na karcie albo wszystkie naraz przyciskiem **Opublikuj wszystkie robocze**. **Ukryj** zdejmuje zdjęcie ze strony.
-- Każda karta ma dwa pola, zapisywane automatycznie po wyjściu z pola:
-  - **Opis pod zdjęciem** — widoczny pod zdjęciem i w powiększeniu,
-  - **Opis alternatywny (alt)** — patrz [Opisy zdjęć](#opisy-zdjęć-alt).
-- **Kolejność**: przeciągnij kartę w inne miejsce albo użyj strzałek. Pierwsze sześć opublikowanych zdjęć pokazuje się też na stronie **Ośrodek**.
-- **Gwiazdka ★** — wybiera zdjęcie do sekcji **Ośrodek na stronie głównej** (dokładnie 4 miejsca, w kolejności z galerii). Wybrane zdjęcia mają znaczek **Strona główna**. Zdjęcie w szkicu z gwiazdką pojawi się dopiero po opublikowaniu.
-- **Usuwanie** (ikona kosza) kasuje zdjęcie na stałe.
+| Element | Działanie |
+|---|---|
+| Dodawanie | przeciągnięcie plików na ramkę lub **Dodaj zdjęcia**; wiele naraz; automatyczne zmniejszenie w przeglądarce |
+| Status | nowe zdjęcia to **szkice**; **Opublikuj** / **Ukryj** na karcie; **Opublikuj wszystkie robocze** |
+| **Opis pod zdjęciem** | widoczny pod zdjęciem i w powiększeniu; zapis po wyjściu z pola |
+| **Opis alternatywny (alt)** | patrz [Opisy zdjęć (alt)](#opisy-zdjęć-alt); zapis po wyjściu z pola |
+| Kolejność | przeciąganie kart lub strzałki; pierwsze 6 opublikowanych także na stronie **Ośrodek** |
+| ★ | zdjęcie w sekcji Ośrodek na stronie głównej; dokładnie 4, w kolejności galerii; znaczek **Strona główna**; szkic z ★ pokaże się po publikacji |
+| Kosz | usunięcie zdjęcia |
 
 ### Biblioteka mediów
 
-Wszystkie pozostałe pliki strony: zdjęcia do artykułów, portrety zespołu, zdjęcia w CMS, obraz do udostępniania.
+Pozostałe pliki: zdjęcia artykułów, portrety, zdjęcia w CMS, obraz do udostępniania. Pliki dodane w formularzach trafiają do tej samej biblioteki.
 
-- **Dodawanie**: przeciągnij pliki na ramkę albo **Dodaj pliki**. Obsługiwane: zdjęcia (JPG, PNG, WebP, AVIF), SVG i PDF. Do każdego zdjęcia panel sam tworzy mniejsze wersje, żeby telefony pobierały tylko tyle, ile potrzebują.
-- Pliki dodane w formularzach (np. zdjęcie osoby) też trafiają tutaj — to ta sama biblioteka.
-- **Opis alternatywny (alt)** zapisuje się po wyjściu z pola. Zdjęcia bez opisu mają znaczek **Brak opisu**, a liczba takich zdjęć jest w linijce nad listą.
-- **Otwórz plik** pokazuje oryginał.
-- **Usuń** — uwaga: miejsca na stronie, w których plik był użyty, zostaną bez zdjęcia. Przed usunięciem upewnij się, że nigdzie go nie potrzebujesz.
+| Element | Działanie |
+|---|---|
+| Dodawanie | przeciągnięcie na ramkę lub **Dodaj pliki**; JPG, PNG, WebP, AVIF, SVG, PDF; mniejsze kopie zdjęć tworzone automatycznie |
+| **Opis alternatywny (alt)** | zapis po wyjściu z pola; brak opisu — znaczek **Brak opisu** (liczba w linii nad listą) |
+| **Otwórz plik** | oryginał w nowej karcie |
+| Kosz | usunięcie; miejsca użycia pliku zostają bez zdjęcia |
 
 ---
 
 ## Testy przesiewowe
 
-Testy, które odwiedzający mogą wypełnić anonimowo na stronie **/testy**, z wynikiem na ekranie i opcjonalnie w e-mailu (z PDF).
+Testy na stronie **/testy** — wynik na ekranie i opcjonalnie e-mailem (PDF). Cały test (podstawy, pytania, wyniki) edytowany na jednej stronie i zapisywany razem.
 
-### Pola testu
+### Sekcje edytora
 
-- **Tytuł**, **Adres (slug)** (`/testy/…`), **Krótki opis** (na liście testów), **Tekst wprowadzający** (przed pierwszym pytaniem).
-- **Zastrzeżenie** — pokazywane przy teście, przy wyniku i w PDF (np. „Test nie jest diagnozą”). Treść musi zaakceptować osoba merytorycznie odpowiedzialna.
-- **Meta tytuł** i **Meta opis** — dla Google.
-- **Kolejność** — niższa liczba = wyżej na liście.
+| Sekcja | Zawartość |
+|---|---|
+| **1. Podstawy** | **Tytuł testu**, **Krótki opis** (lista testów), **Wstęp** (nad pierwszym pytaniem), **Zastrzeżenie** (przy wyniku i w PDF; wymaga akceptacji osoby merytorycznie odpowiedzialnej) |
+| **2. Pytania** | treść pytania, odpowiedzi z **punktami**; licznik pytań i maksymalnego wyniku |
+| **3. Wyniki** | zakresy **Od … do … pkt** z **tytułem** i **treścią** wyniku |
+| **4. Adres i SEO** | zwinięte: **Adres (slug)** (`/testy/<adres>`), **Tytuł meta**, **Opis meta**, **Kolejność** |
 
-### Pytania i odpowiedzi
+### Pytania
 
-- Dodaj pytanie, wpisując treść w polu **Treść nowego pytania**.
-- Każde pytanie ma odpowiedzi z **Punktami**. **Nowa odpowiedź** dodaje kolejną.
-- Gdy wszystkie pytania mają takie same odpowiedzi (np. „Nigdy / Czasem / Często”), ułóż je w jednym pytaniu i kliknij **Użyj tej skali wszędzie** — panel zapyta o potwierdzenie, bo nadpisze odpowiedzi w pozostałych pytaniach.
-- Strzałki **W górę / W dół** zmieniają kolejność, kosz usuwa pytanie razem z odpowiedziami.
+- Nowy test zawiera jedno pytanie z odpowiedziami **Nie** (0 pkt) / **Tak** (1 pkt).
+- **Dodaj pytanie** — nowe pytanie z odpowiedziami skopiowanymi z poprzedniego.
+- **Dodaj odpowiedź** / **×** — dodanie / usunięcie odpowiedzi.
+- **Użyj tych odpowiedzi we wszystkich pytaniach** — kopiuje odpowiedzi do pozostałych pytań (z potwierdzeniem).
+- Strzałki — kolejność pytań; kosz — usunięcie.
 
-### Przedziały wyniku
+### Wyniki
 
-Wynik to suma punktów. **Przedziały wyniku** mówią, co odwiedzający zobaczy przy danej sumie: **Od (punkty)**, **Do (punkty)**, **Tytuł wyniku** i **Treść wyniku**. Przedziały powinny pokrywać wszystkie możliwe sumy, bez dziur i nakładania się.
+Wynik = suma punktów. **Dodaj wynik** tworzy zakres zaczynający się za poprzednim. Luki i nakładanie się zakresów — żółte ostrzeżenie nad listą.
 
-Testu **nie da się opublikować**, dopóki nie ma pytań, odpowiedzi i przedziałów.
+### Zapis i publikacja
 
-### Strona główna i zgłoszenia
+- Puste pytania i wyniki są przy zapisie pomijane.
+- Szkic: zapis możliwy w każdym stanie.
+- Publikacja wymaga: min. 1 pytania, odpowiedzi w każdym pytaniu, min. 1 wyniku. Brak — komunikat z przyczyną.
 
-- Test na stronie głównej wybierasz gwiazdką w menu wiersza albo w CMS › Strona główna › Test przesiewowy.
-- Kolumna **Zgłoszenia** na liście testów prowadzi do wyników osób, które poprosiły o wynik e-mailem: adres, wynik, przedział i to, czy e-mail **wysłano**. Zgłoszenie można usunąć.
+### Pozostałe
+
+- Strona główna: ★ w menu wiersza albo CMS › Strona główna › Test przesiewowy.
+- **Zgłoszenia** (strona testu, kolumna na liście) — osoby, które zamówiły wynik e-mailem: adres, wynik, przedział, status wysyłki (**wysłano** / **nie wysłano**). Zgłoszenie można usunąć.
 
 ---
 
 ## Zgłoszenia
 
-Wszystko, co odwiedzający wysłali przez stronę. Dwie zakładki u góry: **Wiadomości** i **Adresy e-mail**.
+Dwie zakładki: **Wiadomości** i **Adresy e-mail**.
 
 ### Wiadomości
 
-Wiadomości z formularza kontaktowego. Liczba przy zakładce to nowe, nieobsłużone wiadomości.
+Formularz kontaktowy. Liczba przy zakładce — nowe wiadomości.
 
-- Każda wiadomość pokazuje imię (jeśli podano), telefon, e-mail, jak dana osoba woli kontakt i treść. Telefon i e-mail są klikalne.
-- Po obsłużeniu kliknij **Oznacz jako załatwione**. **Cofnij do nowych** przywraca status.
-- Kopia każdej wiadomości przychodzi też e-mailem — na adres z [Ustawień](#ustawienia) (o ile nie ustalono innego).
-- Wiadomość można usunąć (kosz) — np. gdy ktoś prosi o usunięcie swoich danych.
+| Element | Działanie |
+|---|---|
+| Treść | imię (opcjonalne), telefon, e-mail, preferowany kontakt, wiadomość; telefon i e-mail klikalne |
+| **Oznacz jako załatwione** / **Cofnij do nowych** | status obsługi |
+| Kosz | usunięcie wiadomości |
+| Powiadomienie | kopia każdej wiadomości e-mailem — na adres z [Ustawień](#ustawienia) (o ile nie ustalono innego) |
 
 ### Adresy e-mail
 
-Wszystkie adresy zostawione na stronie, z trzech źródeł: **zapis na stronie**, **test przesiewowy** i **formularz kontaktowy**.
+Adresy ze źródeł: **zapis na stronie**, **test przesiewowy**, **formularz kontaktowy**.
 
-- Na górze są liczby: unikalne adresy i ile pochodzi z każdego źródła.
-- **Pobierz .xlsx** — eksport do Excela (z datą zgody).
-- Adres usuwa się tam, gdzie „mieszka”: zapis — tutaj (kosz), test — na stronie zgłoszeń testu, formularz — w zakładce Wiadomości (link **w wiadomościach**).
-- **Adresy z formularza kontaktowego** zostały podane po to, żeby odpowiedzieć na wiadomość — **nie wysyłaj na nie ofert ani newslettera**.
+| Element | Działanie |
+|---|---|
+| Liczniki | unikalne adresy i liczba z każdego źródła |
+| **Pobierz .xlsx** | eksport z datą zgody |
+| Usuwanie | zapis — tutaj (kosz); test — w zgłoszeniach testu; formularz — w Wiadomościach (link **w wiadomościach**) |
 
-> Dane starsze niż 24 miesiące panel usuwa automatycznie.
+Adresy z formularza kontaktowego służą tylko do odpowiedzi — nie do ofert ani newslettera.
+
+Dane starsze niż **24 miesiące** są usuwane automatycznie.
 
 ---
 
 ## Ustawienia
 
-Dane używane w wielu miejscach strony naraz — zmieniasz je raz, a zmieniają się wszędzie.
+Dane wspólne dla całej strony. Zapis: **Zapisz ustawienia** — bez szkicu, obowiązuje od razu.
 
-- **Kontakt**: **Telefon** (w nagłówku, stopce, przyciskach „Zadzwoń”), **Telefon dodatkowy**, **E-mail** (na stronie; zwykle także adres, na który przychodzą powiadomienia o wiadomościach), **Adres** (ulica w pierwszej linii, kod i miejscowość w drugiej) i **Godziny pracy** (puste pole = godziny się nie pokazują).
-- **Social media**: linki do profili (Facebook, Instagram, YouTube, LinkedIn, WhatsApp). Wpisuj pełny adres zaczynający się od `https://`, i tylko oficjalne profile ośrodka. Puste pole = ikona się nie pokazuje.
-- **Prywatność i zgody**: **Nota o przetwarzaniu danych** (zdanie przy zgodzie pod formularzem — link do polityki prywatności dodaje się sam) i **Treść banera zgód** (okienko z pytaniem o zgodę na statystyki Google).
-- **Domyślny obraz Open Graph** — obrazek pokazywany, gdy ktoś udostępni link do strony (np. na Facebooku czy WhatsAppie), jeśli strona nie ma własnego. Najlepiej 1200 × 630 px, z logo i zdjęciem ośrodka.
-
-Zmiany zapisuje przycisk **Zapisz ustawienia** na dole formularza. Ustawienia nie mają szkicu — po zapisaniu od razu obowiązują na stronie.
+| Grupa | Pola |
+|---|---|
+| **Kontakt** | **Telefon** (nagłówek, stopka, przyciski „Zadzwoń”), **Telefon dodatkowy**, **E-mail** (na stronie; zwykle też adres powiadomień), **Adres** (ulica / kod i miejscowość), **Godziny pracy** (puste — niewyświetlane) |
+| **Social media** | Facebook, Instagram, YouTube, LinkedIn, WhatsApp — pełny adres `https://…`, tylko oficjalne profile; puste — ikona niewyświetlana |
+| **Prywatność i zgody** | **Nota o przetwarzaniu danych** (przy zgodzie pod formularzem; link do polityki prywatności dodawany automatycznie), **Treść banera zgód** (zgoda na statystyki Google) |
+| **Domyślny obraz Open Graph** | obraz przy udostępnianiu linku (Facebook, WhatsApp), gdy strona nie ma własnego; 1200 × 630 px |
 
 ---
 
-## Dobre praktyki
+## Wytyczne
 
 ### Opisy zdjęć (alt)
 
-Opis alternatywny czyta osobom niewidomym ich czytnik ekranu, a Google dzięki niemu rozumie, co jest na zdjęciu. Opisz krótko i konkretnie, **co widać**: „Jasny salon z fotelami ustawionymi w krąg i kominkiem”. Przy portrecie: imię, nazwisko i funkcja. Nie zaczynaj od „Zdjęcie…” i nie zostawiaj nazwy pliku (np. „IMG_0042”).
+- Opisać, co widać: „Jasny salon z fotelami ustawionymi w krąg i kominkiem”.
+- Portret: imię, nazwisko, funkcja.
+- Bez „Zdjęcie…” na początku i bez nazw plików („IMG_0042”).
 
-### SEO — jak pisać pod Google
+### SEO
 
-- **Tytuł** (SEO / meta): do ok. **60 znaków**, najważniejsze słowa na początku, nazwa ośrodka na końcu, np. „Odwyk alkoholowy pod Warszawą — leczenie alkoholizmu | Insieme”.
-- **Opis**: do ok. **160 znaków**, jedno-dwa zdania zachęcające do kliknięcia, mówiące, co ktoś znajdzie na stronie.
-- Każda strona i artykuł powinny mieć **własny** tytuł i opis — nie kopiuj ich między stronami.
-- Pisz naturalnie, tak jak mówią ludzie szukający pomocy („odwyk”, „leczenie alkoholizmu”, „ośrodek pod Warszawą”). Nie upychaj słów kluczowych.
-- **Nie zmieniaj adresów (slug)** opublikowanych stron, artykułów i osób. Google i inne strony linkują do starego adresu — po zmianie trafią na błąd.
-- Uzupełniaj opisy zdjęć (alt).
+| Element | Zasada |
+|---|---|
+| Tytuł (SEO / meta) | do ~**60 znaków**; najważniejsze słowa na początku, nazwa ośrodka na końcu |
+| Opis | do ~**160 znaków**; co znajduje się na stronie |
+| Unikalność | własny tytuł i opis dla każdej strony i artykułu |
+| Słowa kluczowe | naturalnie, językiem szukających („odwyk”, „leczenie alkoholizmu”, „pod Warszawą”); bez upychania |
+| Adresy (slug) | nie zmieniać po publikacji — stare linki przestają działać |
 
-### Prawo — treści medyczne (art. 14 ustawy o działalności leczniczej)
+### Treści medyczne (art. 14 ustawy o działalności leczniczej)
 
-Placówka lecznicza może **informować**, ale nie może **reklamować** swoich świadczeń. W praktyce:
+Dozwolone informowanie, niedozwolona reklama świadczeń:
 
-- Opisuj, **co** robicie i **jak** — bez zachwalania. Unikaj słów „najlepszy”, „najskuteczniejszy”, „gwarantujemy”, „100%”.
-- **Nie obiecuj efektów** leczenia ani skuteczności, nie podawaj „procentu wyleczeń”.
-- Opinie pacjentów cytuj **dosłownie**, bez poprawiania, i nie wybieraj tylko tych, które brzmią jak obietnica wyleczenia.
-- Teksty medyczne (artykuły, odpowiedzi w FAQ, wyniki testów, zastrzeżenia) przed publikacją powinna sprawdzić osoba merytorycznie odpowiedzialna — dlatego artykuł wymaga wskazania osoby weryfikującej.
+- bez określeń „najlepszy”, „najskuteczniejszy”, „gwarantujemy”, „100%”;
+- bez obietnic efektów i danych o skuteczności;
+- opinie pacjentów — dosłownie, bez selekcji pod obietnicę wyleczenia;
+- artykuły, odpowiedzi FAQ, wyniki testów, zastrzeżenia — przed publikacją sprawdza osoba merytorycznie odpowiedzialna.
 
-W razie wątpliwości co do konkretnego zdania — zapytaj prawnika ośrodka, zanim je opublikujesz.
+W razie wątpliwości — konsultacja z prawnikiem ośrodka przed publikacją.
 
 ### Dane osobowe (RODO)
 
-Wiadomości, adresy e-mail i wyniki testów to **dane osobowe**, często dotyczące zdrowia — czyli szczególnie chronione.
+Wiadomości, adresy e-mail i wyniki testów to dane osobowe, często dotyczące zdrowia.
 
-- Nie przesyłaj ich dalej poza osoby, które muszą się nimi zająć, i nie zostawiaj eksportu .xlsx na wspólnych dyskach ani w e-mailach.
-- Gdy ktoś prosi o usunięcie swoich danych, usuń jego wiadomość, adres lub zgłoszenie testu w panelu.
-- Adresów z formularza kontaktowego nie używaj do wysyłki ofert.
-- Panel sam usuwa dane starsze niż 24 miesiące.
+- Dostęp tylko dla osób, które je obsługują; eksportu .xlsx nie przechowywać na wspólnych dyskach ani w e-mailach.
+- Żądanie usunięcia danych — usunąć wiadomość, adres lub zgłoszenie testu w panelu.
+- Adresy z formularza kontaktowego — bez wysyłki ofert.
+- Automatyczne usuwanie po 24 miesiącach.

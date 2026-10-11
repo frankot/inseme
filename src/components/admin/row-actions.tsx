@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, ChevronDown, ExternalLink, EyeOff, Globe, Pencil, Star, Trash2 } from "lucide-react";
+import { Check, ExternalLink, EyeOff, Globe, MoreHorizontal, Pencil, Star, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -32,11 +32,14 @@ export type FeaturedToggle = {
 };
 
 /**
- * One menu per row on every list: edit, preview, the publish toggle and delete.
+ * The status and the menu at the end of every list row.
  *
- * The status badge doubles as the trigger, so the column still reads as a
- * status at a glance while the actions that change it live one click away —
- * the same set of actions the record's own page offers.
+ * The status badge is a switch: one click publishes a draft or hides a
+ * published record, with "Cofnij" in the confirmation to undo a misclick. A
+ * record that must stay live (`onUnpublish` omitted) shows a plain badge.
+ *
+ * The ⋯ button opens the menu — edit, preview, homepage picks, publishing and
+ * delete, the same set of actions the record's own page offers.
  */
 export function RowActions({
   editHref,
@@ -69,33 +72,60 @@ export function RowActions({
   const [confirmOpen, setConfirmOpen] = useState(false);
   const router = useRouter();
 
-  function run(action: () => Promise<ActionResult | DataResult<unknown>>, successMessage: string) {
+  function run(
+    action: () => Promise<ActionResult | DataResult<unknown>>,
+    successMessage: string,
+    undo?: () => Promise<ActionResult>,
+  ) {
     startTransition(async () => {
       const result = await action();
       if (!result.ok) {
         toast.error(result.error);
         return;
       }
-      toast.success(successMessage);
+      toast.success(successMessage, undo ? { action: { label: "Cofnij", onClick: () => run(undo, "Cofnięto.") } } : undefined);
       router.refresh();
     });
   }
 
+  // The badge's click: the opposite of the current status, undoable.
+  const toggle =
+    status === "published"
+      ? onUnpublish && (() => run(onUnpublish, "Ukryto — zmieniono na szkic.", onPublish))
+      : () => run(onPublish, "Opublikowano.", onUnpublish);
+
   return (
-    <>
+    <div className="flex items-center gap-2">
+      {toggle ? (
+        <button
+          type="button"
+          onClick={toggle}
+          disabled={isPending}
+          title={status === "published" ? "Kliknij, aby ukryć (zmienić na szkic)" : "Kliknij, aby opublikować"}
+          aria-label={`${label}: ${status === "published" ? "opublikowane — kliknij, aby ukryć" : "szkic — kliknij, aby opublikować"}`}
+          className="rounded-full transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:opacity-50"
+        >
+          <StatusBadge status={status} />
+        </button>
+      ) : (
+        <span title="Ten wpis musi pozostać opublikowany">
+          <StatusBadge status={status} />
+        </span>
+      )}
+
       <DropdownMenu>
         <DropdownMenuTrigger
           render={
             <Button
-              variant="ghost"
-              size="sm"
-              className="-mx-2 gap-1.5"
-              aria-label={`Akcje — ${label}`}
+              variant="outline"
+              size="icon"
+              className="size-8 shrink-0"
+              aria-label={`Więcej akcji — ${label}`}
+              title="Więcej akcji"
             />
           }
         >
-          <StatusBadge status={status} />
-          <ChevronDown className="size-3.5 text-muted-foreground" aria-hidden />
+          <MoreHorizontal className="size-5" aria-hidden />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-64">
@@ -170,6 +200,6 @@ export function RowActions({
           description={deleteDescription}
         />
       )}
-    </>
+    </div>
   );
 }

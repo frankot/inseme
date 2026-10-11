@@ -26,29 +26,53 @@ export const screeningTestSchema = z.object({
   sortOrder: z.number().int().min(0).max(9999),
 });
 
-export const questionSchema = z.object({
-  text: z.string().trim().min(1, "Podaj treść pytania.").max(500),
-  sortOrder: z.number().int().min(0).max(9999),
-});
-
-export const answerOptionSchema = z.object({
-  label: z.string().trim().min(1, "Podaj treść odpowiedzi.").max(200),
-  points: z.number().int().min(0, "Punkty nie mogą być ujemne.").max(100),
-  sortOrder: z.number().int().min(0).max(9999),
-});
-
-export const resultBandSchema = z.object({
-  minScore: z.number().int().min(0).max(9999),
-  maxScore: z.number().int().min(0).max(9999),
-  resultTitle: z.string().trim().min(1, "Podaj tytuł wyniku.").max(300),
-  resultBody: z.string().trim().min(1, "Podaj treść wyniku.").max(4000),
-  sortOrder: z.number().int().min(0).max(9999),
+/**
+ * The whole test as the admin editor submits it — its fields, its questions
+ * with their answers, and its result bands — saved in one go. Order is the
+ * array order. A band carries its id when it already exists, because
+ * submissions point at bands and must keep pointing at the same one.
+ *
+ * Anything present must be filled in; how many there are is only checked on
+ * publishing (`describeIncompleteness` in the actions), so a draft can be half
+ * built.
+ */
+export const testEditorSchema = screeningTestSchema.extend({
+  questions: z
+    .array(
+      z.object({
+        text: z.string().trim().min(1, "Podaj treść pytania.").max(500),
+        options: z
+          .array(
+            z.object({
+              label: z.string().trim().min(1, "Podaj treść odpowiedzi.").max(200),
+              points: z.number({ message: "Podaj punkty." }).int().min(0, "Punkty nie mogą być ujemne.").max(100),
+            }),
+          )
+          .max(20),
+      }),
+    )
+    .max(200),
+  bands: z
+    .array(
+      z
+        .object({
+          /** The saved band's id; absent for one added in the editor. */
+          bandId: z.string().optional(),
+          minScore: z.number({ message: "Podaj liczbę." }).int().min(0).max(9999),
+          maxScore: z.number({ message: "Podaj liczbę." }).int().min(0).max(9999),
+          resultTitle: z.string().trim().min(1, "Podaj tytuł wyniku.").max(300),
+          resultBody: z.string().trim().min(1, "Podaj treść wyniku.").max(4000),
+        })
+        .refine((band) => band.maxScore >= band.minScore, {
+          message: "Górna granica nie może być niższa od dolnej.",
+          path: ["maxScore"],
+        }),
+    )
+    .max(20),
 });
 
 export type ScreeningTestInput = z.infer<typeof screeningTestSchema>;
-export type QuestionInput = z.infer<typeof questionSchema>;
-export type AnswerOptionInput = z.infer<typeof answerOptionSchema>;
-export type ResultBandInput = z.infer<typeof resultBandSchema>;
+export type TestEditorInput = z.infer<typeof testEditorSchema>;
 
 /* ----------------------------------------------------------------- public */
 

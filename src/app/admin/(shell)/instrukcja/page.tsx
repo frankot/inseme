@@ -45,6 +45,10 @@ export default function AdminManualPage() {
             "[&_code]:rounded [&_code]:bg-muted [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[13px]",
             "[&_blockquote]:mt-4 [&_blockquote]:rounded-r-md [&_blockquote]:border-l-4 [&_blockquote]:border-amber-400 [&_blockquote]:bg-amber-50 [&_blockquote]:px-4 [&_blockquote]:py-3 [&_blockquote]:text-amber-950 dark:[&_blockquote]:bg-amber-950/40 dark:[&_blockquote]:text-amber-100 [&_blockquote_p]:mt-0",
             "[&_hr]:hidden",
+            // Reference tables: full width, hairline rules, muted header row.
+            "[&_table]:mt-4 [&_table]:w-full [&_table]:border-collapse [&_table]:text-sm",
+            "[&_th]:border-b [&_th]:bg-muted/50 [&_th]:px-3 [&_th]:py-2 [&_th]:text-left [&_th]:font-medium",
+            "[&_td]:border-b [&_td]:px-3 [&_td]:py-2 [&_td]:align-top [&_td:first-child]:w-[34%] [&_td:first-child]:font-medium",
           )}
           // The manual is our own Markdown, rendered and sanitised in `loadAdminManual`.
           dangerouslySetInnerHTML={{ __html: html }}

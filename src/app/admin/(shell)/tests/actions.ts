@@ -1,6 +1,7 @@
 "use server";
 
-import { asc, eq, max } from "drizzle-orm";
+import { and, eq, notInArray } from "drizzle-orm";
+import type { BatchItem } from "drizzle-orm/batch";
 import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
@@ -15,22 +16,12 @@ import { actionError, type ActionResult, type DataResult } from "@/lib/action-re
 import { requireAdmin } from "@/lib/auth-guard";
 import { publishState } from "@/lib/publish-state";
 import { emptyToNull } from "@/lib/validations/content";
-import {
-  answerOptionSchema,
-  questionSchema,
-  resultBandSchema,
-  screeningTestSchema,
-  type AnswerOptionInput,
-  type QuestionInput,
-  type ResultBandInput,
-  type ScreeningTestInput,
-} from "@/lib/validations/screening";
+import { testEditorSchema, type TestEditorInput } from "@/lib/validations/screening";
 
 /**
- * The builder edits one test through many small actions rather than one giant
- * nested form: questions, options and bands are separate rows with their own
- * ordering, and a single submit would have to diff three collections. Each
- * action re-validates and re-revalidates the same paths.
+ * A test is edited as one form and saved as one batch: its fields, its
+ * questions with their answers, and its result bands go to the database
+ * together, all or nothing (`db.batch` runs as a single transaction).
  */
 function revalidateTest(id: string, slug?: string | null) {
   revalidatePath("/admin/tests");
@@ -47,26 +38,27 @@ function isSlugClash(error: unknown): boolean {
 }
 
 /**
- * The test's own fields and its state. Questions and bands are edited
- * separately, so a brand-new test can only start as a draft — it has nothing
- * to answer yet.
+ * Saves the whole test from the editor. Questions and answers are rewritten —
+ * nothing points at them. Bands are matched by id and updated in place,
+ * because submissions reference the band they landed in; only bands removed in
+ * the editor are deleted. A new test's id is made here, so the test row and
+ * its children fit in the same batch.
  */
-export async function saveScreeningTest(
+export async function saveTest(
   id: string | null,
-  input: ScreeningTestInput,
+  input: TestEditorInput,
   publish: boolean,
-): Promise<DataResult<{ id: string }>> {
+): Promise<DataResult<{ id: string; bandIds: string[] }>> {
   try {
     await requireAdmin();
-    const parsed = screeningTestSchema.safeParse(input);
+    const parsed = testEditorSchema.safeParse(input);
     if (!parsed.success) {
       return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
     }
+    const data = parsed.data;
 
     if (publish) {
-      const problem = id
-        ? await describeIncompleteness(id)
-        : "Zapisz najpierw szkic, a potem dodaj pytania i przedziały wyniku.";
+      const problem = incompletenessOf(data);
       if (problem) return { ok: false, error: problem };
     }
 
@@ -74,43 +66,116 @@ export async function saveScreeningTest(
       ? await db.query.screeningTests.findFirst({
           where: eq(screeningTests.id, id),
           columns: { slug: true, publishedAt: true },
+          with: { resultBands: { columns: { id: true } } },
         })
       : null;
+    if (id && !previous) return { ok: false, error: "Nie znaleziono testu." };
 
+    const testId = id ?? crypto.randomUUID();
     const values = {
       ...publishState(publish, previous?.publishedAt),
-      title: parsed.data.title,
-      slug: parsed.data.slug,
-      description: emptyToNull(parsed.data.description),
-      introText: emptyToNull(parsed.data.introText),
-      disclaimerText: emptyToNull(parsed.data.disclaimerText),
-      metaTitle: emptyToNull(parsed.data.metaTitle),
-      metaDescription: emptyToNull(parsed.data.metaDescription),
-      sortOrder: parsed.data.sortOrder,
+      title: data.title,
+      slug: data.slug,
+      description: emptyToNull(data.description),
+      introText: emptyToNull(data.introText),
+      disclaimerText: emptyToNull(data.disclaimerText),
+      metaTitle: emptyToNull(data.metaTitle),
+      metaDescription: emptyToNull(data.metaDescription),
+      sortOrder: data.sortOrder,
       updatedAt: new Date(),
     };
 
-    if (id) {
-      await db.update(screeningTests).set(values).where(eq(screeningTests.id, id));
-      revalidateTest(id, values.slug);
-      if (previous?.slug && previous.slug !== values.slug) {
-        revalidatePath(`/testy/${previous.slug}`);
-      }
-      return { ok: true, data: { id } };
+    const queries: BatchItem<"pg">[] = [
+      id
+        ? db.update(screeningTests).set(values).where(eq(screeningTests.id, testId))
+        : db.insert(screeningTests).values({ id: testId, ...values }),
+      // Answers go with their questions (ON DELETE CASCADE).
+      db.delete(screeningTestQuestions).where(eq(screeningTestQuestions.testId, testId)),
+    ];
+
+    const questions = data.questions.map((question, index) => ({
+      id: crypto.randomUUID(),
+      testId,
+      text: question.text,
+      sortOrder: index,
+      options: question.options,
+    }));
+    if (questions.length > 0) {
+      queries.push(
+        db.insert(screeningTestQuestions).values(
+          questions.map((question) => ({
+            id: question.id,
+            testId: question.testId,
+            text: question.text,
+            sortOrder: question.sortOrder,
+          })),
+        ),
+      );
+      const options = questions.flatMap((question) =>
+        question.options.map((option, index) => ({
+          questionId: question.id,
+          label: option.label,
+          points: option.points,
+          sortOrder: index,
+        })),
+      );
+      if (options.length > 0) queries.push(db.insert(screeningTestAnswerOptions).values(options));
     }
 
-    const [row] = await db
-      .insert(screeningTests)
-      .values(values)
-      .returning({ id: screeningTests.id });
-    revalidateTest(row.id, values.slug);
-    return { ok: true, data: { id: row.id } };
+    const existing = new Set(previous?.resultBands.map((band) => band.id) ?? []);
+    const kept = data.bands.flatMap((band) => (band.bandId && existing.has(band.bandId) ? [band.bandId] : []));
+    queries.push(
+      db
+        .delete(screeningTestResultBands)
+        .where(
+          kept.length > 0
+            ? and(eq(screeningTestResultBands.testId, testId), notInArray(screeningTestResultBands.id, kept))
+            : eq(screeningTestResultBands.testId, testId),
+        ),
+    );
+    const added: (typeof screeningTestResultBands.$inferInsert)[] = [];
+    // Every band's id in editor order, so the form can keep them for the next save.
+    const bandIds = data.bands.map((band) => band.bandId ?? "");
+    data.bands.forEach((band, index) => {
+      const fields = {
+        minScore: band.minScore,
+        maxScore: band.maxScore,
+        resultTitle: band.resultTitle,
+        resultBody: band.resultBody,
+        sortOrder: index,
+      };
+      if (band.bandId && existing.has(band.bandId)) {
+        queries.push(
+          db.update(screeningTestResultBands).set(fields).where(eq(screeningTestResultBands.id, band.bandId)),
+        );
+      } else {
+        const bandId = crypto.randomUUID();
+        bandIds[index] = bandId;
+        added.push({ id: bandId, testId, ...fields });
+      }
+    });
+    if (added.length > 0) queries.push(db.insert(screeningTestResultBands).values(added));
+
+    await db.batch(queries as [BatchItem<"pg">, ...BatchItem<"pg">[]]);
+
+    revalidateTest(testId, values.slug);
+    if (previous?.slug && previous.slug !== values.slug) revalidatePath(`/testy/${previous.slug}`);
+    return { ok: true, data: { id: testId, bandIds } };
   } catch (error) {
     if (isSlugClash(error)) {
       return { ok: false, error: "Ten adres (slug) jest już zajęty przez inny test." };
     }
     return actionError(error, "Nie udało się zapisać testu.");
   }
+}
+
+/** Why the test in the editor can't go live yet, or null. */
+function incompletenessOf(data: TestEditorInput): string | null {
+  if (data.questions.length === 0) return "Dodaj przynajmniej jedno pytanie.";
+  const empty = data.questions.findIndex((question) => question.options.length === 0);
+  if (empty >= 0) return `Pytanie ${empty + 1} nie ma odpowiedzi.`;
+  if (data.bands.length === 0) return "Dodaj przynajmniej jeden przedział wyniku.";
+  return null;
 }
 
 /**
@@ -182,257 +247,6 @@ async function describeIncompleteness(id: string): Promise<string | null> {
   return null;
 }
 
-/* -------------------------------------------------------------- questions */
-
-export async function addQuestion(testId: string, input: QuestionInput): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    const parsed = questionSchema.safeParse(input);
-    if (!parsed.success) {
-      return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
-    }
-    await db.insert(screeningTestQuestions).values({
-      testId,
-      text: parsed.data.text,
-      sortOrder: parsed.data.sortOrder,
-    });
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się dodać pytania.");
-  }
-}
-
-export async function updateQuestion(
-  questionId: string,
-  testId: string,
-  input: QuestionInput,
-): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    const parsed = questionSchema.safeParse(input);
-    if (!parsed.success) {
-      return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
-    }
-    await db
-      .update(screeningTestQuestions)
-      .set({ text: parsed.data.text, sortOrder: parsed.data.sortOrder })
-      .where(eq(screeningTestQuestions.id, questionId));
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się zapisać pytania.");
-  }
-}
-
-export async function deleteQuestion(questionId: string, testId: string): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    // Options cascade with the question — see the FK in the schema.
-    await db.delete(screeningTestQuestions).where(eq(screeningTestQuestions.id, questionId));
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się usunąć pytania.");
-  }
-}
-
-/** Swaps a question with its neighbour, so editors reorder without typing numbers. */
-export async function moveQuestion(
-  questionId: string,
-  testId: string,
-  direction: "up" | "down",
-): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    const rows = await db
-      .select()
-      .from(screeningTestQuestions)
-      .where(eq(screeningTestQuestions.testId, testId))
-      .orderBy(asc(screeningTestQuestions.sortOrder));
-
-    const index = rows.findIndex((row) => row.id === questionId);
-    const target = direction === "up" ? index - 1 : index + 1;
-    if (index === -1 || target < 0 || target >= rows.length) return { ok: true };
-
-    await db
-      .update(screeningTestQuestions)
-      .set({ sortOrder: rows[target].sortOrder })
-      .where(eq(screeningTestQuestions.id, rows[index].id));
-    await db
-      .update(screeningTestQuestions)
-      .set({ sortOrder: rows[index].sortOrder })
-      .where(eq(screeningTestQuestions.id, rows[target].id));
-
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się zmienić kolejności.");
-  }
-}
-
-/* ---------------------------------------------------------------- options */
-
-export async function addAnswerOption(
-  questionId: string,
-  testId: string,
-  input: AnswerOptionInput,
-): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    const parsed = answerOptionSchema.safeParse(input);
-    if (!parsed.success) {
-      return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
-    }
-    await db.insert(screeningTestAnswerOptions).values({
-      questionId,
-      label: parsed.data.label,
-      points: parsed.data.points,
-      sortOrder: parsed.data.sortOrder,
-    });
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się dodać odpowiedzi.");
-  }
-}
-
-export async function updateAnswerOption(
-  optionId: string,
-  testId: string,
-  input: AnswerOptionInput,
-): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    const parsed = answerOptionSchema.safeParse(input);
-    if (!parsed.success) {
-      return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
-    }
-    await db
-      .update(screeningTestAnswerOptions)
-      .set({
-        label: parsed.data.label,
-        points: parsed.data.points,
-        sortOrder: parsed.data.sortOrder,
-      })
-      .where(eq(screeningTestAnswerOptions.id, optionId));
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się zapisać odpowiedzi.");
-  }
-}
-
-export async function deleteAnswerOption(
-  optionId: string,
-  testId: string,
-): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    await db.delete(screeningTestAnswerOptions).where(eq(screeningTestAnswerOptions.id, optionId));
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się usunąć odpowiedzi.");
-  }
-}
-
-/**
- * Copies one question's options onto every other question in the test. Screening
- * questionnaires almost always repeat the same scale ("Nigdy / Rzadko / Czasem /
- * Często"), and typing it out per question is where editors give up.
- */
-export async function copyOptionsToAllQuestions(
-  questionId: string,
-  testId: string,
-): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    const source = await db
-      .select()
-      .from(screeningTestAnswerOptions)
-      .where(eq(screeningTestAnswerOptions.questionId, questionId))
-      .orderBy(asc(screeningTestAnswerOptions.sortOrder));
-    if (source.length === 0) return { ok: false, error: "To pytanie nie ma odpowiedzi." };
-
-    const questions = await db
-      .select({ id: screeningTestQuestions.id })
-      .from(screeningTestQuestions)
-      .where(eq(screeningTestQuestions.testId, testId));
-
-    for (const question of questions) {
-      if (question.id === questionId) continue;
-      await db
-        .delete(screeningTestAnswerOptions)
-        .where(eq(screeningTestAnswerOptions.questionId, question.id));
-      await db.insert(screeningTestAnswerOptions).values(
-        source.map((option) => ({
-          questionId: question.id,
-          label: option.label,
-          points: option.points,
-          sortOrder: option.sortOrder,
-        })),
-      );
-    }
-
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się skopiować odpowiedzi.");
-  }
-}
-
-/* ------------------------------------------------------------------ bands */
-
-export async function saveResultBand(
-  bandId: string | null,
-  testId: string,
-  input: ResultBandInput,
-): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    const parsed = resultBandSchema.safeParse(input);
-    if (!parsed.success) {
-      return { ok: false, error: parsed.error.issues[0]?.message ?? "Nieprawidłowe dane." };
-    }
-    if (parsed.data.maxScore < parsed.data.minScore) {
-      return { ok: false, error: "Górna granica nie może być niższa od dolnej." };
-    }
-
-    const values = {
-      minScore: parsed.data.minScore,
-      maxScore: parsed.data.maxScore,
-      resultTitle: parsed.data.resultTitle,
-      resultBody: parsed.data.resultBody,
-      sortOrder: parsed.data.sortOrder,
-    };
-
-    if (bandId) {
-      await db
-        .update(screeningTestResultBands)
-        .set(values)
-        .where(eq(screeningTestResultBands.id, bandId));
-    } else {
-      await db.insert(screeningTestResultBands).values({ testId, ...values });
-    }
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się zapisać przedziału.");
-  }
-}
-
-export async function deleteResultBand(bandId: string, testId: string): Promise<ActionResult> {
-  try {
-    await requireAdmin();
-    await db.delete(screeningTestResultBands).where(eq(screeningTestResultBands.id, bandId));
-    revalidateTest(testId);
-    return { ok: true };
-  } catch (error) {
-    return actionError(error, "Nie udało się usunąć przedziału.");
-  }
-}
-
 /* ------------------------------------------------------------ submissions */
 
 /** Right-to-erasure: a soft delete, so the row stops appearing everywhere at once. */
@@ -452,23 +266,4 @@ export async function deleteSubmission(
   } catch (error) {
     return actionError(error, "Nie udało się usunąć zgłoszenia.");
   }
-}
-
-/** Next free position, so new rows land at the end instead of colliding on 0. */
-export async function nextSortOrder(
-  kind: "question" | "band",
-  testId: string,
-): Promise<number> {
-  if (kind === "question") {
-    const [row] = await db
-      .select({ value: max(screeningTestQuestions.sortOrder) })
-      .from(screeningTestQuestions)
-      .where(eq(screeningTestQuestions.testId, testId));
-    return (row?.value ?? -1) + 1;
-  }
-  const [row] = await db
-    .select({ value: max(screeningTestResultBands.sortOrder) })
-    .from(screeningTestResultBands)
-    .where(eq(screeningTestResultBands.testId, testId));
-  return (row?.value ?? -1) + 1;
 }

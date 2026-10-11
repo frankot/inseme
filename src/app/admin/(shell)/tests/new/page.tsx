@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
-import { TestForm } from "@/app/admin/(shell)/tests/test-form";
+import { emptyTest } from "@/app/admin/(shell)/tests/defaults";
+import { TestEditor } from "@/app/admin/(shell)/tests/test-editor";
 import { PageHeader } from "@/components/admin/page-header";
 
 export const metadata: Metadata = { title: "Nowy test — panel Insieme" };
@@ -11,24 +12,9 @@ export default function NewTestPage() {
       <PageHeader
         title="Nowy test"
         backHref="/admin/tests"
-        description="Najpierw zapisz test, potem dodaj pytania i przedziały wyniku."
+        description="Wpisz podstawy, pytania z odpowiedziami i opisy wyników — wszystko na tej stronie, zapisywane razem."
       />
-      <TestForm
-        id={null}
-        status={null}
-        publishedAt={null}
-        defaultValues={{
-          title: "",
-          slug: "",
-          description: "",
-          introText: "",
-          disclaimerText:
-            "Test ma charakter orientacyjny i nie jest diagnozą. Nie zastępuje rozmowy z terapeutą ani badania lekarskiego.",
-          metaTitle: "",
-          metaDescription: "",
-          sortOrder: 0,
-        }}
-      />
+      <TestEditor id={null} status={null} publishedAt={null} defaultValues={emptyTest()} />
     </>
   );
 }

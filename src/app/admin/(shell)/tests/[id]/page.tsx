@@ -3,18 +3,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { BandEditor } from "@/app/admin/(shell)/tests/band-editor";
-import {
-  deleteScreeningTest,
-} from "@/app/admin/(shell)/tests/actions";
-import { QuestionEditor } from "@/app/admin/(shell)/tests/question-editor";
-import { TestForm } from "@/app/admin/(shell)/tests/test-form";
+import { deleteScreeningTest } from "@/app/admin/(shell)/tests/actions";
+import { TestEditor } from "@/app/admin/(shell)/tests/test-editor";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
 import { screeningTests } from "@/db/schema";
-import { maxScoreOf } from "@/lib/queries/screening";
 
 export const metadata: Metadata = { title: "Edycja testu — panel Insieme" };
 
@@ -32,8 +27,6 @@ export default async function EditTestPage({ params }: { params: Promise<{ id: s
     },
   });
   if (!row) notFound();
-
-  const maxScore = maxScoreOf(row.questions);
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,7 +52,7 @@ export default async function EditTestPage({ params }: { params: Promise<{ id: s
         }
       />
 
-      <TestForm
+      <TestEditor
         id={row.id}
         status={row.status}
         publishedAt={row.publishedAt?.toISOString() ?? null}
@@ -72,11 +65,19 @@ export default async function EditTestPage({ params }: { params: Promise<{ id: s
           metaTitle: row.metaTitle ?? "",
           metaDescription: row.metaDescription ?? "",
           sortOrder: row.sortOrder,
+          questions: row.questions.map((question) => ({
+            text: question.text,
+            options: question.options.map((option) => ({ label: option.label, points: option.points })),
+          })),
+          bands: row.resultBands.map((band) => ({
+            bandId: band.id,
+            minScore: band.minScore,
+            maxScore: band.maxScore,
+            resultTitle: band.resultTitle,
+            resultBody: band.resultBody,
+          })),
         }}
       />
-
-      <QuestionEditor testId={row.id} questions={row.questions} />
-      <BandEditor testId={row.id} bands={row.resultBands} maxScore={maxScore} />
     </div>
   );
 }
