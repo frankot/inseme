@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
-import { loadAdminManual, type ManualHeading } from "@/lib/admin-manual";
+import { ManualContents } from "@/app/admin/(shell)/instrukcja/manual-contents";
+import { loadAdminManual } from "@/lib/admin-manual";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Instrukcja — panel Insieme" };
@@ -20,7 +21,7 @@ export default function AdminManualPage() {
           <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Spis treści
           </p>
-          <Contents toc={toc} />
+          <ManualContents toc={toc} />
         </nav>
       </aside>
 
@@ -31,7 +32,7 @@ export default function AdminManualPage() {
         <details className="mt-4 rounded-lg border px-4 py-3 lg:hidden">
           <summary className="cursor-pointer text-sm font-medium">Spis treści</summary>
           <div className="mt-3">
-            <Contents toc={toc} />
+            <ManualContents toc={toc} />
           </div>
         </details>
 
@@ -55,25 +56,5 @@ export default function AdminManualPage() {
         />
       </article>
     </div>
-  );
-}
-
-function Contents({ toc }: { toc: ManualHeading[] }) {
-  return (
-    <ul className="flex flex-col gap-1 text-sm">
-      {toc.map((heading) => (
-        <li key={heading.id} className={heading.depth === 3 ? "pl-3" : "mt-2 first:mt-0"}>
-          <a
-            href={`#${heading.id}`}
-            className={cn(
-              "block rounded px-1.5 py-0.5 transition-colors hover:bg-accent hover:text-foreground",
-              heading.depth === 2 ? "font-medium text-foreground" : "text-muted-foreground",
-            )}
-          >
-            {heading.text}
-          </a>
-        </li>
-      ))}
-    </ul>
   );
 }
