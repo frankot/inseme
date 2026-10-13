@@ -38,6 +38,7 @@ const R2_MISSING =
  */
 function refreshGallery() {
   revalidatePath("/admin/gallery");
+  revalidatePath("/admin/media");
   revalidatePath("/osrodek");
   // The homepage's Ośrodek section shows the featured photos.
   revalidatePath("/");

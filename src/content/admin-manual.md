@@ -238,14 +238,22 @@ Zdjęcia na stronie **/galeria**.
 
 ### Biblioteka mediów
 
-Pozostałe pliki: zdjęcia artykułów, portrety, zdjęcia w CMS, obraz do udostępniania. Pliki dodane w formularzach trafiają do tej samej biblioteki.
+Wszystko, co jest w magazynie plików. Jedna karta = jeden plik (mniejsze kopie zdjęcia i miniatura galerii liczą się razem z nim). Pliki dodane w formularzach trafiają do tej samej biblioteki.
 
 | Element | Działanie |
 |---|---|
 | Dodawanie | przeciągnięcie na ramkę lub **Dodaj pliki**; JPG, PNG, WebP, AVIF, HEIC, SVG, PDF; zdjęcia powyżej 3000 px zmniejszane przed wysyłką (poza PNG z przezroczystością); mniejsze kopie tworzone automatycznie |
 | **Opis alternatywny (alt)** | zapis po wyjściu z pola; brak opisu — znaczek **Brak opisu** (liczba w linii nad listą) |
 | **Otwórz plik** | oryginał w nowej karcie |
-| Kosz | usunięcie; miejsca użycia pliku zostają bez zdjęcia |
+| **Użyte w** | lista miejsc z linkami do edycji (strony CMS, artykuły, zespół, ustawienia); dopisek **szkic** — miejsce nieopublikowane lub tylko w wersji roboczej |
+| Kosz | usunięcie; okno potwierdzenia wymienia miejsca użycia, które zostaną bez zdjęcia |
+| Filtry | **Wszystko**, **Biblioteka**, **Nieużywane** (pliki biblioteki nigdzie nieużyte), **Galeria**, **Poza bazą** (tylko gdy są takie pliki) |
+
+| Rodzaj karty | Znaczki | Edycja |
+|---|---|---|
+| Plik biblioteki | typ (JPG, PNG…), **Brak opisu**, **Nieużywany** | tutaj |
+| Zdjęcie galerii | **Galeria**, **Szkic** / **Opublikowane**, **Strona główna** | **Edytuj w Galerii**; kosz usuwa zdjęcie z galerii |
+| **Poza bazą** | **Nieużywany** | plik w magazynie bez wpisu w bazie (np. po przerwanym przesyłaniu); nigdzie się nie wyświetla — tylko podgląd i usunięcie |
 
 ---
 

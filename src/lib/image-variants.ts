@@ -9,7 +9,7 @@
  *   media/2026/<uuid>-dom.jpg        the original, as uploaded
  *   media/2026/<uuid>-dom.w640.webp  …w1080, w1600, w2400
  *
- * Made in the browser on upload (`media-upload.ts`), by
+ * Made on the server right after upload (`registerMedia`), by
  * `npm run images:backfill` for photos uploaded before, and by
  * `npm run images:local` for the photos in /public/placeholder. A copy is
  * never larger than its original, so a 900px photo's w1600 and w2400 are

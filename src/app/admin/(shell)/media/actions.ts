@@ -1,6 +1,6 @@
 "use server";
 
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, DeleteObjectsCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -12,6 +12,7 @@ import { actionError, type ActionResult, type DataResult } from "@/lib/action-re
 import { requireAdmin } from "@/lib/auth-guard";
 import { hasVariants, VARIANT_WIDTHS, variantOf } from "@/lib/image-variants";
 import { renderVariants } from "@/lib/image-variants-server";
+import { loadMediaInventory } from "@/lib/media-inventory";
 import { toMediaSummary } from "@/lib/media-summary";
 import type { MediaSummary } from "@/lib/media-types";
 import {
@@ -211,5 +212,37 @@ export async function deleteMedia(id: string): Promise<ActionResult> {
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się usunąć pliku.");
+  }
+}
+
+/**
+ * Deletes a stray group — objects no table knows about (`media-inventory.ts`).
+ * The group comes from the browser, so the bucket is listed again here: only
+ * what is still stray — never a library file, its copies or a gallery photo —
+ * can be removed this way.
+ */
+export async function deleteStrayObjects(group: string): Promise<ActionResult> {
+  try {
+    await requireAdmin();
+    const config = getR2Config();
+    if (!config) return { ok: false, error: R2_MISSING };
+
+    const { items, bucketListed } = await loadMediaInventory();
+    if (!bucketListed) return { ok: false, error: "Nie udało się odczytać zawartości magazynu. Spróbuj ponownie." };
+    const stray = items.find((entry) => entry.kind === "stray" && entry.group === group);
+    if (!stray || stray.kind !== "stray") {
+      return { ok: false, error: "Tego pliku nie można usunąć stąd — należy do biblioteki albo galerii." };
+    }
+
+    await createR2Client(config).send(
+      new DeleteObjectsCommand({
+        Bucket: config.bucket,
+        Delete: { Objects: stray.keys.map((key) => ({ Key: key })), Quiet: true },
+      }),
+    );
+    revalidatePath("/admin/media");
+    return { ok: true };
+  } catch (error) {
+    return actionError(error, "Nie udało się usunąć pliku z magazynu.");
   }
 }
