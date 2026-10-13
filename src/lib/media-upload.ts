@@ -27,24 +27,72 @@ function typeOf(file: File): string {
 
 const isHeic = (type: string) => type === "image/heic" || type === "image/heif";
 
+/** Photos the browser shrinks before upload. SVG and PDF go up untouched. */
+const RASTER_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif", "image/heic", "image/heif"]);
+
 /**
- * HEIC — the default format of photos from an iPhone or a Mac — as a JPEG,
- * where the browser can decode it (Safari can). The library, the site and
- * sharp all expect JPEG/PNG/WebP, so the original HEIC is not uploaded.
+ * Longest edge of an uploaded original. Above the largest responsive copy
+ * (2400 px, made on the server), so no copy loses detail — but a 12 MB camera
+ * photo goes up as 1–2 MB.
  */
-async function heicToJpeg(file: File): Promise<File | null> {
+const ORIGINAL_MAX_EDGE = 3000;
+const ORIGINAL_JPEG_QUALITY = 0.9;
+
+function hasTransparency(context: CanvasRenderingContext2D, width: number, height: number): boolean {
+  const { data } = context.getImageData(0, 0, width, height);
+  for (let alpha = 3; alpha < data.length; alpha += 4) {
+    if (data[alpha] < 255) return true;
+  }
+  return false;
+}
+
+/**
+ * The original as it should be stored: capped at `ORIGINAL_MAX_EDGE` and saved
+ * as JPEG (which every browser, Safari included, can encode). Turned upright
+ * from the camera's orientation, and the JPEG carries no EXIF — so no GPS
+ * position either.
+ *
+ * - photos already within the cap are left as they are;
+ * - so are images with transparency (logos, cut-outs) — JPEG would flatten them;
+ * - HEIC is always converted, since the site and the server can't read it;
+ *   `null` means this browser can't decode it.
+ */
+async function prepareOriginal(file: File, type: string): Promise<File | null> {
+  const heic = isHeic(type);
+  let bitmap: ImageBitmap;
   try {
-    const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
-    const canvas = document.createElement("canvas");
-    canvas.width = bitmap.width;
-    canvas.height = bitmap.height;
-    canvas.getContext("2d")?.drawImage(bitmap, 0, 0);
-    bitmap.close();
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.9));
-    if (!blob || blob.type !== "image/jpeg") return null;
-    return new File([blob], file.name.replace(/\.(heic|heif)$/i, ".jpg"), { type: "image/jpeg" });
+    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
   } catch {
-    return null;
+    // Not decodable here: HEIC can't go up; anything else goes up untouched
+    // and the server reports it if it can't read it either.
+    return heic ? null : file;
+  }
+
+  try {
+    const scale = Math.min(1, ORIGINAL_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+    if (scale === 1 && !heic) return file;
+
+    const width = Math.round(bitmap.width * scale);
+    const height = Math.round(bitmap.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { willReadFrequently: true });
+    if (!context) return heic ? null : file;
+    context.imageSmoothingQuality = "high";
+    context.drawImage(bitmap, 0, 0, width, height);
+
+    if (type !== "image/jpeg" && !heic && hasTransparency(context, width, height)) return file;
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/jpeg", ORIGINAL_JPEG_QUALITY),
+    );
+    if (!blob || blob.type !== "image/jpeg") return heic ? null : file;
+    // A resize that somehow came out heavier isn't worth keeping.
+    if (!heic && blob.size >= file.size) return file;
+    return new File([blob], file.name.replace(/\.[^./]+$/, "") + ".jpg", { type: "image/jpeg" });
+  } finally {
+    bitmap.close();
   }
 }
 
@@ -72,9 +120,10 @@ function describeStorageStatus(status: number): string {
 /**
  * Browser → presigned URL → R2 → library row.
  *
- * Only the original goes up from here. A photo's responsive copies are made on
- * the server while it is registered (`registerMedia`) — not in the browser,
- * because Safari can't encode WebP.
+ * Photos are shrunk in the browser first (`prepareOriginal`), then only that
+ * original goes up. Its responsive copies are made on the server while it is
+ * registered (`registerMedia`) — not in the browser, because Safari can't
+ * encode WebP.
  *
  * Never throws: every failure comes back as a message naming the file and the
  * step that failed, for the caller's toast. Shared by the media library and
@@ -87,15 +136,17 @@ export async function uploadMediaFile(original: File): Promise<DataResult<MediaS
   let file = original;
   let type = typeOf(file);
 
-  if (isHeic(type)) {
-    const converted = await heicToJpeg(file);
-    if (!converted) {
+  if (RASTER_TYPES.has(type)) {
+    const shrunk = await prepareOriginal(file, type);
+    if (!shrunk) {
       return fail(
         "to zdjęcie w formacie HEIC (z iPhone’a lub Maca), którego ta przeglądarka nie potrafi odczytać. Wyeksportuj je jako JPEG (np. w aplikacji Zdjęcia: Plik › Eksportuj) albo dodaj w Safari.",
       );
     }
-    file = converted;
-    type = "image/jpeg";
+    if (shrunk !== file) {
+      file = shrunk;
+      type = "image/jpeg";
+    }
   }
 
   if (file.size > MAX_UPLOAD_BYTES_CLIENT) {

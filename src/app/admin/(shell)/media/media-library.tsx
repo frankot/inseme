@@ -94,8 +94,8 @@ export function MediaLibrary({
         hint={
           <>
             Upuść pliki tutaj albo wybierz je z dysku: zdjęcia (JPG, PNG, WebP, AVIF, HEIC), SVG
-            lub PDF, do 15 MB. Do każdego zdjęcia powstają w przeglądarce mniejsze kopie, żeby telefony
-            pobierały tylko tyle, ile potrzebują.
+            lub PDF. Duże zdjęcia są przed wysyłką zmniejszane do 3000 px, a potem powstają ich mniejsze
+            kopie, żeby telefony pobierały tylko tyle, ile potrzebują.
           </>
         }
         onFiles={(files) => void handleFiles(files)}

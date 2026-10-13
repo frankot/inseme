@@ -242,7 +242,7 @@ Pozostałe pliki: zdjęcia artykułów, portrety, zdjęcia w CMS, obraz do udost
 
 | Element | Działanie |
 |---|---|
-| Dodawanie | przeciągnięcie na ramkę lub **Dodaj pliki**; JPG, PNG, WebP, AVIF, SVG, PDF; mniejsze kopie zdjęć tworzone automatycznie |
+| Dodawanie | przeciągnięcie na ramkę lub **Dodaj pliki**; JPG, PNG, WebP, AVIF, HEIC, SVG, PDF; zdjęcia powyżej 3000 px zmniejszane przed wysyłką (poza PNG z przezroczystością); mniejsze kopie tworzone automatycznie |
 | **Opis alternatywny (alt)** | zapis po wyjściu z pola; brak opisu — znaczek **Brak opisu** (liczba w linii nad listą) |
 | **Otwórz plik** | oryginał w nowej karcie |
 | Kosz | usunięcie; miejsca użycia pliku zostają bez zdjęcia |
