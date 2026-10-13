@@ -21,9 +21,12 @@ import { personJsonLd } from "@/lib/structured-data";
 
 /**
  * Published members are known at build time, so their pages are prerendered.
- * Anything added later renders on first request and is then cached — the admin
- * actions call `revalidatePath("/zespol/<slug>")` on every edit.
+ * Anything added later renders on first request and is then cached. Every
+ * page lists the other members too, so the admin actions revalidate all of
+ * them on any edit; the five-minute window is the backstop.
  */
+export const revalidate = 300;
+
 export async function generateStaticParams() {
   const slugs = await getTeamSlugs();
   return slugs.map((slug) => ({ slug }));

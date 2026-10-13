@@ -2,9 +2,7 @@ import { desc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import {
-  deleteArticle,
-} from "@/app/admin/(shell)/articles/actions";
+import { deleteArticle } from "@/app/admin/(shell)/articles/actions";
 import { ArticleForm } from "@/app/admin/(shell)/articles/article-form";
 import { getReviewerOptions } from "@/app/admin/(shell)/articles/reviewers";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
@@ -12,6 +10,7 @@ import { PageHeader } from "@/components/admin/page-header";
 import { db } from "@/db";
 import { articles, media } from "@/db/schema";
 import { toMediaSummary } from "@/lib/media-summary";
+import { articleFormOf } from "@/lib/record-forms";
 import { isProtectedArticle, PROTECTED_ARTICLE_NOTE } from "@/lib/protected-articles";
 
 export const metadata: Metadata = { title: "Edycja artykułu — panel Insieme" };
@@ -26,7 +25,11 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
     getReviewerOptions(),
   ]);
   const locked = isProtectedArticle(row.slug);
-  const coverImage = mediaRows.find((item) => item.id === row.coverImageId) ?? null;
+  // The form opens on the pending changes when there are any; the live
+  // article is what it marks changes against.
+  const live = articleFormOf(row);
+  const values = row.pendingChanges ?? live;
+  const coverImage = mediaRows.find((item) => item.id === values.coverImageId) ?? null;
 
   return (
     <>
@@ -59,17 +62,9 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
         mediaLibrary={mediaRows.map(toMediaSummary)}
         team={team}
         slugLocked={locked}
-        defaultValues={{
-          title: row.title,
-          slug: row.slug,
-          excerpt: row.excerpt ?? "",
-          body: row.body,
-          authorReviewer: row.authorReviewer ?? "",
-          reviewerId: row.reviewerId,
-          coverImageId: row.coverImageId,
-          metaTitle: row.metaTitle ?? "",
-          metaDescription: row.metaDescription ?? "",
-        }}
+        defaultValues={values}
+        published={row.status === "published" ? live : null}
+        pendingSavedAt={row.pendingChanges ? (row.pendingUpdatedAt?.toISOString() ?? null) : null}
       />
     </>
   );

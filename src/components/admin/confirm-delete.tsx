@@ -24,6 +24,9 @@ type ConfirmProps = {
   description?: string;
   label?: string;
   redirectTo?: string;
+  /** For a confirmation that isn't a delete (e.g. discarding changes). */
+  busyLabel?: string;
+  successMessage?: string;
 };
 
 /**
@@ -38,6 +41,8 @@ export function ConfirmDeleteDialog({
   description = "Tej operacji nie można cofnąć.",
   label = "Usuń",
   redirectTo,
+  busyLabel = "Usuwanie…",
+  successMessage = "Usunięto.",
 }: ConfirmProps & { open: boolean; onOpenChange: (open: boolean) => void }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -51,7 +56,7 @@ export function ConfirmDeleteDialog({
       }
       // AlertDialogAction is a plain button here — closing is ours to do.
       onOpenChange(false);
-      toast.success("Usunięto.");
+      toast.success(successMessage);
       if (redirectTo) router.push(redirectTo);
       else router.refresh();
     });
@@ -67,7 +72,7 @@ export function ConfirmDeleteDialog({
         <AlertDialogFooter>
           <AlertDialogCancel>Anuluj</AlertDialogCancel>
           <AlertDialogAction disabled={isPending} onClick={handleConfirm}>
-            {isPending ? "Usuwanie…" : label}
+            {isPending ? busyLabel : label}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

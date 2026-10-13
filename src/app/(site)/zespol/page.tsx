@@ -6,6 +6,13 @@ import { TeamCard } from "@/components/site/ui/team-card";
 import { teamPageDefaults } from "@/content/team";
 import { getPublishedTeam } from "@/lib/queries/team";
 
+/**
+ * Prerendered, refreshed every five minutes. Saving a person in the admin
+ * also revalidates this path, which makes the window a backstop — e.g. for an
+ * edit made from another deployment against the same database.
+ */
+export const revalidate = 300;
+
 export const metadata: Metadata = {
   title: teamPageDefaults.metaTitle,
   description: teamPageDefaults.metaDescription,

@@ -4,7 +4,9 @@ import Link from "next/link";
 
 import {
   deleteTeamMember,
+  discardTeamMemberChanges,
   publishTeamMember,
+  publishTeamMemberChanges,
   unpublishTeamMember,
 } from "@/app/admin/(shell)/team/actions";
 import { featuredToggles, isFeatured } from "@/components/admin/featured-toggles";
@@ -52,7 +54,7 @@ export default async function TeamListPage() {
               <TableHead>Imię i nazwisko</TableHead>
               <TableHead>Adres</TableHead>
               <TableHead className="w-24">Kolejność</TableHead>
-              <TableHead className="w-36">Status</TableHead>
+              <TableHead className="w-80">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -91,6 +93,15 @@ export default async function TeamListPage() {
                     onDelete={deleteTeamMember.bind(null, row.id)}
                     deleteTitle="Usunąć osobę?"
                     featured={featuredToggles(featured, row.id)}
+                    pendingChanges={
+                      row.pendingChanges
+                        ? {
+                            savedAt: row.pendingUpdatedAt?.toISOString() ?? null,
+                            onPublish: publishTeamMemberChanges.bind(null, row.id),
+                            onDiscard: discardTeamMemberChanges.bind(null, row.id),
+                          }
+                        : undefined
+                    }
                   />
                 </TableCell>
               </TableRow>

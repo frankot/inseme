@@ -1,13 +1,13 @@
 "use client";
 
-import { Check, ExternalLink, EyeOff, Globe, MoreHorizontal, Pencil, Star, Trash2 } from "lucide-react";
+import { Check, ExternalLink, EyeOff, Globe, MoreHorizontal, Pencil, Send, Star, Trash2, Undo2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 
 import { ConfirmDeleteDialog } from "@/components/admin/confirm-delete";
-import { StatusBadge } from "@/components/admin/status-badge";
+import { PendingBadge, StatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -40,6 +40,10 @@ export type FeaturedToggle = {
  *
  * The ⋯ button opens the menu — edit, preview, homepage picks, publishing and
  * delete, the same set of actions the record's own page offers.
+ *
+ * A published record with edits saved but not published (`pendingChanges`)
+ * gets an amber badge beside its status, and the menu offers to publish or
+ * discard them.
  */
 export function RowActions({
   editHref,
@@ -52,6 +56,7 @@ export function RowActions({
   deleteTitle,
   deleteDescription,
   featured = [],
+  pendingChanges,
 }: {
   editHref: string;
   status: "draft" | "published";
@@ -67,9 +72,17 @@ export function RowActions({
   deleteTitle?: string;
   deleteDescription?: string;
   featured?: FeaturedToggle[];
+  /** Saved-but-unpublished edits (Zespół, Artykuły); omit when there are none. */
+  pendingChanges?: {
+    savedAt: string | null;
+    onPublish: () => Promise<ActionResult>;
+    onDiscard: () => Promise<ActionResult>;
+  };
 }) {
   const [isPending, startTransition] = useTransition();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [discardOpen, setDiscardOpen] = useState(false);
+  const showPending = Boolean(pendingChanges) && status === "published";
   const router = useRouter();
 
   function run(
@@ -112,6 +125,8 @@ export function RowActions({
           <StatusBadge status={status} />
         </span>
       )}
+
+      {showPending ? <PendingBadge savedAt={pendingChanges?.savedAt} /> : null}
 
       <DropdownMenu>
         <DropdownMenuTrigger
@@ -162,6 +177,20 @@ export function RowActions({
 
           <DropdownMenuSeparator />
 
+          {showPending && pendingChanges ? (
+            <>
+              <DropdownMenuItem
+                disabled={isPending}
+                onClick={() => run(pendingChanges.onPublish, "Opublikowano zmiany.")}
+              >
+                <Send aria-hidden /> Opublikuj zmiany
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled={isPending} onClick={() => setDiscardOpen(true)}>
+                <Undo2 aria-hidden /> Odrzuć zmiany
+              </DropdownMenuItem>
+            </>
+          ) : null}
+
           {status === "published" ? (
             onUnpublish && (
               <DropdownMenuItem
@@ -190,6 +219,19 @@ export function RowActions({
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {pendingChanges && (
+        <ConfirmDeleteDialog
+          open={discardOpen}
+          onOpenChange={setDiscardOpen}
+          onConfirm={pendingChanges.onDiscard}
+          title="Odrzucić zmiany?"
+          description="Zapisane, nieopublikowane zmiany zostaną usunięte. Na stronie zostaje obecna wersja."
+          label="Odrzuć zmiany"
+          busyLabel="Odrzucanie…"
+          successMessage="Odrzucono zmiany."
+        />
+      )}
 
       {onDelete && (
         <ConfirmDeleteDialog

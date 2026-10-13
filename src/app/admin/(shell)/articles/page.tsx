@@ -4,7 +4,9 @@ import Link from "next/link";
 
 import {
   deleteArticle,
+  discardArticleChanges,
   publishArticle,
+  publishArticleChanges,
   unpublishArticle,
 } from "@/app/admin/(shell)/articles/actions";
 import { featuredToggles, isFeatured } from "@/components/admin/featured-toggles";
@@ -52,7 +54,7 @@ export default async function ArticlesListPage() {
               <TableHead>Tytuł</TableHead>
               <TableHead className="w-48">Weryfikacja</TableHead>
               <TableHead className="w-40">Aktualizacja</TableHead>
-              <TableHead className="w-36">Status</TableHead>
+              <TableHead className="w-80">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -90,6 +92,15 @@ export default async function ArticlesListPage() {
                       onDelete={locked ? undefined : deleteArticle.bind(null, row.id)}
                       deleteTitle="Usunąć artykuł?"
                       featured={featuredToggles(featured, row.id)}
+                      pendingChanges={
+                        row.pendingChanges
+                          ? {
+                              savedAt: row.pendingUpdatedAt?.toISOString() ?? null,
+                              onPublish: publishArticleChanges.bind(null, row.id),
+                              onDiscard: discardArticleChanges.bind(null, row.id),
+                            }
+                          : undefined
+                      }
                     />
                   </TableCell>
                 </TableRow>

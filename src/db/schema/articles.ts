@@ -1,6 +1,7 @@
-import { json, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { json, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
 import type { Block } from "@/lib/blocks";
+import type { ArticleInput } from "@/lib/validations/content";
 import { contentStatus } from "./enums";
 import { media } from "./media";
 import { teamMembers } from "./team-members";
@@ -21,6 +22,13 @@ export const articles = pgTable("articles", {
   reviewerId: uuid("reviewer_id").references(() => teamMembers.id, { onDelete: "set null" }),
   coverImageId: uuid("cover_image_id").references(() => media.id, { onDelete: "set null" }),
   status: contentStatus("status").notNull().default("draft"),
+  /**
+   * Edits saved on a published record without publishing them: the whole
+   * form, as the editor left it. The site keeps reading the columns above
+   * until „Opublikuj zmiany” copies this over them; null when there are none.
+   */
+  pendingChanges: jsonb("pending_changes").$type<ArticleInput>(),
+  pendingUpdatedAt: timestamp("pending_updated_at", { withTimezone: true }),
   publishedAt: timestamp("published_at", { withTimezone: true }),
   metaTitle: text("meta_title"),
   metaDescription: text("meta_description"),

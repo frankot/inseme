@@ -1,5 +1,6 @@
 import { integer, jsonb, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 
+import type { TeamMemberInput } from "@/lib/validations/content";
 import { contentStatus } from "./enums";
 import { media } from "./media";
 
@@ -19,6 +20,13 @@ export const teamMembers = pgTable("team_members", {
   longBio: text("long_bio"),
   photoId: uuid("photo_id").references(() => media.id, { onDelete: "set null" }),
   sortOrder: integer("sort_order").notNull().default(0),
+  /**
+   * Edits saved on a published record without publishing them: the whole
+   * form, as the editor left it. The site keeps reading the columns above
+   * until „Opublikuj zmiany” copies this over them; null when there are none.
+   */
+  pendingChanges: jsonb("pending_changes").$type<TeamMemberInput>(),
+  pendingUpdatedAt: timestamp("pending_updated_at", { withTimezone: true }),
   status: contentStatus("status").notNull().default("draft"),
   publishedAt: timestamp("published_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

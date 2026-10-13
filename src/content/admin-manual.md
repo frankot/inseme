@@ -29,6 +29,7 @@ Panel służy do zarządzania treścią strony (teksty, zdjęcia, zespół, FAQ,
 |---|---|
 | **Szkic** | niewidoczne |
 | **Opublikowane** | widoczne |
+| **Opublikowane** + **Niepublikowane zmiany** | widoczna poprzednia wersja; zapisane zmiany tylko w panelu (Zespół, Artykuły) |
 
 Dotyczy: osób z zespołu, pytań FAQ, artykułów, testów, zdjęć w galerii.
 
@@ -40,6 +41,21 @@ Dotyczy: osób z zespołu, pytań FAQ, artykułów, testów, zdjęć w galerii.
 | **Zapisz i opublikuj** | zapisuje i publikuje |
 
 Treści medyczne publikować po akceptacji osoby merytorycznie odpowiedzialnej.
+
+**Opublikowana osoba lub artykuł (Zespół, Artykuły).**
+
+Zmiany można zapisać bez publikowania — strona pokazuje dotychczasową wersję, dopóki zmiany nie zostaną opublikowane.
+
+| Przycisk | Działanie |
+|---|---|
+| **Zapisz bez publikowania** | zapisuje zmiany obok opublikowanej wersji; na stronie bez zmian; na liście znaczek **Niepublikowane zmiany** |
+| **Zapisz i opublikuj** (**…zmiany**) | zapisuje formularz i publikuje go; znaczek znika |
+| **Ukryj ze strony** | zmienia na szkic (po potwierdzeniu); formularz nie jest przy tym zapisywany |
+
+| W formularzu | Działanie |
+|---|---|
+| Żółta ramka u góry | data zapisu zmian; **Opublikuj zmiany**, **Odrzuć zmiany** (powrót do wersji ze strony, nieodwracalny) |
+| Pomarańczowa linia przy polu | pole różni się od wersji ze strony; **pokaż opublikowaną** — podgląd, **przywróć** — wstawia wersję ze strony do pola |
 
 Wyjątki: **CMS** zapisuje szkic automatycznie (patrz [CMS](#cms)), **Ustawienia** zapisują się bez szkicu.
 
@@ -55,7 +71,8 @@ Kolumna **Status** na listach Zespół, FAQ, Artykuły, Testy:
 | **Edytuj** | otwiera formularz |
 | **Zobacz na stronie** | otwiera opublikowaną pozycję w nowej karcie |
 | **Na stronie głównej** ★ | dodaje do strony głównej / zdejmuje; wyszarzone po osiągnięciu limitu |
-| **Opublikuj** / **Zmień na szkic (ukryj)** | zmiana statusu |
+| **Opublikuj** / **Zmień na szkic (ukryj)** | zmiana statusu; nie publikuje zapisanych zmian |
+| **Opublikuj zmiany** / **Odrzuć zmiany** | tylko przy znaczku **Niepublikowane zmiany** (Zespół, Artykuły) |
 | **Usuń** | usunięcie, po potwierdzeniu |
 
 ### Usuwanie

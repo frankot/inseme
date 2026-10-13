@@ -22,6 +22,15 @@ const ACCENTS: Record<ContactPath["id"], string> = {
 };
 
 /**
+ * The two paths, named in a few words for the phone toggle. The ids are fixed
+ * (the titles are editable in the CMS), so the short names hang off them.
+ */
+const SHORT_LABELS: Record<ContactPath["id"], string> = {
+  self: "Dla siebie",
+  family: "Dla bliskiej osoby",
+};
+
+/**
  * Section 01: pick which of the two you are, then read what happens after the
  * call. This was two sections — a fork with its own promises and CTAs, and a
  * separate run of steps behind a second tab bar — which put two differently
@@ -31,6 +40,10 @@ const ACCENTS: Record<ContactPath["id"], string> = {
  * is selected on arrival, because most people who ring are ringing about
  * themselves. The family card sits beside it as a visible alternative rather
  * than a choice the visitor has to make before anything will read.
+ *
+ * On a phone the two cards would stack a screen apart, and the second read as
+ * just more page rather than the other option. There the same tabs become a
+ * two-part toggle under a question, with the chosen path's description below.
  */
 export function PierwszyKontakt({
   content = pierwszyKontaktDefaults,
@@ -72,22 +85,38 @@ export function PierwszyKontakt({
       // is written in the second person and cannot say anything until it knows
       // who it is addressing.
       above={
-        <div
-          ref={tabsRef}
-          role="tablist"
-          aria-label="Dla kogo szukasz pomocy"
-          onKeyDown={onKeyDown}
-          className="mb-[clamp(34px,3.8vw,60px)] grid gap-gap tab:[grid-template-columns:minmax(0,1.25fr)_minmax(0,1fr)]"
-        >
-          {content.paths.map((card, i) => (
-            <Reveal key={card.id} delay={i * 80} className="min-w-0">
-              <PathCard
-                card={card}
-                selected={card.id === active.id}
-                onSelect={() => setPath(card.id)}
-              />
-            </Reveal>
-          ))}
+        <div className="mb-[clamp(34px,3.8vw,60px)]">
+          <p className="mb-3 text-meta uppercase tracking-[0.14em] text-ink-400 tab:hidden">
+            Dla kogo szukasz pomocy?
+          </p>
+          <div
+            ref={tabsRef}
+            role="tablist"
+            aria-label="Dla kogo szukasz pomocy"
+            onKeyDown={onKeyDown}
+            className="grid grid-cols-2 tab:gap-gap tab:[grid-template-columns:minmax(0,1.25fr)_minmax(0,1fr)]"
+          >
+            {content.paths.map((card, i) => (
+              // On a phone the halves share a border, so they read as one control.
+              <Reveal
+                key={card.id}
+                delay={i * 80}
+                className={cn("min-w-0", i > 0 && "-ml-px tab:ml-0")}
+              >
+                <PathCard
+                  card={card}
+                  selected={card.id === active.id}
+                  onSelect={() => setPath(card.id)}
+                />
+              </Reveal>
+            ))}
+          </div>
+          <p
+            key={active.id}
+            className="mt-4 animate-step-in text-pretty text-body text-ink-400 tab:hidden"
+          >
+            {active.cardBody}
+          </p>
         </div>
       }
     >
@@ -169,46 +198,69 @@ function PathCard({
       tabIndex={selected ? 0 : -1}
       onClick={onSelect}
       className={cn(
-        "group flex h-full w-full flex-col gap-[14px] border border-t-2 p-card text-left transition-colors",
+        "group relative flex h-full w-full flex-col border border-t-2 transition-colors",
+        // Phone: one half of the toggle. From `tab` up: the full card.
+        "min-h-[60px] items-center justify-center px-3 py-3.5 text-center",
+        "tab:min-h-0 tab:items-stretch tab:justify-start tab:gap-[14px] tab:p-card tab:text-left",
         ACCENTS[card.id],
         selected
-          ? "border-ink-900 bg-ink-900"
+          ? "z-10 border-ink-900 bg-ink-900"
           : "card-surface border-t-2 hover:bg-cream",
       )}
     >
-      <span
-        className={cn(
-          "text-pretty font-heading text-heading",
-          selected ? "text-on-dark" : "text-ink-900",
-        )}
-      >
-        {card.cardTitle}
-      </span>
-      <span
-        className={cn(
-          "max-w-[26em] text-pretty text-body",
-          selected ? "text-on-dark-sage-2" : "text-ink-400",
-        )}
-      >
-        {card.cardBody}
-      </span>
-
-      <span
-        className={cn(
-          "mt-auto flex items-center gap-2.5 border-t pt-[clamp(14px,1.4vw,20px)] text-body transition-colors",
-          selected
-            ? "border-white/15 text-on-dark-sage"
-            : "border-line text-sage-600 group-hover:text-sage-700",
-        )}
-      >
+      <span className="flex items-center gap-2.5 tab:hidden">
         <span
           aria-hidden
           className={cn(
-            "block size-[9px] border transition-colors",
+            "block size-[9px] shrink-0 border transition-colors",
             selected ? "border-sage-300 bg-sage-300" : "border-clay-400",
           )}
         />
-        <span>{selected ? card.selectedLabel : card.chooseLabel}</span>
+        <span
+          className={cn(
+            "text-balance font-heading text-[17px] leading-[1.2] tracking-[-0.01em]",
+            selected ? "text-on-dark" : "text-ink-900",
+          )}
+        >
+          {SHORT_LABELS[card.id]}
+        </span>
+      </span>
+
+      <span className="hidden tab:contents">
+        <span
+          className={cn(
+            "text-pretty font-heading text-heading",
+            selected ? "text-on-dark" : "text-ink-900",
+          )}
+        >
+          {card.cardTitle}
+        </span>
+        <span
+          className={cn(
+            "max-w-[26em] text-pretty text-body",
+            selected ? "text-on-dark-sage-2" : "text-ink-400",
+          )}
+        >
+          {card.cardBody}
+        </span>
+
+        <span
+          className={cn(
+            "mt-auto flex items-center gap-2.5 border-t pt-[clamp(14px,1.4vw,20px)] text-body transition-colors",
+            selected
+              ? "border-white/15 text-on-dark-sage"
+              : "border-line text-sage-600 group-hover:text-sage-700",
+          )}
+        >
+          <span
+            aria-hidden
+            className={cn(
+              "block size-[9px] border transition-colors",
+              selected ? "border-sage-300 bg-sage-300" : "border-clay-400",
+            )}
+          />
+          <span>{selected ? card.selectedLabel : card.chooseLabel}</span>
+        </span>
       </span>
     </button>
   );
