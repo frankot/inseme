@@ -53,10 +53,14 @@ export function ManualContents({ toc }: { toc: ManualHeading[] }) {
   }, [toc]);
 
   useEffect(() => {
-    if (!active) return;
-    listRef.current
-      ?.querySelector<HTMLElement>(`[data-heading="${CSS.escape(active)}"]`)
-      ?.scrollIntoView({ block: "nearest" });
+    // Scrolls only the list's own box — `scrollIntoView` would scroll the page too.
+    const box = listRef.current?.closest("nav");
+    const link = active ? listRef.current?.querySelector<HTMLElement>(`[data-heading="${CSS.escape(active)}"]`) : null;
+    if (!box || !link || box.scrollHeight <= box.clientHeight) return;
+    const top = link.getBoundingClientRect().top - box.getBoundingClientRect().top;
+    const margin = 48;
+    if (top < margin) box.scrollTop += top - margin;
+    else if (top > box.clientHeight - margin) box.scrollTop += top - box.clientHeight + margin;
   }, [active]);
 
   // The h2 a current h3 belongs to stays marked too, so the chapter is clear.
