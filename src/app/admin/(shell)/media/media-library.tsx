@@ -21,7 +21,7 @@ import { supportsEdgeResize } from "@/lib/image-host";
 import { hasVariants } from "@/lib/image-variants";
 import type { MediaSummary } from "@/lib/media-types";
 import { uploadMediaFile } from "@/lib/media-upload";
-import { ALLOWED_UPLOAD_TYPES_CLIENT } from "@/lib/upload-limits";
+import { UPLOAD_ACCEPT } from "@/lib/upload-limits";
 
 /** "image/jpeg" → "JPG", "application/pdf" → "PDF". */
 function typeLabel(mimeType: string): string {
@@ -54,9 +54,14 @@ export function MediaLibrary({
     try {
       for (const [index, file] of files.entries()) {
         setPending({ name: file.name, left: files.length - index });
-        const result = await uploadMediaFile(file);
+        // uploadMediaFile reports every failure itself; the catch is a last net,
+        // so nothing an editor drops can fail without a word.
+        const result = await uploadMediaFile(file).catch(() => ({
+          ok: false as const,
+          error: `${file.name}: nieoczekiwany błąd podczas wysyłki. Spróbuj ponownie.`,
+        }));
         if (!result.ok) {
-          toast.error(result.error);
+          toast.error(result.error, { duration: 12000 });
           continue;
         }
         setItems((current) => [result.data, ...current]);
@@ -73,7 +78,7 @@ export function MediaLibrary({
       {!storageConfigured ? <StorageNotice what="włączyć przesyłanie plików" /> : null}
 
       <UploadDropzone
-        accept={ALLOWED_UPLOAD_TYPES_CLIENT.join(",")}
+        accept={UPLOAD_ACCEPT}
         disabled={!storageConfigured}
         busyLabel={pending ? "Przesyłanie…" : null}
         icon={<Upload className="size-4" aria-hidden />}
@@ -88,12 +93,11 @@ export function MediaLibrary({
         }
         hint={
           <>
-            Upuść pliki tutaj albo wybierz je z dysku: zdjęcia (JPG, PNG, WebP, AVIF), SVG lub
-            PDF. Do każdego zdjęcia powstają w przeglądarce mniejsze kopie, żeby telefony
+            Upuść pliki tutaj albo wybierz je z dysku: zdjęcia (JPG, PNG, WebP, AVIF, HEIC), SVG
+            lub PDF, do 15 MB. Do każdego zdjęcia powstają w przeglądarce mniejsze kopie, żeby telefony
             pobierały tylko tyle, ile potrzebują.
           </>
         }
-        acceptDrop={(file) => (ALLOWED_UPLOAD_TYPES_CLIENT as readonly string[]).includes(file.type)}
         onFiles={(files) => void handleFiles(files)}
         inputRef={inputRef}
       />

@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import type { MediaSummary } from "@/lib/media-types";
 import { uploadMediaFile } from "@/lib/media-upload";
-import { ALLOWED_UPLOAD_TYPES_CLIENT } from "@/lib/upload-limits";
+import { UPLOAD_ACCEPT } from "@/lib/upload-limits";
 import { cn } from "@/lib/utils";
 
 export function MediaPicker({
@@ -112,7 +112,7 @@ export function MediaPicker({
                 <input
                   ref={inputRef}
                   type="file"
-                  accept={ALLOWED_UPLOAD_TYPES_CLIENT.join(",")}
+                  accept={UPLOAD_ACCEPT}
                   className="hidden"
                   onChange={(event) => void upload(event.target.files?.[0])}
                 />

@@ -78,6 +78,8 @@ export async function listGalleryPhotos(): Promise<DataResult<GalleryPhotoAdmin[
 const uploadRequestSchema = z.object({
   fullSize: z.number().int().positive().max(MAX_UPLOAD_BYTES, "Zdjęcie jest za duże."),
   thumbSize: z.number().int().positive().max(MAX_UPLOAD_BYTES, "Miniatura jest za duża."),
+  /** What the browser could encode — JPEG in Safari (`gallery-image.ts`). */
+  format: z.enum(["webp", "jpeg"]).default("webp"),
 });
 
 export type GalleryUploadTarget = { uploadUrl: string; key: string; publicUrl: string };
@@ -107,13 +109,13 @@ export async function createGalleryUploadUrls(
     const photoId = crypto.randomUUID();
 
     const sign = async (variant: "full" | "thumb"): Promise<GalleryUploadTarget> => {
-      const key = buildGalleryKey(photoId, variant);
+      const key = buildGalleryKey(photoId, variant, parsed.data.format);
       const uploadUrl = await getSignedUrl(
         client,
         new PutObjectCommand({
           Bucket: config.bucket,
           Key: key,
-          ContentType: "image/webp",
+          ContentType: parsed.data.format === "jpeg" ? "image/jpeg" : "image/webp",
           // Keys are content-addressed by a fresh UUID and never rewritten, so
           // this is safe to cache hard — which matters on a bucket with no
           // edge resizing to sit behind.

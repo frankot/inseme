@@ -13,3 +13,9 @@ export const ALLOWED_UPLOAD_TYPES_CLIENT = [
   "image/svg+xml",
   "application/pdf",
 ] as const satisfies readonly string[];
+
+/**
+ * What the file pickers offer: the allowed types plus HEIC (iPhone/Mac photos),
+ * which the upload converts to JPEG in the browser before sending.
+ */
+export const UPLOAD_ACCEPT = [...ALLOWED_UPLOAD_TYPES_CLIENT, "image/heic", "image/heif", ".heic", ".heif"].join(",");

@@ -6,50 +6,27 @@
  *   npm run images:backfill   every library photo in R2 that lacks its copies
  *
  * Both only add files: originals are never touched, and a photo whose copies
- * already exist is skipped, so a re-run is safe. Same widths and quality as
- * the browser makes on upload; a copy is never upscaled.
+ * already exist is skipped, so a re-run is safe. Same render as an upload
+ * (`lib/image-variants-server.ts`).
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { config as loadEnv } from "dotenv";
-import sharp from "sharp";
 
-import {
-  hasVariants,
-  VARIANT_QUALITY,
-  VARIANT_WIDTHS,
-  variantOf,
-} from "../src/lib/image-variants";
+import { hasVariants, VARIANT_WIDTHS, variantOf } from "../src/lib/image-variants";
+import { renderVariants } from "../src/lib/image-variants-server";
 
 loadEnv({ path: ".env.local", quiet: true });
 loadEnv({ path: ".env", quiet: true });
-
-async function render(original: Buffer) {
-  const { width: originalWidth, format } = await sharp(original).metadata();
-  return Promise.all(
-    VARIANT_WIDTHS.map(async (width) => {
-      const body = await sharp(original)
-        .rotate() // EXIF orientation, as the browser applies it on upload
-        .resize({ width, withoutEnlargement: true })
-        .webp({ quality: Math.round(VARIANT_QUALITY * 100), effort: 6 })
-        .toBuffer();
-      // At full size, re-encoding an already-compressed WebP only adds bytes:
-      // the original *is* the best copy then.
-      const sameSize = originalWidth !== undefined && width >= originalWidth;
-      const reuse = sameSize && format === "webp" && original.length <= body.length;
-      return { width, body: reuse ? original : body };
-    }),
-  );
-}
 
 async function local() {
   const dir = "public/placeholder";
   const files = readdirSync(dir).filter((name) => hasVariants(`/placeholder/${name}`));
   for (const name of files) {
     const original = readFileSync(path.join(dir, name));
-    const variants = await render(original);
+    const variants = await renderVariants(original);
     for (const { width, body } of variants) {
       writeFileSync(path.join(dir, variantOf(name, width)), body);
     }
@@ -89,7 +66,7 @@ async function backfill() {
       console.error(`✗ ${row.key} — nie udało się pobrać oryginału (${response.status})`);
       continue;
     }
-    const variants = await render(Buffer.from(await response.arrayBuffer()));
+    const variants = await renderVariants(Buffer.from(await response.arrayBuffer()));
     for (const { width, body } of variants) {
       await client.send(
         new PutObjectCommand({

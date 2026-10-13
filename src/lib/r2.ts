@@ -81,13 +81,17 @@ export function buildObjectKey(mimeType: string, originalName: string): string {
  * Both variants of one photo share a `photoId` prefix, which makes the pair
  * obvious in the bucket listing and keeps an orphan easy to spot.
  */
-export function buildGalleryKey(photoId: string, variant: "full" | "thumb"): string {
-  return `gallery/${new Date().getFullYear()}/${photoId}-${variant}.webp`;
+export function buildGalleryKey(
+  photoId: string,
+  variant: "full" | "thumb",
+  format: "webp" | "jpeg" = "webp",
+): string {
+  return `gallery/${new Date().getFullYear()}/${photoId}-${variant}.${format === "jpeg" ? "jpg" : "webp"}`;
 }
 
 /** Guards a client-supplied key: an admin still must not write outside the prefix. */
 export function isGalleryKey(key: string): boolean {
-  return /^gallery\/\d{4}\/[0-9a-f-]{36}-(full|thumb)\.webp$/.test(key);
+  return /^gallery\/\d{4}\/[0-9a-f-]{36}-(full|thumb)\.(webp|jpg)$/.test(key);
 }
 
 export function publicUrlFor(config: R2Config, key: string): string {

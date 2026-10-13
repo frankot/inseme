@@ -32,8 +32,12 @@ export async function uploadGalleryPhoto(
   if (file.size > MAX_SOURCE_BYTES) {
     return { ok: false, error: `${file.name}: plik jest za duży (maks. 40 MB).` };
   }
-  if (!file.type.startsWith("image/")) {
-    return { ok: false, error: `${file.name}: to nie jest zdjęcie.` };
+  const heicByName = /\.(heic|heif)$/i.test(file.name);
+  if (!file.type.startsWith("image/") && !heicByName) {
+    return {
+      ok: false,
+      error: `${file.name}: to nie jest zdjęcie${file.type ? ` (${file.type})` : ""}. Dodaj plik JPG, PNG, WebP lub HEIC.`,
+    };
   }
 
   onProgress?.({ stage: "converting" });
@@ -44,18 +48,27 @@ export async function uploadGalleryPhoto(
     return { ok: false, error: describeImageError(error, file.name) };
   }
 
-  const prepared = await createGalleryUploadUrls({
-    fullSize: rendered.full.blob.size,
-    thumbSize: rendered.thumb.blob.size,
-  });
-  if (!prepared.ok) return prepared;
+  let prepared: Awaited<ReturnType<typeof createGalleryUploadUrls>>;
+  try {
+    prepared = await createGalleryUploadUrls({
+      fullSize: rendered.full.blob.size,
+      thumbSize: rendered.thumb.blob.size,
+      format: rendered.format,
+    });
+  } catch {
+    return {
+      ok: false,
+      error: `${file.name}: nie udało się połączyć z serwerem, żeby przygotować wysyłkę. Sprawdź internet i spróbuj ponownie.`,
+    };
+  }
+  if (!prepared.ok) return { ok: false, error: `${file.name}: ${prepared.error}` };
 
   onProgress?.({ stage: "uploading" });
   const put = async (uploadUrl: string, blob: Blob) => {
     const response = await fetch(uploadUrl, {
       method: "PUT",
       body: blob,
-      headers: { "Content-Type": "image/webp" },
+      headers: { "Content-Type": blob.type },
     });
     if (!response.ok) throw new Error(String(response.status));
   };
@@ -66,28 +79,44 @@ export async function uploadGalleryPhoto(
       put(prepared.data.thumb.uploadUrl, rendered.thumb.blob),
     ]);
   } catch (error) {
-    const status = error instanceof Error ? error.message : "?";
-    return { ok: false, error: `${file.name}: wysyłka nie powiodła się (${status}).` };
+    const status = error instanceof Error ? Number(error.message) : NaN;
+    // fetch throws without a status when the request never completes: no
+    // connection, or a storage CORS rule blocking this site's address.
+    const reason = Number.isNaN(status)
+      ? "przeglądarka nie mogła wysłać zdjęcia do magazynu. Sprawdź połączenie z internetem; jeśli problem się powtarza, zgłoś go — magazyn może nie przyjmować wysyłek z tego adresu strony (ustawienia CORS)."
+      : status === 403
+        ? "magazyn odrzucił wysyłkę (link wygasł albo brak uprawnień) — spróbuj ponownie."
+        : `magazyn odrzucił zdjęcie (błąd ${status}).`;
+    return { ok: false, error: `${file.name}: ${reason}` };
   }
 
   onProgress?.({ stage: "saving" });
-  return createGalleryPhoto({
-    full: {
-      key: prepared.data.full.key,
-      url: prepared.data.full.publicUrl,
-      width: rendered.full.width,
-      height: rendered.full.height,
-      size: rendered.full.blob.size,
-    },
-    thumb: {
-      key: prepared.data.thumb.key,
-      url: prepared.data.thumb.publicUrl,
-      width: rendered.thumb.width,
-      height: rendered.thumb.height,
-      size: rendered.thumb.blob.size,
-    },
-    altText: altFromFileName(file.name),
-  });
+  let saved: Awaited<ReturnType<typeof createGalleryPhoto>>;
+  try {
+    saved = await createGalleryPhoto({
+      full: {
+        key: prepared.data.full.key,
+        url: prepared.data.full.publicUrl,
+        width: rendered.full.width,
+        height: rendered.full.height,
+        size: rendered.full.blob.size,
+      },
+      thumb: {
+        key: prepared.data.thumb.key,
+        url: prepared.data.thumb.publicUrl,
+        width: rendered.thumb.width,
+        height: rendered.thumb.height,
+        size: rendered.thumb.blob.size,
+      },
+      altText: altFromFileName(file.name),
+    });
+  } catch {
+    return {
+      ok: false,
+      error: `${file.name}: zdjęcie zostało wysłane, ale serwer nie zdążył go zapisać (np. przerwane połączenie). Odśwież stronę — jeśli zdjęcia nie ma, dodaj je ponownie.`,
+    };
+  }
+  return saved.ok ? saved : { ok: false, error: `${file.name}: ${saved.error}` };
 }
 
 /** kB / MB, for the "przed → po" line the uploader shows after a conversion. */

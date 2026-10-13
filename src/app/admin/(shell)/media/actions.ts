@@ -1,6 +1,6 @@
 "use server";
 
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -10,7 +10,8 @@ import { db } from "@/db";
 import { media } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
-import { hasVariants, VARIANT_WIDTHS, variantOf, type VariantWidth } from "@/lib/image-variants";
+import { hasVariants, VARIANT_WIDTHS, variantOf } from "@/lib/image-variants";
+import { renderVariants } from "@/lib/image-variants-server";
 import { toMediaSummary } from "@/lib/media-summary";
 import type { MediaSummary } from "@/lib/media-types";
 import {
@@ -42,21 +43,13 @@ const uploadRequestSchema = z.object({
 });
 
 /**
- * Hands the browser short-lived URLs so the file goes straight to R2 — no
- * multi-megabyte body through a serverless function. A photo also gets one URL
- * per responsive copy (`image-variants.ts`), which the browser renders and
- * uploads alongside the original.
+ * Hands the browser a short-lived URL so the file goes straight to R2 — no
+ * multi-megabyte body through a serverless function. A photo's responsive
+ * copies are made afterwards, on the server, in `registerMedia`.
  */
 export async function createUploadUrl(
   input: z.infer<typeof uploadRequestSchema>,
-): Promise<
-  DataResult<{
-    uploadUrl: string;
-    key: string;
-    publicUrl: string;
-    variants: { width: VariantWidth; uploadUrl: string }[];
-  }>
-> {
+): Promise<DataResult<{ uploadUrl: string; key: string; publicUrl: string }>> {
   try {
     await requireAdmin();
     const parsed = uploadRequestSchema.safeParse(input);
@@ -79,25 +72,7 @@ export async function createUploadUrl(
       { expiresIn: 300 },
     );
 
-    const publicUrl = publicUrlFor(config, key);
-    const variants = hasVariants(publicUrl)
-      ? await Promise.all(
-          VARIANT_WIDTHS.map(async (width) => ({
-            width,
-            uploadUrl: await getSignedUrl(
-              client,
-              new PutObjectCommand({
-                Bucket: config.bucket,
-                Key: variantOf(key, width),
-                ContentType: "image/webp",
-              }),
-              { expiresIn: 300 },
-            ),
-          })),
-        )
-      : [];
-
-    return { ok: true, data: { uploadUrl, key, publicUrl, variants } };
+    return { ok: true, data: { uploadUrl, key, publicUrl: publicUrlFor(config, key) } };
   } catch (error) {
     return actionError(error, "Nie udało się przygotować przesyłania pliku.");
   }
@@ -113,7 +88,42 @@ const registerSchema = z.object({
   altText: z.string().trim().max(300).optional(),
 });
 
-/** Called after the browser's PUT succeeds — records the object in the library. */
+/**
+ * Makes and stores a photo's responsive copies (`image-variants.ts`) from the
+ * original just uploaded. The site's image loader asks for these copies by
+ * name, so a photo without them would show as broken: on failure the
+ * original is removed too and the upload reported as failed.
+ */
+async function storeVariants(key: string): Promise<boolean> {
+  const config = getR2Config();
+  if (!config) return false;
+  const client = createR2Client(config);
+  try {
+    const object = await client.send(new GetObjectCommand({ Bucket: config.bucket, Key: key }));
+    const original = Buffer.from(await object.Body!.transformToByteArray());
+    const variants = await renderVariants(original);
+    await Promise.all(
+      variants.map(({ width, body }) =>
+        client.send(
+          new PutObjectCommand({
+            Bucket: config.bucket,
+            Key: variantOf(key, width),
+            Body: body,
+            ContentType: "image/webp",
+            CacheControl: "public, max-age=31536000, immutable",
+          }),
+        ),
+      ),
+    );
+    return true;
+  } catch (error) {
+    console.error(`[media] copies for ${key} failed`, error);
+    await client.send(new DeleteObjectCommand({ Bucket: config.bucket, Key: key })).catch(() => {});
+    return false;
+  }
+}
+
+/** Called after the browser's PUT succeeds — makes the copies, then records the file. */
 export async function registerMedia(
   input: z.infer<typeof registerSchema>,
 ): Promise<DataResult<MediaSummary>> {
@@ -122,6 +132,16 @@ export async function registerMedia(
     const parsed = registerSchema.safeParse(input);
     if (!parsed.success) {
       return { ok: false, error: "Nieprawidłowe dane pliku." };
+    }
+
+    // The key comes from the browser: it must be the object the URL points at.
+    const config = getR2Config();
+    if (config && parsed.data.url !== publicUrlFor(config, parsed.data.key)) {
+      return { ok: false, error: "Nieprawidłowe dane pliku." };
+    }
+
+    if (hasVariants(parsed.data.url) && !(await storeVariants(parsed.data.key))) {
+      return { ok: false, error: "Nie udało się przygotować zdjęcia. Sprawdź, czy plik jest poprawnym zdjęciem, i spróbuj ponownie." };
     }
 
     const [row] = await db

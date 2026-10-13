@@ -68,17 +68,22 @@ export function GalleryManager({
     try {
       for (const [index, file] of files.entries()) {
         setQueued(files.length - index);
+        // uploadGalleryPhoto reports its own failures; the catch is a last net,
+        // so nothing an editor drops can fail without a word.
         const result = await uploadGalleryPhoto(file, ({ stage }) =>
           setPending({ name: file.name, stage }),
-        );
+        ).catch(() => ({
+          ok: false as const,
+          error: `${file.name}: nieoczekiwany błąd podczas wysyłki. Spróbuj ponownie.`,
+        }));
         if (!result.ok) {
-          toast.error(result.error);
+          toast.error(result.error, { duration: 12000 });
           continue;
         }
         const added = result.data;
         setPhotos((current) => [added, ...current]);
         toast.success(
-          `${file.name} → ${formatBytes(added.totalSize)} (WebP, ${added.full.width}×${added.full.height}).`,
+          `${file.name} → ${formatBytes(added.totalSize)} (${formatOf(added.full.url)}, ${added.full.width}×${added.full.height}).`,
         );
       }
     } finally {
@@ -141,11 +146,10 @@ export function GalleryManager({
         hint={
           <>
             Upuść zdjęcia tutaj albo wybierz je z dysku. Każde zostanie w przeglądarce
-            zmniejszone do {GALLERY_VARIANTS.full.maxEdge} px i zapisane jako WebP — oryginał
+            zmniejszone do {GALLERY_VARIANTS.full.maxEdge} px i zapisane jako WebP (w Safari jako JPEG) — oryginał
             nie jest wysyłany.
           </>
         }
-        acceptDrop={(file) => file.type.startsWith("image/")}
         ignoreDrop={dragId !== null}
         onFiles={(files) => void handleFiles(files)}
         inputRef={inputRef}
@@ -394,7 +398,7 @@ function GalleryCard({
           />
         </>
       }
-      meta={`${photo.full.width}×${photo.full.height} · ${formatBytes(photo.totalSize)} · WebP`}
+      meta={`${photo.full.width}×${photo.full.height} · ${formatBytes(photo.totalSize)} · ${formatOf(photo.full.url)}`}
       actionsStart={
         // Drag moves a photo a long way; these move it one place, from a keyboard.
         <>
@@ -456,4 +460,9 @@ function GalleryCard({
       }
     />
   );
+}
+
+/** Gallery files are WebP, or JPEG when they came from Safari. */
+function formatOf(url: string): string {
+  return url.endsWith(".jpg") ? "JPEG" : "WebP";
 }

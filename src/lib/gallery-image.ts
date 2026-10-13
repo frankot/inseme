@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * Browser-side resize + WebP encode, run before anything touches the network.
+ * Browser-side resize + encode (WebP, or JPEG in Safari — see `toBlob`), run
+ * before anything touches the network.
  *
  * The bucket is served from the `pub-….r2.dev` domain, where Cloudflare's
  * `/cdn-cgi/image/` transformations are not available (`supportsEdgeResize`
@@ -48,6 +49,8 @@ export type RenderedVariant = {
 };
 
 export type RenderedPhoto = {
+  /** Both variants share it — the second encode falls back exactly like the first. */
+  format: EncodedFormat;
   full: RenderedVariant;
   thumb: RenderedVariant;
   /** Original bytes, so the admin can report what the conversion saved. */
@@ -90,13 +93,11 @@ function makeCanvas(width: number, height: number): HTMLCanvasElement {
  * most of what this gallery holds, come out crawling with artefacts. Stepping
  * down in halves averages those pixels instead, and costs a few milliseconds.
  */
-export function drawScaled(
+function drawScaled(
   source: CanvasImageSource,
   sourceWidth: number,
   sourceHeight: number,
   target: { width: number; height: number },
-  /** Paint a white ground first. Photos: yes. Library images may be transparent PNGs. */
-  opaque = true,
 ): HTMLCanvasElement {
   let current: CanvasImageSource = source;
   let width = sourceWidth;
@@ -119,35 +120,35 @@ export function drawScaled(
   if (!context) throw new Error("canvas-unavailable");
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
-  // Photos are opaque; a white ground keeps any stray alpha from going black.
-  if (opaque) {
-    context.fillStyle = "#ffffff";
-    context.fillRect(0, 0, canvas.width, canvas.height);
-  }
+  // Photos are opaque; a white ground keeps any stray alpha from going black
+  // (and JPEG has no alpha at all).
+  context.fillStyle = "#ffffff";
+  context.fillRect(0, 0, canvas.width, canvas.height);
   context.drawImage(current, 0, 0, canvas.width, canvas.height);
   return canvas;
 }
 
-export function toBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          reject(new Error("encode-failed"));
-          return;
-        }
-        // A browser without WebP silently hands back a PNG, which for a photo
-        // is enormous. Refuse rather than upload a 6 MB "thumbnail".
-        if (blob.type !== "image/webp") {
-          reject(new Error("webp-unsupported"));
-          return;
-        }
-        resolve(blob);
-      },
-      "image/webp",
-      quality,
-    );
-  });
+/** What the browser could encode: WebP where it can, JPEG where it can't. */
+export type EncodedFormat = "webp" | "jpeg";
+
+function encode(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
+  return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
+}
+
+/**
+ * WebP when the browser can encode it, otherwise JPEG.
+ *
+ * Safari (macOS and iOS, every version so far) displays WebP but cannot
+ * *encode* it: asked for "image/webp", `toBlob` quietly returns a PNG — which
+ * for a photo is several megabytes. JPEG it encodes fine, so that is the
+ * fallback: a little larger than WebP, still a properly sized photo.
+ */
+async function toBlob(canvas: HTMLCanvasElement, quality: number): Promise<Blob> {
+  const webp = await encode(canvas, "image/webp", quality);
+  if (webp?.type === "image/webp") return webp;
+  const jpeg = await encode(canvas, "image/jpeg", quality);
+  if (jpeg?.type === "image/jpeg") return jpeg;
+  throw new Error("encode-failed");
 }
 
 /**
@@ -177,6 +178,7 @@ export async function renderGalleryVariants(file: File): Promise<RenderedPhoto> 
     const thumbBlob = await toBlob(thumbCanvas, GALLERY_VARIANTS.thumb.quality);
 
     return {
+      format: fullBlob.type === "image/jpeg" ? "jpeg" : "webp",
       full: { blob: fullBlob, ...fullTarget },
       thumb: { blob: thumbBlob, ...thumbTarget },
       sourceSize: file.size,
@@ -192,8 +194,8 @@ export function describeImageError(error: unknown, fileName: string): string {
   if (code === "decode-failed") {
     return `${fileName}: nie udało się odczytać zdjęcia. Zapisz je jako JPEG lub PNG i spróbuj ponownie.`;
   }
-  if (code === "webp-unsupported") {
-    return `${fileName}: ta przeglądarka nie zapisuje plików WebP. Użyj Chrome, Safari 16+ lub Firefox.`;
+  if (code === "encode-failed") {
+    return `${fileName}: ta przeglądarka nie potrafi przygotować zdjęcia. Spróbuj w innej przeglądarce albo zapisz zdjęcie jako JPEG.`;
   }
   return `${fileName}: nie udało się przygotować zdjęcia do wysyłki.`;
 }
