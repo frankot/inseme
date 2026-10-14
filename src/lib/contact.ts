@@ -1,5 +1,7 @@
 "use server";
 
+import { and, isNull, sql } from "drizzle-orm";
+
 import { db } from "@/db";
 import { contactSubmissions, leadSignups } from "@/db/schema";
 import type { ActionResult } from "@/lib/action-result";
@@ -109,8 +111,19 @@ export async function submitLeadSignup(input: LeadSignupInput): Promise<ActionRe
   }
 
   try {
+    const email = parsed.data.email.trim().toLowerCase();
+
+    // Already on file: report success without a second row or a second
+    // confirmation e-mail, so the leads list holds each address once.
+    const [existing] = await db
+      .select({ id: leadSignups.id })
+      .from(leadSignups)
+      .where(and(isNull(leadSignups.deletedAt), sql`lower(${leadSignups.email}) = ${email}`))
+      .limit(1);
+    if (existing) return { ok: true };
+
     await db.insert(leadSignups).values({
-      email: parsed.data.email,
+      email,
       source: emptyToNull(parsed.data.source),
       consentAt: new Date(),
     });

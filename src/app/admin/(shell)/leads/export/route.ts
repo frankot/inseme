@@ -34,7 +34,7 @@ export async function GET() {
   for (const row of rows) {
     sheet.addRow({
       email: row.email,
-      source: row.source,
+      source: row.sources.join(", "),
       detail: row.detail ?? "",
       consentAt: row.consentAt,
       createdAt: row.createdAt,

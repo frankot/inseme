@@ -1,4 +1,4 @@
-import { asc, sql } from "drizzle-orm";
+import { asc, count, isNull } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -31,24 +31,38 @@ export const metadata: Metadata = { title: "Testy przesiewowe — panel Insieme"
 
 export default async function TestsListPage() {
   const featured = await getFeaturedSlots("test");
-  const rows = await db
-    .select({
-      id: screeningTests.id,
-      slug: screeningTests.slug,
-      title: screeningTests.title,
-      status: screeningTests.status,
-      questions: sql<number>`(
-        select count(*) from ${screeningTestQuestions}
-        where ${screeningTestQuestions.testId} = ${screeningTests.id}
-      )`.mapWith(Number),
-      submissions: sql<number>`(
-        select count(*) from ${screeningTestSubmissions}
-        where ${screeningTestSubmissions.testId} = ${screeningTests.id}
-          and ${screeningTestSubmissions.deletedAt} is null
-      )`.mapWith(Number),
-    })
-    .from(screeningTests)
-    .orderBy(asc(screeningTests.sortOrder), asc(screeningTests.title));
+  // Counted in grouped queries rather than correlated subqueries: in a
+  // single-table select drizzle renders `${table.column}` without its table
+  // name, so `test_id = id` resolved both sides to the inner table and every
+  // count came out 0.
+  const [tests, questionCounts, submissionCounts] = await Promise.all([
+    db
+      .select({
+        id: screeningTests.id,
+        slug: screeningTests.slug,
+        title: screeningTests.title,
+        status: screeningTests.status,
+      })
+      .from(screeningTests)
+      .orderBy(asc(screeningTests.sortOrder), asc(screeningTests.title)),
+    db
+      .select({ testId: screeningTestQuestions.testId, value: count() })
+      .from(screeningTestQuestions)
+      .groupBy(screeningTestQuestions.testId),
+    db
+      .select({ testId: screeningTestSubmissions.testId, value: count() })
+      .from(screeningTestSubmissions)
+      .where(isNull(screeningTestSubmissions.deletedAt))
+      .groupBy(screeningTestSubmissions.testId),
+  ]);
+
+  const questionsBy = new Map(questionCounts.map((row) => [row.testId, row.value]));
+  const submissionsBy = new Map(submissionCounts.map((row) => [row.testId, row.value]));
+  const rows = tests.map((test) => ({
+    ...test,
+    questions: questionsBy.get(test.id) ?? 0,
+    submissions: submissionsBy.get(test.id) ?? 0,
+  }));
 
   return (
     <>

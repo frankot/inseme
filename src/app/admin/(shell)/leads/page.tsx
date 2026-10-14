@@ -73,14 +73,23 @@ export default async function LeadsPage() {
           </TableHeader>
           <TableBody>
             {rows.map((row) => (
-              <TableRow key={`${row.kind}-${row.id}`}>
+              <TableRow key={row.email.toLowerCase()}>
                 <TableCell className="font-medium">{row.email}</TableCell>
                 <TableCell>
-                  <Badge variant="secondary">{row.source}</Badge>
+                  <div className="flex flex-wrap gap-1">
+                    {row.sources.map((source) => (
+                      <Badge key={source} variant="secondary">
+                        {source}
+                      </Badge>
+                    ))}
+                  </div>
                 </TableCell>
                 {/* Fixed width: long test titles are cut, the full text is on hover. */}
                 <TableCell className="max-w-64 truncate text-muted-foreground" title={row.detail ?? undefined}>
                   {row.detail ?? "—"}
+                  {row.entries > 1 && (
+                    <span className="block text-xs">zostawiony {row.entries}×, pokazano najnowszy</span>
+                  )}
                 </TableCell>
                 <TableCell className="text-muted-foreground">
                   {row.createdAt.toLocaleString("pl-PL", {
@@ -90,9 +99,9 @@ export default async function LeadsPage() {
                 </TableCell>
                 <TableCell className="text-right">
                   {/* Each address is deleted where it lives, so the lists never disagree. */}
-                  {row.kind === "signup" ? (
+                  {row.signupId ? (
                     <ConfirmDelete
-                      onConfirm={deleteLeadSignup.bind(null, row.id)}
+                      onConfirm={deleteLeadSignup.bind(null, row.signupId)}
                       title="Usunąć adres?"
                     />
                   ) : row.kind === "contact" ? (

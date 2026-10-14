@@ -26,6 +26,18 @@ export type LeadRow = {
   createdAt: Date;
 };
 
+/**
+ * One address, however many times it was left. The fields above describe the
+ * newest entry; `sources` lists every distinct place it came from and
+ * `entries` how many rows were merged (e.g. the same test taken twice).
+ */
+export type LeadAddress = LeadRow & {
+  sources: string[];
+  entries: number;
+  /** The signup row, if any — the only kind deleted from the leads list. */
+  signupId: string | null;
+};
+
 /** Contact messages that left an address (it is optional there). */
 const withEmail = and(
   isNull(contactSubmissions.deletedAt),
@@ -33,7 +45,36 @@ const withEmail = and(
   ne(contactSubmissions.email, ""),
 );
 
-export async function getLeadRows(): Promise<LeadRow[]> {
+/**
+ * Every address once, newest entry first. Matching is case-insensitive, as
+ * mail servers treat it, and mirrors the "unikalnych adresów" tile.
+ */
+export async function getLeadRows(): Promise<LeadAddress[]> {
+  const byEmail = new Map<string, LeadAddress>();
+
+  // Newest first, so the first row seen for an address is the one shown.
+  for (const row of await getLeadEntries()) {
+    const key = row.email.trim().toLowerCase();
+    const seen = byEmail.get(key);
+    if (!seen) {
+      byEmail.set(key, {
+        ...row,
+        sources: [row.source],
+        entries: 1,
+        signupId: row.kind === "signup" ? row.id : null,
+      });
+      continue;
+    }
+    seen.entries += 1;
+    if (!seen.sources.includes(row.source)) seen.sources.push(row.source);
+    if (row.kind === "signup") seen.signupId ??= row.id;
+  }
+
+  return [...byEmail.values()];
+}
+
+/** Every row from all three sources, one per entry, newest first. */
+async function getLeadEntries(): Promise<LeadRow[]> {
   const [signups, tests, messages] = await Promise.all([
     db
       .select({
