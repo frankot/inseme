@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { useSiteContact } from "@/components/site/chrome/site-settings";
 import { FieldError } from "@/components/site/ui/field-error";
 import { testDefaults, type SiteContact } from "@/content/home";
+import { track } from "@/lib/analytics";
 import type { PublicScreeningTest } from "@/lib/queries/screening";
 import { sendScreeningResult } from "@/lib/screening";
 import {
@@ -25,6 +26,9 @@ type Stage = "intro" | "question" | "result";
  *
  * Answers never leave the browser. Only the running total is submitted, and the
  * server re-derives the band from it; see `src/lib/screening.ts`.
+ *
+ * Analytics gets the test's slug and the step reached — never the score,
+ * the band or any answer.
  */
 export function ScreeningTest({
   test,
@@ -71,8 +75,11 @@ export function ScreeningTest({
   function answer(points: number) {
     const next = score + points;
     setScore(next);
-    if (index + 1 >= total) setStage("result");
-    else setIndex(index + 1);
+    if (index === 0) track("test_start", { test_slug: test.slug });
+    if (index + 1 >= total) {
+      setStage("result");
+      track("test_complete", { test_slug: test.slug });
+    } else setIndex(index + 1);
   }
 
   function reset() {
@@ -180,6 +187,7 @@ export function ScreeningTest({
 
                 <ResultDelivery
                   testId={test.id}
+                  testSlug={test.slug}
                   score={score}
                   labels={labels}
                   contact={contact}
@@ -213,12 +221,14 @@ export function ScreeningTest({
 
 function ResultDelivery({
   testId,
+  testSlug,
   score,
   labels,
   contact,
   dark,
 }: {
   testId: string;
+  testSlug: string;
   score: number;
   labels: typeof testDefaults;
   contact: SiteContact;
@@ -248,6 +258,7 @@ function ResultDelivery({
       onSubmit={form.handleSubmit(async (values) => {
         const result = await sendScreeningResult({ ...values, testId, score });
         if (result.ok) {
+          track("test_result_email", { test_slug: testSlug });
           setSent(true);
           return;
         }

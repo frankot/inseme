@@ -127,7 +127,7 @@ export const policyDefaults: PolicyContent = {
       title: "Pliki cookies i statystyki",
       body: [
         "Strona działa bez plików cookies. Jedyna informacja zapisywana w Twojej przeglądarce bez pytania to Twój wybór z okienka o plikach cookies — żeby nie pytać Cię przy każdej wizycie.",
-        "Jeśli klikniesz „Zgadzam się”, strona wczyta Google Analytics, które zapisuje pliki cookies _ga i _ga_<identyfikator> (domyślnie na 2 lata) i liczy, które strony są czytane oraz czy ktoś kliknął numer telefonu, adres e-mail lub formularz. Nie przekazujemy do Google treści wiadomości, odpowiedzi z testów ani żadnych danych do celów reklamowych; sygnały reklamowe i Google Signals są wyłączone.",
+        "Jeśli klikniesz „Zgadzam się”, strona wczyta Google Analytics, które zapisuje pliki cookies _ga i _ga_<identyfikator> (domyślnie na 2 lata) i liczy, które strony są czytane oraz czy ktoś kliknął numer telefonu, adres e-mail, przycisk kontaktu lub formularz, rozwinął pytanie w FAQ albo rozpoczął i ukończył test (bez odpowiedzi i wyniku). Nie przekazujemy do Google treści wiadomości, odpowiedzi z testów ani żadnych danych do celów reklamowych; sygnały reklamowe i Google Signals są wyłączone.",
         "Jeśli klikniesz „Nie zgadzam się”, Google Analytics nie jest wczytywane w ogóle. Swój wybór możesz zmienić w dowolnej chwili przez link „Ustawienia cookies” w stopce; wycofanie zgody usuwa pliki cookies Google Analytics.",
       ],
     },

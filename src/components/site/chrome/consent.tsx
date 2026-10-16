@@ -1,11 +1,12 @@
 "use client";
 
+import { usePathname, useSearchParams } from "next/navigation";
 import Script from "next/script";
-import { useEffect, useSyncExternalStore } from "react";
+import { Suspense, useEffect, useRef, useSyncExternalStore } from "react";
 
 import { useSiteSettings } from "@/components/site/chrome/site-settings";
 import { footerDefaults } from "@/content/home";
-import { eventForLink, GA_ID, track } from "@/lib/analytics";
+import { eventForLink, GA_ID, initGa, track, trackPageView } from "@/lib/analytics";
 
 /**
  * GA4 behind a consent banner (Consent Mode v2, "basic"): nothing from Google
@@ -78,8 +79,9 @@ export function ConsentBanner() {
     function onClick(event: MouseEvent) {
       const link = (event.target as Element | null)?.closest?.("a");
       if (!link) return;
-      const name = eventForLink(link);
-      if (name) track(name);
+      const measured = eventForLink(link);
+      // The union pairs each name with its own params; TS can't follow that through a spread.
+      if (measured) (track as (...args: unknown[]) => void)(measured.name, ...measured.params);
     }
     document.addEventListener("click", onClick, { capture: true });
     return () => document.removeEventListener("click", onClick, { capture: true });
@@ -109,12 +111,10 @@ export function ConsentBanner() {
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
             strategy="afterInteractive"
           />
-          <Script id="ga-init" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
-gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
-gtag('js',new Date());
-gtag('config','${GA_ID}',{allow_google_signals:false,allow_ad_personalization_signals:false});`}
-          </Script>
+          {/* Reads the URL, so it must sit under Suspense or the route drops to client rendering. */}
+          <Suspense fallback={null}>
+            <PageViews />
+          </Suspense>
         </>
       )}
 
@@ -162,6 +162,51 @@ gtag('config','${GA_ID}',{allow_google_signals:false,allow_ad_personalization_si
       )}
     </>
   );
+}
+
+/**
+ * One `page_view` per route, sent by hand rather than by GA4's history-change
+ * detection, which can fire before Next swaps the <title> and cannot carry a
+ * content group. Its first run also initialises gtag — before any other event.
+ */
+function PageViews() {
+  const pathname = usePathname();
+  // Only for `/galeria?page=2`; other query strings never change the page.
+  const page = useSearchParams().get("page");
+  const lastTitle = useRef<string | null>(null);
+  // Guards against a second send for the same view, e.g. StrictMode's re-run.
+  const lastKey = useRef<string | null>(null);
+
+  useEffect(() => {
+    initGa();
+    const key = `${pathname}?${page ?? ""}`;
+    if (lastKey.current === key) return;
+
+    function send() {
+      if (lastKey.current === key) return;
+      lastKey.current = key;
+      lastTitle.current = document.title;
+      trackPageView(pathname);
+    }
+
+    // The new <title> usually lands in the same commit. If it has not yet,
+    // wait for it briefly rather than logging the previous page's title.
+    if (lastTitle.current === null || document.title !== lastTitle.current) {
+      send();
+      return;
+    }
+    const observer = new MutationObserver(() => {
+      if (document.title !== lastTitle.current) send();
+    });
+    observer.observe(document.head, { subtree: true, childList: true, characterData: true });
+    const timeout = window.setTimeout(send, 500);
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(timeout);
+    };
+  }, [pathname, page]);
+
+  return null;
 }
 
 /* The footer's "Ustawienia cookies" reopens the banner without a reload. */

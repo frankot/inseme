@@ -192,7 +192,7 @@ export default async function ArticlePage(props: PageProps<"/porady/[slug]">) {
             )}
           </div>
 
-          <aside className="flex flex-col gap-gap desk:sticky desk:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]">
+          <aside data-track="article-sidebar" className="flex flex-col gap-gap desk:sticky desk:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]">
             {points.length > 0 && (
               <Reveal>
                 <p className="mb-[clamp(12px,1.3vw,18px)] text-eyebrow uppercase tracking-[0.2em] text-clay-600">

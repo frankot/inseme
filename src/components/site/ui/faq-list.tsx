@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { track } from "@/lib/analytics";
 import type { FaqEntry } from "@/lib/queries/faq";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +34,11 @@ export function FaqList({
               type="button"
               aria-expanded={open}
               aria-controls={`faq-${item.id}`}
-              onClick={() => setOpenIndex(open ? null : i)}
+              onClick={() => {
+                // Opening only; the question is site copy, not visitor input.
+                if (!open) track("faq_open", { faq_question: item.question });
+                setOpenIndex(open ? null : i);
+              }}
               className={cn(
                 "flex w-full items-baseline justify-between gap-5 py-[clamp(18px,1.9vw,24px)] text-left transition-colors",
                 open ? "text-ink-900" : "text-ink-900 hover:text-sage-600",

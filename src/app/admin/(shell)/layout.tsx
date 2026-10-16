@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { AdminSidebar } from "@/components/admin/admin-sidebar";
 import { MobileNav } from "@/components/admin/mobile-nav";
 import { ShellContainer } from "@/components/admin/shell-container";
+import { StaffMarker } from "@/components/admin/staff-marker";
 import { UserMenu } from "@/components/admin/user-menu";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ export default async function AdminShellLayout({ children }: { children: ReactNo
 
   return (
     <div className="flex min-h-svh flex-col">
+      <StaffMarker />
       <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background px-4">
         <MobileNav />
         {/* On desktop the logo box spans exactly the sidebar (w-64, cancelling

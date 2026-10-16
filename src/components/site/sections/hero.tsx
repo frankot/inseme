@@ -21,6 +21,7 @@ export function Hero({
   return (
     <section
       id="gora"
+      data-track="hero"
       // A minimum, not a fixed height: on a phone the title, lead, button and
       // trust list run taller than 600px, and with a fixed height the overflow
       // was pushed up under the navbar. Now the hero grows instead.
