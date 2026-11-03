@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/faq" },
 };
 
-/** Prerendered, refreshed every five minutes — see the homepage for the why. */
-export const revalidate = 300;
+/** Prerendered; revalidated by the admin actions, one-day backstop — see the homepage. */
+export const revalidate = 86400;
 
 /**
  * Every published question. The homepage carries the first five and links here.

@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { ProgramView } from "@/components/site/cms/program-view";
 import { getCmsPage } from "@/lib/cms/get-page";
 
-/** Prerendered, refreshed every five minutes; publishing in the CMS revalidates it. */
-export const revalidate = 300;
+/** Prerendered; publishing in the CMS revalidates it, the one-day window is a backstop. */
+export const revalidate = 86400;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getCmsPage("program");

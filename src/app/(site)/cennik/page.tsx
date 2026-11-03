@@ -13,7 +13,7 @@ import { getSiteContact } from "@/lib/queries/settings";
 import { cn } from "@/lib/utils";
 
 // The NFZ card borrows the article's cover, which editors can change.
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: copy.metaTitle,

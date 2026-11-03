@@ -29,6 +29,7 @@ function revalidateTest(id: string, slug?: string | null) {
   revalidatePath("/testy");
   revalidatePath("/");
   if (slug) revalidatePath(`/testy/${slug}`);
+  revalidatePath("/sitemap.xml");
 }
 
 function isSlugClash(error: unknown): boolean {

@@ -31,6 +31,7 @@ function revalidateTeam(id: string | null, ...slugs: (string | null | undefined)
   revalidatePath("/zespol");
   revalidatePath("/zespol/[slug]", "page");
   revalidatePath("/porady/[slug]", "page");
+  revalidatePath("/sitemap.xml");
   for (const slug of new Set(slugs.filter(Boolean))) {
     revalidatePath(`/zespol/${slug}`);
   }

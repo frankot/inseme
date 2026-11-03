@@ -129,7 +129,10 @@ export async function discardDraft(
       .where(and(eq(cmsPages.key, key), eq(cmsPages.draftVersion, version)))
       .returning({ key: cmsPages.key });
     if (updated.length === 0) return { ok: false, error: CONFLICT, conflict: true };
-    revalidatePage(def);
+    // Admin paths only: the public route reads `published`, which a discard
+    // leaves as it was, and revalidating it would only buy a wasted ISR write.
+    revalidatePath("/admin/cms");
+    revalidatePath(`/admin/cms/${def.adminSlug}`);
     return { ok: true, data: { version: version + 1 } };
   } catch (error) {
     return actionError(error, "Nie udało się odrzucić szkicu.");

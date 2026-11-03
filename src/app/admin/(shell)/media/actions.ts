@@ -165,6 +165,16 @@ export async function registerMedia(
   }
 }
 
+/**
+ * Article covers and body images, team photos and the default share image are
+ * joined from `media` at render time, so changing or deleting a row changes
+ * public pages. Working out which ones would mean another query per edit; the
+ * layout-wide revalidate is ~24 pages, and media edits are rare.
+ */
+function revalidatePublicSite() {
+  revalidatePath("/", "layout");
+}
+
 export async function updateMediaAltText(
   input: z.input<typeof mediaAltTextSchema>,
 ): Promise<ActionResult> {
@@ -179,6 +189,7 @@ export async function updateMediaAltText(
       .where(eq(media.id, parsed.data.id));
 
     revalidatePath("/admin/media");
+    revalidatePublicSite();
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się zapisać opisu.");
@@ -209,6 +220,7 @@ export async function deleteMedia(id: string): Promise<ActionResult> {
     await db.delete(media).where(eq(media.id, id));
 
     revalidatePath("/admin/media");
+    revalidatePublicSite();
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się usunąć pliku.");

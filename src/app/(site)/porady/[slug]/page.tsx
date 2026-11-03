@@ -30,10 +30,10 @@ import { cn } from "@/lib/utils";
 
 /**
  * Published articles are known at build time, so they are prerendered; anything
- * added later renders on first request. Both are refreshed on the same five
- * minute window as the homepage teaser.
+ * added later renders on first request. The article actions revalidate them;
+ * the one-day window is the backstop, as on the homepage.
  */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateStaticParams() {
   const slugs = await getArticleSlugs();

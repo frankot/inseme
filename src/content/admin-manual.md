@@ -90,7 +90,7 @@ Pola opisu i alt przy zdjęciach (Galeria, Biblioteka mediów, wybór zdjęcia, 
 
 ### Czas pojawienia się zmian
 
-Zwykle kilka sekund po publikacji, maksymalnie **5 minut**.
+Kilka sekund po publikacji.
 
 ---
 

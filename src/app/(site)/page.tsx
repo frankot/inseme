@@ -4,12 +4,13 @@ import { LandingView } from "@/components/site/cms/landing-view";
 import { getCmsPage } from "@/lib/cms/get-page";
 
 /**
- * The page is prerendered and refreshed every five minutes, so a published
- * CMS change, article, person or question appears without a deploy. Publishing
- * in the CMS also revalidates this path, which makes the window a backstop
- * rather than the only route from the admin to the site.
+ * The page is prerendered; a published CMS change, article, person or
+ * question appears without a deploy because every admin action revalidates
+ * this path. The one-day window is only a backstop: each time-based refresh
+ * is a full ISR write whether or not anything changed, so a short window
+ * costs writes on every crawl while doing nothing the actions don't already.
  */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export async function generateMetadata(): Promise<Metadata> {
   const { seo } = await getCmsPage("landing");

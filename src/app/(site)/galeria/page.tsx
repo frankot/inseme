@@ -23,10 +23,8 @@ export async function generateMetadata(props: PageProps<"/galeria">): Promise<Me
 
 /**
  * Reading `?page=` makes this route dynamic — search params only exist on a
- * live request. The queries behind it are still cached on the same five-minute
- * window as the rest of the site (see `getGalleryPage`), and the admin actions
- * bust that cache on every change, so paging costs a DB round trip once per
- * page per window rather than once per visitor.
+ * live request. Nothing behind it is cached (see `getGalleryPage`), so each
+ * view pays two indexed queries — and writes nothing to the ISR cache.
  */
 export default async function GaleriaPage(props: PageProps<"/galeria">) {
   const params = await props.searchParams;

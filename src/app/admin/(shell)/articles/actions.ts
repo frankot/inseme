@@ -16,14 +16,15 @@ import { sanitizeBlocks } from "@/lib/sanitize-blocks";
 import { articleSchema, emptyToNull, type ArticleInput } from "@/lib/validations/content";
 
 /**
- * The public surfaces an article appears on. They are prerendered with a five
- * minute window (`export const revalidate` on each route), so this only makes
- * an edit show up immediately instead of within those five minutes.
+ * The public surfaces an article appears on. They are prerendered with only a
+ * one-day backstop (`export const revalidate` on each route), so this is what
+ * makes an edit show up at all — skip it and the site lags by up to a day.
  */
 function revalidatePublic(slug?: string) {
   revalidatePath("/");
   revalidatePath("/porady");
   if (slug) revalidatePath(`/porady/${slug}`);
+  revalidatePath("/sitemap.xml");
 }
 
 /** The live columns a valid form writes — sanitised, empty fields as null. */

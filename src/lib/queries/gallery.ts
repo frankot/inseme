@@ -18,7 +18,7 @@ import {
  * newest, so a gallery nobody has reordered still reads newest-first.
  *
  * Nothing here is wrapped in a cache. /osrodek is static on the usual
- * five-minute window and the admin actions `revalidatePath` it, exactly as the
+ * one-day backstop and the admin actions `revalidatePath` it, exactly as the
  * FAQ and team actions do. /galeria reads `?page=`, which makes it dynamic, so
  * it pays two indexed queries per view — a count and a 24-row window. That is
  * a few milliseconds on Neon, and it is worth more than the alternative: an

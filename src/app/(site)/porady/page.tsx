@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/porady" },
 };
 
-/** Prerendered, refreshed every five minutes — see the homepage for the why. */
-export const revalidate = 300;
+/** Prerendered; revalidated by the admin actions, one-day backstop — see the homepage. */
+export const revalidate = 86400;
 
 export default async function ArtykulyPage() {
   const articles = await getPublishedArticles();

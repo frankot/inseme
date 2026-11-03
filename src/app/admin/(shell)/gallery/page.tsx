@@ -14,7 +14,7 @@ export const metadata: Metadata = { title: "Galeria — panel Insieme" };
 
 export default async function GalleryAdminPage() {
   // The admin list is not cached — an editor must see a draft the instant it
-  // exists, unlike /galeria, which reads through a five-minute cache.
+  // exists, unlike /osrodek, which is prerendered and revalidated on change.
   const rows = await db
     .select()
     .from(galleryPhotos)

@@ -7,11 +7,10 @@ import { teamPageDefaults } from "@/content/team";
 import { getPublishedTeam } from "@/lib/queries/team";
 
 /**
- * Prerendered, refreshed every five minutes. Saving a person in the admin
- * also revalidates this path, which makes the window a backstop — e.g. for an
- * edit made from another deployment against the same database.
+ * Prerendered. Saving a person in the admin revalidates this path; the
+ * one-day window is only a backstop — see the homepage for the why.
  */
-export const revalidate = 300;
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: teamPageDefaults.metaTitle,
