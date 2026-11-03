@@ -106,7 +106,7 @@ export const FAQ_SEED: FaqSeedQuestion[] = [
     category: "alkohol",
     question: "Czy wszywka (Esperal) wystarczy zamiast terapii?",
     answer:
-      "Nie. Disulfiram nie zmniejsza głodu alkoholowego ani nie zmienia przyczyn picia — jedynie sprawia, że picie po jego przyjęciu wywołuje silne, nieprzyjemne objawy. Może być wsparciem dla osoby, która się leczy, ale o jego zastosowaniu decyduje lekarz po badaniu.",
+      "Nie. Disulfiram nie zmniejsza głodu alkoholowego ani nie zmienia przyczyn picia — jedynie sprawia, że picie po jego przyjęciu wywołuje silne, nieprzyjemne objawy. Może być wsparciem dla osoby, która się leczy, ale o jego zastosowaniu decyduje lekarz po badaniu. Od jesieni 2026 r. wszywki z disulfiramem nie ma w Polsce w obrocie; dostępne są tabletki na receptę. Więcej: <a href=\"/porady/wszywka-alkoholowa-esperal\">wszywka alkoholowa (Esperal) niedostępna — co zamiast niej</a>.",
   },
   {
     category: "alkohol",

@@ -1,5 +1,8 @@
 import { NFZ_ARTICLE_HREF } from "@/content/artykul-nfz";
 
+/** Article A1, published Nov 3, 2026 (`src/content/artykul-wszywka.ts`). */
+const WSZYWKA_ARTICLE_HREF = "/porady/wszywka-alkoholowa-esperal";
+
 import type { IntentPageContent } from "./types";
 
 /**
@@ -117,9 +120,11 @@ export const leczenieAlkoholizmuDefaults: IntentPageContent = {
     label: "Esperal i leki",
     statement:
       "Leki mogą być pomocne jako część planu leczenia. Same w sobie nie są planem.",
+    // The implant left the market in autumn 2026 (MZ replies to interpellations
+    // 18953 and 19628); the article in WSZYWKA_ARTICLE_HREF carries the sources.
     body: [
-      "Wiele rodzin zaczyna od pytania o wszywkę. To zrozumiałe: wydaje się prostym rozwiązaniem trudnego problemu.",
-      "Disulfiram (Esperal) nie zmniejsza głodu alkoholowego. Sprawia, że picie po jego przyjęciu wywołuje silne, nieprzyjemne i potencjalnie groźne objawy — działa więc odstraszająco, dopóki ktoś sam chce go stosować.",
+      "Wiele rodzin zaczyna od pytania o wszywkę. Od jesieni 2026 r. implantu z disulfiramem (potocznie Esperalu) nie ma jednak w Polsce w obrocie, a według Ministerstwa Zdrowia nie da się go też sprowadzić z zagranicy. Dostępne pozostają tabletki z disulfiramem, na receptę.",
+      "Disulfiram nie zmniejsza głodu alkoholowego. Sprawia, że picie po jego przyjęciu wywołuje silne, nieprzyjemne i potencjalnie groźne objawy — działa więc odstraszająco, dopóki ktoś sam chce go stosować.",
     ],
     points: [
       {
@@ -132,9 +137,11 @@ export const leczenieAlkoholizmuDefaults: IntentPageContent = {
       },
       {
         title: "Są też inne leki",
-        body: "Niektóre, np. naltrekson czy akamprozat, mogą zmniejszać głód alkoholowy. Ich dobór zależy od stanu zdrowia i zawsze należy do lekarza.",
+        body: "Naltrekson i akamprozat mogą pomagać utrzymać abstynencję, a nalmefen ograniczyć picie. Ich dobór zależy od stanu zdrowia i zawsze należy do lekarza.",
       },
     ],
+    closing:
+      "Jeśli osoba z wszywką albo przyjmująca disulfiram wypiła alkohol i ma duszność, ból w klatce piersiowej lub traci przytomność, dzwoń pod 112.",
   },
 
   cards: {
@@ -198,11 +205,13 @@ export const leczenieAlkoholizmuDefaults: IntentPageContent = {
     label: "Czytaj dalej",
     title: "Powiązane tematy",
     linkLabel: "Czytaj",
+    // Four at most (CMS limit). /detoks-i-kwalifikacja gave its card to the
+    // Esperal article: the steps band above already links to it.
     links: [
       {
-        title: "Detoks i kwalifikacja",
-        body: "Kiedy przed terapią potrzebny jest detoks i jak wygląda kwalifikacja lekarska.",
-        href: "/detoks-i-kwalifikacja",
+        title: "Wszywka (Esperal) niedostępna",
+        body: "Dlaczego implantu z disulfiramem nie ma w aptekach, czy wróci i co zamiast niego.",
+        href: WSZYWKA_ARTICLE_HREF,
       },
       {
         title: "Dla rodziny",
