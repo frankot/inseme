@@ -5,8 +5,13 @@ import { getScreeningSitemapEntries } from "@/lib/queries/screening";
 import { getTeamSitemapEntries } from "@/lib/queries/team";
 import { absoluteUrl } from "@/lib/site-url";
 
-/** Same five-minute window as the pages it lists. */
-export const revalidate = 300;
+/**
+ * The admin actions revalidate it on publish, but that has been seen to miss
+ * (the Esperal article, published Nov 3, 2026, was still absent hours later).
+ * An hour costs one small query per crawl; a day keeps a new article out of
+ * Google's queue for that long.
+ */
+export const revalidate = 3600;
 
 /** Public, indexable routes. /admin and /api are never listed. */
 const STATIC_ROUTES = [

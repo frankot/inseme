@@ -47,15 +47,22 @@ export function Hero({
         className="relative mx-auto flex min-h-[var(--hero-h)] max-w-[1440px] flex-col justify-end tab:min-h-[min(100svh,var(--hero-max))] gap-[clamp(20px,1.5vw,24px)] px-gutter pt-[calc(var(--nav-h)+clamp(28px,5vh,64px))] pb-[calc(clamp(40px,5vw,72px)+var(--spacing-slab))] outline-none"
       >
         <div>
-          <p className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 text-eyebrow uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
-            <span
-              aria-hidden
-              className="block h-px w-[26px] bg-on-dark-lead/60"
-            />
-            <span>{content.eyebrow}</span>
-          </p>
-          <h1 className="max-w-[9.4em] text-balance font-heading text-display-xl text-bone">
-            {content.title}
+          {/*
+            The eyebrow is part of the h1: it carries what the page is ("ośrodek
+            terapii uzależnień", "pod Warszawą"), which the welcoming title does
+            not. Same look as before — the spans keep the old <p>'s styles.
+          */}
+          <h1>
+            <span className="mb-[clamp(18px,2vw,28px)] flex items-center gap-3.5 font-sans text-eyebrow font-normal uppercase tracking-[0.22em] text-on-dark-lead text-shadow-nav">
+              <span
+                aria-hidden
+                className="block h-px w-[26px] shrink-0 bg-on-dark-lead/60"
+              />
+              <span>{content.eyebrow}</span>
+            </span>
+            <span className="block max-w-[9.4em] text-balance font-heading text-display-xl text-bone">
+              {content.title}
+            </span>
           </h1>
           {content.rpwdl && (
             <p className="mt-[clamp(16px,2.2vw,26px)]  font-heading text-[clamp(12.5px,1vw,15px)] leading-snug text-on-dark-muted">

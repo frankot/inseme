@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
 import { LandingView } from "@/components/site/cms/landing-view";
+import { JsonLd } from "@/components/site/ui/json-ld";
 import { getCmsPage } from "@/lib/cms/get-page";
+import { websiteJsonLd } from "@/lib/structured-data";
 
 /**
  * The page is prerendered; a published CMS change, article, person or
@@ -28,5 +30,10 @@ export async function generateMetadata(): Promise<Metadata> {
  */
 export default async function HomePage() {
   const page = await getCmsPage("landing");
-  return <LandingView page={page} />;
+  return (
+    <>
+      <JsonLd data={websiteJsonLd()} />
+      <LandingView page={page} />
+    </>
+  );
 }

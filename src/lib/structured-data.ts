@@ -85,6 +85,23 @@ export function clinicJsonLd(
   };
 }
 
+/**
+ * Homepage only: tells Google which name to show for the site in results
+ * ("Insieme" rather than the domain). `publisher` points at the clinic node the
+ * site layout emits on every page.
+ */
+export function websiteJsonLd() {
+  return {
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#witryna`,
+    name: "Insieme",
+    alternateName: ["Ośrodek Insieme", "osrodek-insieme.pl"],
+    url: `${SITE_URL}/`,
+    inLanguage: "pl-PL",
+    publisher: { "@id": CLINIC_ID },
+  };
+}
+
 export function breadcrumbJsonLd(items: { label: string; href?: string }[]) {
   return {
     "@type": "BreadcrumbList",
