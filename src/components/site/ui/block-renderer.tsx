@@ -1,6 +1,13 @@
 import { SiteImage } from "@/components/site/ui/site-image";
 import { Reveal } from "@/components/site/ui/reveal";
-import type { Block, CtaBlock, FaqEmbedBlock, ImageTextBlock, StepListBlock } from "@/lib/blocks";
+import type {
+  Block,
+  CardListBlock,
+  CtaBlock,
+  FaqEmbedBlock,
+  ImageTextBlock,
+  StepListBlock,
+} from "@/lib/blocks";
 import { getPublishedFaq, type FaqEntry } from "@/lib/queries/faq";
 import { getMediaByIds } from "@/lib/queries/media";
 import type { MediaSummary } from "@/lib/media-types";
@@ -56,6 +63,8 @@ export async function BlockRenderer({ blocks }: { blocks: Block[] }) {
             return <Cta key={block.id} block={block} />;
           case "step_list":
             return <StepList key={block.id} block={block} />;
+          case "card_list":
+            return <CardList key={block.id} block={block} />;
           case "faq_embed":
             return (
               <FaqEmbed
@@ -152,6 +161,45 @@ function StepList({ block }: { block: StepListBlock }) {
         ))}
       </ol>
     </Reveal>
+  );
+}
+
+/**
+ * Options side by side, in the cards the intent pages use: two to a row from
+ * tablet up, each a short rule, a title and its few sentences. Line breaks in
+ * a description are kept, so an editor can split it into short paragraphs.
+ */
+function CardList({ block }: { block: CardListBlock }) {
+  return (
+    <div>
+      {block.heading && (
+        <Reveal>
+          <h2 className="mb-[clamp(16px,1.8vw,26px)] font-heading text-heading text-ink-900">
+            {block.heading}
+          </h2>
+        </Reveal>
+      )}
+      <div className="grid gap-gap tab:grid-cols-2">
+        {block.cards.map((card, i) => (
+          <Reveal
+            key={card.id}
+            as="article"
+            delay={(i % 2) * 70}
+            className="card-surface flex min-w-0 flex-col gap-3 p-card"
+          >
+            <span aria-hidden className="block h-[2px] w-7 bg-sage-600" />
+            <h3 className="text-pretty font-heading text-[clamp(17px,1.45vw,21px)] leading-[1.3] tracking-[-0.025em] text-ink-900">
+              {card.title}
+            </h3>
+            {card.description && (
+              <p className="whitespace-pre-line text-pretty text-meta text-ink-500">
+                {card.description}
+              </p>
+            )}
+          </Reveal>
+        ))}
+      </div>
+    </div>
   );
 }
 

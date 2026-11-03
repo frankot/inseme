@@ -5,7 +5,7 @@ import { z } from "zod";
  * CMS, not a freeform page builder. Adding a type means adding it here, to the
  * editor switch in `block-editor.tsx`, and (later) to the public renderer.
  */
-export const blockTypes = ["richtext", "image_text", "cta", "step_list", "faq_embed"] as const;
+export const blockTypes = ["richtext", "image_text", "cta", "step_list", "card_list", "faq_embed"] as const;
 export type BlockType = (typeof blockTypes)[number];
 
 const baseBlock = { id: z.string().min(1) };
@@ -47,6 +47,23 @@ export const stepListBlockSchema = z.object({
   ),
 });
 
+/**
+ * Options side by side rather than in order: a title and a few sentences each
+ * (e.g. the medicines a doctor may consider). Plain text, like the steps.
+ */
+export const cardListBlockSchema = z.object({
+  ...baseBlock,
+  type: z.literal("card_list"),
+  heading: z.string(),
+  cards: z.array(
+    z.object({
+      id: z.string().min(1),
+      title: z.string(),
+      description: z.string(),
+    }),
+  ),
+});
+
 export const faqEmbedBlockSchema = z.object({
   ...baseBlock,
   type: z.literal("faq_embed"),
@@ -60,6 +77,7 @@ export const blockSchema = z.discriminatedUnion("type", [
   imageTextBlockSchema,
   ctaBlockSchema,
   stepListBlockSchema,
+  cardListBlockSchema,
   faqEmbedBlockSchema,
 ]);
 
@@ -69,6 +87,7 @@ export type RichTextBlock = z.infer<typeof richTextBlockSchema>;
 export type ImageTextBlock = z.infer<typeof imageTextBlockSchema>;
 export type CtaBlock = z.infer<typeof ctaBlockSchema>;
 export type StepListBlock = z.infer<typeof stepListBlockSchema>;
+export type CardListBlock = z.infer<typeof cardListBlockSchema>;
 export type FaqEmbedBlock = z.infer<typeof faqEmbedBlockSchema>;
 export type Block = z.infer<typeof blockSchema>;
 
@@ -77,6 +96,7 @@ export const blockTypeLabels: Record<BlockType, string> = {
   image_text: "Zdjęcie + tekst",
   cta: "Wezwanie do działania",
   step_list: "Lista kroków",
+  card_list: "Karty",
   faq_embed: "Sekcja FAQ",
 };
 
@@ -91,6 +111,8 @@ export function createBlock(type: BlockType): Block {
       return { id, type, heading: "", text: "", buttonLabel: "", buttonHref: "" };
     case "step_list":
       return { id, type, heading: "", steps: [] };
+    case "card_list":
+      return { id, type, heading: "", cards: [] };
     case "faq_embed":
       return { id, type, heading: "", category: "" };
   }

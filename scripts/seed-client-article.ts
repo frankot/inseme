@@ -66,6 +66,13 @@ async function main() {
           heading: section.heading,
           steps: section.steps.map((step) => ({ id: crypto.randomUUID(), ...step })),
         };
+      case "cards":
+        return {
+          ...createBlock("card_list"),
+          type: "card_list" as const,
+          heading: section.heading,
+          cards: section.cards.map((card) => ({ id: crypto.randomUUID(), ...card })),
+        };
       case "cta":
         return {
           ...createBlock("cta"),

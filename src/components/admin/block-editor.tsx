@@ -314,6 +314,82 @@ function BlockFields({
         </>
       );
 
+    case "card_list":
+      return (
+        <>
+          <div className="flex flex-col gap-2">
+            <Label>Nagłówek (opcjonalnie)</Label>
+            <Input
+              value={block.heading}
+              onChange={(event) => onChange({ ...block, heading: event.target.value })}
+            />
+          </div>
+          <div className="flex flex-col gap-3">
+            {block.cards.map((card, cardIndex) => (
+              <div key={card.id} className="flex items-start gap-2 rounded-md border p-3">
+                <div className="flex flex-1 flex-col gap-2">
+                  <Input
+                    value={card.title}
+                    placeholder="Tytuł karty"
+                    onChange={(event) =>
+                      onChange({
+                        ...block,
+                        cards: block.cards.map((item, i) =>
+                          i === cardIndex ? { ...item, title: event.target.value } : item,
+                        ),
+                      })
+                    }
+                  />
+                  <Textarea
+                    value={card.description}
+                    rows={3}
+                    placeholder="Opis — kilka zdań"
+                    onChange={(event) =>
+                      onChange({
+                        ...block,
+                        cards: block.cards.map((item, i) =>
+                          i === cardIndex ? { ...item, description: event.target.value } : item,
+                        ),
+                      })
+                    }
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  aria-label="Usuń kartę"
+                  className="text-destructive hover:text-destructive"
+                  onClick={() =>
+                    onChange({
+                      ...block,
+                      cards: block.cards.filter((_, i) => i !== cardIndex),
+                    })
+                  }
+                >
+                  <Trash2 className="size-4" aria-hidden />
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="self-start"
+              onClick={() =>
+                onChange({
+                  ...block,
+                  cards: [...block.cards, { id: crypto.randomUUID(), title: "", description: "" }],
+                })
+              }
+            >
+              <Plus className="size-4" aria-hidden />
+              Dodaj kartę
+            </Button>
+          </div>
+        </>
+      );
+
     case "faq_embed":
       return (
         <>

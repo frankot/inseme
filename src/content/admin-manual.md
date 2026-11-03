@@ -224,6 +224,7 @@ Artykuły na stronie **/porady**.
 | **Zdjęcie + tekst** | zdjęcie **Po lewej** / **Po prawej** od tekstu |
 | **Wezwanie do działania** | ramka z przyciskiem; **Adres przycisku** np. `/kontakt` lub `tel:+48669916005` |
 | **Lista kroków** | numerowane kroki: tytuł + opis |
+| **Karty** | kafelki obok siebie (po dwa w rzędzie): tytuł + kilka zdań opisu — np. możliwości leczenia; nowa linia w opisie = nowy akapit |
 | **Sekcja FAQ** | pytania z kategorii wybranej z listy (**Wszystkie pytania** albo jedna z kategorii FAQ) |
 
 Kolejność: **Przenieś wyżej / niżej**. Usunięcie: **Usuń sekcję**.

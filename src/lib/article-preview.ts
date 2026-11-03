@@ -57,6 +57,10 @@ export function getArticlePreview(blocks: Block[]): ArticlePreview {
       case "step_list":
         items.push(...block.steps.map((step) => step.title));
         break;
+      case "card_list":
+        if (block.heading) headings.push(block.heading);
+        items.push(...block.cards.map((card) => card.title));
+        break;
       case "faq_embed":
         if (block.heading) headings.push(block.heading);
         break;
@@ -83,6 +87,8 @@ export function getReadingMinutes(blocks: Block[]): number {
           return `${block.heading} ${toText(block.html)}`;
         case "step_list":
           return block.steps.map((step) => `${step.title} ${step.description}`).join(" ");
+        case "card_list":
+          return [block.heading, ...block.cards.map((card) => `${card.title} ${card.description}`)].join(" ");
         case "cta":
           return `${block.heading} ${block.text}`;
         case "faq_embed":
