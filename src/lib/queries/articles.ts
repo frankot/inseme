@@ -10,7 +10,8 @@ import type { MediaSummary } from "@/lib/media-types";
 
 /**
  * Read side of `articles` for the public site. The admin panel queries the
- * table directly because it needs drafts; everything here is published-only and
+ * table directly because it needs drafts; everything here is published-only
+ * (bar `getArticleForPreview`, which the draft preview reads) and
  * newest first — the poradnik is chronological, unlike the team or the FAQ,
  * which editors order by hand.
  */
@@ -123,6 +124,21 @@ export async function getArticleBySlug(slug: string): Promise<ArticleDetail | nu
     with: detailWith,
   });
   return row ? toDetail(row) : null;
+}
+
+/**
+ * One article by id whatever its status — the share-by-link preview of a
+ * draft (/podglad/artykuly/[id]), the one reader here that may see drafts.
+ * `published` lets it forward to /porady once the draft goes live.
+ */
+export async function getArticleForPreview(
+  id: string,
+): Promise<(ArticleDetail & { published: boolean }) | null> {
+  const row = await db.query.articles.findFirst({
+    where: eq(articles.id, id),
+    with: detailWith,
+  });
+  return row ? { ...toDetail(row), published: row.status === "published" } : null;
 }
 
 /** One published article by id — the homepage's picked read-in. */

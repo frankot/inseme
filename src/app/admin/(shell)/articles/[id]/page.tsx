@@ -1,4 +1,5 @@
 import { desc, eq } from "drizzle-orm";
+import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -7,6 +8,7 @@ import { ArticleForm } from "@/app/admin/(shell)/articles/article-form";
 import { getReviewerOptions } from "@/app/admin/(shell)/articles/reviewers";
 import { ConfirmDelete } from "@/components/admin/confirm-delete";
 import { PageHeader } from "@/components/admin/page-header";
+import { Button } from "@/components/ui/button";
 import { db } from "@/db";
 import { articles, media } from "@/db/schema";
 import { toMediaSummary } from "@/lib/media-summary";
@@ -38,13 +40,25 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
         description={`/${row.slug}`}
         backHref="/admin/articles"
         actions={
-          locked ? undefined : (
-            <ConfirmDelete
-              onConfirm={deleteArticle.bind(null, row.id)}
-              title="Usunąć artykuł?"
-              redirectTo="/admin/articles"
-            />
-          )
+          <>
+            {row.status === "draft" && (
+              <Button
+                variant="outline"
+                size="sm"
+                title="Ostatnio zapisana wersja. Każdy, kto ma ten link, może ją przeczytać"
+                render={<a href={`/podglad/artykuly/${row.id}`} target="_blank" rel="noopener" />}
+              >
+                <ExternalLink aria-hidden /> Podgląd
+              </Button>
+            )}
+            {!locked && (
+              <ConfirmDelete
+                onConfirm={deleteArticle.bind(null, row.id)}
+                title="Usunąć artykuł?"
+                redirectTo="/admin/articles"
+              />
+            )}
+          </>
         }
       />
 

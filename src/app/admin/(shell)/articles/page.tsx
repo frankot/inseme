@@ -86,6 +86,7 @@ export default async function ArticlesListPage() {
                     <RowActions
                       label={row.title}
                       editHref={`/admin/articles/${row.id}`}
+                      previewHref={`/podglad/artykuly/${row.id}`}
                       status={row.status}
                       onPublish={publishArticle.bind(null, row.id)}
                       onUnpublish={locked ? undefined : unpublishArticle.bind(null, row.id)}

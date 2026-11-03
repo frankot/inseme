@@ -231,6 +231,7 @@ Kolejność: **Przenieś wyżej / niżej**. Usunięcie: **Usuń sekcję**.
 
 ### Uwagi
 
+- **Podgląd** — przycisk w nagłówku szkicu i pozycja w menu **⋯** na liście; otwiera w nowej karcie ostatnio zapisaną wersję tak, jak będzie wyglądać na stronie. Link działa bez logowania, więc można go wysłać np. terapeucie do sprawdzenia. Strona nie jest indeksowana ani nigdzie podlinkowana, ale każdy, kto ma link, przeczyta szkic. Po publikacji link przenosi do artykułu.
 - **Stały artykuł** (oznaczenie na liście) — podlinkowany z innych stron; nie można go ukryć ani zmienić adresu. Treść edytowalna.
 - **Z poradnika** na stronie głównej: wybrany artykuł, a bez wyboru — najnowszy opublikowany.
 

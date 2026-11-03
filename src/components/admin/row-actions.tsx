@@ -49,6 +49,7 @@ export function RowActions({
   editHref,
   status,
   publicHref,
+  previewHref,
   label,
   onPublish,
   onUnpublish,
@@ -62,6 +63,8 @@ export function RowActions({
   status: "draft" | "published";
   /** Public URL of the record, linked once it is published. */
   publicHref?: string;
+  /** Share-by-link preview of the record, offered while it is a draft (Artykuły). */
+  previewHref?: string;
   /** Row name, used for the trigger's accessible label. */
   label: string;
   onPublish: () => Promise<ActionResult>;
@@ -153,6 +156,12 @@ export function RowActions({
               render={<a href={publicHref} target="_blank" rel="noopener noreferrer" />}
             >
               <ExternalLink aria-hidden /> Zobacz na stronie
+            </DropdownMenuItem>
+          ) : null}
+
+          {previewHref && status === "draft" ? (
+            <DropdownMenuItem render={<a href={previewHref} target="_blank" rel="noopener" />}>
+              <ExternalLink aria-hidden /> Podgląd
             </DropdownMenuItem>
           ) : null}
 
