@@ -7,6 +7,7 @@ import { db } from "@/db";
 import { articles } from "@/db/schema";
 import { actionError, type ActionResult, type DataResult } from "@/lib/action-result";
 import { requireAdmin } from "@/lib/auth-guard";
+import { notifyIndexNow } from "@/lib/indexnow";
 import type { SaveMode } from "@/components/admin/save-actions";
 import { publishState } from "@/lib/publish-state";
 import { isProtectedArticle } from "@/lib/protected-articles";
@@ -25,6 +26,11 @@ function revalidatePublic(slug?: string) {
   revalidatePath("/porady");
   if (slug) revalidatePath(`/porady/${slug}`);
   revalidatePath("/sitemap.xml");
+}
+
+/** IndexNow for articles whose public URL appeared, changed or went away. */
+function announce(...slugs: (string | null | undefined)[]) {
+  notifyIndexNow(slugs.map((slug) => slug && `/porady/${slug}`));
 }
 
 /** The live columns a valid form writes — sanitised, empty fields as null. */
@@ -120,12 +126,17 @@ export async function saveArticle(
       revalidatePath(`/admin/articles/${id}`);
       revalidatePublic(parsed.data.slug);
       if (current?.slug !== parsed.data.slug) revalidatePublic(current?.slug);
+      // Live now, or live until this save (a draft save takes it down).
+      if (mode === "publish" || current?.status === "published") {
+        announce(parsed.data.slug, current?.status === "published" ? current.slug : null);
+      }
       return { ok: true, data: { id } };
     }
 
     const [row] = await db.insert(articles).values(values).returning({ id: articles.id });
     revalidatePath("/admin/articles");
     revalidatePublic(parsed.data.slug);
+    if (mode === "publish") announce(parsed.data.slug);
     return { ok: true, data: { id: row.id } };
   } catch (error) {
     return actionError(error, "Nie udało się zapisać artykułu.");
@@ -155,6 +166,7 @@ export async function publishArticle(id: string): Promise<ActionResult> {
     revalidatePath("/admin/articles");
     revalidatePath(`/admin/articles/${id}`);
     revalidatePublic(row.slug);
+    announce(row.slug);
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się opublikować.");
@@ -198,6 +210,7 @@ export async function publishArticleChanges(id: string): Promise<ActionResult> {
     revalidatePath(`/admin/articles/${id}`);
     revalidatePublic(row.slug);
     if (parsed.data.slug !== row.slug) revalidatePublic(parsed.data.slug);
+    announce(parsed.data.slug, row.status === "published" ? row.slug : null);
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się opublikować zmian.");
@@ -221,7 +234,7 @@ export async function unpublishArticle(id: string): Promise<ActionResult> {
   try {
     await requireAdmin();
     const row = await db.query.articles.findFirst({
-      columns: { slug: true },
+      columns: { slug: true, status: true },
       where: eq(articles.id, id),
     });
     if (isProtectedArticle(row?.slug)) {
@@ -234,6 +247,7 @@ export async function unpublishArticle(id: string): Promise<ActionResult> {
     revalidatePath("/admin/articles");
     revalidatePath(`/admin/articles/${id}`);
     revalidatePublic(row?.slug);
+    if (row?.status === "published") announce(row.slug);
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się cofnąć publikacji.");
@@ -244,7 +258,7 @@ export async function deleteArticle(id: string): Promise<ActionResult> {
   try {
     await requireAdmin();
     const row = await db.query.articles.findFirst({
-      columns: { slug: true },
+      columns: { slug: true, status: true },
       where: eq(articles.id, id),
     });
     if (isProtectedArticle(row?.slug)) {
@@ -253,6 +267,7 @@ export async function deleteArticle(id: string): Promise<ActionResult> {
     await db.delete(articles).where(eq(articles.id, id));
     revalidatePath("/admin/articles");
     revalidatePublic(row?.slug);
+    if (row?.status === "published") announce(row.slug);
     return { ok: true };
   } catch (error) {
     return actionError(error, "Nie udało się usunąć artykułu.");
