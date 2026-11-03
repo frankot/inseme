@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
@@ -56,6 +57,11 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
       <SiteFooter />
       <StickyCallBar />
       <ConsentBanner />
+      {/*
+        Public pages only — /admin sits outside this layout, so staff traffic
+        is not counted. Cookieless, so it runs without the consent banner.
+      */}
+      <Analytics />
     </SiteSettingsRoot>
   );
 }
