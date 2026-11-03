@@ -76,7 +76,7 @@ export const heroDefaults: HeroContent = {
   rpwdl: {
     statement: "Jesteśmy podmiotem leczniczym wpisanym do RPWDL.",
     label: "Numer w RPWDL",
-    number: "000000234596",
+    number: "000000248467",
   },
   image: {
     src: "/placeholder/dom-staw.webp",
