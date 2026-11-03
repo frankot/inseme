@@ -9,11 +9,13 @@
  * run (see `ConsentBanner`), so callers never need to check consent.
  */
 export type AnalyticsEvent =
-  | "click_phone_header"
-  | "click_phone_sticky"
-  | "click_phone_contact"
-  /** Any other phone link — hero, article sidebar, /osrodek. */
-  | "click_phone_content"
+  /**
+   * Any phone link; `cta_location` says which (header, sticky, contact, hero,
+   * article-sidebar or the section id). One name, so GA4 marks a single key
+   * event — until Nov 3, 2026 these went out as `click_phone_{header,sticky,
+   * contact,content}`, which GA4's new event builder cannot merge.
+   */
+  | "phone_click"
   | "click_email"
   | "form_start"
   | "form_submit"
@@ -28,6 +30,7 @@ export type AnalyticsEvent =
   | "test_result_email";
 
 type EventParams = {
+  phone_click: { cta_location: string };
   cta_click: { cta_location: string; link_path: string };
   faq_open: { faq_question: string };
   test_start: { test_slug: string };
@@ -134,16 +137,12 @@ const CONTACT_HASHES = new Set(["#kontakt", "#pierwszy-kontakt"]);
 
 /**
  * Names a click on a link, or null when it is not one we measure. Phone links
- * are attributed by the nearest `data-track` ancestor (header, sticky, contact).
+ * are attributed like CTAs: the nearest `data-track` area, else the section.
  */
 export function eventForLink(link: HTMLAnchorElement): LinkEvent | null {
   const href = link.getAttribute("href") ?? "";
   if (href.startsWith("tel:")) {
-    const area = link.closest<HTMLElement>("[data-track]")?.dataset.track;
-    if (area === "header") return { name: "click_phone_header", params: [] };
-    if (area === "sticky") return { name: "click_phone_sticky", params: [] };
-    if (area === "contact") return { name: "click_phone_contact", params: [] };
-    return { name: "click_phone_content", params: [] };
+    return { name: "phone_click", params: [{ cta_location: ctaLocation(link) }] };
   }
   if (href.startsWith("mailto:")) return { name: "click_email", params: [] };
   if (/google\.[a-z.]+\/maps|maps\.app\.goo\.gl|openstreetmap\.org/.test(href)) {
