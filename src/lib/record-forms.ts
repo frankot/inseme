@@ -33,6 +33,7 @@ type ArticleContent = Pick<
   | "slug"
   | "excerpt"
   | "body"
+  | "sources"
   | "authorReviewer"
   | "reviewerId"
   | "coverImageId"
@@ -46,6 +47,7 @@ export function articleFormOf(row: ArticleContent): ArticleInput {
     slug: row.slug,
     excerpt: row.excerpt ?? "",
     body: row.body,
+    sources: row.sources.map((source) => ({ title: source.title, url: source.url })),
     authorReviewer: row.authorReviewer ?? "",
     reviewerId: row.reviewerId,
     coverImageId: row.coverImageId,

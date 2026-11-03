@@ -10,6 +10,7 @@ import { JsonLd } from "@/components/site/ui/json-ld";
 import { Reveal } from "@/components/site/ui/reveal";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { initials } from "@/components/site/ui/team-card";
+import type { ArticleSource } from "@/db/schema";
 import type { SiteContact } from "@/content/home";
 import {
   artykulyPageDefaults as copy,
@@ -153,6 +154,8 @@ export function ArticleView({
                 </Reveal>
               )
             )}
+
+            {article.sources.length > 0 && <SourceList sources={article.sources} />}
           </div>
 
           <aside data-track="article-sidebar" className="flex flex-col gap-gap desk:sticky desk:top-[calc(var(--nav-h-sticky)+clamp(20px,2.4vw,40px))]">
@@ -245,6 +248,60 @@ function Breadcrumb({ items }: { items: { label: string; href?: string }[] }) {
         </Fragment>
       ))}
     </nav>
+  );
+}
+
+/** `https://www.mp.pl/…` → `mp.pl`: enough for a reader to know whose page it is. */
+function hostOf(url: string): string | null {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * What the text rests on, kept out of the reading flow: small type at the foot
+ * of the column, numbered so a reader can find one again, each with the
+ * domain beside it so an official source reads as one at a glance.
+ */
+function SourceList({ sources }: { sources: ArticleSource[] }) {
+  return (
+    <Reveal
+      as="section"
+      className="mt-[clamp(36px,4vw,64px)] border-t border-line-strong pt-[clamp(18px,2vw,24px)]"
+    >
+      <h2 className="text-eyebrow uppercase tracking-[0.2em] text-clay-600">
+        {copy.sourcesLabel}
+      </h2>
+      <ol className="m-0 mt-3 flex list-none flex-col gap-2 p-0">
+        {sources.map((source, i) => {
+          const host = source.url ? hostOf(source.url) : null;
+          return (
+            <li key={i} className="flex gap-3 text-[13.5px] leading-[1.5] text-ink-400">
+              <span className="w-[1.6em] shrink-0 text-right tabular-nums text-clay-400">
+                {i + 1}.
+              </span>
+              <span className="min-w-0 text-pretty">
+                {source.url ? (
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-ink-600 underline decoration-line-strong underline-offset-[3px] transition-colors hover:text-sage-600"
+                  >
+                    {source.title}
+                  </a>
+                ) : (
+                  <span className="text-ink-600">{source.title}</span>
+                )}
+                {host && <span className="text-ink-300"> · {host}</span>}
+              </span>
+            </li>
+          );
+        })}
+      </ol>
+    </Reveal>
   );
 }
 

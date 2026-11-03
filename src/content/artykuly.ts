@@ -60,6 +60,8 @@ export type ArticlesPageContent = {
   breadcrumbLabel: string;
   /** Footer of a single article: who checked the text before it went out. */
   reviewerLabel: string;
+  /** Over the article's own list of sources, at its foot. */
+  sourcesLabel: string;
   relatedTitle: string;
   backLabel: string;
   /** Beside the body: the outline, then the call card. */
@@ -82,6 +84,7 @@ export const artykulyPageDefaults: ArticlesPageContent = {
   breadcrumbHome: "Strona główna",
   breadcrumbLabel: "Poradnik",
   reviewerLabel: "Treść sprawdził(a)",
+  sourcesLabel: "Źródła",
   relatedTitle: "Przeczytaj również",
   backLabel: "Wszystkie artykuły",
   outlineLabel: "W tym tekście",

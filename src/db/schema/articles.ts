@@ -6,12 +6,17 @@ import { contentStatus } from "./enums";
 import { media } from "./media";
 import { teamMembers } from "./team-members";
 
+/** A reference listed under the article; `url` is empty for print-only sources. */
+export type ArticleSource = { title: string; url: string };
+
 export const articles = pgTable("articles", {
   id: uuid("id").primaryKey().defaultRandom(),
   slug: text("slug").notNull().unique(),
   title: text("title").notNull(),
   excerpt: text("excerpt"),
   body: json("body").$type<Block[]>().notNull().default([]),
+  /** Optional; shown as a compact list at the foot of the article. */
+  sources: jsonb("sources").$type<ArticleSource[]>().notNull().default([]),
   /** Named person who reviewed the medical/factual content before publishing. */
   authorReviewer: text("author_reviewer"),
   /**

@@ -31,6 +31,7 @@ export default async function NewArticlePage() {
           slug: "",
           excerpt: "",
           body: [],
+          sources: [],
           authorReviewer: "",
           reviewerId: null,
           coverImageId: null,

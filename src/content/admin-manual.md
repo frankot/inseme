@@ -213,6 +213,7 @@ Artykuły na stronie **/porady**.
 | **Wstęp (zajawka)** | kilka zdań pod tytułem, przed treścią; także na karcie artykułu, w sekcji „Z poradnika” na stronie głównej i w Google, gdy **Opis meta** jest pusty; do 400 znaków |
 | **Osoba weryfikująca z zespołu** | **wymagana do publikacji** (albo pole niżej); artykuł pokazuje jej zdjęcie, funkcję i link do biogramu |
 | **Osoba spoza zespołu** | imię, nazwisko, funkcja — gdy weryfikował ktoś spoza zespołu |
+| **Źródła** | opcjonalne: nazwa i adres strony; numerowana lista drobnym drukiem pod artykułem |
 | **Zdjęcie główne** | na górze artykułu i przy udostępnianiu linku |
 | **Tytuł meta**, **Opis meta** | dla Google |
 

@@ -99,6 +99,7 @@ async function main() {
     metaTitle: seed.metaTitle,
     metaDescription: seed.metaDescription,
     body,
+    sources: seed.sources ?? [],
     status: "draft" as const,
     updatedAt: new Date(),
   };

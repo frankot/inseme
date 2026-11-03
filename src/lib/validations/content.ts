@@ -77,11 +77,24 @@ export const faqItemSchema = z.object({
   sortOrder: z.number().int().min(0).max(9999),
 });
 
+/**
+ * One source row in the article form. The address is optional (a printed
+ * source has none) and web-only: it becomes a link on the public page.
+ */
+export const articleSourceSchema = z.object({
+  title: z.string().trim().min(1, "Podaj nazwę źródła.").max(300),
+  url: z.union([
+    z.literal(""),
+    z.url({ protocol: /^https?$/, error: "Podaj adres zaczynający się od https://." }),
+  ]),
+});
+
 export const articleSchema = z.object({
   title: z.string().trim().min(1, "Podaj tytuł.").max(200),
   slug: slugField,
   excerpt: z.string().trim().max(400, "Maksymalnie 400 znaków.").optional(),
   body: blocksSchema,
+  sources: z.array(articleSourceSchema).max(30, "Maksymalnie 30 źródeł."),
   authorReviewer: optionalText,
   reviewerId: z.uuid().nullable(),
   coverImageId: z.uuid().nullable(),

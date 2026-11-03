@@ -10,6 +10,8 @@ export type ArticleSeed = {
   excerpt: string;
   metaTitle: string;
   metaDescription: string;
+  /** Listed under the article; omitted means none. */
+  sources?: { title: string; url: string }[];
   sections: (
     | { kind: "text"; html: string }
     | { kind: "steps"; heading: string; steps: { title: string; description: string }[] }

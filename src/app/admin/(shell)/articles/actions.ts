@@ -34,6 +34,7 @@ function articleColumns(data: ArticleInput) {
     slug: data.slug,
     excerpt: emptyToNull(data.excerpt),
     body: sanitizeBlocks(data.body),
+    sources: data.sources,
     authorReviewer: emptyToNull(data.authorReviewer),
     reviewerId: data.reviewerId,
     coverImageId: data.coverImageId,
@@ -168,7 +169,8 @@ export async function publishArticleChanges(id: string): Promise<ActionResult> {
     if (!row) return { ok: false, error: "Nie znaleziono artykułu." };
     if (!row.pendingChanges) return { ok: false, error: "Brak niepublikowanych zmian." };
 
-    const parsed = articleSchema.safeParse(row.pendingChanges);
+    // Pending changes saved before a field existed lack it; the live value stands in.
+    const parsed = articleSchema.safeParse({ ...articleFormOf(row), ...row.pendingChanges });
     if (!parsed.success) {
       return { ok: false, error: "Niepublikowane zmiany są niekompletne — otwórz artykuł i popraw je." };
     }

@@ -1,9 +1,10 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { Controller, FormProvider, useFieldArray, useForm, type UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 
 import {
@@ -18,6 +19,7 @@ import { RecoveryNotice, useFormRecovery } from "@/components/admin/form-recover
 import { SaveActions, SAVED_MESSAGE, type SaveMode } from "@/components/admin/save-actions";
 import { MediaPicker } from "@/components/admin/media-picker";
 import { PendingChangesBanner, TrackedField } from "@/components/admin/pending-changes";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
@@ -37,6 +39,14 @@ export type ReviewerOption = { id: string; name: string; role: string | null; pu
 
 /** The Select needs a string; "no team member" is this sentinel, never a uuid. */
 const NO_REVIEWER = "none";
+
+/** One source per line, as the change note's preview of the published list. */
+function beforeSources(value: unknown) {
+  const list = Array.isArray(value) ? (value as ArticleInput["sources"]) : [];
+  return list.length
+    ? list.map((source) => (source.url ? `${source.title} — ${source.url}` : source.title)).join("\n")
+    : <em>(brak)</em>;
+}
 
 export function ArticleForm({
   id,
@@ -267,6 +277,17 @@ export function ArticleForm({
 
           <Card>
             <CardHeader>
+              <CardTitle>Źródła</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TrackedField name="sources" before={beforeSources}>
+                <SourcesField form={form} />
+              </TrackedField>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>Zdjęcie główne i SEO</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
@@ -318,5 +339,86 @@ export function ArticleForm({
         </form>
       </PublishedProvider>
     </FormProvider>
+  );
+}
+
+/**
+ * Optional sources, listed in small type at the foot of the article: a name a
+ * reader can recognise and, for anything online, its address. In the order
+ * typed here.
+ */
+function SourcesField({ form }: { form: UseFormReturn<ArticleInput> }) {
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = form;
+  const { fields, append, remove } = useFieldArray({ control, name: "sources" });
+
+  return (
+    <div className="flex flex-col gap-4">
+      {fields.length === 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Brak. Opcjonalnie — np. „Odpowiedź Ministra Zdrowia na interpelację nr 19628, 7.10.2026”
+          i adres strony. Pojawią się pod artykułem jako numerowana lista źródeł.
+        </p>
+      ) : (
+        fields.map((field, index) => (
+          <div
+            key={field.id}
+            className="grid items-start gap-3 sm:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)_auto]"
+          >
+            <Field
+              label="Nazwa"
+              htmlFor={`sources.${index}.title`}
+              error={errors.sources?.[index]?.title?.message}
+            >
+              <Input
+                id={`sources.${index}.title`}
+                placeholder="np. Charakterystyka produktu leczniczego Anticol"
+                {...register(`sources.${index}.title`)}
+              />
+            </Field>
+            <Field
+              label="Adres (opcjonalnie)"
+              htmlFor={`sources.${index}.url`}
+              error={errors.sources?.[index]?.url?.message}
+            >
+              <Input
+                id={`sources.${index}.url`}
+                type="url"
+                placeholder="https://…"
+                {...register(`sources.${index}.url`)}
+              />
+            </Field>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="text-destructive hover:text-destructive sm:mt-7"
+              aria-label="Usuń źródło"
+              onClick={() => remove(index)}
+            >
+              <Trash2 className="size-4" aria-hidden />
+            </Button>
+          </div>
+        ))
+      )}
+
+      {errors.sources?.message ? (
+        <p className="text-sm text-destructive">{errors.sources.message}</p>
+      ) : null}
+
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="self-start"
+        disabled={fields.length >= 30}
+        onClick={() => append({ title: "", url: "" })}
+      >
+        <Plus className="size-4" aria-hidden /> Dodaj źródło
+      </Button>
+    </div>
   );
 }

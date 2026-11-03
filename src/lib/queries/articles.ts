@@ -3,7 +3,7 @@ import "server-only";
 import { and, desc, eq, ne } from "drizzle-orm";
 
 import { db } from "@/db";
-import { articles, type TeamMember } from "@/db/schema";
+import { articles, type ArticleSource, type TeamMember } from "@/db/schema";
 import type { Block } from "@/lib/blocks";
 import { toMediaSummary } from "@/lib/media-summary";
 import type { MediaSummary } from "@/lib/media-types";
@@ -39,6 +39,7 @@ export type ArticleReviewer = {
 /** The article page adds the block body and the review trail. */
 export type ArticleDetail = ArticleCardData & {
   body: Block[];
+  sources: ArticleSource[];
   /** Who checked it: the team member's name, else the free-text field. */
   reviewerName: string | null;
   reviewer: ArticleReviewer | null;
@@ -101,6 +102,7 @@ function toDetail(row: DetailRow): ArticleDetail {
   return {
     ...toCard(row),
     body: row.body,
+    sources: row.sources,
     reviewerName: reviewer?.name ?? row.authorReviewer,
     reviewer: reviewer
       ? {

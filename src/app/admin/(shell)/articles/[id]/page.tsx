@@ -28,9 +28,10 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
   ]);
   const locked = isProtectedArticle(row.slug);
   // The form opens on the pending changes when there are any; the live
-  // article is what it marks changes against.
+  // article is what it marks changes against. Pending changes saved before a
+  // field existed lack it, so the live value fills the gap.
   const live = articleFormOf(row);
-  const values = row.pendingChanges ?? live;
+  const values = row.pendingChanges ? { ...live, ...row.pendingChanges } : live;
   const coverImage = mediaRows.find((item) => item.id === values.coverImageId) ?? null;
 
   return (

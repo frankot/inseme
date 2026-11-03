@@ -150,6 +150,7 @@ export function articleJsonLd(article: {
   updatedAt: string;
   cover: { url: string } | null;
   reviewer: { name: string; slug: string | null } | null;
+  sources: { title: string; url: string }[];
 }) {
   // A published team member is the same Person their /zespol page declares;
   // otherwise the clinic stands as author.
@@ -174,6 +175,12 @@ export function articleJsonLd(article: {
     dateModified: article.updatedAt,
     author,
     publisher: { "@id": CLINIC_ID },
+    // What the text rests on — the same list the reader sees under it.
+    ...(article.sources.length > 0 && {
+      citation: article.sources.map((source) =>
+        source.url ? { "@type": "CreativeWork", name: source.title, url: source.url } : source.title,
+      ),
+    }),
   };
 }
 
