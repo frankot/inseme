@@ -3,6 +3,7 @@
  *
  *   npm run seed:article:przekonac            # src/content/artykul-jak-przekonac.ts
  *   npm run seed:article:pomoc                # src/content/artykul-jak-pomoc.ts
+ *   npm run seed:article:wszywka              # src/content/artykul-wszywka.ts
  *   npm run seed:article:pomoc -- --reset     # overwrite edits made in the panel
  *
  * Kept apart from `seed:articles`, which re-upserts every example article: this
@@ -17,6 +18,7 @@ import { config as loadEnv } from "dotenv";
 import type { ArticleSeed } from "../src/content/article-seed";
 import { jakPomocArticleSeed } from "../src/content/artykul-jak-pomoc";
 import { jakPrzekonacArticleSeed } from "../src/content/artykul-jak-przekonac";
+import { wszywkaArticleSeed } from "../src/content/artykul-wszywka";
 import type { Block } from "../src/lib/blocks";
 
 loadEnv({ path: ".env.local" });
@@ -25,6 +27,7 @@ loadEnv({ path: ".env" });
 const SEEDS: Record<string, ArticleSeed> = {
   przekonac: jakPrzekonacArticleSeed,
   pomoc: jakPomocArticleSeed,
+  wszywka: wszywkaArticleSeed,
 };
 
 async function main() {
