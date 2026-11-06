@@ -21,6 +21,7 @@
     "seed:article:przekonac": "tsx scripts/seed-client-article.ts przekonac",
     "seed:article:pomoc": "tsx scripts/seed-client-article.ts pomoc",
     "seed:article:wszywka": "tsx scripts/seed-client-article.ts wszywka",
+    "seed:article:koszt": "tsx scripts/seed-client-article.ts koszt",
     "redirects:generate": "tsx scripts/generate-redirect-map.ts",
     "redirects:check": "tsx scripts/check-redirects.ts",
     "brand:build": "tsx scripts/build-brand.ts",

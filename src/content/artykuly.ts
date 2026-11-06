@@ -60,6 +60,8 @@ export type ArticlesPageContent = {
   breadcrumbLabel: string;
   /** Footer of a single article: who checked the text before it went out. */
   reviewerLabel: string;
+  /** Before the date of the last change, beside the publication date. */
+  updatedLabel: string;
   /** Over the article's own list of sources, at its foot. */
   sourcesLabel: string;
   relatedTitle: string;
@@ -84,6 +86,7 @@ export const artykulyPageDefaults: ArticlesPageContent = {
   breadcrumbHome: "Strona główna",
   breadcrumbLabel: "Poradnik",
   reviewerLabel: "Treść sprawdził(a)",
+  updatedLabel: "Zaktualizowano",
   sourcesLabel: "Źródła",
   relatedTitle: "Przeczytaj również",
   backLabel: "Wszystkie artykuły",
@@ -94,12 +97,27 @@ export const artykulyPageDefaults: ArticlesPageContent = {
   callText: "Odbiera terapeuta z ośrodka. Rozmowa nie zobowiązuje do przyjazdu.",
 };
 
-/** One date format for every article surface. */
+/**
+ * One date format for every article surface. Polish time, not the server's
+ * (UTC on Vercel), so a text published just after midnight shows that day.
+ */
 export function formatArticleDate(iso: string | null): string | null {
   if (!iso) return null;
   return new Intl.DateTimeFormat("pl-PL", {
     day: "numeric",
     month: "long",
     year: "numeric",
+    timeZone: "Europe/Warsaw",
   }).format(new Date(iso));
+}
+
+/**
+ * The date of the last change, when it says something: only for a published
+ * article, and only when the change came on a later day than publication. A
+ * fix made the same day doesn't need a second, identical date.
+ */
+export function formatArticleUpdate(publishedAt: string | null, updatedAt: string | null): string | null {
+  if (!publishedAt || !updatedAt || new Date(updatedAt) <= new Date(publishedAt)) return null;
+  const updated = formatArticleDate(updatedAt);
+  return updated === formatArticleDate(publishedAt) ? null : updated;
 }

@@ -113,11 +113,18 @@ export async function saveArticle(
       return { ok: true, data: { id } };
     }
 
+    // A re-save that changes neither the text nor the status is no update: the
+    // „Zaktualizowano” date under the article, its dateModified and the
+    // sitemap's lastmod stay where they were.
+    const nextStatus = mode === "publish" ? "published" : "draft";
+    const unchanged =
+      current?.status === nextStatus && sameValue(articleFormOf(columns), articleFormOf(current));
+
     const values = {
       ...publishState(mode === "publish", current?.publishedAt),
       ...columns,
       ...NO_PENDING,
-      updatedAt: new Date(),
+      updatedAt: unchanged && current ? current.updatedAt : new Date(),
     };
 
     if (id) {

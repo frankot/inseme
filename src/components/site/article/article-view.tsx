@@ -15,6 +15,7 @@ import type { SiteContact } from "@/content/home";
 import {
   artykulyPageDefaults as copy,
   formatArticleDate,
+  formatArticleUpdate,
 } from "@/content/artykuly";
 import { getArticlePreview, getReadingMinutes } from "@/lib/article-preview";
 import type {
@@ -81,8 +82,12 @@ export function ArticleView({
             )}
 
             <p className="mt-[clamp(24px,2.6vw,36px)] flex flex-wrap gap-x-3 gap-y-1 border-t border-line-strong pt-[14px] text-meta text-ink-300">
-              {date && <span className="tabular-nums text-clay-600">{date}</span>}
-              {date && <span aria-hidden>·</span>}
+              {date && (
+                <>
+                  <ArticleDates article={article} accent />
+                  <span aria-hidden>·</span>
+                </>
+              )}
               <span>{copy.readingTime(minutes)}</span>
               {article.reviewerName && (
                 <>
@@ -140,7 +145,7 @@ export function ArticleView({
                 member gets their face, role and qualifications, and a way to
                 read who they are. */}
             {article.reviewer ? (
-              <ReviewerCard reviewer={article.reviewer} date={date} />
+              <ReviewerCard reviewer={article.reviewer} article={article} />
             ) : (
               (article.reviewerName || date) && (
                 <Reveal className="mt-[clamp(36px,4vw,64px)] flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3 border-t border-line-strong pt-5 text-[14px] text-ink-300">
@@ -150,7 +155,11 @@ export function ArticleView({
                       <span className="text-ink-600">{article.reviewerName}</span>
                     </span>
                   )}
-                  {date && <span className="tabular-nums">{date}</span>}
+                  {date && (
+                    <span className="flex flex-wrap gap-x-3 gap-y-1">
+                      <ArticleDates article={article} />
+                    </span>
+                  )}
                 </Reveal>
               )
             )}
@@ -305,7 +314,50 @@ function SourceList({ sources }: { sources: ArticleSource[] }) {
   );
 }
 
-function ReviewerCard({ reviewer, date }: { reviewer: ArticleReviewer; date: string | null }) {
+/**
+ * The publication date, and — when the text changed on a later day — the date
+ * of that change beside it, so a reader can tell how current the advice is.
+ * Fragments, so each date sits in the parent's own flex row.
+ */
+function ArticleDates({
+  article,
+  accent = false,
+}: {
+  article: Pick<ArticleDetail, "publishedAt" | "updatedAt">;
+  /** The opening line sets the publication date in clay. */
+  accent?: boolean;
+}) {
+  const published = formatArticleDate(article.publishedAt);
+  if (!article.publishedAt || !published) return null;
+  const updated = formatArticleUpdate(article.publishedAt, article.updatedAt);
+
+  return (
+    <>
+      <time dateTime={article.publishedAt} className={cn("tabular-nums", accent && "text-clay-600")}>
+        {published}
+      </time>
+      {updated && (
+        <>
+          <span aria-hidden>·</span>
+          <span>
+            {copy.updatedLabel}{" "}
+            <time dateTime={article.updatedAt} className="tabular-nums">
+              {updated}
+            </time>
+          </span>
+        </>
+      )}
+    </>
+  );
+}
+
+function ReviewerCard({
+  reviewer,
+  article,
+}: {
+  reviewer: ArticleReviewer;
+  article: Pick<ArticleDetail, "publishedAt" | "updatedAt">;
+}) {
   return (
     <Reveal
       as="figure"
@@ -340,7 +392,11 @@ function ReviewerCard({ reviewer, date }: { reviewer: ArticleReviewer; date: str
           <p className="mt-2 max-w-[36em] text-meta text-ink-400">{reviewer.qualifications}</p>
         )}
         <p className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-meta text-ink-300">
-          {date && <span className="tabular-nums">{date}</span>}
+          {article.publishedAt && (
+            <span className="flex flex-wrap gap-x-3 gap-y-1">
+              <ArticleDates article={article} />
+            </span>
+          )}
           {reviewer.slug && (
             <Cta href={`/zespol/${reviewer.slug}`} className="text-meta">
               {copy.reviewerBioLabel}
