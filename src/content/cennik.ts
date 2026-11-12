@@ -166,7 +166,7 @@ export const cennikPageDefaults = {
   breadcrumbHome: "Strona główna",
   breadcrumbLabel: "Cennik",
   title: "Ile kosztuje leczenie i co obejmuje cena.",
-  lead: "Podajemy cenę wprost, razem z tym, co obejmuje i co jest płatne osobno. Podstawą jest program stacjonarny trwający 4 tygodnie. Jeśli w trakcie terapii wspólnie uznamy, że potrzebny jest dłuższy pobyt lub dalsza forma leczenia, wszystkie możliwości i koszty omawiamy wcześniej.",
+  lead: "Podajemy cenę wprost, razem z tym, co obejmuje i co jest płatne osobno. Podstawą jest program stacjonarny trwający 4 tygodnie. Jeśli w trakcie terapii wspólnie uznamy, że potrzebny jest dłuższy pobyt lub inna forma leczenia, wszystkie możliwości i koszty omawiamy wcześniej.",
   freeCall:
     "Pierwsza rozmowa telefoniczna jest bezpłatna i nie zobowiązuje do rozpoczęcia terapii.",
   program: {
