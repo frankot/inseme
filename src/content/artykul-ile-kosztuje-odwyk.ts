@@ -23,26 +23,66 @@
  * ambulatory programme 10–12 months (weekly group + 2 individual sessions a
  * month), no referral needed.
  *
+ * Dominika's WhatsApp answers and voice note (Nov 6, 2026):
+ *  - the 9 000 zł is a zadatek, not a zaliczka (her e-mail template says
+ *    zaliczka — to be fixed there): non-refundable when the patient doesn't
+ *    start, per the reservation statement („wpłacone środki nie podlegają
+ *    zwrotowi w przypadku rezygnacji z podjęcia terapii… stanowią
+ *    zabezpieczenie terminu”); the point of it is the quick start date;
+ *  - leaving early on one's own, against the team's advice: no refund;
+ *    something outside the patient's control: case by case; trial period for
+ *    doubtful qualifications, settled differently if the team refers the
+ *    patient elsewhere; some breaches of the rules end in discharge without a
+ *    refund; all of it is told before treatment starts;
+ *  - besides the weekly sessions with the lead therapist there are
+ *    introductory and, when needed, intervention sessions; the psychiatrist
+ *    qualifies and re-consults as needed, informed by the team — but keep the
+ *    psychiatrist brief: psychotherapists are responsible for the therapy;
+ *  - voice note: the savings are made where the patient can't see them (the
+ *    team's work behind the scenes), so offers look alike at different prices.
+ *
  * Market ranges come from price lists published by private centres, checked on
  * Nov 6, 2026 (WANT, MyWay, Uzależniony.pl Tarnów, Twoja Przystań, Przy-Stań,
- * AlkoVip). The article names none of them (plan: no comparisons by name).
+ * AlkoVip); the centre raised the 28-day range to 12–18 tys. zł (cheapest
+ * ~8 tys.) in the panel on Nov 6. The article names none of them (plan: no
+ * comparisons by name).
  * NFZ figure: Menedżer Zdrowia, 26.09.2025 — 234 096 806 zł / 17 372 patients
  * in 2024 for stationary alcohol therapy ≈ 13 476 zł per patient.
  *
+ * Dominika's comments on the draft (Word doc, Nov 9, 2026):
+ *  - accommodation and full board for a month are a real cost, not a small
+ *    one; warn against choosing by hotel standard („terapia uzależnień to nie
+ *    SPA”) — her figure of „kilkadziesiąt tysięcy” for luxury centres isn't
+ *    in any public price list, so the text says only that they cost more;
+ *  - some centres have no single rooms on purpose (therapeutic community);
+ *    Insieme: spacious 3-bed rooms, a whole room can't be bought out;
+ *  - the psychiatrist gets a card of their own (qualifying the patient),
+ *    apart from the therapists' qualifications; her 350–500 zł per visit is
+ *    above public figures (kb.pl 2026: ~336 zł Warsaw, ~299 zł Łódź), so
+ *    „ponad 300 zł”; the official title is „instruktor terapii uzależnień”;
+ *  - therapy on Sundays too, half as long (6 h × 6 days × 4 + 3 h × 4 = 156);
+ *  - the sick note is free as a rule — no longer listed as a possible extra;
+ *  - the questions list merges her checklist (Instagram, May 31, 2024);
+ *  - the § 10 paragraph (Dz.U. 2023 poz. 2820: the facility „kieruje osoba”
+ *    with the specialist title and 5 years) is gone: she asked to reword it,
+ *    but a reworded regulation would misquote the law. Who formally heads
+ *    the centre is a question for the centre's lawyer, not for this text;
+ *  - „Czy 28 dni wystarczy?” is her rewrite; 10–12 months of the ambulatory
+ *    programme confirmed.
+ *
  * Before publishing (plan: T+P):
- *  - the centre fills the one [DO UZUPEŁNIENIA…] gap: deposit and refund
- *    rules when someone cancels or leaves early;
- *  - Dominika approves the „Z praktyki ośrodka” quote, written from her video;
- *  - the ambulatory programme is 10–12 months here (e-mail) but 12–13 on
- *    /program and /cennik — one of them must change;
- *  - a lawyer reads it (prices, art. 14), a reviewer is set in /admin/articles.
- * The seed leaves it as a draft without a reviewer.
+ *  - Dominika approves the quote again: the sentence on introductory and
+ *    intervention sessions is new;
+ *  - a lawyer reads it: prices and art. 14, and the zadatek / early-leave
+ *    rules (a consumer contract: art. 385¹ KC);
+ *  - a reviewer is set in /admin/articles.
+ * The seed leaves it as a draft; a --reset keeps the reviewer and cover photo
+ * chosen in the panel.
  */
 import type { ArticleSeed } from "./article-seed";
 
 const MZ_KOSZTY =
   "https://www.termedia.pl/mz/Ile-kosztuje-problem-alkoholowy-,64183.html";
-const ROZP_2820 = "https://isap.sejm.gov.pl/isap.nsf/DocDetails.xsp?id=WDU20230002820";
 const RPWDL = "https://rpwdl.ezdrowie.gov.pl/";
 const TERMINY_NFZ = "https://terminyleczenia.nfz.gov.pl";
 
@@ -56,16 +96,11 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
     "Ile kosztuje 28 dni terapii w prywatnym ośrodku, za co właściwie się płaci, co bywa płatne osobno i o co zapytać, zanim wybierzesz ośrodek.",
   metaTitle: "Ile kosztuje odwyk prywatnie? Ceny 2026 i co obejmują",
   metaDescription:
-    "28 dni terapii w prywatnym ośrodku kosztuje zwykle 10–16 tys. zł. Za co płacisz, co jest płatne osobno i o co zapytać. Stan na listopad 2026.",
+    "28 dni terapii w prywatnym ośrodku kosztuje zwykle 12–18 tys. zł. Za co płacisz, co jest płatne osobno i o co zapytać. Stan na listopad 2026.",
   sources: [
     {
       title: "Menedżer Zdrowia: Ile kosztuje problem alkoholowy? Dane NFZ za 2024 r., 26 września 2025 r.",
       url: MZ_KOSZTY,
-    },
-    {
-      title:
-        "Rozporządzenie Ministra Zdrowia z 29 grudnia 2023 r. w sprawie funkcjonowania podmiotów leczniczych sprawujących opiekę nad uzależnionymi od alkoholu (Dz.U. 2023 poz. 2820)",
-      url: ROZP_2820,
     },
     { title: "Rejestr Podmiotów Wykonujących Działalność Leczniczą", url: RPWDL },
     { title: "NFZ: Informator o terminach leczenia", url: TERMINY_NFZ },
@@ -78,11 +113,12 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
     {
       kind: "text",
       html: `
-        <p><strong>Za 28 dni terapii w prywatnym ośrodku stacjonarnym trzeba dziś zapłacić zwykle od 10 do 16 tys. zł, a za programy z większą liczbą godzin terapii i opieki do ok. 20 tys. zł.</strong> Krótsze pobyty i terapia dzienna bez noclegu kosztują mniej, dłuższe programy więcej. Najwięcej o cenie mówi jednak to, ile terapii faktycznie dostajesz: ile godzin zajęć, kto je prowadzi i czy zespół pracuje z pacjentem także poza nimi. W placówkach z umową z NFZ leczenie jest bezpłatne.</p>
+        <p><strong>Za 28 dni terapii w prywatnym ośrodku stacjonarnym trzeba dziś zapłacić zwykle od 12 do 18 tys. zł, a za programy z większą liczbą godzin terapii i opieki do ok. 20 tys. zł.</strong> Krótsze pobyty i terapia dzienna bez noclegu kosztują mniej, dłuższe programy więcej. W profesjonalnym ośrodku najwięcej o cenie mówi jednak to, ile terapii faktycznie dostajesz: ile godzin zajęć, kto je prowadzi i czy zespół pracuje z pacjentem także poza nimi. W placówkach z umową z NFZ leczenie jest bezpłatne.</p>
         <p><strong>W skrócie:</strong></p>
         <ul>
-          <li>Według cenników prywatnych ośrodków 28 dni terapii stacjonarnej kosztuje zwykle 10–16 tys. zł, 6 tygodni 16–23 tys. zł, a 28 dni terapii dziennej 5–8 tys. zł.</li>
-          <li>Największą część ceny stanowi praca zespołu: liczba godzin terapii, terapeuta prowadzący, lekarz psychiatra i superwizja. Nocleg i wyżywienie to mniejsza część.</li>
+          <li>Według cenników prywatnych ośrodków 28 dni terapii stacjonarnej kosztuje zwykle 12–18 tys. zł, 6 tygodni 16–23 tys. zł, a 28 dni terapii dziennej 5–8 tys. zł.</li>
+          <li>Na cenę składa się miesiąc pobytu z pełnym wyżywieniem i praca zespołu terapeutycznego. To ta druga część, czyli liczba godzin terapii, terapeuta prowadzący, kwalifikacje terapeutów i superwizja, najbardziej odróżnia od siebie ośrodki.</li>
+          <li>Hotelowy standard podnosi cenę, ale nie mówi nic o jakości terapii.</li>
           <li>Detoks, terapia po wyjeździe i dodatkowe wsparcie dla rodziny są zwykle płatne osobno.</li>
           <li>28 dni w Insieme kosztuje 18 000 zł. Co obejmuje ta kwota, piszemy niżej i w <a href="/cennik">cenniku</a>.</li>
         </ul>
@@ -92,16 +128,16 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
         <p>Sprawdziliśmy cenniki prywatnych ośrodków, które publikują ceny w internecie. Kwoty dotyczą całego pobytu z noclegiem, wyżywieniem i programem terapii:</p>
         <ul>
           <li><strong>14–21 dni:</strong> ok. 4–14 tys. zł, zależnie od długości i pokoju. Tak krótkie pobyty to zwykle programy dla osób po nawrocie albo pierwszy etap leczenia.</li>
-          <li><strong>28 dni:</strong> zwykle 10–16 tys. zł. Najtańsze oferty zaczynają się od ok. 7 tys. zł, programy z większą liczbą godzin terapii kosztują do ok. 20 tys. zł. To najczęstsza długość programu w ośrodkach prywatnych.</li>
+          <li><strong>28 dni:</strong> zwykle 12–18 tys. zł. Najtańsze oferty zaczynają się od ok. 8 tys. zł, programy z większą liczbą godzin terapii kosztują do ok. 20 tys. zł. To najczęstsza długość programu w ośrodkach prywatnych.</li>
           <li><strong>6 tygodni:</strong> ok. 16–23 tys. zł.</li>
           <li><strong>8 tygodni:</strong> ok. 21–28 tys. zł.</li>
           <li><strong>Terapia dzienna bez noclegu, 28 dni:</strong> ok. 5–8 tys. zł.</li>
           <li><strong>Detoks alkoholowy, 3–5 dni:</strong> ok. 3–5 tys. zł. Odtrucie od narkotyków lub leków trwa zwykle dłużej i kosztuje więcej.</li>
         </ul>
-        <p>Pokój jednoosobowy podnosi cenę, w sprawdzonych cennikach o ok. 3 tys. zł za 28 dni. Niższe kwoty to często promocje z terminem ważności. Porównując oferty, zawsze sprawdzaj, za ile dni podana jest cena i co dokładnie obejmuje.</p>
+        <p>Pokój jednoosobowy podnosi cenę, w sprawdzonych cennikach o ok. 3 tys. zł za 28 dni. Część ośrodków celowo go nie oferuje: wspólne mieszkanie jest elementem terapii w społeczności terapeutycznej, a przy kameralnej grupie i przestronnym domu pokój wieloosobowy nie wyklucza prywatności. Niższe kwoty to często promocje z terminem ważności. Porównując oferty, zawsze sprawdzaj, za ile dni podana jest cena i co dokładnie obejmuje.</p>
 
         <h2>Za co właściwie płacisz</h2>
-        <p>Nocleg i wyżywienie to mniejsza część ceny. Najwięcej kosztują ludzie: zespół, który prowadzi terapię, jest z pacjentami przez całą dobę i pracuje nad ich leczeniem także wtedy, gdy nie siedzą na sesji.</p>
+        <p>Część ceny to sam pobyt. Miesiąc zakwaterowania z pełnym wyżywieniem to spory koszt, o czym wie każdy, kto płacił za dłuższy urlop w pensjonacie. Tym, co najbardziej odróżnia od siebie ośrodki, są jednak ludzie: zespół, który prowadzi terapię, jest z pacjentami przez całą dobę i pracuje nad ich leczeniem także wtedy, gdy nie siedzą na sesji.</p>
       `,
     },
     {
@@ -111,7 +147,7 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
         {
           title: "Godziny terapii",
           description:
-            "Zajęcia grupowe, psychoedukacja, warsztaty i sesje indywidualne. W Insieme od poniedziałku do soboty, w dwóch blokach: 9:00–12:00 i 15:00–18:00. Razem ok. 156 godzin w ciągu 28 dni.",
+            "Zajęcia grupowe, psychoedukacja, warsztaty i sesje indywidualne. W Insieme od poniedziałku do soboty w dwóch blokach, 9:00–12:00 i 15:00–18:00, a w niedzielę o połowę krócej, bo odpoczynek też jest potrzebny. Razem ok. 156 godzin w ciągu 28 dni.",
         },
         {
           title: "Terapeuta prowadzący",
@@ -121,12 +157,17 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
         {
           title: "Terapeuci także poza zajęciami",
           description:
-            "Zespół jest z pacjentami przy posiłkach, w czasie wolnym i wieczorem. To, jak ktoś radzi sobie w zwykłych sytuacjach, często mówi o nim więcej niż sama sesja.",
+            "Zespół terapeutyczny jest w ośrodku przez całą dobę: przy posiłkach, w czasie wolnym i wieczorem. To, jak ktoś radzi sobie w zwykłych sytuacjach, często mówi o nim więcej niż sama sesja. A gdy dzieje się coś trudnego, terapeuta może od razu zareagować i wesprzeć pacjenta, bez czekania na kolejne zajęcia.",
         },
         {
-          title: "Kwalifikacje i lekarz psychiatra",
+          title: "Kwalifikacje terapeutów",
           description:
-            "Terapię prowadzą specjaliści psychoterapii uzależnień: z certyfikatem albo w trakcie szkolenia pod superwizją. Lekarz psychiatra kwalifikuje do leczenia i decyduje o lekach, jeśli są potrzebne.",
+            "Za terapię odpowiadają terapeuci uzależnień: specjaliści psychoterapii uzależnień i instruktorzy terapii uzależnień z certyfikatem albo osoby w trakcie szkolenia pod stałą superwizją.",
+        },
+        {
+          title: "Kwalifikacja pacjenta i lekarz psychiatra",
+          description:
+            "Na początku lekarz psychiatra ocenia, czy stan psychiczny pacjenta i jego szczególne trudności pozwolą mu skorzystać z programu. Jeśli pacjent wymaga monitorowania, lekarz jest obecny także na dalszych etapach terapii. To również część ceny: prywatna wizyta u psychiatry kosztuje zwykle ponad 300 zł.",
         },
         {
           title: "Superwizja i praca zespołu",
@@ -145,7 +186,7 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
       html: `
         <h2>Miesiąc w ośrodku a miesiąc terapii w gabinecie</h2>
         <p>Pomaga proste porównanie. W prywatnym gabinecie jedna sesja z psychoterapeutą uzależnień kosztuje zwykle 250–300 zł. Przy jednym spotkaniu w tygodniu to ok. 1–1,2 tys. zł miesięcznie za 4 godziny terapii.</p>
-        <p>W Insieme w tym samym miesiącu pacjent ma ok. 156 godzin zajęć, a zespół terapeutyczny jest dostępny przez całą dobę. Przy cenie 18 000 zł godzina zajęć kosztuje ok. 115 zł, razem z noclegiem, wyżywieniem, konsultacjami psychiatry i pracą terapeuty prowadzącego między sesjami.</p>
+        <p>W Insieme w tym samym miesiącu pacjent ma ok. 156 godzin zajęć, a zespół terapeutyczny jest dostępny przez całą dobę. Przy cenie 18 000 zł godzina zajęć kosztuje ok. 115 zł, razem z noclegiem, wyżywieniem, pracą terapeuty prowadzącego między sesjami i konsultacjami lekarza, gdy są potrzebne.</p>
         <p>To nie znaczy, że terapia w gabinecie jest gorsza. To inna intensywność, dobrana do innej sytuacji, a po pobycie w ośrodku zwykle następny krok.</p>
 
         <h2>Ile kosztuje leczenie na NFZ</h2>
@@ -159,37 +200,48 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
           <li><strong>Rozszerzone wsparcie dla rodziny</strong> poza konsultacjami, które są częścią programu.</li>
           <li><strong>Przedłużenie pobytu</strong>, jeśli terapeuta i pacjent uznają, że jest potrzebne.</li>
           <li><strong>Leki zalecone przez lekarza</strong>, które pacjent zwykle wykupuje sam.</li>
-          <li><strong>Wizyty innych lekarzy, zwolnienie lekarskie i dojazd</strong>, w części ośrodków.</li>
+          <li><strong>Wizyty lekarzy innych specjalności i dojazd</strong>, w części ośrodków.</li>
         </ul>
         <p>Zapytaj o te pozycje przed przyjazdem i poproś o umowę, w której są wypisane.</p>
 
-        <h2>O co zapytać, gdy cena jest wyraźnie niższa</h2>
-        <p>Niższa cena nie musi oznaczać gorszej terapii, ale zawsze z czegoś wynika. Zanim wybierzesz ośrodek, zapytaj:</p>
+        <h2>Dlaczego podobne oferty kosztują tak różnie</h2>
+        <p>Na stronach ośrodków oferty często wyglądają niemal tak samo: 28 dni, terapia grupowa, sesje indywidualne, konsultacja lekarza. Ceny różnią się przy tym o kilka, a nawet o kilkanaście tysięcy złotych. Ta różnica zwykle nie wynika z tego, co widać w opisie programu, tylko z tego, czego na pierwszy rzut oka nie widać: ile czasu zespół poświęca pacjentowi poza zajęciami, jak często omawia jego terapię, czy pracuje pod superwizją i ilu pacjentów przypada na jednego terapeutę.</p>
+        <p>Na tym najłatwiej zaoszczędzić, bo pacjent zwykle nie widzi tego nawet w trakcie pobytu. Różnicę widać dopiero w tym, jak prowadzona jest jego terapia i co udaje mu się w niej osiągnąć.</p>
+
+        <h2>Hotelowy standard to jeszcze nie terapia</h2>
+        <p>Bywa też odwrotnie: część ośrodków przyciąga pacjentów hotelowym standardem i dodatkowymi atrakcjami, a ich ceny są wyraźnie wyższe od typowych. Warunki pobytu mają znaczenie, bo przez miesiąc ośrodek jest Twoim domem. Wygodny pokój łatwiej jednak zapewnić niż dobrze prowadzoną terapię, która stawia ośrodkowi wiele wymagań: wykwalifikowany zespół, program leczenia, superwizję.</p>
+        <p>Terapia uzależnienia to nie pobyt w SPA. Gdyby wypoczynek leczył uzależnienie, nie byłyby potrzebne specjalistyczne ośrodki. Dlatego standard pokoju nie powinien być głównym kryterium wyboru. Ważniejsze jest to, kto i jak prowadzi terapię.</p>
+
+        <h2>O co zapytać, zanim wybierzesz ośrodek</h2>
+        <p>Ani niższa, ani wyższa cena sama w sobie nie mówi, jaka jest terapia, ale zawsze z czegoś wynika. Warto więc sprawdzić:</p>
         <ol>
-          <li>Ile godzin zajęć ma pacjent w tygodniu i ile z nich to sesje indywidualne?</li>
+          <li>Czy ośrodek działa legalnie jako podmiot leczniczy? Sprawdzisz to w ${ext(RPWDL, "Rejestrze Podmiotów Wykonujących Działalność Leczniczą")}. Wpis oznacza, że placówka musi spełniać określone wymagania.</li>
+          <li>Jakie kwalifikacje i doświadczenie mają terapeuci? Czy mają certyfikat specjalisty psychoterapii uzależnień albo instruktora terapii uzależnień, czy są w trakcie szkolenia pod superwizją?</li>
+          <li>Ilu terapeutów prowadzi zajęcia w ciągu tygodnia i ilu pacjentów przypada na jednego terapeutę? Jedna osoba nie poprowadzi dobrze terapii przez cały tydzień.</li>
+          <li>Czy ośrodek ma spisany program leczenia i na jakiej podstawie ocenia postępy pacjenta?</li>
+          <li>Ile godzin terapii, a nie tylko zajęć w ogóle, przewiduje program? Ile z nich to sesje indywidualne i czy w trudnym momencie można dostać dodatkową sesję?</li>
           <li>Czy pacjent ma jednego terapeutę prowadzącego, który odpowiada za cały jego plan leczenia?</li>
-          <li>Kto prowadzi terapię? Czy terapeuci mają certyfikat specjalisty psychoterapii uzależnień albo są w trakcie szkolenia pod superwizją?</li>
           <li>Czy terapeuci są w ośrodku tylko na zajęciach, czy także wieczorem i w weekendy? Kto jest z pacjentami w nocy?</li>
-          <li>Jak liczna jest grupa i ilu pacjentów przypada na jednego terapeutę?</li>
-          <li>Czy pacjenta konsultuje lekarz psychiatra?</li>
-          <li>Czy zespół ma regularną superwizję?</li>
+          <li>Jak ośrodek kwalifikuje pacjentów do leczenia? Żadna placówka nie pomoże każdemu i czasem dla dobra pacjenta trzeba go skierować w inne miejsce.</li>
+          <li>Czy i na jakiej zasadzie ośrodek współpracuje z lekarzem psychiatrą?</li>
+          <li>Czy praca zespołu jest pod stałą superwizją? Superwizja to bieżąca ocena programu leczenia, stosowanych metod i terapii poszczególnych pacjentów. Bez niej trudno mówić o prawidłowo prowadzonym leczeniu.</li>
           <li>Co dzieje się po wyjeździe: czy jest program dalszej terapii i ile kosztuje?</li>
         </ol>
-        <p>Ośrodkiem stacjonarnym leczącym uzależnienie od alkoholu musi kierować osoba z tytułem lub certyfikatem specjalisty psychoterapii uzależnień i co najmniej pięcioletnim stażem w leczeniu uzależnień (${ext(ROZP_2820, "rozporządzenie Ministra Zdrowia z 29 grudnia 2023 r., § 10")}). Dotyczy to podmiotów leczniczych, dlatego sprawdź też, czy ośrodek jest wpisany do ${ext(RPWDL, "Rejestru Podmiotów Wykonujących Działalność Leczniczą")}.</p>
+        <p>Jeśli nie znajdziesz odpowiedzi na stronie ośrodka, zapytaj przez telefon. To ważna decyzja i warto podjąć ją bez pośpiechu.</p>
 
         <h2>Ile kosztuje terapia w Insieme</h2>
         <p><strong>28-dniowy program terapii stacjonarnej w Insieme kosztuje 18 000 zł.</strong> W tej kwocie są:</p>
         <ul>
-          <li>ok. 156 godzin terapii: grupa, psychoedukacja i warsztaty, od poniedziałku do soboty;</li>
-          <li>terapeuta prowadzący i co najmniej jedna 50-minutowa sesja indywidualna w tygodniu;</li>
-          <li>kwalifikacja i konsultacje lekarza psychiatry;</li>
+          <li>ok. 156 godzin terapii: grupa, psychoedukacja i warsztaty, od poniedziałku do soboty, a w niedzielę w mniejszym wymiarze;</li>
+          <li>terapeuta prowadzący i co najmniej jedna 50-minutowa sesja indywidualna w tygodniu, a poza nimi sesje wprowadzające i, w razie potrzeby, interwencyjne;</li>
+          <li>konsultacja kwalifikacyjna u lekarza psychiatry i kolejne konsultacje, gdy są potrzebne;</li>
           <li>całodobowa opieka zespołu terapeutycznego;</li>
           <li>zakwaterowanie przez 28 dni i pełne wyżywienie;</li>
           <li>konsultacja z terapeutą dla rodziny lub bliskich;</li>
           <li>zwolnienie lekarskie na czas pobytu, zaświadczenie o leczeniu i pisemne podsumowanie terapii z zaleceniami;</li>
           <li>sauna, siłownia, ogród i leśne otoczenie.</li>
         </ul>
-        <p>Pokoje są najczęściej trzyosobowe. To świadomy wybór: wspólne mieszkanie jest częścią terapii, bo uczy współpracy i pokazuje, jak ktoś funkcjonuje z innymi. Cena wynika więc z programu, a nie ze standardu pokoju.</p>
+        <p>Pokoje są najczęściej trzyosobowe i przestronne. To świadomy wybór: wspólne mieszkanie jest częścią terapii, bo uczy współpracy i pokazuje, jak ktoś funkcjonuje z innymi. Daje też uczestnikom wzajemne wsparcie, które jest ważną częścią zdrowienia. Dlatego nie można wykupić całego pokoju za wyższą cenę. Cena wynika z programu, a nie ze standardu pokoju.</p>
         <p>Osobno płatne są:</p>
         <ul>
           <li>detoks, jeśli jest potrzebny. Pomagamy go zorganizować we współpracującej placówce, która ustala jego zakres i koszt. Zwykle to ok. 4 500 zł za 3 doby;</li>
@@ -197,12 +249,20 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
           <li>rozszerzone wsparcie dla rodziny, pakiet Rodzina PLUS: 1 000 zł;</li>
           <li>program ambulatoryjny po pobycie.</li>
         </ul>
-        <p>Miejsce rezerwuje zaliczka w wysokości połowy ceny, czyli 9 000 zł. Pozostałe 9 000 zł rozliczamy zgodnie z ustaleniami przed rozpoczęciem terapii.</p>
+        <p>Termin rezerwuje zadatek w wysokości połowy ceny, czyli 9 000 zł. Pozostałe 9 000 zł rozliczamy zgodnie z ustaleniami przed rozpoczęciem terapii. W ośrodku prywatnym szybki termin przyjęcia jest często najważniejszą różnicą wobec kilkutygodniowego czekania na NFZ, a zadatek zabezpiecza ten termin dla konkretnego pacjenta. Dlatego przy rezerwacji osoba wpłacająca przyjmuje do wiadomości, że zadatek nie podlega zwrotowi, jeśli pacjent zrezygnuje z podjęcia terapii. Gdy terapia się zaczyna, zadatek jest po prostu częścią ceny.</p>
+        <p><strong>Gdy pobyt kończy się wcześniej</strong>, rozliczenie zależy od powodu:</p>
+        <ul>
+          <li>jeśli pacjent sam decyduje się wyjechać, choć nic nie stoi na przeszkodzie, żeby kontynuował terapię, a zespół zaleca dalszy pobyt, opłata nie jest zwracana;</li>
+          <li>jeśli dalszy udział w terapii uniemożliwi coś, co nie zależy od pacjenta, rozpatrujemy sytuację indywidualnie;</li>
+          <li>gdy przy kwalifikacji pojawiają się wątpliwości, pobyt zaczyna się od okresu próbnego. Jeśli po nim zespół uzna, że pacjent potrzebuje innej formy pomocy, rozliczenie odpowiednio się zmienia;</li>
+          <li>niektóre naruszenia regulaminu kończą się wypisem bez zwrotu opłaty.</li>
+        </ul>
+        <p>O wszystkich tych zasadach pacjent dowiaduje się przed rozpoczęciem leczenia i decyduje się na terapię, znając je.</p>
         <p>Nie potrzebujesz skierowania. Do leczenia kwalifikuje lekarz psychiatra po rozmowie kwalifikacyjnej. Przed rozpoczęciem terapii potrzebne jest kilka dni bez alkoholu lub innych substancji, a przy niektórych substancjach dłużej. Jeśli jest wolne miejsce, przyjęcie bywa możliwe nawet następnego dnia. Szczegóły w <a href="/cennik">cenniku</a> i w opisie <a href="/program">programu leczenia</a>.</p>
 
         <h2>Z praktyki ośrodka</h2>
-        <blockquote>„W Insieme mówimy, że każda minuta w ośrodku jest terapią. Terapeuta nie kończy pracy razem z zajęciami. Widzi pacjenta przy posiłku, w rozmowach na korytarzu, w sytuacjach, które poza ośrodkiem wydawałyby się bez znaczenia. Te obserwacje często wnoszą do terapii więcej niż sama sesja i na ich podstawie terapeuta układa plan dla pacjenta. Nad całym procesem czuwa jeszcze zespół i zewnętrzny superwizor. Dlatego, jeśli miesiąc terapii kosztuje wyraźnie mniej niż 10 tys. zł, warto bardzo dokładnie dopytać, co ośrodek ograniczył.”</blockquote>
-        <p>Dominika Walczak, kierowniczka ośrodka Insieme [DO AKCEPTACJI: tekst napisany na podstawie nagrania o cenie, Dominika zatwierdza brzmienie].</p>
+        <blockquote>„W Insieme mówimy, że każda minuta w ośrodku jest terapią. Terapeuta nie kończy pracy razem z zajęciami. Widzi pacjenta przy posiłku, w rozmowach na korytarzu, w sytuacjach, które poza ośrodkiem wydawałyby się bez znaczenia. Te obserwacje często wnoszą do terapii więcej niż sama sesja i na ich podstawie terapeuta układa plan dla pacjenta. Poza stałymi sesjami z terapeutą prowadzącym są też sesje wprowadzające, a w razie potrzeby interwencyjne. Nad całym procesem czuwa jeszcze zespół i zewnętrzny superwizor. Dlatego, jeśli miesiąc terapii kosztuje wyraźnie mniej niż 10 tys. zł, warto bardzo dokładnie dopytać, co ośrodek ograniczył.”</blockquote>
+        <p>Dominika Walczak, kierowniczka ośrodka Insieme</p>
       `,
     },
     {
@@ -212,7 +272,7 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
         {
           title: "Policz cały koszt leczenia",
           description:
-            "Zapytaj nie tylko o pobyt, ale też o detoks, terapię po wyjeździe i ewentualne przedłużenie. Poproś o umowę, w której te kwoty są wypisane.",
+            "Zapytaj nie tylko o pobyt, ale też o detoks, terapię po wyjeździe i ewentualne przedłużenie. Poproś o umowę albo regulamin, w których są wypisane te kwoty i zasady zwrotu.",
         },
         {
           title: "Porównaj z leczeniem na NFZ",
@@ -244,15 +304,15 @@ export const kosztOdwykuArticleSeed: ArticleSeed = {
         <h3>Czy cena odwyku obejmuje detoks?</h3>
         <p>Zwykle nie. W wielu ośrodkach detoks jest osobną usługą albo odbywa się na współpracującym oddziale. Nie każdy go potrzebuje, decyduje o tym lekarz przy kwalifikacji. Więcej: <a href="/detoks-i-kwalifikacja">kiedy potrzebny jest detoks</a>.</p>
         <h3>Czy na czas odwyku dostanę zwolnienie lekarskie?</h3>
-        <p>W Insieme zwolnienie lekarskie na czas pobytu jest w cenie. W części ośrodków to osobna opłata, więc zapytaj o nie przed przyjazdem.</p>
+        <p>Tak. W Insieme zwolnienie lekarskie na czas pobytu wystawia lekarz, bez dodatkowej opłaty. Jeśli wybierasz inny ośrodek, zapytaj przed przyjazdem, kto je wystawi.</p>
         <h3>Czy 28 dni wystarczy?</h3>
-        <p>28 dni to pierwszy, najbardziej intensywny etap. Po nim potrzebna jest dalsza terapia: w poradni NFZ, w gabinecie albo w programie ambulatoryjnym ośrodka. W Insieme ten program trwa zwykle 10–12 miesięcy: spotkanie grupowe raz w tygodniu i co najmniej dwie sesje indywidualne w miesiącu.</p>
+        <p>28 dni to intensywny etap terapii, który pozwala zrozumieć mechanizmy uzależnienia, rozpoznać własne trudności i rozpocząć proces zmiany. To jednak dopiero początek zdrowienia, które wymaga dalszej pracy i utrwalania nowych sposobów funkcjonowania. Dlatego kolejnym etapem jest kontynuacja leczenia w formie ambulatoryjnej. W Insieme taki program trwa zwykle 10–12 miesięcy i obejmuje cotygodniową terapię grupową oraz co najmniej dwie sesje indywidualne w miesiącu. Dalsze leczenie można też prowadzić w wybranym gabinecie prywatnym albo w poradni NFZ. Najważniejsze, żeby proces nie zakończył się na pobycie w ośrodku.</p>
         <h3>Ile kosztuje jedna sesja terapii uzależnień prywatnie?</h3>
         <p>W prywatnych gabinetach zwykle 250–300 zł, czasem więcej. Terapia indywidualna to najczęściej jedno spotkanie w tygodniu.</p>
         <h3>Jak wygląda płatność za odwyk?</h3>
-        <p>Zasady są różne, często termin rezerwuje zaliczka albo zadatek. W Insieme zaliczka to połowa ceny, czyli 9 000 zł, a pozostałą kwotę rozliczamy zgodnie z ustaleniami przed rozpoczęciem terapii.</p>
-        <h3>Co z pieniędzmi, jeśli pobyt skończy się wcześniej?</h3>
-        <p>To zależy od umowy. [DO UZUPEŁNIENIA PRZEZ OŚRODEK: czy zaliczka wraca przy rezygnacji i jak rozliczany jest pobyt zakończony przed czasem.] Zanim zapłacisz, sprawdź, czy umowa mówi o zaliczce czy o zadatku. Zadatek co do zasady przepada, jeśli zrezygnujesz z przyczyn leżących po Twojej stronie, a zaliczka podlega zwrotowi (art. 394 Kodeksu cywilnego).</p>
+        <p>Zasady są różne, często termin rezerwuje zaliczka albo zadatek. W Insieme jest to zadatek w wysokości połowy ceny, czyli 9 000 zł, a pozostałą kwotę rozliczamy zgodnie z ustaleniami przed rozpoczęciem terapii.</p>
+        <h3>Co z pieniędzmi, jeśli zrezygnuję albo pobyt skończy się wcześniej?</h3>
+        <p>To zależy od umowy i regulaminu ośrodka, dlatego przeczytaj je przed wpłatą. Sprawdź przede wszystkim, czy wpłata rezerwacyjna podlega zwrotowi, jeśli zrezygnujesz. Może być nazwana zaliczką albo zadatkiem, a zasady zwrotu są wtedy różne. Zapytaj też, co się dzieje, gdy pacjent wyjedzie przed czasem na własne życzenie, gdy terapię przerwie coś od niego niezależnego i gdy zostanie wypisany za złamanie regulaminu. Zasady obowiązujące w Insieme opisujemy wyżej, w części o cenie terapii w Insieme.</p>
       `,
     },
     {

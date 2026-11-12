@@ -184,7 +184,7 @@ export const leczenieNarkomaniiDefaults: IntentPageContent = {
     facts: [
       { value: "28 dni", label: "Minimum stacjonarnie" },
       { value: "8–12", label: "Osób w grupie" },
-      { value: "12–13 mies.", label: "Program ambulatoryjny" },
+      { value: "10–12 mies.", label: "Program ambulatoryjny" },
       { value: "Psychiatra", label: "Kwalifikacja" },
     ],
     link: { label: "Zobacz program terapii", href: "/program" },
