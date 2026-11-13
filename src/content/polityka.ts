@@ -50,7 +50,7 @@ export const policyDefaults: PolicyContent = {
   eyebrow: "Polityka prywatności",
   title: "Polityka prywatności",
   lead: "Co zapisujemy, kiedy korzystasz z tej strony, po co i jak długo — oraz jak to zmienić. Do rozmowy telefonicznej nie potrzebujemy nawet Twojego nazwiska.",
-  effectiveDate: "2 października 2026",
+  effectiveDate: "13 listopada 2026",
   controller: {
     legalName: "",
     address: "ul. Świerkowa 13, 05-506 Magdalenka",
@@ -70,12 +70,13 @@ export const policyDefaults: PolicyContent = {
       id: "jakie-dane",
       title: "Jakie dane zbieramy i po co",
       body: [
-        "Strona zbiera tylko to, co sam(a) do nas wyślesz, oraz — jeśli się zgodzisz — statystyki odwiedzin, które nie zawierają Twojego imienia ani adresu. Nie prowadzimy kont użytkowników, nie przyjmujemy płatności przez stronę i nie wysyłamy reklam.",
+        "Strona zbiera tylko to, co sam(a) do nas wyślesz, anonimowe liczniki odwiedzin i kliknięć w numer telefonu oraz — jeśli się zgodzisz — statystyki Google Analytics. Żadne z nich nie zawierają Twojego imienia ani adresu. Nie prowadzimy kont użytkowników, nie przyjmujemy płatności przez stronę i nie wysyłamy reklam.",
         [
           "Formularz kontaktowy: treść wiadomości oraz — jeśli je podasz — imię, numer telefonu i adres e-mail. Używamy ich wyłącznie, żeby odpowiedzieć na Twoją wiadomość w sposób, który wybierzesz.",
           "Test przesiewowy: odpowiedzi nie są zapisywane. Jeśli poprosisz o wynik na e-mail, zapisujemy adres e-mail, liczbę punktów i przedział wyniku — tylko po to, żeby wysłać Ci jeden raz wynik w PDF.",
           "Zapis na kontakt (pole „Zostaw adres”): adres e-mail i miejsce na stronie, z którego go podano. Piszemy tylko wtedy, gdy mamy coś konkretnego; nie wysyłamy newslettera.",
           "Statystyki (Google Analytics): wyłącznie po kliknięciu „Zgadzam się” w okienku o plikach cookies — szczegóły niżej.",
+          "Anonimowe liczniki, bez pytania o zgodę: Vercel Web Analytics liczy, które strony są czytane i skąd przychodzą odwiedzający (adres strony, strona odsyłająca, kraj i miasto, typ urządzenia, system i przeglądarka); kolejne wejścia tego samego dnia rozpoznaje po jednorazowym skrócie tworzonym z danych żądania, który jest usuwany po 24 godzinach. Nasz własny licznik kliknięć w numer telefonu zapisuje tylko dzień, stronę i miejsce przycisku, pierwszą stronę otwartą podczas wizyty, ogólne źródło wejścia (np. „Google” albo „wejście bezpośrednie”) oraz to, czy był to telefon komórkowy, czy komputer — jako sumy dzienne, bez godziny. Żaden z liczników nie używa plików cookies i nie zapisuje adresu IP ani identyfikatora przeglądarki; nie da się z nich ustalić, kim jesteś.",
           "Dane techniczne: adres IP i informacje o przeglądarce, które serwer otrzymuje przy każdym wejściu na stronę. Służą do jej działania i ochrony przed nadużyciami (np. masowym wysyłaniem formularzy).",
         ],
         "Podanie danych jest dobrowolne. Bez adresu e-mail nie wyślemy wyniku testu; bez telefonu lub e-maila nie odpowiemy na wiadomość z formularza.",
@@ -89,6 +90,7 @@ export const policyDefaults: PolicyContent = {
           "Formularz kontaktowy i zapis na kontakt — Twoja zgoda (art. 6 ust. 1 lit. a RODO), wyrażona zaznaczeniem pola pod formularzem.",
           "Wynik testu przesiewowego i wiadomości, w których opisujesz swoje zdrowie — wyraźna zgoda na przetwarzanie danych o zdrowiu (art. 9 ust. 2 lit. a RODO).",
           "Statystyki Google Analytics — Twoja zgoda (art. 6 ust. 1 lit. a RODO) wyrażona w okienku o plikach cookies.",
+          "Anonimowe liczniki odwiedzin i kliknięć w numer telefonu — nasz prawnie uzasadniony interes, czyli wiedza, które informacje na stronie pomagają ludziom zgłosić się po pomoc (art. 6 ust. 1 lit. f RODO).",
           "Dane techniczne i ochrona przed nadużyciami — nasz prawnie uzasadniony interes, czyli bezpieczeństwo strony (art. 6 ust. 1 lit. f RODO).",
         ],
         "Zgodę możesz wycofać w każdej chwili — pisząc na kontakt@osrodek-insieme.pl albo, w przypadku statystyk, przez link „Ustawienia cookies” w stopce. Wycofanie zgody nie zmienia zgodności z prawem tego, co zrobiliśmy wcześniej.",
@@ -102,6 +104,7 @@ export const policyDefaults: PolicyContent = {
           `Wiadomości z formularza, adresy z zapisu na kontakt i dane z testów przesiewowych — do czasu załatwienia sprawy, nie dłużej niż ${months} miesięcy od wysłania. Po tym czasie usuwamy je automatycznie.`,
           "Adres IP używany do ochrony formularzy — około 10 minut.",
           "Dane w Google Analytics — 2 miesiące (ustawienie usługi).",
+          "Sumy dzienne z licznika kliknięć w numer telefonu — bez ograniczenia czasu, bo nie zawierają danych pozwalających kogokolwiek zidentyfikować.",
         ],
         "Jeśli wcześniej wycofasz zgodę albo poprosisz o usunięcie danych, usuniemy je wcześniej.",
       ],
@@ -112,12 +115,12 @@ export const policyDefaults: PolicyContent = {
       body: [
         "Nie sprzedajemy danych i nie przekazujemy ich nikomu w celach marketingowych. Dostęp do nich mają wyłącznie upoważnione osoby z zespołu ośrodka oraz firmy, które na nasze zlecenie świadczą usługi techniczne:",
         [
-          "hosting strony (Vercel),",
-          "baza danych, w której zapisywane są formularze (Neon, serwery w Unii Europejskiej),",
+          "hosting strony i anonimowe statystyki odwiedzin (Vercel),",
+          "baza danych, w której zapisywane są formularze i liczniki kliknięć w numer telefonu (Neon, serwery w Unii Europejskiej),",
           "wysyłka wiadomości e-mail z wynikiem testu i potwierdzeniami (Resend),",
           "ochrona formularzy przed nadużyciami (Upstash),",
           "przechowywanie zdjęć publikowanych na stronie (Cloudflare),",
-          "statystyki odwiedzin — tylko po wyrażeniu zgody (Google Ireland Limited).",
+          "statystyki Google Analytics — tylko po wyrażeniu zgody (Google Ireland Limited).",
         ],
         "Każda z tych firm przetwarza dane wyłącznie na nasze polecenie, na podstawie umowy powierzenia. Część z nich ma siedzibę lub serwery poza Europejskim Obszarem Gospodarczym; wtedy przekazanie danych odbywa się na podstawie mechanizmów przewidzianych w rozdziale V RODO — decyzji Komisji Europejskiej stwierdzającej odpowiedni stopień ochrony (EU-US Data Privacy Framework) lub standardowych klauzul umownych.",
       ],
@@ -127,6 +130,7 @@ export const policyDefaults: PolicyContent = {
       title: "Pliki cookies i statystyki",
       body: [
         "Strona działa bez plików cookies. Jedyna informacja zapisywana w Twojej przeglądarce bez pytania to Twój wybór z okienka o plikach cookies — żeby nie pytać Cię przy każdej wizycie.",
+        "Bez pytania o zgodę działają dwa anonimowe liczniki opisane wyżej: statystyki odwiedzin Vercel i nasz licznik kliknięć w numer telefonu. Nie zapisują niczego w Twojej przeglądarce i nie przekazują danych do Google ani do firm reklamowych.",
         "Jeśli klikniesz „Zgadzam się”, strona wczyta Google Analytics, które zapisuje pliki cookies _ga i _ga_<identyfikator> (domyślnie na 2 lata) i liczy, które strony są czytane oraz czy ktoś kliknął numer telefonu, adres e-mail, przycisk kontaktu lub formularz, rozwinął pytanie w FAQ albo rozpoczął i ukończył test (bez odpowiedzi i wyniku). Nie przekazujemy do Google treści wiadomości, odpowiedzi z testów ani żadnych danych do celów reklamowych; sygnały reklamowe i Google Signals są wyłączone.",
         "Jeśli klikniesz „Nie zgadzam się”, Google Analytics nie jest wczytywane w ogóle. Swój wybór możesz zmienić w dowolnej chwili przez link „Ustawienia cookies” w stopce; wycofanie zgody usuwa pliki cookies Google Analytics.",
       ],

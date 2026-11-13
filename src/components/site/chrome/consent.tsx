@@ -127,7 +127,7 @@ export function ConsentBanner() {
         >
           <div className="flex flex-col gap-4 p-[clamp(20px,2vw,28px)]">
             <p id="consent-title" className="font-heading text-[19px] leading-tight tracking-[-0.02em]">
-              Czy możemy liczyć odwiedziny?
+              Czy możemy włączyć Google Analytics?
             </p>
             <p className="text-meta text-on-dark-muted">
               {consentBannerText}

@@ -47,6 +47,7 @@ export function SectionTabs({ tabs, current }: { tabs: SectionTab[]; current: st
 export const INBOX_TABS = (newMessages: number): SectionTab[] => [
   { href: "/admin/contact", label: "Wiadomości", count: newMessages },
   { href: "/admin/leads", label: "Adresy e-mail" },
+  { href: "/admin/phone-clicks", label: "Kliknięcia w telefon" },
 ];
 
 export const MEDIA_TABS: SectionTab[] = [

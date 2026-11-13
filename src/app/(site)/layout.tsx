@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { ConsentBanner } from "@/components/site/chrome/consent";
+import { PhoneClickCounter } from "@/components/site/chrome/phone-click-counter";
 import { SiteFooter } from "@/components/site/chrome/site-footer";
 import { SiteSettingsRoot } from "@/components/site/chrome/site-settings-root";
 import { StickyCallBar } from "@/components/site/chrome/sticky-call-bar";
@@ -62,6 +63,8 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
         is not counted. Cookieless, so it runs without the consent banner.
       */}
       <Analytics />
+      {/* Taps on the phone number, for every visitor; no cookies, nothing about the person. */}
+      <PhoneClickCounter />
     </SiteSettingsRoot>
   );
 }

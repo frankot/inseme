@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { db } from "@/db";
 import { articles, faqItems, media, teamMembers } from "@/db/schema";
 import { getLeadStats, getNewContactCount } from "@/lib/queries/leads";
+import { getPhoneClicks30d } from "@/lib/queries/phone-clicks";
 
 export const metadata: Metadata = {
   title: "Pulpit — panel Insieme",
@@ -33,6 +34,7 @@ export default async function AdminDashboardPage() {
     recent,
     newMessages,
     leadStats,
+    phoneClicks,
   ] = await Promise.all([
       countsFor(articles),
       countsFor(teamMembers),
@@ -50,6 +52,7 @@ export default async function AdminDashboardPage() {
         .limit(5),
       getNewContactCount(),
       getLeadStats(),
+      getPhoneClicks30d(),
     ]);
 
   const tiles = [
@@ -67,7 +70,7 @@ export default async function AdminDashboardPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-3">
         <Link
           href="/admin/contact"
           className="rounded-lg border p-4 transition-colors hover:border-ring data-[waiting=true]:border-ring"
@@ -87,6 +90,16 @@ export default async function AdminDashboardPage() {
           <p className="mt-1 text-2xl font-semibold">{leadStats.unique}</p>
           <p className="text-xs text-muted-foreground">
             {leadStats.signups} z zapisu, {leadStats.tests} z testów
+          </p>
+        </Link>
+        <Link
+          href="/admin/phone-clicks"
+          className="rounded-lg border p-4 transition-colors hover:border-ring"
+        >
+          <p className="text-sm text-muted-foreground">Kliknięcia w telefon</p>
+          <p className="mt-1 text-2xl font-semibold">{phoneClicks ?? "—"}</p>
+          <p className="text-xs text-muted-foreground">
+            {phoneClicks === null ? "Licznik czeka na migrację bazy." : "W ostatnich 30 dniach."}
           </p>
         </Link>
       </div>

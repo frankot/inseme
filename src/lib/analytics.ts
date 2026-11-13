@@ -161,8 +161,11 @@ export function eventForLink(link: HTMLAnchorElement): LinkEvent | null {
   };
 }
 
-/** The nearest `data-track` area, else the enclosing section's id. */
-function ctaLocation(link: HTMLAnchorElement): string {
+/**
+ * The nearest `data-track` area, else the enclosing section's id. Also used by
+ * `PhoneClickCounter`, so both counts name the same buttons.
+ */
+export function ctaLocation(link: HTMLAnchorElement): string {
   const area = link.closest<HTMLElement>("[data-track]")?.dataset.track;
   if (area) return area;
   const section = link.closest<HTMLElement>("[id]")?.id;

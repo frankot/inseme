@@ -20,7 +20,7 @@ const redis =
       })
     : null;
 
-export type LimitName = "contact" | "screening" | "signup";
+export type LimitName = "contact" | "screening" | "signup" | "phoneClick";
 
 /**
  * Deliberately generous — these are people in distress, not an API. The point
@@ -30,6 +30,8 @@ const LIMITS: Record<LimitName, { tokens: number; window: `${number} ${"s" | "m"
   contact: { tokens: 5, window: "10 m" },
   screening: { tokens: 8, window: "10 m" },
   signup: { tokens: 5, window: "10 m" },
+  // Room for someone tapping again after a missed call; stops a script inflating the count.
+  phoneClick: { tokens: 10, window: "10 m" },
 };
 
 const limiters = new Map<LimitName, Ratelimit>();

@@ -48,7 +48,7 @@ export const adminNav: AdminNavItem[] = [
     href: "/admin/contact",
     label: "Zgłoszenia",
     icon: Inbox,
-    also: ["/admin/leads"],
+    also: ["/admin/leads", "/admin/phone-clicks"],
   },
   { href: "/admin/settings", label: "Ustawienia", icon: Settings },
 ];

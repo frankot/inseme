@@ -5,6 +5,7 @@ export * from "./faq-items";
 export * from "./gallery-photos";
 export * from "./leads";
 export * from "./media";
+export * from "./phone-clicks";
 export * from "./relations";
 export * from "./screening-tests";
 export * from "./settings";
