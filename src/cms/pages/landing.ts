@@ -5,6 +5,7 @@ import {
   heroDefaults,
   osrodekDefaults,
   pierwszyKontaktDefaults,
+  pomagamyDefaults,
 } from "@/content/home";
 import { teamTeaserDefaults } from "@/content/team";
 import { FAQ_FEATURED_MAX } from "@/lib/validations/content";
@@ -67,6 +68,34 @@ export const landingPage = definePage({
           number: f.text("Numer w RPWDL", { max: 20 }),
         }),
         image: f.image("Zdjęcie w tle"),
+      }),
+    }),
+    defineSection({
+      id: "pomagamy",
+      label: "W czym pomagamy",
+      numbered: true,
+      fields: f.group("W czym pomagamy", {
+        eyebrow: f.text("Nadtytuł", { max: 40 }),
+        title: f.textarea("Tytuł", { max: 90 }),
+        lead: f.textarea("Wstęp", { max: 400 }),
+        link: f.link("Link przy wstępie", { optional: true, hint: "np. /program" }),
+        items: f.list(
+          "Wiersze",
+          f.group("Wiersz", {
+            title: f.text("Tytuł", { max: 60 }),
+            body: f.textarea("Opis", { max: 200 }),
+            link: f.link("Link do strony", {
+              optional: true,
+              hint: "Ścieżka strony, np. /leczenie-alkoholizmu",
+            }),
+          }),
+          {
+            min: 3,
+            max: 8,
+            titleKey: "title",
+            hint: "Wiersz bez linku jest zwykłym tekstem. Tekst linku to fraza, pod którą szuka się strony, np. „Odwyk alkoholowy”.",
+          },
+        ),
       }),
     }),
     defineSection({
@@ -175,6 +204,19 @@ export const landingPage = definePage({
           trust: heroDefaults.trust,
           rpwdl: { statement: heroDefaults.rpwdl.statement, number: heroDefaults.rpwdl.number },
           image: heroDefaults.image,
+        },
+      },
+      // Off in the seed: a section added after the page was saved takes its
+      // seed (`normalizeDoc`), so shipping this code changes nothing on the
+      // site until an editor reads the copy and switches the section on.
+      pomagamy: {
+        enabled: false,
+        data: {
+          eyebrow: pomagamyDefaults.eyebrow,
+          title: pomagamyDefaults.title,
+          lead: pomagamyDefaults.lead,
+          link: pomagamyDefaults.link,
+          items: pomagamyDefaults.items,
         },
       },
       kontakt: {

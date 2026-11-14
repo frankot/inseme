@@ -5,6 +5,7 @@ import { Kontakt } from "@/components/site/sections/kontakt";
 import { Opinie } from "@/components/site/sections/opinie";
 import { Osrodek } from "@/components/site/sections/osrodek";
 import { PierwszyKontakt } from "@/components/site/sections/pierwszy-kontakt";
+import { Pomagamy } from "@/components/site/sections/pomagamy";
 import { Poradnik } from "@/components/site/sections/poradnik";
 import { Program } from "@/components/site/sections/program";
 import { TestPrzesiewowy } from "@/components/site/sections/test-przesiewowy";
@@ -22,6 +23,7 @@ import {
   type ContactPath,
   type HeroContent,
   type OsrodekContent,
+  type PomagamyContent,
 } from "@/content/home";
 import { opinieDefaults } from "@/content/opinie";
 import { teamTeaserDefaults } from "@/content/team";
@@ -42,6 +44,7 @@ type PathData = Omit<ContactPath, "id" | "steps" | "note" | "secondaryLabel" | "
 };
 type KontaktData = { eyebrow: string; paths: PathData[] };
 type OsrodekData = Pick<OsrodekContent, "eyebrow" | "title" | "body" | "stats" | "figures">;
+type PomagamyData = Omit<PomagamyContent, "index">;
 type CopyData = { eyebrow: string; title: string };
 
 const pad = (n: number) => String(n).padStart(2, "0");
@@ -49,7 +52,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 /**
  * The homepage, rendered from its CMS doc — used by `/` and by the editor's
  * preview, so the preview is the site. Section order and everything not in
- * the doc (button labels, links, Kontakt 08, the footer) stay in code.
+ * the doc (button labels, links, the closing Kontakt band, the footer) stay in code.
  */
 export async function LandingView({ page }: { page: CmsPage }) {
   const s = page.sections;
@@ -88,6 +91,14 @@ export async function LandingView({ page }: { page: CmsPage }) {
         />
       </CmsSlot>
 
+      {/*
+        What we treat, before what happens when you ring: a visitor who searched
+        for a kind of treatment looks for their own problem first.
+      */}
+      <CmsSlot page={page} id="pomagamy">
+        <Pomagamy content={{ ...data<PomagamyData>("pomagamy"), index: numbers.pomagamy ?? "" }} />
+      </CmsSlot>
+
       <CmsSlot page={page} id="kontakt">
         <PierwszyKontakt
           content={{
@@ -107,7 +118,7 @@ export async function LandingView({ page }: { page: CmsPage }) {
       </CmsSlot>
 
       {/*
-        Second, not seventh. Most people who ring are ringing about themselves,
+        Near the top, not seventh. Most people who ring are ringing about themselves,
         and for someone still asking "is this even a problem yet?" ten
         questions are a far smaller step than a phone call.
       */}

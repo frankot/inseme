@@ -22,11 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
 /**
  * The homepage is a summary with a hierarchy, not the whole site.
  *
- * Its one job is the phone call, so the order runs: who you are and what
- * happens if you ring (01), the test for anyone not ready to ring (02), then
+ * Its one job is the phone call, so the order runs: what you treat (01), what
+ * happens if you ring (02), the test for anyone not ready to ring (03), then
  * the proof a person weighs before dialling — the place, the reading, the
- * people, the reviews — and only then the questions and the form. The copy and
- * the picks come from the CMS (`/admin/cms/strona-glowna`); the order is code.
+ * people, the reviews — and only then the questions and the form. Numbers
+ * shift down by one while 01 is switched off. The copy and the picks come from
+ * the CMS (`/admin/cms/strona-glowna`); the order is code.
  */
 export default async function HomePage() {
   const page = await getCmsPage("landing");

@@ -84,6 +84,79 @@ export const heroDefaults: HeroContent = {
   },
 };
 
+/* --------------------------------------------------------- w czym pomagamy */
+
+export type PomagamyLink = { label: string; href: string };
+
+export type PomagamyItem = {
+  title: string;
+  body: string;
+  /** The service page for this row. A row without one is plain text. */
+  link?: PomagamyLink;
+};
+
+export type PomagamyContent = {
+  index: string;
+  eyebrow: string;
+  title: string;
+  lead: string;
+  items: PomagamyItem[];
+  /** The quiet link beside the lead. */
+  link?: PomagamyLink;
+};
+
+/**
+ * What the centre treats, as rows linking to the service pages — until this
+ * section the homepage reached them only through the footer.
+ *
+ * Every line restates something the site already says: the list of addictions
+ * is the published FAQ answer „Czy leczycie tylko uzależnienie od alkoholu?”,
+ * detox at a partner ward is /cennik and /detoks-i-kwalifikacja, the family
+ * lines are /dla-rodziny and /cennik. It is a statement of scope, not a pitch
+ * (art. 14 ustawy o działalności leczniczej): no superlatives, no promised
+ * results.
+ *
+ * Leki and hazard have no page yet, so their rows carry no link; the editor
+ * adds one in the CMS once /leczenie-lekomanii and /leczenie-hazardu exist.
+ */
+export const pomagamyDefaults: PomagamyContent = {
+  index: "01",
+  eyebrow: "W czym pomagamy",
+  title: "Leczymy uzależnienie od alkoholu, narkotyków, leków i hazardu.",
+  lead: "Podstawą jest 28 dni terapii stacjonarnej w Magdalence pod Warszawą, a potem program ambulatoryjny. Pomagamy też zorganizować detoks, jeśli jest potrzebny, i wspieramy bliskich osoby uzależnionej.",
+  link: { label: "Program terapii", href: "/program" },
+  items: [
+    {
+      title: "Uzależnienie od alkoholu",
+      body: "Gdy picie przestało być wyborem. Psychoterapia uzależnień w małej grupie, kwalifikacja u lekarza psychiatry.",
+      link: { label: "Odwyk alkoholowy", href: "/leczenie-alkoholizmu" },
+    },
+    {
+      title: "Uzależnienie od narkotyków",
+      body: "Narkotyki i dopalacze. Terapia w nurcie poznawczo-behawioralnym, a gdy odstawienie wymaga opieki lekarza — najpierw detoks.",
+      link: { label: "Odwyk narkotykowy", href: "/leczenie-narkomanii" },
+    },
+    {
+      title: "Uzależnienie od leków",
+      body: "Leki uspokajające, nasenne i przeciwbólowe. Odstawia się je stopniowo, według planu lekarza, nigdy z dnia na dzień.",
+    },
+    {
+      title: "Hazard i inne uzależnienia behawioralne",
+      body: "Patologiczny hazard i inne nałogowe zachowania. Zasady korzystania z telefonu w czasie pobytu ustalamy indywidualnie.",
+    },
+    {
+      title: "Detoks i kwalifikacja",
+      body: "O detoksie decyduje lekarz. Nie prowadzimy go na miejscu: pomagamy go zorganizować we współpracującym oddziale.",
+      link: { label: "Detoks przed terapią", href: "/detoks-i-kwalifikacja" },
+    },
+    {
+      title: "Pomoc dla rodziny",
+      body: "Możesz zadzwonić bez wiedzy i zgody bliskiej osoby. Konsultacja z terapeutą dla rodziny jest w cenie pobytu.",
+      link: { label: "Jak pomóc bliskiej osobie", href: "/dla-rodziny" },
+    },
+  ],
+};
+
 /* ----------------------------------------------------------------- ośrodek */
 
 export type Stat = { label: string; value: string };

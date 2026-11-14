@@ -174,7 +174,9 @@ export function emptyValue(spec: FieldSpec): unknown {
     case "image":
       return { src: "", alt: "" };
     case "link":
-      return { label: "", href: "" };
+      // An optional link starts absent — the form then offers "+ Link" instead
+      // of two empty required inputs on a row that may never need one.
+      return spec.optional ? undefined : { label: "", href: "" };
     case "select":
       return spec.options[0]?.value ?? "";
     case "toggle":
