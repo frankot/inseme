@@ -18,7 +18,7 @@ import { FAQ_FEATURED_MAX } from "@/lib/validations/content";
 
 export const LANDING_TITLE = "Ośrodek leczenia uzależnień Warszawa – Magdalenka | Insieme";
 export const LANDING_DESCRIPTION =
-  "Prywatny ośrodek leczenia uzależnień w Magdalence. Detoks, terapia stacjonarna, wsparcie dla rodziny. Rozmowa nie zobowiązuje do przyjazdu.";
+  "Prywatny ośrodek leczenia uzależnień w Magdalence. Terapia stacjonarna 28 dni, pomoc w organizacji detoksu, wsparcie dla rodziny. Rozmowa nie zobowiązuje do przyjazdu.";
 
 const titledItem = (max: number) =>
   f.group("Punkt", {

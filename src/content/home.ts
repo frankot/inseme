@@ -63,7 +63,7 @@ export type HeroContent = {
 };
 
 export const heroDefaults: HeroContent = {
-  eyebrow: "Magdalenka pod Warszawą · prywatny ośrodek terapii uzależnień",
+  eyebrow: "Magdalenka pod Warszawą · prywatny ośrodek leczenia uzależnień w zaciszu lasu",
   title: "Dobrze, że jesteś. Porozmawiajmy o tym jak możemy Ci pomóc.",
   lead: "Pierwsza rozmowa służy temu, żeby ustalić, co się dzieje i jaka forma pomocy będzie odpowiednia. Nie wymaga żadnego przygotowania — nie musisz mieć diagnozy ani wiedzieć, od czego zacząć. Sam kontakt z nami nie zobowiązuje do rozpoczęcia terapii.",
   ctaLabel: "Zadzwoń: 669 916 005",
