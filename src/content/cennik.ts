@@ -278,7 +278,6 @@ export const cennikPageDefaults = {
   closingTitle: "Zanim podejmiesz decyzję, poznasz wszystkie koszty.",
   closingBody:
     "W pierwszej rozmowie opowiemy, jak przebiega program, podamy najbliższy wolny termin i powiemy, czy przed przyjęciem potrzebne są dodatkowe kroki, na przykład detoks. Nie potrzebujesz skierowania, a gdy jest wolne miejsce, przyjęcie bywa możliwe nawet następnego dnia.",
-  closingCta: "Zapytaj o wolny termin",
   articleEyebrow: "Z poradnika",
   articleBody:
     "Ile kosztuje terapia w innych prywatnych ośrodkach i na NFZ, co zwykle nie jest wliczone w cenę, o co zapytać, zanim wybierzesz ośrodek, i zasady rozliczeń w Insieme.",

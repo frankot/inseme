@@ -13,7 +13,6 @@ import {
   type CennikExtra,
 } from "@/content/cennik";
 import { getArticleBySlug } from "@/lib/queries/articles";
-import { getSiteContact } from "@/lib/queries/settings";
 import { cn } from "@/lib/utils";
 
 // The article card borrows the cost article's cover, which editors can change.
@@ -47,10 +46,7 @@ const BAND = "mt-section-sm border-t border-line-strong pt-[clamp(24px,3vw,40px)
  */
 export default async function CennikPage() {
   const { program, compare } = copy;
-  const [costArticle, contact] = await Promise.all([
-    getArticleBySlug(KOSZT_ARTICLE_SLUG),
-    getSiteContact(),
-  ]);
+  const costArticle = await getArticleBySlug(KOSZT_ARTICLE_SLUG);
   const cover = costArticle?.cover ?? null;
 
   return (
@@ -263,15 +259,11 @@ export default async function CennikPage() {
           </h2>
           <div className="flex flex-col items-start gap-[clamp(20px,2.2vw,30px)]">
             <p className="max-w-[34em] text-pretty text-body-lg text-ink-500">{copy.closingBody}</p>
-            <Cta href={`tel:${contact.phoneHref}`} variant="solid" className="tabular-nums">
-              {copy.closingCta} — <span className="whitespace-nowrap">{contact.phone}</span>
-            </Cta>
-            {/* For whoever wants to talk it over at home first, or cannot ring from work. */}
-            <CallbackForm
-              placement="cennik"
-              headingLevel={3}
-              className="w-full max-w-[34em] border-t border-line pt-[clamp(20px,2.2vw,30px)]"
-            />
+            {/*
+              The form alone — it carries the number too („albo zadzwoń”), so a
+              separate phone button above it only said the same thing twice.
+            */}
+            <CallbackForm placement="cennik" headingLevel={3} className="w-full max-w-[34em]" />
           </div>
         </Reveal>
 
