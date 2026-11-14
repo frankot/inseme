@@ -14,7 +14,9 @@ export function Kontakt({
   contact: SiteContact;
 }) {
   return (
-    <Section id="kontakt" index={content.index} label={content.eyebrow}>
+    // Always the homepage's last band: its numeral is odd or even depending on
+    // which sections are switched on, so it says so rather than relying on parity.
+    <Section id="kontakt" index={content.index} label={content.eyebrow} last>
       <KontaktGrid
         contact={contact}
         formTitle={content.formTitle}

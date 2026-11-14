@@ -52,6 +52,7 @@ export function Section({
   tone = "default",
   index,
   raised,
+  last,
   label,
   title,
   lead,
@@ -67,6 +68,8 @@ export function Section({
   index?: string;
   /** Whether this band is a raised sheet, for the bands with no numeral. */
   raised?: boolean;
+  /** The band the footer sits on — see `Slab`. */
+  last?: boolean;
   /** The uppercase name of the section. */
   label: string;
   title?: ReactNode;
@@ -92,7 +95,7 @@ export function Section({
   className?: string;
 }) {
   return (
-    <Slab id={id} tone={tone} index={index} raised={raised} className={className}>
+    <Slab id={id} tone={tone} index={index} raised={raised} last={last} className={className}>
       <Container>
         {above}
         <SectionHead

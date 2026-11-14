@@ -38,12 +38,20 @@ const GROUND: Record<SectionTone, string> = {
  * Subpages run the same alternation without the numerals — a page that is all
  * one subject has nothing to count — so they say `raised` outright. The prop
  * only overrides the parity; on the homepage the `index` still decides.
+ *
+ * `last` marks the band the footer is pulled over. A raised sheet normally
+ * reaches `slab` down under its neighbour, and the footer reaches `slab` up
+ * on its own — stacked, the two ate the whole bottom padding, and the
+ * homepage's Kontakt sat flush on the footer whenever its numeral came out odd.
+ * So a last raised band keeps its place and takes the footer's overhang in its
+ * padding, the way a covered band already does.
  */
 export function Slab({
   id,
   tone = "default",
   index,
   raised,
+  last,
   children,
   className,
 }: {
@@ -53,6 +61,8 @@ export function Slab({
   index?: string;
   /** Overrides the parity, for the bands that carry no numeral. */
   raised?: boolean;
+  /** The band directly above the footer, on a page with no other room for it. */
+  last?: boolean;
   children: ReactNode;
   className?: string;
 }) {
@@ -63,7 +73,10 @@ export function Slab({
       id={id}
       className={cn(
         isRaised
-          ? "relative z-10 rounded-slab -mt-slab -mb-slab py-section scroll-mt-[calc(var(--nav-h-sticky)+12px)]"
+          ? [
+              "relative z-10 rounded-slab -mt-slab pt-section scroll-mt-[calc(var(--nav-h-sticky)+12px)]",
+              last ? "pb-[calc(var(--spacing-section)+var(--spacing-slab))]" : "-mb-slab pb-section",
+            ]
           : [
               "pt-[calc(var(--spacing-section)+var(--spacing-slab))]",
               "pb-[calc(var(--spacing-section)+var(--spacing-slab))]",
