@@ -1,4 +1,5 @@
 import { Breadcrumb } from "@/components/site/chrome/page-intro";
+import { CallbackForm } from "@/components/site/ui/callback-form";
 import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
 import { FaqList } from "@/components/site/ui/faq-list";
@@ -522,16 +523,29 @@ export function IntentRelatedSection({
         ))}
       </ul>
 
-      <Reveal className="mt-gap grid items-end gap-x-16 gap-y-6 bg-ink-950 p-[clamp(26px,3.2vw,52px)] tab:[grid-template-columns:minmax(0,1.1fr)_minmax(0,0.9fr)]">
-        <h2 className="max-w-[14em] text-pretty font-heading text-display-sm text-on-dark">
-          {call.title}
-        </h2>
+      {/*
+        The call on the left, "Poproś o telefon" on the right: on a page about
+        a family member's drinking, ringing is often exactly what someone
+        cannot do from home, so the card offers the call the other way round.
+      */}
+      <Reveal className="mt-gap grid items-start gap-x-16 gap-y-[clamp(28px,3vw,40px)] bg-ink-950 p-[clamp(26px,3.2vw,52px)] desk:[grid-template-columns:minmax(0,1fr)_minmax(0,1fr)]">
         <div className="flex flex-col items-start gap-[clamp(18px,2vw,24px)]">
+          <h2 className="max-w-[14em] text-pretty font-heading text-display-sm text-on-dark">
+            {call.title}
+          </h2>
           <p className="max-w-[30em] text-pretty text-body-lg text-on-dark-muted">{call.body}</p>
           <Cta href={`tel:${contact.phoneHref}`} variant="light" className="tabular-nums">
             {call.ctaLabel}: {contact.phone}
           </Cta>
         </div>
+        <CallbackForm
+          placement="strona-uslugi"
+          tone="dark"
+          headingLevel={3}
+          // The call column already says the conversation is free and binds to nothing.
+          text="Zostaw numer i wybierz porę — oddzwonimy, także wieczorem i w weekend."
+          className="border-t border-white/12 pt-[clamp(24px,2.6vw,32px)] desk:border-t-0 desk:border-l desk:pt-0 desk:pl-16"
+        />
       </Reveal>
     </Section>
   );

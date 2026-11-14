@@ -41,6 +41,40 @@ export const contactFormSchema = z
 
 export type ContactFormInput = z.infer<typeof contactFormSchema>;
 
+/** When the person would like the call — the only thing asked besides the number. */
+export const CALLBACK_TIMES = {
+  asap: "jak najszybciej",
+  morning: "rano",
+  afternoon: "po południu",
+  evening: "wieczorem",
+} as const;
+export type CallbackTime = keyof typeof CALLBACK_TIMES;
+
+/** How a callback's row in `contact_submissions` begins — the inbox tags it by this. */
+export const CALLBACK_MESSAGE_PREFIX = "Prośba o telefon";
+
+/**
+ * "Poproś o telefon": a number, a time of day and consent. No message field on
+ * purpose — nobody should have to describe their health to get a call back.
+ */
+export const callbackRequestSchema = z.object({
+  name: trimmedOptional,
+  phone: z
+    .string()
+    .trim()
+    .max(40)
+    .refine((v) => v.replace(/\D/g, "").length >= 9, { message: "Podaj numer telefonu — inaczej nie oddzwonimy." }),
+  time: z.enum(Object.keys(CALLBACK_TIMES) as [CallbackTime, ...CallbackTime[]]),
+  consent: z.boolean().refine((v) => v, { message: "Bez zgody nie możemy zadzwonić." }),
+  /** Which placement it came from and the page it sat on — set by the component. */
+  placement: z.string().trim().max(60),
+  page: z.string().trim().max(160),
+  /** Honeypot. */
+  company: z.string().max(200).optional(),
+});
+
+export type CallbackRequestInput = z.infer<typeof callbackRequestSchema>;
+
 /** The standalone e-mail-capture widget. */
 export const leadSignupSchema = z.object({
   email: z.email("Podaj poprawny adres e-mail."),

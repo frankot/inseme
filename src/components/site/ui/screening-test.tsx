@@ -5,6 +5,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { useSiteContact } from "@/components/site/chrome/site-settings";
+import { CallbackForm } from "@/components/site/ui/callback-form";
 import { FieldError } from "@/components/site/ui/field-error";
 import { testDefaults, type SiteContact } from "@/content/home";
 import { track } from "@/lib/analytics";
@@ -184,6 +185,20 @@ export function ScreeningTest({
                 <p className={cn("text-pretty border-b pb-[clamp(18px,2vw,24px)] text-body", dark ? "border-white/12 text-on-dark-muted" : "border-line text-ink-400")}>
                   {band.resultBody}
                 </p>
+
+                {/*
+                  Above the e-mail field, folded to one link: a result is the
+                  moment someone may want to talk it through, but a second open
+                  form here would bury the e-mail one.
+                */}
+                <CallbackForm
+                  placement="test"
+                  tone={dark ? "dark" : "light"}
+                  collapsed
+                  toggleLabel="Porozmawiaj o wyniku — poproś o telefon"
+                  heading={null}
+                  text="Zostaw numer i wybierz porę — oddzwonimy, także wieczorem i w weekend. Wyniku testu nie zapisujemy przy prośbie."
+                />
 
                 <ResultDelivery
                   testId={test.id}

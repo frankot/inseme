@@ -10,8 +10,12 @@ import { isBot } from "@/lib/honeypot";
 import { getNotifyEmail, getSiteContact } from "@/lib/queries/settings";
 import { allowRequest } from "@/lib/rate-limit";
 import {
+  CALLBACK_MESSAGE_PREFIX,
+  CALLBACK_TIMES,
+  callbackRequestSchema,
   contactFormSchema,
   leadSignupSchema,
+  type CallbackRequestInput,
   type ContactFormInput,
   type LeadSignupInput,
 } from "@/lib/validations/contact";
@@ -90,6 +94,74 @@ export async function submitContactForm(input: ContactFormInput): Promise<Action
   } catch (error) {
     console.error(error);
     return { ok: false, error: "Nie udało się wysłać wiadomości. Zadzwoń — odbierzemy." };
+  }
+}
+
+/**
+ * "Poproś o telefon". Lands in the same inbox as the contact form — one place
+ * to check, one "new" count — as a message that says it is a callback, when,
+ * and where on the site it was asked for. Stored first, notified second, for
+ * the same reason as above.
+ */
+export async function submitCallbackRequest(input: CallbackRequestInput): Promise<ActionResult> {
+  const parsed = callbackRequestSchema.safeParse(input);
+  if (!parsed.success) {
+    return { ok: false, error: parsed.error.issues[0]?.message ?? "Sprawdź formularz." };
+  }
+
+  if (isBot(parsed.data)) return { ok: true };
+
+  if (!(await allowRequest("contact"))) {
+    return { ok: false, error: "Zbyt wiele próśb z tego urządzenia. Zadzwoń — odbierzemy od razu." };
+  }
+
+  try {
+    const data = parsed.data;
+    const when = CALLBACK_TIMES[data.time];
+    const message = [`${CALLBACK_MESSAGE_PREFIX} — ${when}.`, `Wysłano z: ${data.page} (${data.placement})`].join("\n");
+
+    await db.insert(contactSubmissions).values({
+      name: emptyToNull(data.name),
+      phone: data.phone.trim(),
+      email: null,
+      message,
+      preferredContactMethod: "phone",
+      consentAt: new Date(),
+    });
+
+    const to = await getNotifyEmail();
+    if (to) {
+      const rows: [string, string][] = [
+        ["Imię", data.name?.trim() || "—"],
+        ["Telefon", data.phone.trim()],
+        ["Kiedy", when],
+        ["Strona", `${data.page} (${data.placement})`],
+      ];
+      await sendEmail({
+        to,
+        subject: `Prośba o telefon — ${when}`,
+        html: emailLayout({
+          heading: "Ktoś prosi o telefon",
+          body: `
+            <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0;font-size:14px;">
+              ${rows
+                .map(
+                  ([label, value]) =>
+                    `<tr><td style="padding:2px 16px 2px 0;color:#9A9F95;">${label}</td><td style="padding:2px 0;color:#2E3330;">${escapeHtml(value)}</td></tr>`,
+                )
+                .join("")}
+            </table>
+          `,
+          footer: "Prośba czeka w panelu: /admin/contact",
+        }),
+        text: rows.map(([label, value]) => `${label}: ${value}`).join("\n"),
+      });
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error(error);
+    return { ok: false, error: "Nie udało się wysłać prośby. Zadzwoń — odbierzemy." };
   }
 }
 

@@ -19,6 +19,8 @@ export type AnalyticsEvent =
   | "click_email"
   | "form_start"
   | "form_submit"
+  /** "Poproś o telefon" sent; `cta_location` is the placement (artykul, cennik, test, strona-uslugi). */
+  | "callback_request"
   | "directions_click"
   /** A link to the contact page or the homepage contact section. */
   | "cta_click"
@@ -31,6 +33,7 @@ export type AnalyticsEvent =
 
 type EventParams = {
   phone_click: { cta_location: string };
+  callback_request: { cta_location: string };
   cta_click: { cta_location: string; link_path: string };
   faq_open: { faq_question: string };
   test_start: { test_slug: string };

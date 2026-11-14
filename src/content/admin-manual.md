@@ -227,6 +227,7 @@ Artykuły na stronie **/porady**.
 | **Lista kroków** | numerowane kroki: tytuł + opis |
 | **Karty** | kafelki obok siebie (po dwa w rzędzie): tytuł + kilka zdań opisu — np. możliwości leczenia; nowa linia w opisie = nowy akapit |
 | **Sekcja FAQ** | pytania z kategorii wybranej z listy (**Wszystkie pytania** albo jedna z kategorii FAQ) |
+| **Prośba o telefon** | formularz „Poproś o telefon” (numer, imię, pora); **Nagłówek** i **Tekst** opcjonalne — puste = tekst domyślny; prośby trafiają do [Wiadomości](#wiadomości) |
 
 Kolejność: **Przenieś wyżej / niżej**. Usunięcie: **Usuń sekcję**.
 
@@ -321,11 +322,12 @@ Dwie zakładki: **Wiadomości** i **Adresy e-mail**.
 
 ### Wiadomości
 
-Formularz kontaktowy. Liczba przy zakładce — nowe wiadomości.
+Formularz kontaktowy i prośby o telefon. Liczba przy zakładce — nowe wiadomości.
 
 | Element | Działanie |
 |---|---|
 | Treść | imię (opcjonalne), telefon, e-mail, preferowany kontakt, wiadomość; telefon i e-mail klikalne |
+| **prośba o telefon** | znaczek przy zgłoszeniu z formularza „Poproś o telefon” (artykuły, cennik, strony tematyczne, wynik testu); w treści pora (jak najszybciej / rano / po południu / wieczorem) i strona, z której wysłano prośbę |
 | **Oznacz jako załatwione** / **Cofnij do nowych** | status obsługi |
 | Kosz | usunięcie wiadomości |
 | Powiadomienie | kopia każdej wiadomości e-mailem — na adres z [Ustawień](#ustawienia) (o ile nie ustalono innego) |

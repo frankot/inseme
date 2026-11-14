@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, GripVertical, Plus, Trash2 } from "lucide-react
 import { useState } from "react";
 
 import { MediaPicker } from "@/components/admin/media-picker";
+import { CALLBACK_DEFAULTS } from "@/content/callback";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 import { Button } from "@/components/ui/button";
 import {
@@ -421,6 +422,33 @@ function BlockFields({
                 ))}
               </SelectContent>
             </Select>
+          </div>
+        </>
+      );
+
+    case "callback_form":
+      return (
+        <>
+          <p className="text-sm text-muted-foreground">
+            Formularz: telefon, imię (opcjonalnie), pora i zgoda. Prośby trafiają do Wiadomości i na
+            e-mail z powiadomieniami. Puste pola = tekst domyślny.
+          </p>
+          <div className="flex flex-col gap-2">
+            <Label>Nagłówek</Label>
+            <Input
+              value={block.heading}
+              placeholder={CALLBACK_DEFAULTS.heading}
+              onChange={(event) => onChange({ ...block, heading: event.target.value })}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Tekst</Label>
+            <Textarea
+              value={block.text}
+              rows={3}
+              placeholder={CALLBACK_DEFAULTS.text}
+              onChange={(event) => onChange({ ...block, text: event.target.value })}
+            />
           </div>
         </>
       );

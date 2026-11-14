@@ -65,6 +65,7 @@ export function getArticlePreview(blocks: Block[]): ArticlePreview {
         if (block.heading) headings.push(block.heading);
         break;
       case "cta":
+      case "callback_form":
         break;
     }
   }
@@ -93,6 +94,8 @@ export function getReadingMinutes(blocks: Block[]): number {
           return `${block.heading} ${block.text}`;
         case "faq_embed":
           return block.heading;
+        case "callback_form":
+          return "";
       }
     })
     .join(" ");

@@ -1,7 +1,10 @@
+import { CallbackForm } from "@/components/site/ui/callback-form";
+import { CALLBACK_DEFAULTS } from "@/content/callback";
 import { SiteImage } from "@/components/site/ui/site-image";
 import { Reveal } from "@/components/site/ui/reveal";
 import type {
   Block,
+  CallbackFormBlock,
   CardListBlock,
   CtaBlock,
   FaqEmbedBlock,
@@ -73,6 +76,8 @@ export async function BlockRenderer({ blocks }: { blocks: Block[] }) {
                 items={faqByCategory.get(block.category) ?? []}
               />
             );
+          case "callback_form":
+            return <Callback key={block.id} block={block} />;
         }
       })}
     </div>
@@ -126,6 +131,23 @@ function Cta({ block }: { block: CtaBlock }) {
           <span aria-hidden>→</span>
         </a>
       )}
+    </Reveal>
+  );
+}
+
+/**
+ * A light card rather than the CTA's dark one: it often sits right under a
+ * dark CTA (the NFZ article's „Nie chcesz czekać?”), and two dark slabs in a
+ * row read as one.
+ */
+function Callback({ block }: { block: CallbackFormBlock }) {
+  return (
+    <Reveal className="border border-line-strong bg-white p-card">
+      <CallbackForm
+        placement="artykul"
+        heading={block.heading.trim() || CALLBACK_DEFAULTS.heading}
+        text={block.text.trim() || CALLBACK_DEFAULTS.text}
+      />
     </Reveal>
   );
 }

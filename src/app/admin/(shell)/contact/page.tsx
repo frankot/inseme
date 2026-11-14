@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { db } from "@/db";
 import { contactSubmissions } from "@/db/schema";
 import { env } from "@/lib/env";
+import { CALLBACK_MESSAGE_PREFIX } from "@/lib/validations/contact";
 
 export const metadata: Metadata = { title: "Wiadomości — panel Insieme" };
 
@@ -48,6 +49,10 @@ export default async function ContactInboxPage() {
                 <Badge variant={row.status === "new" ? "default" : "secondary"}>
                   {row.status === "new" ? "nowa" : "załatwione"}
                 </Badge>
+                {/* "Poproś o telefon" rows carry no message of their own — see `submitCallbackRequest`. */}
+                {row.message.startsWith(CALLBACK_MESSAGE_PREFIX) && (
+                  <Badge variant="outline">prośba o telefon</Badge>
+                )}
                 <span className="ml-auto text-xs text-muted-foreground">
                   {row.createdAt.toLocaleString("pl-PL", {
                     dateStyle: "short",

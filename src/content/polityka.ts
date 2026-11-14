@@ -50,7 +50,7 @@ export const policyDefaults: PolicyContent = {
   eyebrow: "Polityka prywatności",
   title: "Polityka prywatności",
   lead: "Co zapisujemy, kiedy korzystasz z tej strony, po co i jak długo — oraz jak to zmienić. Do rozmowy telefonicznej nie potrzebujemy nawet Twojego nazwiska.",
-  effectiveDate: "13 listopada 2026",
+  effectiveDate: "14 listopada 2026",
   controller: {
     legalName: "",
     address: "ul. Świerkowa 13, 05-506 Magdalenka",
@@ -73,13 +73,14 @@ export const policyDefaults: PolicyContent = {
         "Strona zbiera tylko to, co sam(a) do nas wyślesz, anonimowe liczniki odwiedzin i kliknięć w numer telefonu oraz — jeśli się zgodzisz — statystyki Google Analytics. Żadne z nich nie zawierają Twojego imienia ani adresu. Nie prowadzimy kont użytkowników, nie przyjmujemy płatności przez stronę i nie wysyłamy reklam.",
         [
           "Formularz kontaktowy: treść wiadomości oraz — jeśli je podasz — imię, numer telefonu i adres e-mail. Używamy ich wyłącznie, żeby odpowiedzieć na Twoją wiadomość w sposób, który wybierzesz.",
+          "Prośba o telefon (formularz „Poproś o telefon”): numer telefonu, wybrana pora rozmowy, strona, z której wysłano prośbę, oraz — jeśli je podasz — imię. Używamy ich wyłącznie, żeby do Ciebie oddzwonić.",
           "Test przesiewowy: odpowiedzi nie są zapisywane. Jeśli poprosisz o wynik na e-mail, zapisujemy adres e-mail, liczbę punktów i przedział wyniku — tylko po to, żeby wysłać Ci jeden raz wynik w PDF.",
           "Zapis na kontakt (pole „Zostaw adres”): adres e-mail i miejsce na stronie, z którego go podano. Piszemy tylko wtedy, gdy mamy coś konkretnego; nie wysyłamy newslettera.",
           "Statystyki (Google Analytics): wyłącznie po kliknięciu „Zgadzam się” w okienku o plikach cookies — szczegóły niżej.",
           "Anonimowe liczniki, bez pytania o zgodę: Vercel Web Analytics liczy, które strony są czytane i skąd przychodzą odwiedzający (adres strony, strona odsyłająca, kraj i miasto, typ urządzenia, system i przeglądarka); kolejne wejścia tego samego dnia rozpoznaje po jednorazowym skrócie tworzonym z danych żądania, który jest usuwany po 24 godzinach. Nasz własny licznik kliknięć w numer telefonu zapisuje tylko dzień, stronę i miejsce przycisku, pierwszą stronę otwartą podczas wizyty, ogólne źródło wejścia (np. „Google” albo „wejście bezpośrednie”) oraz to, czy był to telefon komórkowy, czy komputer — jako sumy dzienne, bez godziny. Żaden z liczników nie używa plików cookies i nie zapisuje adresu IP ani identyfikatora przeglądarki; nie da się z nich ustalić, kim jesteś.",
           "Dane techniczne: adres IP i informacje o przeglądarce, które serwer otrzymuje przy każdym wejściu na stronę. Służą do jej działania i ochrony przed nadużyciami (np. masowym wysyłaniem formularzy).",
         ],
-        "Podanie danych jest dobrowolne. Bez adresu e-mail nie wyślemy wyniku testu; bez telefonu lub e-maila nie odpowiemy na wiadomość z formularza.",
+        "Podanie danych jest dobrowolne. Bez adresu e-mail nie wyślemy wyniku testu; bez telefonu lub e-maila nie odpowiemy na wiadomość z formularza; bez numeru telefonu nie oddzwonimy.",
       ],
     },
     {
@@ -87,7 +88,7 @@ export const policyDefaults: PolicyContent = {
       title: "Na jakiej podstawie",
       body: [
         [
-          "Formularz kontaktowy i zapis na kontakt — Twoja zgoda (art. 6 ust. 1 lit. a RODO), wyrażona zaznaczeniem pola pod formularzem.",
+          "Formularz kontaktowy, prośba o telefon i zapis na kontakt — Twoja zgoda (art. 6 ust. 1 lit. a RODO), wyrażona zaznaczeniem pola pod formularzem.",
           "Wynik testu przesiewowego i wiadomości, w których opisujesz swoje zdrowie — wyraźna zgoda na przetwarzanie danych o zdrowiu (art. 9 ust. 2 lit. a RODO).",
           "Statystyki Google Analytics — Twoja zgoda (art. 6 ust. 1 lit. a RODO) wyrażona w okienku o plikach cookies.",
           "Anonimowe liczniki odwiedzin i kliknięć w numer telefonu — nasz prawnie uzasadniony interes, czyli wiedza, które informacje na stronie pomagają ludziom zgłosić się po pomoc (art. 6 ust. 1 lit. f RODO).",
@@ -101,7 +102,7 @@ export const policyDefaults: PolicyContent = {
       title: "Jak długo przechowujemy dane",
       body: [
         [
-          `Wiadomości z formularza, adresy z zapisu na kontakt i dane z testów przesiewowych — do czasu załatwienia sprawy, nie dłużej niż ${months} miesięcy od wysłania. Po tym czasie usuwamy je automatycznie.`,
+          `Wiadomości z formularza, prośby o telefon, adresy z zapisu na kontakt i dane z testów przesiewowych — do czasu załatwienia sprawy, nie dłużej niż ${months} miesięcy od wysłania. Po tym czasie usuwamy je automatycznie.`,
           "Adres IP używany do ochrony formularzy — około 10 minut.",
           "Dane w Google Analytics — 2 miesiące (ustawienie usługi).",
           "Sumy dzienne z licznika kliknięć w numer telefonu — bez ograniczenia czasu, bo nie zawierają danych pozwalających kogokolwiek zidentyfikować.",

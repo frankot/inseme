@@ -5,7 +5,15 @@ import { z } from "zod";
  * CMS, not a freeform page builder. Adding a type means adding it here, to the
  * editor switch in `block-editor.tsx`, and (later) to the public renderer.
  */
-export const blockTypes = ["richtext", "image_text", "cta", "step_list", "card_list", "faq_embed"] as const;
+export const blockTypes = [
+  "richtext",
+  "image_text",
+  "cta",
+  "step_list",
+  "card_list",
+  "faq_embed",
+  "callback_form",
+] as const;
 export type BlockType = (typeof blockTypes)[number];
 
 const baseBlock = { id: z.string().min(1) };
@@ -72,6 +80,18 @@ export const faqEmbedBlockSchema = z.object({
   category: z.string(),
 });
 
+/**
+ * "Poproś o telefon" inside an article. Heading and text are optional: empty
+ * means the form's own copy (`CALLBACK_DEFAULTS`), so the common case is just
+ * dropping the block in.
+ */
+export const callbackFormBlockSchema = z.object({
+  ...baseBlock,
+  type: z.literal("callback_form"),
+  heading: z.string(),
+  text: z.string(),
+});
+
 export const blockSchema = z.discriminatedUnion("type", [
   richTextBlockSchema,
   imageTextBlockSchema,
@@ -79,6 +99,7 @@ export const blockSchema = z.discriminatedUnion("type", [
   stepListBlockSchema,
   cardListBlockSchema,
   faqEmbedBlockSchema,
+  callbackFormBlockSchema,
 ]);
 
 export const blocksSchema = z.array(blockSchema);
@@ -89,6 +110,7 @@ export type CtaBlock = z.infer<typeof ctaBlockSchema>;
 export type StepListBlock = z.infer<typeof stepListBlockSchema>;
 export type CardListBlock = z.infer<typeof cardListBlockSchema>;
 export type FaqEmbedBlock = z.infer<typeof faqEmbedBlockSchema>;
+export type CallbackFormBlock = z.infer<typeof callbackFormBlockSchema>;
 export type Block = z.infer<typeof blockSchema>;
 
 export const blockTypeLabels: Record<BlockType, string> = {
@@ -98,6 +120,7 @@ export const blockTypeLabels: Record<BlockType, string> = {
   step_list: "Lista kroków",
   card_list: "Karty",
   faq_embed: "Sekcja FAQ",
+  callback_form: "Prośba o telefon",
 };
 
 export function createBlock(type: BlockType): Block {
@@ -115,5 +138,7 @@ export function createBlock(type: BlockType): Block {
       return { id, type, heading: "", cards: [] };
     case "faq_embed":
       return { id, type, heading: "", category: "" };
+    case "callback_form":
+      return { id, type, heading: "", text: "" };
   }
 }

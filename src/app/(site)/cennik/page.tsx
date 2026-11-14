@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { SubpageLayout } from "@/components/site/chrome/subpage-layout";
+import { CallbackForm } from "@/components/site/ui/callback-form";
 import { Container } from "@/components/site/ui/container";
 import { Cta } from "@/components/site/ui/cta";
 import { Reveal } from "@/components/site/ui/reveal";
@@ -265,6 +266,12 @@ export default async function CennikPage() {
             <Cta href={`tel:${contact.phoneHref}`} variant="solid" className="tabular-nums">
               {copy.closingCta} — <span className="whitespace-nowrap">{contact.phone}</span>
             </Cta>
+            {/* For whoever wants to talk it over at home first, or cannot ring from work. */}
+            <CallbackForm
+              placement="cennik"
+              headingLevel={3}
+              className="w-full max-w-[34em] border-t border-line pt-[clamp(20px,2.2vw,30px)]"
+            />
           </div>
         </Reveal>
 
