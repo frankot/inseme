@@ -39,7 +39,7 @@ export default async function ArticlesListPage() {
     <>
       <PageHeader
         title="Artykuły"
-        description="Poradnik. Każdy artykuł wymaga wskazania osoby weryfikującej przed publikacją."
+        description="Poradnik. Każdy artykuł wymaga wskazania osoby weryfikującej albo współpracy przy artykule przed publikacją."
         actions={<Button render={<Link href="/admin/articles/new" />}>Dodaj artykuł</Button>}
       />
 
@@ -77,7 +77,19 @@ export default async function ArticlesListPage() {
                     </p>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {row.reviewer?.name ?? row.authorReviewer ?? row.contributionNote ?? "—"}
+                    {/* Cells don't wrap, so a long credit („Artykuł sporządzony przy
+                        udziale…”) would widen the table past the row menu: cut it
+                        to the column, full text on hover. */}
+                    {(() => {
+                      const review = row.reviewer?.name ?? row.authorReviewer ?? row.contributionNote;
+                      return review ? (
+                        <span className="block max-w-48 truncate" title={review}>
+                          {review}
+                        </span>
+                      ) : (
+                        "—"
+                      );
+                    })()}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {row.updatedAt.toLocaleDateString("pl-PL")}
