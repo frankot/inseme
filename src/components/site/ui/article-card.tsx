@@ -58,7 +58,7 @@ export function ArticleCard({
           </h3>
 
           {article.excerpt && (
-            <p className="mt-3 text-meta text-ink-400">{article.excerpt}</p>
+            <p className="mt-3 line-clamp-5 text-meta text-ink-400">{article.excerpt}</p>
           )}
 
           <Cta as="span" className="mt-auto pt-5">
