@@ -43,6 +43,7 @@ function articleColumns(data: ArticleInput) {
     sources: data.sources,
     authorReviewer: emptyToNull(data.authorReviewer),
     reviewerId: data.reviewerId,
+    contributionNote: emptyToNull(data.contributionNote),
     coverImageId: data.coverImageId,
     metaTitle: emptyToNull(data.metaTitle),
     metaDescription: emptyToNull(data.metaDescription),
@@ -51,7 +52,21 @@ function articleColumns(data: ArticleInput) {
 
 const NO_PENDING = { pendingChanges: null, pendingUpdatedAt: null };
 
-const REVIEWER_REQUIRED = "Wskaż osobę weryfikującą (z zespołu albo spoza niego) przed publikacją.";
+const REVIEWER_REQUIRED =
+  "Przed publikacją wskaż osobę weryfikującą (z zespołu albo spoza niego) albo wpisz współpracę przy artykule.";
+
+/**
+ * Publishing is the review gate for medical/factual copy: the article has to
+ * name who checked it — a team member, someone from outside, or the party it
+ * was written with (e.g. a law firm).
+ */
+function hasReviewTrail(data: {
+  reviewerId: string | null;
+  authorReviewer?: string | null;
+  contributionNote?: string | null;
+}): boolean {
+  return Boolean(data.reviewerId || data.authorReviewer?.trim() || data.contributionNote?.trim());
+}
 
 async function slugTaken(slug: string, id: string | null) {
   const clash = await db.query.articles.findFirst({
@@ -88,8 +103,7 @@ export async function saveArticle(
         return { ok: false, error: "To stały artykuł — musi pozostać opublikowany." };
       }
     }
-    // Publishing is the review gate for medical/factual copy.
-    if (mode === "publish" && !parsed.data.reviewerId && !parsed.data.authorReviewer?.trim()) {
+    if (mode === "publish" && !hasReviewTrail(parsed.data)) {
       return { ok: false, error: REVIEWER_REQUIRED };
     }
     if (await slugTaken(parsed.data.slug, id)) {
@@ -157,14 +171,12 @@ export async function saveArticle(
 export async function publishArticle(id: string): Promise<ActionResult> {
   try {
     await requireAdmin();
-    // Publishing is the review gate for medical/factual copy: refuse to release
-    // an article that doesn't name who checked it.
     const row = await db.query.articles.findFirst({
-      columns: { authorReviewer: true, reviewerId: true, slug: true },
+      columns: { authorReviewer: true, reviewerId: true, contributionNote: true, slug: true },
       where: eq(articles.id, id),
     });
     if (!row) return { ok: false, error: "Nie znaleziono artykułu." };
-    if (!row.reviewerId && !row.authorReviewer) return { ok: false, error: REVIEWER_REQUIRED };
+    if (!hasReviewTrail(row)) return { ok: false, error: REVIEWER_REQUIRED };
 
     await db
       .update(articles)
@@ -193,7 +205,7 @@ export async function publishArticleChanges(id: string): Promise<ActionResult> {
     if (!parsed.success) {
       return { ok: false, error: "Niepublikowane zmiany są niekompletne — otwórz artykuł i popraw je." };
     }
-    if (!parsed.data.reviewerId && !parsed.data.authorReviewer?.trim()) {
+    if (!hasReviewTrail(parsed.data)) {
       return { ok: false, error: REVIEWER_REQUIRED };
     }
     if (isProtectedArticle(row.slug) && parsed.data.slug !== row.slug) {

@@ -25,6 +25,12 @@ export const articles = pgTable("articles", {
    * §3.1). `authorReviewer` stays for someone from outside the team.
    */
   reviewerId: uuid("reviewer_id").references(() => teamMembers.id, { onDelete: "set null" }),
+  /**
+   * Credit for an outside party the text was written with, printed as a note
+   * at its foot — e.g. „Artykuł sporządzony przy udziale Kancelarii Prawnej
+   * 5M Legal”. Stands in for a reviewer at the publish gate.
+   */
+  contributionNote: text("contribution_note"),
   coverImageId: uuid("cover_image_id").references(() => media.id, { onDelete: "set null" }),
   status: contentStatus("status").notNull().default("draft"),
   /**

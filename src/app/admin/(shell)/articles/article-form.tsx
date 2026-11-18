@@ -204,7 +204,7 @@ export function ArticleForm({
                 <TrackedField name="reviewerId" before={(value) => team.find((member) => member.id === value)?.name ?? <em>(nikt z zespołu)</em>}>
                   <Field
                     label="Osoba weryfikująca z zespołu"
-                    hint="Wymagane przed publikacją (to albo pole obok). Artykuł pokaże jej zdjęcie, funkcję i link do biogramu."
+                    hint="Przed publikacją wymagane to, pole obok albo „Współpraca przy artykule”. Artykuł pokaże jej zdjęcie, funkcję i link do biogramu."
                     error={errors.reviewerId?.message}
                   >
                     <Controller
@@ -251,6 +251,17 @@ export function ArticleForm({
                   </Field>
                 </TrackedField>
               </div>
+
+              <TrackedField name="contributionNote">
+                <Field
+                  label="Współpraca przy artykule"
+                  htmlFor="contributionNote"
+                  hint="Gdy tekst powstał z kimś spoza ośrodka, np. „Artykuł sporządzony przy udziale Kancelarii Prawnej 5M Legal”. Całe zdanie — pokaże się pod artykułem. Przy publikacji zastępuje osobę weryfikującą."
+                  error={errors.contributionNote?.message}
+                >
+                  <Input id="contributionNote" {...register("contributionNote")} />
+                </Field>
+              </TrackedField>
             </CardContent>
           </Card>
 

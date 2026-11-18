@@ -211,8 +211,9 @@ Artykuły na stronie **/porady**.
 | **Tytuł** | |
 | **Adres (slug)** | `/porady/<adres>`; nie zmieniać po publikacji |
 | **Wstęp (zajawka)** | kilka zdań pod tytułem, przed treścią; także na karcie artykułu, w sekcji „Z poradnika” na stronie głównej i w Google, gdy **Opis meta** jest pusty; do 400 znaków |
-| **Osoba weryfikująca z zespołu** | **wymagana do publikacji** (albo pole niżej); artykuł pokazuje jej zdjęcie, funkcję i link do biogramu |
+| **Osoba weryfikująca z zespołu** | **wymagana do publikacji** (albo jedno z dwóch pól niżej); artykuł pokazuje jej zdjęcie, funkcję i link do biogramu |
 | **Osoba spoza zespołu** | imię, nazwisko, funkcja — gdy weryfikował ktoś spoza zespołu |
+| **Współpraca przy artykule** | całe zdanie, np. „Artykuł sporządzony przy udziale Kancelarii Prawnej 5M Legal”; wyróżniona notka pod artykułem; wystarcza do publikacji zamiast osoby weryfikującej |
 | **Źródła** | opcjonalne: nazwa i adres strony; numerowana lista drobnym drukiem pod artykułem |
 | **Zdjęcie główne** | na górze artykułu i przy udostępnianiu linku |
 | **Tytuł meta**, **Opis meta** | dla Google |

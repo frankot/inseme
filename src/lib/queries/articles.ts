@@ -43,6 +43,8 @@ export type ArticleDetail = ArticleCardData & {
   /** Who checked it: the team member's name, else the free-text field. */
   reviewerName: string | null;
   reviewer: ArticleReviewer | null;
+  /** Who it was written with, as one sentence for the foot of the article. */
+  contributionNote: string | null;
   metaTitle: string | null;
   metaDescription: string | null;
   updatedAt: string;
@@ -113,6 +115,7 @@ function toDetail(row: DetailRow): ArticleDetail {
           slug: reviewer.status === "published" ? reviewer.slug : null,
         }
       : null,
+    contributionNote: row.contributionNote,
     metaTitle: row.metaTitle,
     metaDescription: row.metaDescription,
     updatedAt: row.updatedAt.toISOString(),

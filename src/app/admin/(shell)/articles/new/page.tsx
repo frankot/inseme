@@ -34,6 +34,7 @@ export default async function NewArticlePage() {
           sources: [],
           authorReviewer: "",
           reviewerId: null,
+          contributionNote: "",
           coverImageId: null,
           metaTitle: "",
           metaDescription: "",

@@ -77,7 +77,7 @@ export default async function ArticlesListPage() {
                     </p>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {row.reviewer?.name ?? row.authorReviewer ?? "—"}
+                    {row.reviewer?.name ?? row.authorReviewer ?? row.contributionNote ?? "—"}
                   </TableCell>
                   <TableCell className="text-muted-foreground">
                     {row.updatedAt.toLocaleDateString("pl-PL")}

@@ -70,6 +70,8 @@ export type ArticlesPageContent = {
   outlineLabel: string;
   /** The link from the reviewer card to their page in Zespół. */
   reviewerBioLabel: string;
+  /** Over the note crediting who the text was written with (e.g. a law firm). */
+  contributionLabel: string;
   readingTime: (minutes: number) => string;
   callTitle: string;
   callText: string;
@@ -92,6 +94,7 @@ export const artykulyPageDefaults: ArticlesPageContent = {
   backLabel: "Wszystkie artykuły",
   outlineLabel: "W tym tekście",
   reviewerBioLabel: "Biogram",
+  contributionLabel: "Współpraca merytoryczna",
   readingTime: (minutes) => `${minutes} min czytania`,
   callTitle: "Wolisz porozmawiać?",
   callText: "Odbiera terapeuta z ośrodka. Rozmowa nie zobowiązuje do przyjazdu.",

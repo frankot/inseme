@@ -97,6 +97,7 @@ export const articleSchema = z.object({
   sources: z.array(articleSourceSchema).max(30, "Maksymalnie 30 źródeł."),
   authorReviewer: optionalText,
   reviewerId: z.uuid().nullable(),
+  contributionNote: optionalText,
   coverImageId: z.uuid().nullable(),
   ...metaFields,
 });

@@ -147,7 +147,8 @@ export function ArticleView({
             {article.reviewer ? (
               <ReviewerCard reviewer={article.reviewer} article={article} />
             ) : (
-              (article.reviewerName || date) && (
+              // Dates alone go into the contribution note when there is one.
+              (article.reviewerName || (date && !article.contributionNote)) && (
                 <Reveal className="mt-[clamp(36px,4vw,64px)] flex flex-wrap items-baseline justify-between gap-x-10 gap-y-3 border-t border-line-strong pt-5 text-[14px] text-ink-300">
                   {article.reviewerName && (
                     <span>
@@ -162,6 +163,15 @@ export function ArticleView({
                   )}
                 </Reveal>
               )
+            )}
+
+            {article.contributionNote && (
+              <ContributionNote
+                note={article.contributionNote}
+                article={article}
+                // The dates are printed once, in whichever review line comes first.
+                withDates={!article.reviewer && !article.reviewerName}
+              />
             )}
 
             {article.sources.length > 0 && <SourceList sources={article.sources} />}
@@ -348,6 +358,36 @@ function ArticleDates({
         </>
       )}
     </>
+  );
+}
+
+/**
+ * Credit for the party the text was written with — a law firm, say. A panel
+ * in the site's card grammar rather than a byline: it names an organisation,
+ * so there is no face or biogram to show, and the sentence is the whole point.
+ */
+function ContributionNote({
+  note,
+  article,
+  withDates,
+}: {
+  note: string;
+  article: Pick<ArticleDetail, "publishedAt" | "updatedAt">;
+  withDates: boolean;
+}) {
+  const showDates = withDates && Boolean(formatArticleDate(article.publishedAt));
+  return (
+    <Reveal className="mt-[clamp(36px,4vw,64px)] border border-line-strong bg-bone p-[clamp(20px,2.4vw,32px)]">
+      <p className="text-eyebrow uppercase tracking-[0.2em] text-clay-600">{copy.contributionLabel}</p>
+      <p className="mt-3 max-w-[26em] text-pretty font-heading text-[clamp(19px,1.6vw,23px)] leading-[1.3] tracking-[-0.02em] text-ink-900">
+        {note}
+      </p>
+      {showDates && (
+        <p className="mt-[clamp(16px,1.6vw,20px)] flex flex-wrap gap-x-3 gap-y-1 border-t border-line pt-3 text-meta text-ink-300">
+          <ArticleDates article={article} />
+        </p>
+      )}
+    </Reveal>
   );
 }
 
