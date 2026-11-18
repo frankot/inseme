@@ -107,6 +107,12 @@ export function ArticleView({
                   </span>
                 </>
               )}
+              {article.contributionNote && (
+                <>
+                  <span aria-hidden>·</span>
+                  <span className="text-ink-600">{article.contributionNote}</span>
+                </>
+              )}
             </p>
           </Reveal>
 
