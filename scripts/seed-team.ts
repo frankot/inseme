@@ -293,6 +293,27 @@ const PEOPLE = [
       <p>Ważne są dla niej akceptacja siebie, wzmacnianie wewnętrznych zasobów i stopniowe odzyskiwanie równowagi w relacjach i codziennym funkcjonowaniu.</p>
     `,
   },
+  {
+    name: "Sylwia Niemirowska",
+    slug: "sylwia-niemirowska",
+    role: "specjalista psychoterapii uzależnień · pedagog · praktyk dialogu motywującego · trener grupowy · trener dramy · coach",
+    qualifications:
+      "Magister pedagogiki resocjalizacyjnej. Ukończyła specjalistyczne szkolenie w dziedzinie terapii uzależnień oraz szkolenie z psychoterapii uzależnień dzieci i młodzieży. Jest absolwentką szkoły trenerów oraz Szkoły Trenerów Dramy Drama Way. Przygotowanie do pracy jako coach zdobyła w Profi Biznes Group.",
+    shortBio:
+      "Prowadzi terapię indywidualną i grupową osób uzależnionych oraz wspiera ich bliskich. Doświadczenie zdobywała m.in. w całodobowym ośrodku leczenia uzależnień, w poradni MONAR oraz w Areszcie Śledczym w Lublinie.",
+    longBio: `
+      <h3>Czym się zajmuje</h3>
+      <ul>
+        <li>terapią uzależnień od substancji oraz uzależnień behawioralnych</li>
+        <li>wspieraniem osób podejmujących leczenie po raz pierwszy oraz wracających do terapii</li>
+        <li>pracą nad rozpoznawaniem emocji, wyrażaniem potrzeb i stawianiem granic w relacjach</li>
+        <li>pomocą w rozpoznawaniu sygnałów ostrzegawczych i zapobieganiu nawrotom</li>
+      </ul>
+      <h3>Jak pracuje</h3>
+      <p>Chce poznać i zrozumieć człowieka, który do niej przychodzi. Z własnego doświadczenia wie, że myśl o terapii może budzić jednocześnie nadzieję i lęk. Buduje relacje oparte na zaufaniu.</p>
+      <p>Dba o to, by pacjent mógł wykorzystać w codziennym życiu to, czego uczy się podczas terapii. Trzeźwienie rozumie jako proces, w którym człowiek stopniowo odzyskuje wolność decydowania o tym, jak chce dalej żyć.</p>
+    `,
+  },
 ];
 
 main()
