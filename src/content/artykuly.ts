@@ -80,7 +80,7 @@ export type ArticlesPageContent = {
 export const artykulyPageDefaults: ArticlesPageContent = {
   eyebrow: "Poradnik",
   title: "Co warto wiedzieć, zanim zadzwonisz.",
-  lead: "Krótkie teksty o uzależnieniu, leczeniu i o tym, jak rozmawiać z bliską osobą. Każdy sprawdzony przez osobę z zespołu, podpisaną pod tekstem.",
+  lead: "Krótkie teksty o uzależnieniu, leczeniu i o tym, jak rozmawiać z bliską osobą. Każdy sprawdzony przez specjalistów podpisanych pod tekstem.",
   emptyNote: "Przygotowujemy pierwsze teksty. W międzyczasie zadzwoń — odpowiemy na wszystko przez telefon.",
   metaTitle: "Poradnik — Insieme, ośrodek terapii uzależnień",
   metaDescription:
